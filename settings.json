@@ -186,6 +186,16 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/go-discard-mutations.js\" --state-dir \"$HOME/.claude/runtime/go-mutations\"",
+            "timeout": 20
+          }
+        ]
       }
     ],
     "PreCompact": [
@@ -375,6 +385,16 @@
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/payload-marker.js\"",
             "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/go-discard-mutations.js\" --state-dir \"$HOME/.claude/runtime/go-mutations\"",
+            "timeout": 20
           }
         ]
       }

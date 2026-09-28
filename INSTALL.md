@@ -10,7 +10,7 @@ python3 bootstrap/codex.py install
 python3 bootstrap/codex.py verify
 ```
 
-Requires Python 3.11+ and a Git checkout. See [the Codex guide](docs/CODEX.md)
+Requires Python 3.11+, Node.js 18+ and a Git checkout. See [the Codex guide](docs/CODEX.md)
 for existing-plan mappings, hook review/trust, verification and uninstall. The
 installer preserves existing Codex configuration and does not modify Claude.
 The shell and PowerShell installers below remain the Claude Code installers.

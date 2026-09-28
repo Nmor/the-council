@@ -37,10 +37,17 @@ class InstallTests(unittest.TestCase):
     def install(self, **kwargs):
         return installer.install(self.home, ROOT, **kwargs)
 
+    def test_missing_node_preflight_preserves_home(self):
+        with patch.object(installer.shutil, 'which', return_value=None):
+            with self.assertRaisesRegex(ValueError, 'Node.js 18'):
+                self.install()
+        self.assertEqual(snapshot(self.home), self.before)
+
     def test_install_reinstall_and_uninstall_preserve_personal_files(self):
         first = self.install()
         self.assertGreater(first['files'], 300)
         installer.verify(self.home)
+        self.assertTrue((self.home / "council/go-discard-mutations.js").is_file())
         installed = snapshot(self.home)
         self.assertEqual(installed['config.toml'], self.before['config.toml'])
         self.assertEqual(installed['skills/my-skill/SKILL.md'], b'Personal resource')

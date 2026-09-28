@@ -11,6 +11,11 @@ only when runtime differences matter. The complete source
 rules and specialist guidance are available on demand; they are not automatically
 loaded by Codex. Do not load the entire library into context.
 
+Before editing code, read the applicable language guidance and its common coding
+rules. Handle every returned value and error, including in tests; do not use blank
+assignments to drop them. Go's `for _, value := range` is allowed. Verify changed
+code with strict repository lint; hooks do not certify code quality.
+
 Work in the main session by default. Use at most one native `council-*` helper at a
 time for a concrete independent investigation or review that justifies another model
 request. Do not recursively delegate or start a large workflow by default. Supply the objective, relevant

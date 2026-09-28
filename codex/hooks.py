@@ -2,13 +2,15 @@
 """Small native Codex Council hooks; no Claude runtime or transcript access.
 
 These hooks are reminders and a narrow patch guardrail, not a security boundary.
-They do not certify tests, run commands, write memory, or grant permissions.
+They do not certify tests or grant permissions. Go mutation checks run a native
+Node scanner and read-only git discovery, storing temporary signature snapshots.
 """
 
 import argparse
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 
@@ -106,6 +108,34 @@ def command_status(response):
     return code if type(code) is int else None
 
 
+def go_mutation_guard(payload, home):
+    """Native shared Node scanner; no archived Claude hook execution.
+
+    Requires paired session/tool IDs. Older clients lacking those IDs retain
+    manual lint requirements. The existing five event hooks include process polling in their matchers.
+    """
+    if payload.get("hook_event_name") not in {"PreToolUse", "PostToolUse"}:
+        return {}
+    if payload.get("tool_name") not in {"Bash", "exec_command", "shell_command", "apply_patch", "Edit", "Write", "MultiEdit", "write_stdin"}:
+        return {}
+    if not payload.get("session_id") or not payload.get("tool_use_id"):
+        return context(payload["hook_event_name"], "Council Go no-discards lacks paired session/tool IDs; no mutation check is claimed. Run local lint.")
+    script = Path(__file__).with_name("go-discard-mutations.js")
+    if not script.exists():
+        # Source-checkout layout only; installed runtime never executes resources/ scripts.
+        script = Path(__file__).resolve().parents[1] / "scripts/hooks/go-discard-mutations.js"
+    try:
+        result = subprocess.run(["node", str(script), "--state-dir",
+                                 str(Path(home).resolve() / "council/runtime/go-mutations")],
+                                input=json.dumps(payload), capture_output=True, text=True,
+                                check=True, timeout=15)
+        value = json.loads(result.stdout)
+        if not isinstance(value, dict):
+            raise ValueError("scanner response must be an object")
+        return value
+    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        return {"systemMessage": f"Council Go mutation check unavailable: {error}. No check is claimed; run local lint."}
+
 def dispatch(payload, home):
     if not isinstance(payload, dict):
         raise ValueError("hook input must be a JSON object")
@@ -146,6 +176,9 @@ def dispatch(payload, home):
                                                 "This patch removes the canonical plan or creates/moves to another plan path. "
                                                 "If the user changed the authoritative plan, update its registration first.",
                 }}
+    mutation = go_mutation_guard(payload, home)
+    if mutation:
+        return mutation
     if tool in {"Bash", "exec_command", "shell_command"}:
         if event == "PreToolUse" and re.search(
                 r"\b(?:git\s+(?:push|reset|clean)|rm|terraform\s+(?:apply|destroy)|kubectl\s+delete)\b", text):

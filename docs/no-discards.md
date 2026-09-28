@@ -145,3 +145,16 @@ For these, the right enforcement is `golangci-lint`, `staticcheck`,
 5. If it's a project-specific rule, add the matching pre-commit + CI gate
    to the project repo (Layer 3 + 4) — the global hook is the floor, not
    the only line of defense.
+
+## Shell/script mutations and Codex
+
+The shared native `scripts/hooks/go-discard-mutations.js` pairs PreToolUse and
+PostToolUse events to catch new Go blank-identifier assignments after Bash/Python
+writes as well as direct edits. Source `settings.json` registers it for Claude;
+the Codex installer ships an integrity-managed copy through its native dispatcher.
+Run `python3 -m unittest discover -s tests/codex -v` for both clients' paired-event
+fixtures. See `docs/CODEX.md` for bounds, Node requirements and async correlation.
+This supplements the existing Claude multi-language edit rules and repository
+lint; it does not claim type-aware or complete rule parity. Post-tool feedback
+cannot undo writes. Reinstall/update the respective client configuration and
+review changed hooks before claiming live enforcement.

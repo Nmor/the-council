@@ -40,7 +40,7 @@ def claude_payload(home):
               'skills/council-rules/references/agent-delegation.md', 'skills/mcp-builder/SKILL.md',
               'skills/council-protocol/SKILL.md', 'skills/iterative-retrieval/SKILL.md']
     paths += [name for name in core.tracked_resources(ROOT) if name.startswith('skills/brag/')]
-    paths += ['docs/BRAG.md']
+    paths += ['docs/BRAG.md', 'docs/no-discards.md', 'scripts/hooks/go-discard-mutations.js']
     result = {name: (ROOT / name).read_bytes() for name in paths if name != 'settings.json'}
     settings = json.loads(target(home, 'settings.json').read_text(encoding='utf-8'))
     if not isinstance(settings, dict) or not isinstance(settings.get('env', {}), dict):
@@ -60,6 +60,20 @@ def claude_payload(home):
             settings['hooks']['UserPromptSubmit'] = retained
         else:
             del settings['hooks']['UserPromptSubmit']
+    source_hooks = json.loads((ROOT / 'settings.json').read_text(encoding='utf-8'))['hooks']
+    guard_name = 'go-discard-mutations.js'
+    for event in ('PreToolUse', 'PostToolUse'):
+        groups = settings.setdefault('hooks', {}).get(event, [])
+        retained = []
+        for group in groups:
+            hooks = [hook for hook in group.get('hooks', [])
+                     if guard_name not in hook.get('command', '')]
+            if hooks:
+                retained.append({**group, 'hooks': hooks})
+        retained.extend(group for group in source_hooks[event]
+                        if any(guard_name in hook.get('command', '')
+                               for hook in group.get('hooks', [])))
+        settings['hooks'][event] = retained
     result['settings.json'] = core.json_bytes(settings)
     return result
 
@@ -132,9 +146,10 @@ def _apply(home, kind, dry_run=False, restore=False):
         entries = {}
         for name, content in payload.items():
             path = target(home, name)
-            if (name.startswith('skills/brag/') and name not in old['files'] and
+            if ((name.startswith('skills/brag/') or name == 'scripts/hooks/go-discard-mutations.js')
+                    and name not in old['files'] and
                     path.exists() and path.read_bytes() != content):
-                raise ValueError(f'Unmanaged BRAG file collision: {path}')
+                raise ValueError(f'Unmanaged Council resource collision: {path}')
             original = old['files'].get(name, {}).get('original') if name in old['files'] else (
                 base64.b64encode(path.read_bytes()).decode() if path.exists() else None)
             entries[name] = {'sha256': hashlib.sha256(content).hexdigest(), 'original': original}

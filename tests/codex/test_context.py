@@ -62,6 +62,13 @@ class ContextTests(unittest.TestCase):
         self.assertTrue((self.home / 'rules-library/council-detail/council-doctrine.md').is_file())
         self.assertTrue((self.home / 'skills/brag/LICENSE').is_file())
         self.assertTrue((self.home / 'skills/brag/scripts/brag.py').is_file())
+        self.assertTrue((self.home / 'scripts/hooks/go-discard-mutations.js').is_file())
+        for event in ('PreToolUse', 'PostToolUse'):
+            groups = actual['hooks'][event]
+            guards = [hook for group in groups for hook in group['hooks']
+                      if 'go-discard-mutations.js' in hook['command']]
+            self.assertEqual(len(guards), 1)
+            self.assertIn('--state-dir', guards[0]['command'])
         context.apply(self.home, 'claude')
         self.assertEqual(snapshot(self.home), installed)
         context.apply(self.home, 'claude', restore=True)
@@ -71,6 +78,15 @@ class ContextTests(unittest.TestCase):
         skill = self.home / 'skills/brag/SKILL.md'
         skill.parent.mkdir(parents=True)
         skill.write_text('Independent customized BRAG skill')
+        before = snapshot(self.home)
+        with self.assertRaisesRegex(ValueError, 'collision'):
+            context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), before)
+
+    def test_existing_guard_collision_preserves_everything(self):
+        guard = self.home / 'scripts/hooks/go-discard-mutations.js'
+        guard.parent.mkdir(parents=True)
+        guard.write_text('Personal guard implementation')
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'collision'):
             context.apply(self.home, 'claude')

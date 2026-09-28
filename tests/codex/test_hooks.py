@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / "codex" / "hooks.py"
@@ -17,6 +18,8 @@ SPEC.loader.exec_module(hooks)
 
 class HookTests(unittest.TestCase):
     def setUp(self):
+        # Mutation engine is covered by real paired-event bridge fixtures.
+        self.enterContext(patch.object(hooks, "go_mutation_guard", return_value={}))
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.home = Path(self.temporary.name).resolve()
