@@ -1,6 +1,7 @@
 ---
 name: supply-chain-patterns
 description: End-to-end orchestration of materials, information, and money across suppliers, manufacturers, distributors, and customers — SCOR model (Plan / Source / Make / Deliver / Return / Enable), demand sensing, S&OP, inventory positioning (safety stock, MOQ, EOQ), supplier risk management, resilience design (dual-sourcing, near-shoring, buffers), Incoterms 2020, customs + trade compliance. Sister to lean-manufacturing (in-house flow).
+disable-model-invocation: true
 ---
 
 # Supply Chain Patterns

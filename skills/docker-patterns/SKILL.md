@@ -20,6 +20,7 @@ paths:
   - "**/compose*.y*ml"
   - ".dockerignore"
   - "**/.dockerignore"
+disable-model-invocation: true
 ---
 
 # Docker Patterns

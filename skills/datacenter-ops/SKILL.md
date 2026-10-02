@@ -2,6 +2,7 @@
 name: datacenter-ops
 description: Principal-level datacenter operations — Uptime Institute tier model, BICSI / ANSI-TIA-942 structured cabling, power + cooling + space (PUE / WUE / CUE), physical security, capacity planning, change + incident management, vendor + SLA management, colocation strategy, and the operational discipline that keeps physical infrastructure running through grid events, hardware failures, and growth pressure.
 auto_activate: true
+disable-model-invocation: true
 ---
 
 # Datacenter Operations

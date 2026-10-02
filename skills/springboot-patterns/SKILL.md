@@ -20,6 +20,7 @@ paths:
   - "**/*Controller.kt"
   - "**/*Service.kt"
   - "**/*Repository.kt"
+disable-model-invocation: true
 ---
 
 # Spring Boot Development Patterns

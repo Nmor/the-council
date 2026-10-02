@@ -7,6 +7,7 @@ paths:
   - "**/tests/**/*.py"
   - "**/conftest.py"
   - "**/factories.py"
+disable-model-invocation: true
 ---
 
 # Django Testing with TDD

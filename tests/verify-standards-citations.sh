@@ -101,7 +101,9 @@ should_skip() {
       return 0 ;;
     skills/configure-ecc/*|skills/project-guidelines-example/*|skills/iterative-retrieval/*|\
     skills/eval-harness/*|skills/learned/*|skills/search-first/*|skills/security-scan/*|\
-    skills/nutrient-document-processing/*)
+    skills/nutrient-document-processing/*|skills/council/*)
+      # The compact Council router cites runtime docs and delegates external standards
+      # to the selected skill; it is an internal meta utility like configure-ecc.
       return 0 ;;
     # Internal Council operating rules — out of scope for this gate
     # (see header comment for rationale).

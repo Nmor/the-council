@@ -1,6 +1,7 @@
 ---
 name: lean-manufacturing
 description: Lean operating philosophy — Just-in-Time, Jidoka, heijunka, kaizen, value-stream mapping, eight wastes, takt time, kanban, andon, single-piece flow. Applied to any value-producing system (manufacturing, software, healthcare, services), not just factories. Sister to six-sigma (variation reduction), supply-chain-patterns (cross-org flow).
+disable-model-invocation: true
 ---
 
 # Lean Manufacturing

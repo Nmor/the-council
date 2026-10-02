@@ -10,6 +10,7 @@ paths:
   - "rust-toolchain.toml"
   - "**/rust-toolchain.toml"
   - "**/.cargo/config.toml"
+disable-model-invocation: true
 ---
 
 

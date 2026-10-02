@@ -7,6 +7,7 @@ paths:
   - "**/luarocks/*"
   - "**/.luacheckrc"
   - "**/.stylua.toml"
+disable-model-invocation: true
 ---
 
 # lua-patterns

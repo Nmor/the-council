@@ -1,6 +1,7 @@
 ---
 name: provider-research
 description: Read and cite primary-source provider documentation BEFORE writing any integration code against an external API. Enforces the official-docs-first rule across calendar, identity, payment, mail, push, ML, and observability providers.
+disable-model-invocation: true
 ---
 
 # Provider Research

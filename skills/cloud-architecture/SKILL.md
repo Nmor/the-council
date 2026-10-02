@@ -2,6 +2,7 @@
 name: cloud-architecture
 description: Principal-level cloud architecture — Well-Architected Framework pillars (operational excellence, security, reliability, performance, cost optimisation, sustainability), region/AZ/zone topology, compute and storage selection, multi-region patterns, and the disciplined decisions that turn cloud capability into resilient, cost-aware, secure systems instead of a sprawling spend graph.
 auto_activate: true
+disable-model-invocation: true
 ---
 
 # Cloud Architecture

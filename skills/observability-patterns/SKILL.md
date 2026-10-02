@@ -21,6 +21,7 @@ paths:
   - "**/cloudwatch*"
   - "**/alerts*"
   - "**/runbook*"
+disable-model-invocation: true
 ---
 
 # Observability Patterns

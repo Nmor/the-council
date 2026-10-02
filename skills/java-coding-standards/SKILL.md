@@ -9,6 +9,7 @@ paths:
   - "**/*.gradle.kts"
   - "build.gradle"
   - "build.gradle.kts"
+disable-model-invocation: true
 ---
 
 # Java Coding Standards

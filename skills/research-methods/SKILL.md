@@ -1,6 +1,7 @@
 ---
 name: research-methods
 description: Principal-level research methodology — primary vs secondary sources, quantitative + qualitative + mixed methods, literature review, evidence hierarchies, experimental design, survey + interview craft, bias identification, statistical inference, reproducibility, citation discipline, and the discipline that separates "I read some articles" from "I produced load-bearing evidence that supports a real decision".
+disable-model-invocation: true
 ---
 
 # Research Methods

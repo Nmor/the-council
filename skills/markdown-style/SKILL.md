@@ -6,6 +6,7 @@ paths:
   - "**/*.mdc"
   - "**/*.markdown"
   - "**/*.mdx"
+disable-model-invocation: true
 ---
 
 # markdown-style

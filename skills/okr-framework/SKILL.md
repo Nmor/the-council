@@ -2,6 +2,7 @@
 name: okr-framework
 description: Principal-level OKR (Objectives + Key Results) design, deployment, grading, and anti-pattern avoidance for teams and organisations.
 auto_activate: true
+disable-model-invocation: true
 ---
 
 # OKR Framework

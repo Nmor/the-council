@@ -12,6 +12,7 @@ paths:
   - "**/*.targets"
   - "global.json"
   - "Directory.Build.props"
+disable-model-invocation: true
 ---
 
 # csharp-patterns

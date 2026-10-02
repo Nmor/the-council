@@ -1,6 +1,7 @@
 ---
 name: interaction-design
 description: Principal-level interaction design — affordances, signifiers, feedback, mappings, constraints, error prevention, recovery, gesture + input model design, microcopy, motion as functional language, and the discipline that turns flows into experiences users complete without thinking and don't have to recover from.
+disable-model-invocation: true
 ---
 
 # Interaction Design

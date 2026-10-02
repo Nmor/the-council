@@ -1,6 +1,7 @@
 ---
 name: planning-rules
 description: Planning + verification discipline for multi-phase work — code-graph-validation (incremental per-task + phase-boundary + pre-push sweeps), ADR template (MADR / Nygard format), runbook template (canonical incident-response structure). Invoke when writing or reviewing a plan, an ADR or a runbook, and before acting on the detail of plan-completion-before-push.md.
+disable-model-invocation: true
 ---
 
 # planning-rules

@@ -34,6 +34,7 @@ paths:
   - "**/*.sql"
   - "**/*.vue"
   - "**/*.svelte"
+disable-model-invocation: true
 ---
 
 # Coding Quality Rules — Universal Discipline

@@ -9,6 +9,7 @@ paths:
   - "**/.zshrc"
   - "**/.bash_profile"
   - "**/.profile"
+disable-model-invocation: true
 ---
 
 # bash-scripting-patterns

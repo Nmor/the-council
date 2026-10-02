@@ -1,6 +1,7 @@
 ---
 name: ux-research
 description: Principal-level user research methodology — generative vs evaluative methods, study design, recruitment, sample sizing, qualitative coding, statistical rigour for usability tests, persona + JTBD synthesis, ethical research practice, and the discipline that turns user observations into decisions product teams actually use.
+disable-model-invocation: true
 ---
 
 # UX Research

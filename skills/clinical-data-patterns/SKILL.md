@@ -1,6 +1,7 @@
 ---
 name: clinical-data-patterns
 description: Principal-level clinical data interoperability — FHIR R5, USCDI v4, HL7 v2 / CDA / CCDA, SMART on FHIR + SMART Health Cards / Links, ICD-10 / SNOMED-CT / LOINC / RxNorm / CPT terminologies, DICOM imaging, telehealth, mHealth (HealthKit / Health Connect). Sister to hipaa-compliance (regulation) and security (cryptography).
+disable-model-invocation: true
 ---
 
 # Clinical Data Patterns

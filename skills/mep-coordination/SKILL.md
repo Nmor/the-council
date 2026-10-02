@@ -1,6 +1,7 @@
 ---
 name: mep-coordination
 description: Mechanical, Electrical, Plumbing (plus Fire Protection, Telecommunications, AV, Security, BMS) coordination through design, BIM-modelling, clash-detection, fabrication, and commissioning. Activates on building-services design, ISO 19650 BIM workflows, ASHRAE / BICSI / NFPA standards, multi-discipline AEC coordination.
+disable-model-invocation: true
 ---
 
 # MEP Coordination

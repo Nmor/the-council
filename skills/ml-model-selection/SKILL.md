@@ -1,6 +1,7 @@
 ---
 name: ml-model-selection
 description: Principal-level model selection framework — match problem class to model family (linear / tree / kernel / neural / foundation), evaluate via cross-validation with proper data splits, factor in inference cost + latency + interpretability + compliance constraints, and avoid the common traps that produce strong offline metrics but weak production performance.
+disable-model-invocation: true
 ---
 
 # ML Model Selection

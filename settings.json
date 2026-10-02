@@ -220,7 +220,7 @@
     ],
     "SessionStart": [
       {
-        "matcher": "*",
+        "matcher": "startup|resume|clear|fork",
         "hooks": [
           {
             "type": "command",
@@ -261,6 +261,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/cbm-session-reminder"
+          },
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/post-compact-memory-reload.js\""
           }
         ]
       }
@@ -271,7 +275,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const i=JSON.parse(d);const cmd=i.tool_input?.command||'';if(/gh pr create/.test(cmd)){const out=i.tool_output?.output||'';const m=out.match(/https:\\/\\/github.com\\/[^/]+\\/[^/]+\\/pull\\/\\d+/);if(m){console.error('[Hook] PR created: '+m[0]);const repo=m[0].replace(/https:\\/\\/github.com\\/([^/]+\\/[^/]+)\\/pull\\/\\d+/,'$1');const pr=m[0].replace(/.*\\/pull\\/(\\d+)/,'$1');console.error('[Hook] To review: gh pr review '+pr+' --repo '+repo)}}}catch{}console.log(d)})\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pr-created-notice.js\""
           },
           {
             "type": "command",
@@ -431,16 +435,6 @@
           {
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/evaluate-session.js\""
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-compact-memory-reload.js\""
           }
         ]
       }

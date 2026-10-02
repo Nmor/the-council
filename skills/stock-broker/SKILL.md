@@ -1,6 +1,7 @@
 ---
 name: stock-broker
 description: Principal-level trade execution and broker workflow — order types, routing, transaction cost analysis (TCA), best execution duties, regulatory compliance (Reg NMS / MiFID II), suitability, and the operational discipline that turns a portfolio decision into actual settled positions.
+disable-model-invocation: true
 ---
 
 # Stock Broker / Execution

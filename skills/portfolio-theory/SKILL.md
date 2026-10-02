@@ -1,6 +1,7 @@
 ---
 name: portfolio-theory
 description: Principal-level portfolio construction — Markowitz mean-variance optimisation, CAPM, factor models, risk budgeting, rebalancing discipline, drawdown and tail-risk management. Diversification is the only free lunch; respect transaction costs and behavioural traps.
+disable-model-invocation: true
 ---
 
 # Portfolio Theory

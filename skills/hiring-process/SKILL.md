@@ -2,6 +2,7 @@
 name: hiring-process
 description: Principal-level hiring system design — role definition, sourcing, structured interviewing, bar-raising, calibration, offer, and onboarding. Treat hiring as the highest-leverage decision an organisation makes and engineer the process to minimise predictable failure modes (unstructured interviews, halo effect, like-me bias, rushed decisions, weak onboarding).
 auto_activate: true
+disable-model-invocation: true
 ---
 
 # Hiring Process

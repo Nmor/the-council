@@ -4,11 +4,12 @@ import hashlib
 import importlib.util
 import json
 import os
-from pathlib import Path
 import tempfile
-import tomllib
 import unittest
+from pathlib import Path
 from unittest.mock import patch
+
+import tomllib
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('context_migration', ROOT / 'bootstrap/context.py')
@@ -83,12 +84,118 @@ class ContextTests(unittest.TestCase):
             context.apply(self.home, 'claude')
         self.assertEqual(snapshot(self.home), before)
 
+    def test_prior_brag_discovery_flag_upgrades_and_restores(self):
+        skill = self.home / 'skills/brag/SKILL.md'
+        skill.parent.mkdir(parents=True)
+        original = (ROOT / 'skills/brag/SKILL.md').read_bytes().replace(
+            b'disable-model-invocation: true\n', b'')
+        skill.write_bytes(original)
+        before = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        self.assertIn(b'disable-model-invocation: true', skill.read_bytes())
+        context.apply(self.home, 'claude', restore=True)
+        self.assertEqual(snapshot(self.home), before)
+
+    def test_lifecycle_upgrade_preserves_personal_hooks_and_removes_payload_echo(self):
+        hooks = self.settings['hooks']
+        hooks['SessionStart'] = [
+            {'matcher': '*', 'hooks': [{'type': 'command', 'command':
+                'node "$HOME/.claude/scripts/hooks/session-start.js"'}]},
+            {'matcher': 'compact', 'hooks': [{'type': 'command', 'command': 'echo personal-compact'}]},
+            {'matcher': 'resume', 'hooks': [
+                {'type': 'command', 'command': 'node /project/personal/session-start.js'},
+                {'type': 'command', 'command': 'echo "session-start.js check"'}]}]
+        hooks['PostCompact'] = [{'hooks': [
+            {'type': 'command', 'command': 'node "$HOME/.claude/scripts/hooks/post-compact-memory-reload.js"'},
+            {'type': 'command', 'command': 'echo personal-post'}]}]
+        hooks['PostToolUse'] = [{'matcher': 'Bash', 'hooks': [
+            {'type': 'command', 'command': context.LEGACY_PR_ECHO_COMMAND},
+            {'type': 'command', 'command': 'echo "gh pr create; console.log(d)"'},
+            {'type': 'command', 'command': 'echo personal-bash'}]}]
+        (self.home / 'settings.json').write_text(json.dumps(self.settings))
+        before = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        actual = json.loads((self.home / 'settings.json').read_text())['hooks']
+        startup = [g for g in actual['SessionStart'] if any(
+            context.council_hook(h['command'], self.home) and 'session-start.js' in h['command']
+            for h in g['hooks'])]
+        self.assertEqual(len(startup), 1)
+        self.assertNotIn('compact', startup[0]['matcher'])
+        compact = [h for g in actual['SessionStart'] if g.get('matcher') == 'compact'
+                   for h in g['hooks'] if 'post-compact-memory-reload.js' in h['command']]
+        self.assertEqual(len(compact), 1)
+        self.assertEqual(actual['PostCompact'][0]['hooks'], [{'type': 'command', 'command': 'echo personal-post'}])
+        self.assertIn('echo personal-bash', [h['command'] for g in actual['PostToolUse'] for h in g['hooks']])
+        commands = [h['command'] for groups in actual.values() for g in groups for h in g['hooks']]
+        self.assertNotIn(context.LEGACY_PR_ECHO_COMMAND, commands)
+        for command in ('node /project/personal/session-start.js', 'echo "session-start.js check"',
+                        'echo "gh pr create; console.log(d)"'):
+            self.assertIn(command, commands)
+        for name in context.LIFECYCLE_FILES:
+            self.assertTrue((self.home / name).is_file())
+        context.apply(self.home, 'claude', restore=True)
+        self.assertEqual(snapshot(self.home), before)
+
+    def test_compact_discovery_preserves_custom_skill_body_and_restores_original(self):
+        skill = self.home / 'skills/python-patterns/SKILL.md'
+        skill.parent.mkdir(parents=True)
+        original = '---\nname: python-patterns\ndescription: Personal extension\n---\n\nKeep my custom guidance.\n'
+        skill.write_text(original)
+        before = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        self.assertIn('disable-model-invocation: true', skill.read_text())
+        self.assertIn('Keep my custom guidance.', skill.read_text())
+        self.assertNotIn('disable-model-invocation: true', (self.home / 'skills/council/SKILL.md').read_text())
+        installed = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), installed)
+        context.apply(self.home, 'claude', restore=True)
+        self.assertEqual(snapshot(self.home), before)
+
     def test_existing_guard_collision_preserves_everything(self):
         guard = self.home / 'scripts/hooks/go-discard-mutations.js'
         guard.parent.mkdir(parents=True)
         guard.write_text('Personal guard implementation')
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'collision'):
+            context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), before)
+
+    def test_existing_lifecycle_script_collision_preserves_everything(self):
+        script = self.home / 'scripts/hooks/session-start.js'
+        script.parent.mkdir(parents=True)
+        original = b'Personal session hook implementation\n'
+        script.write_bytes(original)
+        before = snapshot(self.home)
+        with self.assertRaisesRegex(ValueError, 'collision'):
+            context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), before)
+        with patch.dict(context.LEGACY_LIFECYCLE_HASHES, {
+                'scripts/hooks/session-start.js': hashlib.sha256(original).hexdigest()}):
+            context.apply(self.home, 'claude')
+        self.assertEqual(script.read_bytes(), (ROOT / 'scripts/hooks/session-start.js').read_bytes())
+        context.apply(self.home, 'claude', restore=True)
+        self.assertEqual(snapshot(self.home), before)
+
+    def test_frontmatter_updates_are_stable_and_preserve_newlines(self):
+        for newline in ('\n', '\r\n'):
+            for field in ('', 'disable-model-invocation: false' + newline,
+                          'disable-model-invocation: true' + newline):
+                original = newline.join(('---', 'name: custom', 'description: Kept')) + newline
+                original += field + '---' + newline + newline + 'Exact body' + newline
+                compact = context.compact_entrypoint(original)
+                self.assertEqual(context.compact_entrypoint(compact), compact)
+                self.assertTrue(compact.endswith(newline + newline + 'Exact body' + newline))
+                self.assertEqual(compact.count('disable-model-invocation:'), 1)
+                if newline == '\r\n':
+                    self.assertNotIn('\n', compact.replace('\r\n', ''))
+
+    def test_multiline_skill_flag_refused_without_mutation(self):
+        skill = self.home / 'skills/python-patterns/SKILL.md'
+        skill.parent.mkdir(parents=True)
+        skill.write_text('---\nname: custom\ndisable-model-invocation:\n  false\n---\nBody\n')
+        before = snapshot(self.home)
+        with self.assertRaisesRegex(ValueError, 'python-patterns/SKILL.md: Unsupported'):
             context.apply(self.home, 'claude')
         self.assertEqual(snapshot(self.home), before)
 
@@ -130,9 +237,9 @@ class ContextTests(unittest.TestCase):
                 fired = True
                 raise OSError('injected late failure')
             return real(path, content, mode)
-        with patch.object(context.core, 'atomic_write', side_effect=fail_once):
-            with self.assertRaisesRegex(OSError, 'injected'):
-                context.apply(self.home, 'claude')
+        with (patch.object(context.core, 'atomic_write', side_effect=fail_once),
+              self.assertRaisesRegex(OSError, 'injected')):
+            context.apply(self.home, 'claude')
         self.assertEqual(snapshot(self.home), self.before)
 
     def test_manifest_rejects_arbitrary_files_and_bad_shapes(self):

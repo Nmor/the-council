@@ -1,6 +1,7 @@
 ---
 name: hipaa-compliance
 description: Principal-level guidance for HIPAA Privacy + Security + Breach Notification + HITECH + 42 CFR Part 2 compliance — BAAs, minimum-necessary, ePHI encryption, audit controls, breach 60-day clock, OCR enforcement. Sister to gdpr-ccpa-compliance, audit-logging, data-retention, security.
+disable-model-invocation: true
 ---
 
 # HIPAA Compliance

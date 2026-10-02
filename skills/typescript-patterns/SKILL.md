@@ -8,6 +8,7 @@ paths:
   - "**/*.cts"
   - "tsconfig*.json"
   - "**/tsconfig*.json"
+disable-model-invocation: true
 ---
 
 # TypeScript Patterns

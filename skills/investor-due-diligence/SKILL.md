@@ -1,6 +1,7 @@
 ---
 name: investor-due-diligence
 description: Principal-level due-diligence methodology for evaluating fund managers, private company investments, and acquisition targets — operational, financial, legal, commercial, technology, ESG, and reference diligence with a structured red-flag scoring system.
+disable-model-invocation: true
 ---
 
 # Investor Due Diligence

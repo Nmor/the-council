@@ -9,6 +9,7 @@ paths:
   - "**/src/test/**/*.java"
   - "**/src/test/**/*.kt"
   - "**/*Test.kt"
+disable-model-invocation: true
 ---
 
 # Spring Boot TDD Workflow

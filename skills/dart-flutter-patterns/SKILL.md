@@ -9,6 +9,7 @@ paths:
   - "**/pubspec.lock"
   - "analysis_options.yaml"
   - "**/analysis_options.yaml"
+disable-model-invocation: true
 ---
 
 # dart-flutter-patterns

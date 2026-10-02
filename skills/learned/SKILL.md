@@ -1,6 +1,7 @@
 ---
 name: learned
 description: Staging area for learning-loop outputs. Holds artifacts captured by continuous-learning-v2 + /learn + /evolve commands awaiting review, promotion, or demotion per the continuous-learning-mandate.md global rule.
+disable-model-invocation: true
 ---
 
 # Learned — Learning-Loop Staging Area

@@ -1,6 +1,7 @@
 ---
 name: vue3-patterns
 description: Vue 3 idioms — Composition API, `<script setup>`, composables, Pinia stores, reactivity gotchas, performance, and Volar / vue-tsc strictness. Auto-fires for `*.vue` and Vue-specific TypeScript files alongside `frontend-patterns` to add Vue depth the generic skill doesn't cover.
+disable-model-invocation: true
 ---
 
 # Vue 3 Patterns

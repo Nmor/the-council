@@ -1,6 +1,7 @@
 ---
 name: fp-and-a
 description: Financial Planning & Analysis patterns for engineering teams supporting finance — budget vs actual variance, rolling forecasts, driver-based models, scenario planning, SaaS metrics (ARR, MRR, NRR, CAC, LTV, payback, magic number, Rule of 40), cohort analysis, and the data pipeline patterns that make FP&A self-serve.
+disable-model-invocation: true
 ---
 
 # FP&A (Financial Planning & Analysis)

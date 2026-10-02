@@ -1,6 +1,7 @@
 ---
 name: iso27001-controls
 description: ISO/IEC 27001:2022 Information Security Management System (ISMS) implementation patterns — Annex A 93 controls in 4 themes (Organizational, People, Physical, Technological), Statement of Applicability, risk assessment / treatment, and the engineering-side controls that auditors actually verify.
+disable-model-invocation: true
 ---
 
 # ISO/IEC 27001 Controls

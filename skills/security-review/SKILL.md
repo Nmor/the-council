@@ -32,6 +32,7 @@ paths:
   - "**/cookies*"
   - "**/permissions*"
   - "**/authorization*"
+disable-model-invocation: true
 ---
 
 # Security Review Skill

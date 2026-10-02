@@ -1,6 +1,7 @@
 ---
 name: fine-tuning-workflows
 description: Principal-level fine-tuning lifecycle — when fine-tuning beats prompting + RAG, dataset curation, instruction tuning vs preference optimisation (SFT / DPO / RLHF), parameter-efficient methods (LoRA / QLoRA / adapters), evaluation, safety re-tuning, deployment, monitoring, and the cost / benefit framework for choosing between fine-tuning, RAG, and base-model usage.
+disable-model-invocation: true
 ---
 
 # Fine-Tuning Workflows

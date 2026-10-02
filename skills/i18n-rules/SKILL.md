@@ -14,6 +14,7 @@ paths:
   - "**/messages*.json"
   - "**/translations*.json"
   - "**/intl/**"
+disable-model-invocation: true
 ---
 
 # i18n-rules

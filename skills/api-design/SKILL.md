@@ -24,6 +24,7 @@ paths:
   - "**/resolvers/**"
   - "**/contracts/**"
   - "**/pact/**"
+disable-model-invocation: true
 ---
 
 # API Design Patterns

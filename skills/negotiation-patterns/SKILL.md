@@ -1,6 +1,7 @@
 ---
 name: negotiation-patterns
 description: Principal-level negotiation methodology — interest-based negotiation (Harvard Method), BATNA + ZOPA + reservation values, tactical empathy (Voss), preparation discipline, multi-issue tradeoff design, cross-cultural patterns, and the discipline that turns adversarial bargaining into joint problem-solving with durable outcomes.
+disable-model-invocation: true
 ---
 
 # Negotiation Patterns

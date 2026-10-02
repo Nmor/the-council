@@ -64,13 +64,12 @@ const BLANK_TEMPLATE = '# Session: x\n**Last Updated:** 00:00\n\n---\n\n## Curre
 /* ────────────────────────────── session-start.js ────────────────────────────── */
 
 describe('session-start.js — carries the last session forward without wasting context', () => {
-  test('puts the previous session summary on stdout, where the next session reads it', () => {
+  test('does not replay an unscoped previous session export', () => {
     const home = box();
-    put(join(sessions(home), '2026-09-21-aa-session.tmp'), '## Session Summary\n### Tasks\n- seed the dispatch permission\n');
-    const r = run('session-start.js', {}, { HOME: home });
+    put(join(sessions(home), '2026-09-21-aa-session.tmp'), '## Session Summary\n- private task\n');
+    const r = runIn(box(), 'session-start.js', {}, { HOME: home });
     assert.equal(r.code, 0);
-    assert.match(r.stdout, /Previous session summary:/);
-    assert.match(r.stdout, /seed the dispatch permission/, 'the actual content must reach stdout, not just the header');
+    assert.equal(r.stdout, '');
   });
 
   // The false-positive half: injecting the untouched template spends context to say nothing.
@@ -92,14 +91,12 @@ describe('session-start.js — carries the last session forward without wasting 
     assert.equal(r.stdout.trim(), '', 'stale context is worse than none');
   });
 
-  test('injects the newest session when several are in the window', () => {
+  test('never selects the newest shared session from another project', () => {
     const home = box();
-    const older = put(join(sessions(home), '2026-09-20-old-session.tmp'), '## Session Summary\n- YESTERDAY MARKER\n');
-    utimesSync(older, Date.now() / 1000 - 86400, Date.now() / 1000 - 86400);
-    put(join(sessions(home), '2026-09-21-new-session.tmp'), '## Session Summary\n- TODAY MARKER\n');
-    const r = run('session-start.js', {}, { HOME: home });
-    assert.match(r.stdout, /TODAY MARKER/);
-    assert.doesNotMatch(r.stdout, /YESTERDAY MARKER/, 'only the latest session should be carried forward');
+    put(join(sessions(home), '2026-09-21-new-session.tmp'), 'OTHER PROJECT');
+    const r = runIn(box(), 'session-start.js', {}, { HOME: home });
+    assert.equal(r.code, 0);
+    assert.equal(r.stdout, '');
   });
 
   test('starts a first-ever session cleanly instead of failing on the missing directory', () => {
@@ -221,13 +218,13 @@ describe('pre-compact.js — the compaction seam has to be findable afterwards',
     assert.match(read(join(sessions(home), 'compaction-log.txt')), /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] Context compaction triggered/);
   });
 
-  test('marks the active session file at the point context was lost', () => {
+  test('leaves existing session exports byte-identical', () => {
     const home = box();
-    const f = put(join(sessions(home), '2026-09-21-cc-session.tmp'), '# Session\nreal work above\n');
-    run('pre-compact.js', {}, { HOME: home });
-    const body = read(f);
-    assert.match(body, /real work above/, 'the annotation must append, never overwrite the session');
-    assert.match(body, /\[Compaction occurred at \d{2}:\d{2}\]/);
+    const original = '# Session\nreal work above\n';
+    const f = put(join(sessions(home), '2026-09-21-cc-session.tmp'), original);
+    const r = run('pre-compact.js', {}, { HOME: home });
+    assert.equal(r.code, 0);
+    assert.equal(read(f), original);
   });
 
   test('appends across compactions rather than overwriting the previous entry', () => {
@@ -267,7 +264,8 @@ describe('post-compact-memory-reload.js — points at the state the summary just
     const home = box(), cwd = realpathSync(box());
     const mem = join(home, '.claude', 'projects', cwd.replace(/[^A-Za-z0-9]/g, '-'), 'memory', 'MEMORY.md');
     const planFile = plan ? put(join(home, '.claude', 'plans', 'mine.md'), plan) : null;
-    if (index !== undefined) put(mem, `${index}${planFile ? `\nActive plan: ${planFile}\n` : ''}`);
+    const suffix = planFile ? `\nActive plan: ${planFile}\n` : '';
+    if (index !== undefined) put(mem, String(index) + suffix);
     return { home, cwd, mem, planFile };
   };
   const reload = (p, extra = {}) => run('post-compact-memory-reload.js', { ...COMPACT, cwd: p.cwd, ...extra }, { HOME: p.home });
@@ -317,7 +315,7 @@ describe('post-compact-memory-reload.js — points at the state the summary just
     const p = proj({ index: '# mem\nBODY-THAT-MUST-NOT-BE-DUMPED\n'.repeat(50), plan: '# plan' });
     const text = advice(reload(p));
     assert.doesNotMatch(text, /BODY-THAT-MUST-NOT-BE-DUMPED/);
-    assert.ok(text.length < 600, `the pointer should stay tiny, got ${text.length} chars`);
+    assert.ok(Buffer.byteLength(text) < 2048, `the pointer should stay tiny, got ${text.length} chars`);
   });
 
   test('a named plan that no longer exists does not cost the memory pointer', () => {
@@ -341,36 +339,35 @@ describe('post-compact-memory-reload.js — points at the state the summary just
 
 /* ───────────────────── pre-compact-council-brief.js ───────────────────── */
 
-describe('pre-compact-council-brief.js — the preserve-list the summariser reads', () => {
-  test('writes a brief naming every core division, so nothing is silently summarised away', () => {
+function briefFile(home) {
+  const walk = dir => ls(dir).flatMap(name => {
+    const file = join(dir, name);
+    if (name.endsWith('-precompact-brief.md')) return [file];
+    return ls(file).length ? walk(file) : [];
+  });
+  return walk(join(home, '.claude', 'projects'))[0];
+}
+
+describe('pre-compact-council-brief.js — a bounded project checkpoint', () => {
+  test('writes a bounded checkpoint with durable pointers', () => {
     const home = box();
     const r = runIn(box(), 'pre-compact-council-brief.js', {}, { HOME: home });
     assert.equal(r.code, 0);
-    const file = ls(sessions(home)).find((f) => f.endsWith('-precompact-brief.md'));
-    assert.ok(file, 'no brief was written');
-    const body = read(join(sessions(home), file));
-    for (const d of ['D1 — Architecture', 'D2 — Implementation', 'D3 — Quality', 'D4 — Security', 'D5 — Testing']) {
-      assert.match(body, new RegExp(d.replace('—', '.')), `${d} missing from the brief`);
-    }
+    const file = briefFile(home);
+    assert.ok(file);
+    const body = read(file);
+    assert.match(body, /Council compaction checkpoint/);
+    assert.match(body, /current handoff/);
+    assert.ok(Buffer.byteLength(body) <= 2048);
   });
 
-  test('appends the brief to the active session file, which is the only place the summariser sees it', () => {
+  test('does not append checkpoint content to shared session exports', () => {
     const home = box();
-    const tmp = put(join(sessions(home), '2026-09-21-dd-session.tmp'), '# Session\nprior content\n');
-    runIn(box(), 'pre-compact-council-brief.js', {}, { HOME: home });
-    const body = read(tmp);
-    assert.match(body, /prior content/, 'the append must not clobber the session');
-    assert.match(body, /Council pre-compact preservation brief/, 'a brief only on disk never reaches the summariser');
-  });
-
-  test('appends to the newest session file when several exist', () => {
-    const home = box();
-    const stale = put(join(sessions(home), '2026-09-01-old-session.tmp'), 'old\n');
-    utimesSync(stale, Date.now() / 1000 - 86400, Date.now() / 1000 - 86400);
-    const current = put(join(sessions(home), '2026-09-21-new-session.tmp'), 'new\n');
-    runIn(box(), 'pre-compact-council-brief.js', {}, { HOME: home });
-    assert.match(read(current), /preservation brief/);
-    assert.doesNotMatch(read(stale), /preservation brief/);
+    const original = '# Session\nprior content\n';
+    const tmp = put(join(sessions(home), '2026-09-21-dd-session.tmp'), original);
+    const r = runIn(box(), 'pre-compact-council-brief.js', {}, { HOME: home });
+    assert.equal(r.code, 0);
+    assert.equal(read(tmp), original);
   });
 
   test('CLAUDE_COUNCIL_BRIEF=off writes nothing at all', () => {
@@ -384,16 +381,16 @@ describe('pre-compact-council-brief.js — the preserve-list the summariser read
   test('any other value of CLAUDE_COUNCIL_BRIEF leaves it on', () => {
     const home = box();
     runIn(box(), 'pre-compact-council-brief.js', {}, { HOME: home, CLAUDE_COUNCIL_BRIEF: 'on' });
-    assert.ok(ls(sessions(home)).some((f) => f.endsWith('-precompact-brief.md')), 'only the documented "off" disables it');
+    assert.ok(Boolean(briefFile(home)), 'only the documented "off" disables it');
   });
 
   // Replaces "summarises the newest plan file": plans for several projects share ~/.claude/plans,
   // so the newest one was often another project's, and it went into THIS project's brief.
   test("summarises the plan this project's memory names, never the newest plan in the shared folder", () => {
     const home = box(), cwd = realpathSync(box());
-    const brief = () => read(join(sessions(home), ls(sessions(home)).filter((f) => f.endsWith('-brief.md')).sort().pop()));
+    const brief = () => read(briefFile(home));
     runIn(cwd, 'pre-compact-council-brief.js', {}, { HOME: home });
-    assert.match(brief(), /names no active plan/);
+    assert.match(brief(), /Active plan state: unset/);
 
     const mine = put(join(home, '.claude', 'plans', 'mine.md'), '# The active plan\n\n## Phase 3 — wiring\n\nPhase 2 verified green\n');
     put(join(home, '.claude', 'plans', 'other.md'), '# Another project entirely\n');
@@ -402,8 +399,8 @@ describe('pre-compact-council-brief.js — the preserve-list the summariser read
     rmSync(sessions(home), { recursive: true, force: true });
     runIn(cwd, 'pre-compact-council-brief.js', {}, { HOME: home });
     const body = brief();
-    assert.match(body, /Title: The active plan/);
-    assert.match(body, /Phase 3 . wiring/, 'the phase header is the one line the next turn most needs');
+    assert.ok(body.includes(mine));
+    assert.doesNotMatch(body, /Phase 3|Phase 2 verified/, 'history stays in the authoritative plan');
     assert.doesNotMatch(body, /Another project entirely/);
   });
 

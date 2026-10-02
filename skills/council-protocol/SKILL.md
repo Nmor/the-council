@@ -1,6 +1,7 @@
 ---
 name: council-protocol
 description: Deep review templates for high-risk architecture, security or delivery decisions, or an explicitly requested full Council review.
+disable-model-invocation: true
 ---
 
 # Council Conversation Protocol

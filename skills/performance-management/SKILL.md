@@ -2,6 +2,7 @@
 name: performance-management
 description: Principal-level performance management — feedback systems, calibration, ratings (or no ratings), career frameworks, performance improvement plans, and the operational discipline that turns reviews from anxiety-inducing theatre into a real engine of growth, retention, and accountability.
 auto_activate: true
+disable-model-invocation: true
 ---
 
 # Performance Management

@@ -1,6 +1,7 @@
 ---
 name: prompt-engineering
 description: Principal-level prompt engineering — task decomposition, role + context + instructions + examples + output-format structure, few-shot patterns, chain-of-thought, tool-use prompts, evaluation, prompt versioning, and the discipline that separates "works once on the demo" from "production-grade prompt that survives model upgrades". Auto-fires when the work touches LLM prompts, system messages, agent instructions, or prompt template files.
+disable-model-invocation: true
 ---
 
 # Prompt Engineering

@@ -1,6 +1,7 @@
 ---
 name: nutrient-document-processing
 description: Process, convert, OCR, extract, redact, sign, and fill documents via the Nutrient DWS (Document Web Services) API. Supports PDF, DOCX, XLSX, PPTX, HTML, and image inputs through a single multipart endpoint. Use for document conversion, OCR of scanned content, PII redaction, watermarking, digital signing, and PDF form fill.
+disable-model-invocation: true
 ---
 
 # Nutrient Document Processing

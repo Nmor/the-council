@@ -15,6 +15,7 @@ paths:
   - "**/release*"
   - "**/canary*"
   - "**/rollback*"
+disable-model-invocation: true
 ---
 
 # resilience-rules

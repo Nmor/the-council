@@ -1,6 +1,7 @@
 ---
 name: verification-loop
 description: "A comprehensive verification system for Claude Code sessions."
+disable-model-invocation: true
 ---
 
 # Verification Loop Skill

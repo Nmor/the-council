@@ -1,6 +1,7 @@
 ---
 name: e2e-testing
 description: Playwright E2E testing patterns — Page Object Model, configuration, CI/CD integration, artifact management, flaky test strategies, PLUS the decision-time patterns that come before the first test is written (black-box helper scripts, static-vs-dynamic routing, multi-server orchestration, reconnaissance-then-action, networkidle discipline).
+disable-model-invocation: true
 ---
 
 # E2E Testing Patterns

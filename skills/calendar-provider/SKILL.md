@@ -1,6 +1,7 @@
 ---
 name: calendar-provider
 description: Patterns for integrating business calendar providers (Google Workspace, Microsoft 365, Zoho Workplace, business CalDAV). OAuth flow, push subscriptions, echo suppression, etag concurrency, and write-back via the outbox pattern.
+disable-model-invocation: true
 ---
 
 # Calendar Provider Integration

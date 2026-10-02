@@ -1,6 +1,7 @@
 ---
 name: six-sigma
 description: Data-driven variation reduction via DMAIC (Define / Measure / Analyse / Improve / Control), with Lean Six Sigma fusion when waste + variation co-exist. Belts framework (Yellow / Green / Black / Master Black), SPC charts, FMEA, design of experiments, hypothesis tests, capability indices (Cp / Cpk). Sister to lean-manufacturing (waste reduction).
+disable-model-invocation: true
 ---
 
 # Six Sigma

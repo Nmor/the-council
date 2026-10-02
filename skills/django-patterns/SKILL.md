@@ -17,6 +17,7 @@ paths:
   - "**/settings/*.py"
   - "**/manage.py"
   - "**/migrations/*.py"
+disable-model-invocation: true
 ---
 
 # Django Development Patterns

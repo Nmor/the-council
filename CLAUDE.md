@@ -57,6 +57,8 @@ skill bodies automatically load simply because a file matches a custom frontmatt
 
 Use `skills/council-protocol/SKILL.md` for a requested deep review or a high-risk plan,
 and `skills/council-rules/SKILL.md` for division expertise when selecting a specialist.
+`skills/council/SKILL.md` is the compact discovery router. Other Council skills are
+explicitly invocable; search and read selected sections instead of loading the catalog.
 Use `docs/CONTEXT.md` for context budgets, cost controls and runtime limitations.
 The full original doctrine remains in `rules-library/council-detail/council-doctrine.md`.
 

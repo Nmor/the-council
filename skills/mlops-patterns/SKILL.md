@@ -1,6 +1,7 @@
 ---
 name: mlops-patterns
 description: Principal-level MLOps — feature stores, model registry, training pipelines, deployment patterns (online / batch / streaming), monitoring (drift, performance, fairness), CI/CD for models, A/B testing, rollback discipline. Treat models as software artefacts with full lifecycle management.
+disable-model-invocation: true
 ---
 
 # MLOps Patterns

@@ -1,6 +1,7 @@
 ---
 name: council-maintenance
 description: Learning hooks for every Council rule — the per-rule "signals to watch" (what observation means a rule is being weakened or missed) and "refinement candidates" (what kind of change that rule accepts). Use when refining, auditing or authoring a Council rule / skill / agent / CLAUDE.md, when running the continuous-learning batch (/learn, /evolve), when deciding whether an observed failure warrants a rule change, or when promoting a workspace pattern to global.
+disable-model-invocation: true
 ---
 
 # Council Maintenance — Learning Hooks

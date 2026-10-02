@@ -6,6 +6,7 @@ paths:
   - "Package.swift"
   - "**/Package.swift"
   - "**/Package.resolved"
+disable-model-invocation: true
 ---
 
 # Swift Actors for Thread-Safe Persistence

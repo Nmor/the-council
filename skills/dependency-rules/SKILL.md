@@ -27,6 +27,7 @@ paths:
   - "**/pubspec.lock"
   - "**/composer.json"
   - "**/composer.lock"
+disable-model-invocation: true
 ---
 
 # dependency-rules

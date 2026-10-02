@@ -24,6 +24,7 @@ paths:
   - "**/accessibility/**"
   - "**/aria*"
   - "**/wcag*"
+disable-model-invocation: true
 ---
 
 # WCAG Accessibility

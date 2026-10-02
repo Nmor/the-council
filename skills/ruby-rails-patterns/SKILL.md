@@ -11,6 +11,7 @@ paths:
   - "**/config.ru"
   - "**/.rspec"
   - "**/spec/**/*.rb"
+disable-model-invocation: true
 ---
 
 # ruby-rails-patterns

@@ -7,6 +7,7 @@ paths:
   - "**/db/**/*.sql"
   - "**/schema.sql"
   - "**/seeds/**/*.sql"
+disable-model-invocation: true
 ---
 
 # sql-patterns

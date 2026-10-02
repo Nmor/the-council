@@ -7,6 +7,7 @@ paths:
   - "**/.yamllint"
   - "**/.yamllint.yaml"
   - "**/.yamllint.yml"
+disable-model-invocation: true
 ---
 
 # yaml-patterns

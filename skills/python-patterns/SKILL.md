@@ -10,6 +10,7 @@ paths:
   - "**/requirements*.txt"
   - "Pipfile"
   - "**/Pipfile"
+disable-model-invocation: true
 ---
 
 # Python Development Patterns

@@ -12,6 +12,7 @@ paths:
   - "**/README.md"
   - "docs/**/*.md"
   - "**/docs/**/*.md"
+disable-model-invocation: true
 ---
 
 # git-rules

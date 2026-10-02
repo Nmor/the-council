@@ -1,6 +1,7 @@
 ---
 name: owasp-asvs
 description: OWASP Application Security Verification Standard 4.0.3 — the canonical control catalogue for application security, mapped per L1 / L2 / L3 with implementation patterns and verification commands.
+disable-model-invocation: true
 ---
 
 # OWASP ASVS

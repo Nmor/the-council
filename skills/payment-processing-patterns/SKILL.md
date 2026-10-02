@@ -1,6 +1,7 @@
 ---
 name: payment-processing-patterns
 description: Principal-level patterns for accepting card / bank / wallet / instant-rail payments — idempotency, 3DS2 + SCA, network tokenization, subscriptions, dunning, refunds + chargebacks, payouts, ledger reconciliation. Sister to pci-dss-patterns (compliance) and bookkeeping-patterns (double-entry).
+disable-model-invocation: true
 ---
 
 # Payment Processing Patterns

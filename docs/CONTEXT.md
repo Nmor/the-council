@@ -32,6 +32,27 @@ The automatic prompt-improver hook is removed from default registration: duplica
 every request and demanding a fresh questionnaire consumed context even on follow-ups.
 The prompt-improver skill remains available when clarification is actually needed.
 
+Automatic Council skill discovery now exposes one short `council` router. Other Council
+skills use `disable-model-invocation: true`: their full bodies and references stay on
+disk, and explicit slash invocation or a targeted file read still works. This removes
+their descriptions from automatic discovery. External plugins and personal skills
+outside the Council catalog are unchanged. The migration preserves customized Council
+skill bodies; unsupported custom flag syntax is refused before any files are changed.
+
+Lifecycle hooks return at most 2,048 UTF-8 bytes of recovery guidance. Startup never
+replays a shared session export. Compaction replaces a checkpoint scoped to the project
+and session instead of appending to the newest global session file. Resume guidance
+points to the active plan and memory index; it does not demand reading full memory or
+plan history. The PR-created hook returns only a matched PR link and review command,
+never the original Bash payload. Oversized hook input is drained and skipped with a
+short diagnostic. Required security and verification hooks remain registered.
+
+An existing conversation can retain previously loaded context. After installing the
+fix, start a fresh Claude session from the existing plan's current handoff. Do not
+delete project memory or session history to recover. If thrashing continues, inspect
+`/context` and the last tool result, then use bounded searches and file chunks; project
+instructions, external plugins and ordinary tool output can still contribute context.
+
 For an existing installation, preview and apply the additive migration:
 
 ```bash
@@ -120,6 +141,8 @@ or accounts. Prefer one active substantive session and queue unrelated work.
 ## Sources
 
 - [Claude memory and rule loading](https://code.claude.com/docs/en/memory)
+- [Claude skill discovery and explicit invocation](https://code.claude.com/docs/en/skills)
+- [Claude hook events and output](https://code.claude.com/docs/en/hooks)
 - [Claude cost controls](https://code.claude.com/docs/en/costs)
 - [Dynamic workflows](https://code.claude.com/docs/en/workflows)
 - [Claude environment variables](https://code.claude.com/docs/en/env-vars)

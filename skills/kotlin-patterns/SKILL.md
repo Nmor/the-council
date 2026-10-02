@@ -7,6 +7,7 @@ paths:
   - "build.gradle.kts"
   - "settings.gradle.kts"
   - "**/build.gradle.kts"
+disable-model-invocation: true
 ---
 
 # kotlin-patterns

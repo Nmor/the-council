@@ -1,6 +1,7 @@
 ---
 name: bookkeeping-patterns
 description: Double-entry bookkeeping patterns for engineering teams — chart of accounts, journal entries, ledger reconciliation, immutable accounting events, and the database schema patterns that produce auditable, restatable books for SaaS, marketplace, and fintech systems.
+disable-model-invocation: true
 ---
 
 # Bookkeeping Patterns

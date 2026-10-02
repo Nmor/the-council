@@ -1,6 +1,7 @@
 ---
 name: triz-patterns
 description: Theory of Inventive Problem Solving (Altshuller, 1946) — resolve technical contradictions via the 40 inventive principles + contradiction matrix, identify Ideal Final Result, evolve toward Ideality, escape local optima that brainstorming cannot reach. Derived from analysis of 200,000+ patents.
+disable-model-invocation: true
 ---
 
 # TRIZ Patterns

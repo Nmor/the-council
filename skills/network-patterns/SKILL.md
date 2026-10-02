@@ -2,6 +2,7 @@
 name: network-patterns
 description: Principal-level networking patterns — OSI / TCP-IP layering, IP addressing + CIDR design, routing, DNS, TLS, load balancing, CDN, service mesh, network security (firewalls / WAF / DDoS / segmentation), zero-trust networking, and the operational discipline that keeps packets flowing reliably + securely across single-region, multi-region, and hybrid topologies.
 auto_activate: true
+disable-model-invocation: true
 ---
 
 # Network Patterns

@@ -1,6 +1,7 @@
 ---
 name: brag
 description: Create a short launch video, poster and share copy from a project or website when the user asks to brag about it or make a product demo video.
+disable-model-invocation: true
 ---
 
 # BRAG for Council

@@ -13,6 +13,7 @@ paths:
   - "**/compose*.yaml"
   - ".dockerignore"
   - "**/.dockerignore"
+disable-model-invocation: true
 ---
 
 # dockerfile-patterns

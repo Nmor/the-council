@@ -1,6 +1,7 @@
 ---
 name: ferpa-coppa-compliance
 description: Principal-level guidance for FERPA (20 USC §1232g), COPPA (15 USC §6501-6506 + 16 CFR Part 312 + 2025 FTC Final Rule), GDPR-K (Art 8), CIPA, state student-privacy laws (SOPIPA, NY Ed Law 2-d, Student Privacy Pledge), and platform compliance for K-12 + higher-ed + edtech. Sister to gdpr-ccpa-compliance, hipaa-compliance (where school-based health), audit-logging, data-retention.
+disable-model-invocation: true
 ---
 
 # FERPA / COPPA / Student Privacy Compliance

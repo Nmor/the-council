@@ -1,6 +1,7 @@
 ---
 name: aws-serverless-patterns
 description: AWS Lambda + API Gateway + Step Functions + EventBridge + SQS/SNS patterns. Cold-start mitigation, async webhook backpressure, idempotency, fan-out via SNS topics, retry/DLQ design, and Serverless Framework / SAM / CDK conventions. Auto-fires for `serverless.yml`, `template.yaml` (SAM), and `handlers/*.ts`.
+disable-model-invocation: true
 ---
 
 # AWS Serverless Patterns

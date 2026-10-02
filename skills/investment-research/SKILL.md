@@ -1,6 +1,7 @@
 ---
 name: investment-research
 description: Principal-level investment research methodology — thesis development, primary research, financial modelling, valuation triangulation, risk identification, and the disciplined write-up that supports a buy / sell / hold recommendation.
+disable-model-invocation: true
 ---
 
 # Investment Research

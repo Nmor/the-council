@@ -1,6 +1,7 @@
 ---
 name: financial-analyst
 description: Principal-level financial analyst workflow — earnings model maintenance, ratio analysis, accounting quality assessment, channel checks, sector-relative valuation, and producing the daily/weekly/quarterly analyst output that drives institutional investment decisions.
+disable-model-invocation: true
 ---
 
 # Financial Analyst

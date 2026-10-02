@@ -1,6 +1,7 @@
 ---
 name: pci-dss-patterns
 description: PCI-DSS v4.0 implementation patterns for systems that store, process, or transmit cardholder data — scope reduction via tokenization, SAQ selection, segmentation, encryption requirements, and the 12 PCI-DSS requirements mapped to concrete engineering controls.
+disable-model-invocation: true
 ---
 
 # PCI-DSS Patterns

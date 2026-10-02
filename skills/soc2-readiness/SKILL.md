@@ -1,6 +1,7 @@
 ---
 name: soc2-readiness
 description: SOC 2 Type I and Type II readiness patterns — Trust Service Criteria (Security / Availability / Processing Integrity / Confidentiality / Privacy), control-to-evidence mapping, and the operational evidence collection patterns that survive a continuous-period audit.
+disable-model-invocation: true
 ---
 
 # SOC 2 Readiness

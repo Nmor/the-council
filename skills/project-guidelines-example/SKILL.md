@@ -1,6 +1,7 @@
 ---
 name: project-guidelines-example
 description: Template for authoring a project-specific skill in `<workspace>/.claude/skills/`. Demonstrates the canonical shape — Architecture / File Structure / Code Patterns / Testing Requirements / Deployment Workflow / Critical Rules — that workspace skills follow when they extend global guidance with project-specific specifics. Use this file as a starting point; copy + customise per the project's actual stack.
+disable-model-invocation: true
 ---
 
 # Project Guidelines Skill (Template)

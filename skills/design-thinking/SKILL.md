@@ -1,6 +1,7 @@
 ---
 name: design-thinking
 description: Human-centred problem solving via Stanford d.school / IDEO five-stage cycle (Empathize → Define → Ideate → Prototype → Test). Activates on UX research, service design, innovation workshops, problem-framing sessions, or when the solution space is unknown and the users are not the designers.
+disable-model-invocation: true
 ---
 
 # Design Thinking

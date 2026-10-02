@@ -18,6 +18,7 @@ paths:
   - ".pre-commit-config.yaml"
   - "**/.github/workflows/**"
   - "**/.github/actions/**"
+disable-model-invocation: true
 ---
 
 # ci-rules

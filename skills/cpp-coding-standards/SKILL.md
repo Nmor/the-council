@@ -12,6 +12,7 @@ paths:
   - "**/CMakeLists.txt"
   - "**/Makefile"
   - "**/*.cmake"
+disable-model-invocation: true
 ---
 
 # C++ Coding Standards (C++ Core Guidelines)

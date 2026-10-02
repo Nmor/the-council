@@ -13,6 +13,7 @@ paths:
   - "**/GOVERNANCE.md"
   - "SECURITY.md"
   - "**/SECURITY.md"
+disable-model-invocation: true
 ---
 
 # community-rules
