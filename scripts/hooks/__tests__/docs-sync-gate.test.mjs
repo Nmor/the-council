@@ -7,7 +7,7 @@ import { mkdtempSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { run, uniq, cleanup, advice, said } from './helpers.mjs';
-import { pc, git, ago, setMtime, memoryIndex, world, edit } from './plan-world.mjs';
+import { pc, ago, setMtime, memoryIndex, world, edit } from './plan-world.mjs';
 
 describe('docs-sync-gate.js (Stop) — a turn does not end with the plan describing the old world', () => {
   const stop = (w, extra = {}, env = {}) =>
@@ -60,6 +60,79 @@ describe('docs-sync-gate.js (Stop) — a turn does not end with the plan describ
     const w = world();
     edit(w, 'service.go');
     assert.equal(stop(w, { stop_hook_active: true }).code, 0);
+  });
+
+  test('a missing transcript does not attribute existing code or memory to this session', () => {
+    const w = world({ planAge: 7200 });
+    edit(w, 'service.go');
+    setMtime(join(w.repo, 'service.go'), ago(3600));
+    writeFileSync(join(w.mem, 'MEMORY.md'), `# Memory Index\n\nActive plan: ${w.plan}\n- [gone](gone.md) — x\n`);
+    for (const transcript of ['', join(w.base, 'not-persisted.jsonl'), w.base]) {
+      const r = stop(w, { transcript_path: transcript });
+      assert.equal(r.code, 0);
+      assert.equal(said(r).trim(), '');
+    }
+  });
+
+  test('without a transcript, an actual code marker still requires a current plan', () => {
+    const w = world();
+    const sid = uniq('sid');
+    try {
+      const marked = run('docs-sync-marker.js', { session_id: sid, tool_name: 'Write', tool_input: { file_path: join(w.repo, 'service.go') } });
+      assert.equal(marked.code, 0);
+      const r = stop(w, { session_id: sid, transcript_path: '' });
+      assert.equal(r.code, 2);
+      assert.match(r.stderr, /plan was last updated/);
+      setMtime(w.plan, new Date(Date.now() + 1000));
+      assert.equal(stop(w, { session_id: sid, transcript_path: '' }).code, 0);
+    } finally {
+      cleanup(`claude-docs-sync-code-${sid}`);
+    }
+  });
+
+  test('without a transcript, a memory marker still checks proven stale references', () => {
+    const w = world();
+    const sid = uniq('sid');
+    try {
+      writeFileSync(join(w.mem, 'MEMORY.md'), `# Memory Index\n\nActive plan: ${w.plan}\n- [gone](gone.md) — x\n`);
+      const marked = run('docs-sync-marker.js', { session_id: sid, tool_name: 'Write', tool_input: { file_path: join(w.mem, 'MEMORY.md') } });
+      assert.equal(marked.code, 0);
+      const r = stop(w, { session_id: sid, transcript_path: '' });
+      assert.equal(r.code, 2);
+      assert.match(r.stderr, /index-missing/);
+    } finally {
+      cleanup(`claude-docs-sync-memory-${sid}`);
+    }
+  });
+
+  test('without a transcript, another session marker cannot attribute existing work', () => {
+    const w = world();
+    edit(w, 'service.go');
+    const sid = uniq('sid');
+    try {
+      const marked = run('docs-sync-marker.js', { session_id: sid, tool_name: 'Write', tool_input: { file_path: join(w.repo, 'service.go') } });
+      assert.equal(marked.code, 0);
+      assert.equal(stop(w, { transcript_path: '' }).code, 0);
+    } finally {
+      cleanup(`claude-docs-sync-code-${sid}`);
+    }
+  });
+
+  test('without a transcript, old memory progress is not attributed even when code was written', () => {
+    const w = world();
+    const sid = uniq('sid');
+    try {
+      const f = join(w.mem, 'status.md');
+      writeFileSync(f, '---\nname: s\ndescription: d\ntype: project\n---\nPhase 2 IN PROGRESS.\n');
+      writeFileSync(join(w.mem, 'MEMORY.md'), `# Memory Index\n\nActive plan: ${w.plan}\n- [s](status.md) — x\n`);
+      setMtime(f, ago(7200));
+      const marked = run('docs-sync-marker.js', { session_id: sid, tool_name: 'Write', tool_input: { file_path: join(w.repo, 'service.go') } });
+      assert.equal(marked.code, 0);
+      setMtime(w.plan, new Date(Date.now() + 1000));
+      assert.equal(stop(w, { session_id: sid, transcript_path: '' }).code, 0);
+    } finally {
+      cleanup(`claude-docs-sync-code-${sid}`);
+    }
   });
 
   // Replaces "stays out of the way when no plan exists anywhere": with several projects' plans
@@ -169,7 +242,8 @@ describe('docs-sync-gate.js (Stop) — a turn does not end with the plan describ
     memoryIndex(w.home, dir, `Active plan: ${w.plan}`);
     const sid = uniq('sid');
     try {
-      run('docs-sync-marker.js', { session_id: sid, tool_name: 'Write', tool_input: { file_path: join(dir, 'app.go'), content: 'x' } });
+      const marked = run('docs-sync-marker.js', { session_id: sid, tool_name: 'Write', tool_input: { file_path: join(dir, 'app.go'), content: 'x' } });
+      assert.equal(marked.code, 0);
       const r = run('docs-sync-gate.js', { session_id: sid, cwd: dir, transcript_path: w.transcript }, w.env);
       assert.equal(r.code, 2, 'the marker must reach the gate');
       setMtime(w.plan, new Date(Date.now() + 1000));

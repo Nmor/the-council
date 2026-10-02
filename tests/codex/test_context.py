@@ -54,7 +54,8 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(actual['hooks']['Stop'], self.settings['hooks']['Stop'])
         self.assertEqual(actual['hooks']['UserPromptSubmit'][0]['hooks'], [
             {'type': 'command', 'command': 'echo personal'}])
-        self.assertEqual(actual['autoCompactWindow'], 100000)
+        self.assertNotIn('autoCompactWindow', actual)
+        self.assertFalse(actual['enableArtifact'])
         self.assertTrue(actual['autoCompactEnabled'])
         self.assertNotIn('autoCompactEnabled', actual['env'])
         self.assertTrue(actual['disableWorkflows'])
@@ -74,6 +75,99 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(snapshot(self.home), installed)
         context.apply(self.home, 'claude', restore=True)
         self.assertEqual(snapshot(self.home), self.before)
+
+    def test_claude_removes_council_window_and_edit_compaction_advice(self) -> None:
+        """Remove owned reminders without deleting mixed personal or security hooks."""
+        owned = 'node "$HOME/.claude/scripts/hooks/suggest-compact.js"'
+        personal = 'node /project/personal/suggest-compact.js'
+        literal = 'echo "suggest-compact.js"'
+        security = 'node "$HOME/.claude/scripts/hooks/pre-push-gate.js"'
+        spellings = ('$HOME/.claude', '${HOME}/.claude', '~/.claude', str(self.home))
+        owned_hooks = [{'type': 'command', 'command':
+                        f'node "{prefix}/scripts/hooks/suggest-compact.js"'}
+                       for prefix in spellings]
+        self.settings['autoCompactWindow'] = 100000
+        self.settings['hooks']['PreToolUse'] = [{'matcher': 'Edit|Write', 'hooks': [*owned_hooks,
+            {'type': 'command', 'command': personal},
+            {'type': 'command', 'command': literal},
+            {'type': 'command', 'command': security}]}]
+        settings_text = json.dumps(self.settings)
+        self.assertEqual((self.home / 'settings.json').write_text(settings_text),
+                         len(settings_text))
+        before = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        actual = json.loads((self.home / 'settings.json').read_text())
+        self.assertNotIn('autoCompactWindow', actual)
+        commands = [hook['command'] for groups in actual['hooks'].values()
+                    for group in groups for hook in group['hooks']]
+        self.assertNotIn(owned, commands)
+        for hook in owned_hooks:
+            self.assertNotIn(hook['command'], commands)
+        self.assertIn(personal, commands)
+        self.assertIn(literal, commands)
+        self.assertIn(security, commands)
+        self.assertEqual(actual['hooks']['PreToolUse'][0]['matcher'], 'Edit|Write')
+        installed = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), installed)
+        context.apply(self.home, 'claude', restore=True)
+        self.assertEqual(snapshot(self.home), before)
+
+    def test_claude_preserves_explicit_window_and_artifact_choice(self) -> None:
+        """Retain explicit publishing choices and non-Council windows."""
+        for enabled in (True, False):
+            with self.subTest(enableArtifact=enabled):
+                self.settings.update(autoCompactWindow=250000, enableArtifact=enabled)
+                settings_text = json.dumps(self.settings)
+                self.assertEqual((self.home / 'settings.json').write_text(settings_text),
+                                 len(settings_text))
+                before = snapshot(self.home)
+                context.apply(self.home, 'claude')
+                actual = json.loads((self.home / 'settings.json').read_text())
+                self.assertEqual(actual['autoCompactWindow'], 250000)
+                self.assertEqual(actual['enableArtifact'], enabled)
+                context.apply(self.home, 'claude', restore=True)
+                self.assertEqual(snapshot(self.home), before)
+
+    def test_managed_window_upgrade_retains_first_install_backups(self) -> None:
+        """Upgrade a managed install without replacing its original restore point."""
+        context.apply(self.home, 'claude')
+        manifest_path = self.home / context.MANIFEST
+        manifest = json.loads(manifest_path.read_text())
+        original_backups = {name: entry['original'] for name, entry in manifest['files'].items()}
+        settings_path = self.home / 'settings.json'
+        installed_settings = json.loads(settings_path.read_text())
+        installed_settings['autoCompactWindow'] = 100000
+        del installed_settings['enableArtifact']
+        installed_settings['hooks']['PreToolUse'].append({'matcher': 'Edit|Write', 'hooks': [
+            {'type': 'command', 'command': 'node "$HOME/.claude/scripts/hooks/suggest-compact.js"'}]})
+        settings_text = json.dumps(installed_settings)
+        self.assertEqual(settings_path.write_text(settings_text), len(settings_text))
+        manifest['files']['settings.json']['sha256'] = hashlib.sha256(settings_path.read_bytes()).hexdigest()
+        manifest_text = json.dumps(manifest)
+        self.assertEqual(manifest_path.write_text(manifest_text), len(manifest_text))
+        context.apply(self.home, 'claude')
+        upgraded = json.loads(settings_path.read_text())
+        self.assertNotIn('autoCompactWindow', upgraded)
+        self.assertFalse(upgraded['enableArtifact'])
+        updated_manifest = json.loads(manifest_path.read_text())
+        self.assertEqual({name: entry['original'] for name, entry in updated_manifest['files'].items()},
+                         original_backups)
+        after_upgrade = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), after_upgrade)
+        context.apply(self.home, 'claude', restore=True)
+        self.assertEqual(snapshot(self.home), self.before)
+
+    def test_fresh_defaults_use_native_window_without_edit_reminders(self) -> None:
+        """Keep fresh-install defaults consistent with the migration policy."""
+        source = json.loads((ROOT / 'settings.json').read_text())
+        self.assertNotIn('autoCompactWindow', source)
+        self.assertTrue(source['autoCompactEnabled'])
+        self.assertFalse(source['enableArtifact'])
+        commands = [hook['command'] for groups in source['hooks'].values()
+                    for group in groups for hook in group['hooks']]
+        self.assertFalse(any('suggest-compact.js' in command for command in commands))
 
     def test_existing_brag_skill_collision_preserves_everything(self):
         skill = self.home / 'skills/brag/SKILL.md'
@@ -174,6 +268,27 @@ class ContextTests(unittest.TestCase):
                 'scripts/hooks/session-start.js': hashlib.sha256(original).hexdigest()}):
             context.apply(self.home, 'claude')
         self.assertEqual(script.read_bytes(), (ROOT / 'scripts/hooks/session-start.js').read_bytes())
+        context.apply(self.home, 'claude', restore=True)
+        self.assertEqual(snapshot(self.home), before)
+
+    def test_stop_gate_upgrade_refuses_custom_scripts_and_restores_original(self) -> None:
+        """Completion-gate ownership never overwrites a customized installed hook."""
+        name = 'scripts/hooks/docs-sync-gate.js'
+        script = self.home / name
+        script.parent.mkdir(parents=True)
+        original = b'Personal completion hook implementation\n'
+        self.assertEqual(script.write_bytes(original), len(original))
+        before = snapshot(self.home)
+        with self.assertRaisesRegex(ValueError, 'collision'):
+            context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), before)
+        with patch.dict(context.LEGACY_LIFECYCLE_HASHES, {
+                name: hashlib.sha256(original).hexdigest()}):
+            context.apply(self.home, 'claude')
+        self.assertEqual(script.read_bytes(), (ROOT / name).read_bytes())
+        installed = snapshot(self.home)
+        context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), installed)
         context.apply(self.home, 'claude', restore=True)
         self.assertEqual(snapshot(self.home), before)
 

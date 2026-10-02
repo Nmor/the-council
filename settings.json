@@ -79,15 +79,6 @@
         ]
       },
       {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/suggest-compact.js\""
-          }
-        ]
-      },
-      {
         "matcher": "Write",
         "hooks": [
           {
@@ -527,7 +518,7 @@
   },
   "switchModelsOnFlag": true,
   "agentPushNotifEnabled": true,
-  "autoCompactWindow": 100000,
+  "enableArtifact": false,
   "disableWorkflows": true,
   "workflowSizeGuideline": "small",
   "autoCompactEnabled": true

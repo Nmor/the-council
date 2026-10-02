@@ -17,12 +17,14 @@ spec = importlib.util.spec_from_file_location('council_installer', ROOT / 'boots
 core = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(core)
 MANIFEST = '.council-context.json'
+COUNCIL_COMPACT_WINDOW = 100000
 LEGACY_PR_ECHO_COMMAND = "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const i=JSON.parse(d);const cmd=i.tool_input?.command||'';if(/gh pr create/.test(cmd)){const out=i.tool_output?.output||'';const m=out.match(/https:\\/\\/github.com\\/[^/]+\\/[^/]+\\/pull\\/\\d+/);if(m){console.error('[Hook] PR created: '+m[0]);const repo=m[0].replace(/https:\\/\\/github.com\\/([^/]+\\/[^/]+)\\/pull\\/\\d+/,'$1');const pr=m[0].replace(/.*\\/pull\\/(\\d+)/,'$1');console.error('[Hook] To review: gh pr review '+pr+' --repo '+repo)}}}catch{}console.log(d)})\""
 LIFECYCLE_FILES = (
     'scripts/hooks/session-start.js', 'scripts/hooks/pre-compact.js',
     'scripts/hooks/pre-compact-council-brief.js', 'scripts/hooks/post-compact-memory-reload.js',
     'scripts/hooks/pr-created-notice.js', 'scripts/hooks/lib/lifecycle-context.js',
     'scripts/hooks/lib/project-context.js', 'scripts/hooks/lib/advise.js',
+    'scripts/hooks/docs-sync-gate.js',
 )
 # Exact prior Council versions may be upgraded without claiming unrelated local scripts.
 LEGACY_LIFECYCLE_HASHES = {
@@ -30,6 +32,7 @@ LEGACY_LIFECYCLE_HASHES = {
     'scripts/hooks/pre-compact.js': 'b4cb0a34056ae4cd7e43619b7954e41efeb47dd6db19fadc87873b3c7a4fcf16',
     'scripts/hooks/pre-compact-council-brief.js': 'b5cf2bd97acb3995d2dbd93eab6cecd0749b3cb3de1768d921e7e481bdde8fcf',
     'scripts/hooks/post-compact-memory-reload.js': '850dc78b53b7eb997ea09cb69dcaed2df8e40f0e44f2d03a322643ca9ddfc9ba',
+    'scripts/hooks/docs-sync-gate.js': 'a508c043eca8810f32c1b0043599223b8fd9f8eec86bcd942298a2835a8d8b55',
 }
 
 
@@ -60,9 +63,10 @@ def compact_entrypoint(text: str) -> str:
 
 
 def council_hook(command: str, home: Path) -> bool:
-    """Recognize only direct Node calls to owned lifecycle scripts."""
+    """Recognize only direct Node calls to owned context scripts."""
     managed = ('session-start.js', 'pre-compact.js', 'pre-compact-council-brief.js',
-               'post-compact-memory-reload.js', 'pr-created-notice.js')
+               'post-compact-memory-reload.js', 'pr-created-notice.js',
+               'suggest-compact.js')
     try:
         arguments = shlex.split(command)
     except ValueError:
@@ -78,9 +82,10 @@ def council_hook(command: str, home: Path) -> bool:
 
 
 def lifecycle_hooks(settings, source_hooks, home):
-    """Replace only Council lifecycle/PR hooks; preserve other hooks and security gates."""
+    """Replace owned context hooks; preserve personal hooks and security gates."""
     hooks_by_event = settings.setdefault('hooks', {})
-    for event in ('SessionStart', 'PreCompact', 'PostCompact', 'PostToolUse'):
+    events = ('SessionStart', 'PreCompact', 'PostCompact', 'PreToolUse', 'PostToolUse')
+    for event in events:
         retained = []
         for group in hooks_by_event.get(event, []):
             hooks = []
@@ -147,7 +152,11 @@ def claude_payload(home):
     settings = json.loads(target(home, 'settings.json').read_text(encoding='utf-8'))
     if not isinstance(settings, dict) or not isinstance(settings.get('env', {}), dict):
         raise TypeError('Claude settings must contain JSON objects')
-    settings.update(autoCompactEnabled=True, autoCompactWindow=100000, disableWorkflows=True, workflowSizeGuideline='small')
+    settings.update(autoCompactEnabled=True, disableWorkflows=True,
+                    workflowSizeGuideline='small')
+    if settings.get('autoCompactWindow') == COUNCIL_COMPACT_WINDOW:
+        del settings['autoCompactWindow']
+    settings.setdefault('enableArtifact', False)
     settings.setdefault('env', {}).pop('autoCompactEnabled', None)  # Not an environment variable.
     settings.setdefault('env', {}).update(CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH='1',
                                          CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY='2')
