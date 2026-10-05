@@ -101,6 +101,7 @@
         "cash": "USD 18,000 unrestricted cash; monthly fixed cash costs 6,000; projected 200 orders per month; no other inflows/outflows or one-off costs supplied.",
         "acquisition": "USD 3,000 campaign cost for 100 new paying customers. Retention not measured.",
         "demand": "Three friendly interviews positive; two customers prepaid one month. 200 orders is a projection, not observed sales.",
+        "proposal": "A colleague claims reducing delivery cost from USD 20 to USD 12 alone reaches break-even at the projected 200 monthly orders.",
         "constraints": "Next experiment budget USD 300, duration two weeks."
       }
     },

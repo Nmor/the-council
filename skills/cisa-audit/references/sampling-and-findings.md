@@ -16,8 +16,9 @@ as representative execution. A newly enabled check cannot prove prior-period ope
 
 Describe conclusions at their actual boundary: design adequate/inadequate, implemented/
 not implemented, operating effective/ineffective for the tested scope, or insufficient
-evidence. State scope/sample limitations next to the conclusion. A management readiness
-assessment is not an independent assurance opinion.
+evidence. A failed instance does not prove inadequate control design; assess the design
+separately before assigning that conclusion. State scope/sample limitations next to the
+conclusion. A management readiness assessment is not an independent assurance opinion.
 
 Use a findings table when useful: risk/control, criteria, condition, evidence key, effect,
 cause confidence, priority, owner, due date and retest evidence. Do not fill unknown causes
