@@ -299,6 +299,13 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
 
 ---
 
+## Focused delivery and business skills
+
+Council includes skills for requirements, incidents, integrated releases, test strategy,
+context efficiency, data reconciliation, recovery drills, entrepreneurship, pentesting
+and CISA-aligned control audits. See [the routing and verification guide](docs/SDLC-SKILLS.md)
+for examples and evidence boundaries. These load on demand through the compact router.
+
 ## With vs without
 
 <table>
