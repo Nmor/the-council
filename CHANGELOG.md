@@ -23,7 +23,16 @@ compaction as a byte-identical fixpoint. The token-budget gate no longer demands
 declarations from a live home's third-party marketplace/cache/data plugin content;
 runtime registries carry reviewed policy entries. Budgets raised with justification:
 database-reviewer (12 KB, G1 discipline), no-bloat detail (24 KB, owner content
-adopted), token-budget report tests (12 KB).
+adopted), token-budget report tests (12 KB). The audit backlog is closed: H6 gained
+an unmocked dual-advisory dispatcher test, H7 a directory-name regression test, H8
+its last registration timeout (49/49), H9/H3/H5 verified already remediated, and
+I1's model-exhaustion registrations are reconciled into canonical settings. Two new
+findings: H13 — recorders read stdout only while the documented Bash response
+carries content blocks (fixed; an absent exit_code stays fail-closed) — and H14 —
+chained commands never produce verification proofs by design (documented
+discipline). CI environment hardening: node_modules excluded from source census,
+markdown/link sweeps and gitignore; CRLF pinned by .gitattributes; Windows path
+normalization in council_hook; macos reap timeout widened.
 
 **Skills, hooks and testing remediation (2026-10-05).** Fix the audited hook state,
 command recognition, verification evidence, installation/context handling and

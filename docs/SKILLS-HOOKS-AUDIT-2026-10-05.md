@@ -23,7 +23,15 @@ The local Codex/VS Code follow-up found and fixed one additional P2 IDE configur
 defect, I2, bringing the source-remediated total to **41: eleven P1, twenty-nine P2
 and one P3**. H11 (Stop-gate evidence blind spots, P1) and H12 (per-request Council activation
 removed, not replaced, P1) — both found from the owner's live reports — raise it to
-**43: thirteen P1**; both fixes are installed live (owner-chosen) and in source. The historical tables below retain their original 40-finding scope.
+**43: thirteen P1**; both fixes are installed live (owner-chosen) and in source.
+The 2026-10-06 close-out adds H13 (recorders blind to the documented response
+shape; content-block fix landed, absent exit_code stays fail-closed) and H14
+(chained commands never produce proofs — documented discipline, no code change),
+total **45**, and closes the backlog: H6 gained its unmocked dispatcher test, H7
+its directory-name regression test, H8 its last missing registration timeout
+(49/49) , H9/H3/H5 verified already remediated in source, and I1's four
+model-exhaustion registrations are reconciled into canonical settings so fresh
+installs are not inert. The historical tables below retain their original 40-finding scope.
 Targeted local configuration, discovery and extension startup checks now pass;
 the new resources remain absent from the live installations.
 
@@ -384,6 +392,35 @@ a real prompt and stays silent on an acknowledgement; live Codex dispatcher emit
 default-on line; a live `claude -p` probe answered "Council default mode (adaptive,
 main-session)" to a prompt that never named the Council. One probe is bounded
 behavioral evidence, not a guarantee the model honors the mode on every request.
+
+### H13 — Verification recorders blind to the documented response shape
+
+Found 2026-10-06 while committing the CI fixes: in this VS Code-extension harness,
+gate/coverage proofs never recorded (only a synthetic probe ever produced a gate
+marker while real events wrote payload/research markers), so the commit gate saw
+"no verification this session" despite green suites in the same turn. Two causes:
+
+1. The documented Bash `tool_response` (code.claude.com/docs/en/hooks) is
+   `{ type: "tool_result", content: [{ type: "text", text }], exit_code }` — no
+   stdout/stderr — while `test-coverage-marker` read only stdout/stderr/output.
+   Fixed: content-block text is read too (red-first test with the documented
+   example shape). `terminalSuccess` already accepts the documented `exit_code`.
+2. This harness omits `exit_code` from real events ("present when the tool
+   returns one"). Recording stays FAIL-CLOSED by design — an unknown exit is not
+   success — so in harnesses that omit it, commit proofs are structurally
+   unavailable and the gate's documented `CLAUDE_COMMIT_GATE=off` override with
+   the reason in the commit body is the recorded path. Not silently relaxed.
+
+### H14 — Chained commands can never produce verification proofs (documented)
+
+`checkInvocation` accepts exactly one check invocation (or `cd <dir> && <check>`);
+pipes, `$(...)`, chains and env-assignments are rejected by design — output
+filters must not convert failure into success. The operational consequence,
+hit live on 2026-10-06: a gates-then-commit chain records NO proof because the
+chain's single exit code arrives after the commit attempt, and a failing tail
+discards the head's evidence. The discipline is: run each verification as its
+own exact command, then commit separately. Recorded here so the next session
+does not rediscover it; no code change — the strictness is the feature.
 
 ### M1 — Marketing and SEO coverage
 

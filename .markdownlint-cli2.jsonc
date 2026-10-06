@@ -73,7 +73,7 @@
   // no globs, or run from a directory whose config does not set them.
   "globs": ["**/*.md"],
   "ignores": [
-    "node_modules/**",
+    "**/node_modules/**",
     // Vendored third-party code: a dependency's LICENSE.md is not ours to reformat, and
     // reformatting one would be a licence modification.
     "**/site-packages/**",

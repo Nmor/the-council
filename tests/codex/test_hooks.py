@@ -158,3 +158,18 @@ class HookTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UnmockedDispatchTests(unittest.TestCase):
+    """H6 acceptance: no guard mock — the real dispatch path end to end."""
+
+    def test_failed_command_feedback_survives_the_correlation_warning(self):
+        with tempfile.TemporaryDirectory() as directory:
+            payload = {"hook_event_name": "PostToolUse", "cwd": directory,
+                       "tool_name": "exec_command", "tool_input": "go test ./...",
+                       "tool_response": {"exit_code": 1}}
+            response = hooks.dispatch(payload, Path(directory))
+            text = response["hookSpecificOutput"]["additionalContext"]
+            self.assertIn("no mutation check is claimed", text)
+            self.assertIn("exited with code 1", text)
+            self.assertLess(len(text), 1000)

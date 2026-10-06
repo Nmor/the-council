@@ -38,7 +38,7 @@ find . \
   -type f \
   -name '*.md' \
   -not -path './.git/*' \
-  -not -path './node_modules/*' \
+  -not -path '*/node_modules/*' \
   -not -path './.local/*' \
   -not -path './sessions/*' \
   -not -path './projects/*' \

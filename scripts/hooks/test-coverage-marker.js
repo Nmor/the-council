@@ -16,7 +16,14 @@ readInput('test-coverage-marker', input => {
   invalidate(input, 'coverage');
   if (!checkInvocation(command) || !terminalSuccess(input.tool_response)) return;
   const response = input.tool_response;
-  const output = [response.stdout, response.stderr, response.output].filter(value => typeof value === 'string').join('\n');
+  // The documented Bash response carries text in content blocks
+  // ({ type: "tool_result", content: [{ type: "text", text }], exit_code });
+  // stdout/stderr/output are older harness shapes. Read both (H13).
+  const blocks = Array.isArray(response.content)
+    ? response.content.map(block => block && block.text).filter(value => typeof value === 'string')
+    : [];
+  const output = [response.stdout, response.stderr, response.output, ...blocks]
+    .filter(value => typeof value === 'string').join('\n');
   for (const expression of PERCENTS) {
     const match = expression.exec(output);
     if (!match) continue;

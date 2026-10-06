@@ -422,6 +422,16 @@
             "timeout": 20
           }
         ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/model-exhaustion-marker.js\"",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "Stop": [
@@ -437,6 +447,15 @@
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/docs-sync-gate.js\"",
             "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/model-exhaustion-marker.js\"",
+            "timeout": 5
           }
         ]
       }
@@ -483,6 +502,16 @@
             "timeout": 20
           }
         ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/model-exhaustion-marker.js\"",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PreModelSwitch": [
@@ -523,7 +552,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$HOME/.claude/hooks/improve-prompt.py\""
+            "command": "python3 \"$HOME/.claude/hooks/improve-prompt.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/model-exhaustion-marker.js\"",
+            "timeout": 5
           }
         ]
       }

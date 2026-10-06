@@ -86,6 +86,20 @@ for (const command of ['ruff check .', 'ruff format --check .', 'python3 -m pyte
   });
 }
 
+test('documented content-block responses also carry coverage evidence', () => {
+  // code.claude.com/docs/en/hooks documents Bash tool_response as
+  // { type: "tool_result", content: [{ type: "text", text }], exit_code } —
+  // no stdout/stderr fields. A recorder reading only stdout goes blind on a
+  // harness that sends the documented shape (found 2026-10-06, H13).
+  const sid = uniq('content-block');
+  const response = { type: 'tool_result', exit_code: 0,
+    content: [{ type: 'text', text: 'TOTAL 100 20 80%' }] };
+  const r = run('test-coverage-marker.js', payload(sid, response, 'python3 -m coverage report'));
+  assert.equal(r.code, 0, r.stderr);
+  assert.equal(markerExists(`claude-council-coverage-${sid}`), true,
+    'documented shape must record; only an ABSENT exit_code stays fail-closed');
+});
+
 test('verification records omit raw credentials and failed reruns invalidate proof', () => {
   const sid = uniq('secret-proof');
   const secret = 'fake-verification-token-123456';
