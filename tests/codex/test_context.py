@@ -34,14 +34,14 @@ class ContextTests(unittest.TestCase):
                 {'type': 'command', 'command': 'python3 ~/.claude/hooks/improve-prompt.py'},
                 {'type': 'command', 'command': 'echo personal'}]}],
                 'Stop': [{'hooks': [{'type': 'command', 'command': 'echo stop'}]}]}}
-        (self.home / 'settings.json').write_text(json.dumps(self.settings))
-        (self.home / 'CLAUDE.md').write_text('Personal original guidance\n')
+        (self.home / 'settings.json').write_text(json.dumps(self.settings), encoding="utf-8")
+        (self.home / 'CLAUDE.md').write_text('Personal original guidance\n', encoding="utf-8")
         (self.home / 'plans').mkdir()
-        (self.home / 'plans/existing.md').write_text('Only authoritative plan')
+        (self.home / 'plans/existing.md').write_text('Only authoritative plan', encoding="utf-8")
         (self.home / 'config.toml').write_text(
             '# personal comment\nmodel = "chosen-primary"\nmodel_reasoning_effort = "high"\n'
             '[agents] # existing agent options\nmax_threads = 8\nmax_depth = 2\n'
-            '[mcp_servers.personal]\nurl = "https://example.invalid"\n')
+            '[mcp_servers.personal]\nurl = "https://example.invalid"\n', encoding="utf-8")
         self.before = snapshot(self.home)
 
     def test_claude_preserves_settings_runtime_data_and_originals(self):
@@ -92,11 +92,11 @@ class ContextTests(unittest.TestCase):
             {'type': 'command', 'command': literal},
             {'type': 'command', 'command': security}]}]
         settings_text = json.dumps(self.settings)
-        self.assertEqual((self.home / 'settings.json').write_text(settings_text),
+        self.assertEqual((self.home / 'settings.json').write_text(settings_text, encoding="utf-8"),
                          len(settings_text))
         before = snapshot(self.home)
         context.apply(self.home, 'claude')
-        actual = json.loads((self.home / 'settings.json').read_text())
+        actual = json.loads((self.home / 'settings.json').read_text(encoding="utf-8"))
         self.assertNotIn('autoCompactWindow', actual)
         commands = [hook['command'] for groups in actual['hooks'].values()
                     for group in groups for hook in group['hooks']]
@@ -119,11 +119,11 @@ class ContextTests(unittest.TestCase):
             with self.subTest(enableArtifact=enabled):
                 self.settings.update(autoCompactWindow=250000, enableArtifact=enabled)
                 settings_text = json.dumps(self.settings)
-                self.assertEqual((self.home / 'settings.json').write_text(settings_text),
+                self.assertEqual((self.home / 'settings.json').write_text(settings_text, encoding="utf-8"),
                                  len(settings_text))
                 before = snapshot(self.home)
                 context.apply(self.home, 'claude')
-                actual = json.loads((self.home / 'settings.json').read_text())
+                actual = json.loads((self.home / 'settings.json').read_text(encoding="utf-8"))
                 self.assertEqual(actual['autoCompactWindow'], 250000)
                 self.assertEqual(actual['enableArtifact'], enabled)
                 context.apply(self.home, 'claude', restore=True)
@@ -133,24 +133,24 @@ class ContextTests(unittest.TestCase):
         """Upgrade a managed install without replacing its original restore point."""
         context.apply(self.home, 'claude')
         manifest_path = self.home / context.MANIFEST
-        manifest = json.loads(manifest_path.read_text())
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         original_backups = {name: entry['original'] for name, entry in manifest['files'].items()}
         settings_path = self.home / 'settings.json'
-        installed_settings = json.loads(settings_path.read_text())
+        installed_settings = json.loads(settings_path.read_text(encoding="utf-8"))
         installed_settings['autoCompactWindow'] = 100000
         del installed_settings['enableArtifact']
         installed_settings['hooks']['PreToolUse'].append({'matcher': 'Edit|Write', 'hooks': [
             {'type': 'command', 'command': 'node "$HOME/.claude/scripts/hooks/suggest-compact.js"'}]})
         settings_text = json.dumps(installed_settings)
-        self.assertEqual(settings_path.write_text(settings_text), len(settings_text))
+        self.assertEqual(settings_path.write_text(settings_text, encoding="utf-8"), len(settings_text))
         manifest['files']['settings.json']['sha256'] = hashlib.sha256(settings_path.read_bytes()).hexdigest()
         manifest_text = json.dumps(manifest)
-        self.assertEqual(manifest_path.write_text(manifest_text), len(manifest_text))
+        self.assertEqual(manifest_path.write_text(manifest_text, encoding="utf-8"), len(manifest_text))
         context.apply(self.home, 'claude')
-        upgraded = json.loads(settings_path.read_text())
+        upgraded = json.loads(settings_path.read_text(encoding="utf-8"))
         self.assertNotIn('autoCompactWindow', upgraded)
         self.assertFalse(upgraded['enableArtifact'])
-        updated_manifest = json.loads(manifest_path.read_text())
+        updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         self.assertEqual({name: entry['original'] for name, entry in updated_manifest['files'].items()},
                          original_backups)
         after_upgrade = snapshot(self.home)
@@ -161,7 +161,7 @@ class ContextTests(unittest.TestCase):
 
     def test_fresh_defaults_use_native_window_without_edit_reminders(self) -> None:
         """Keep fresh-install defaults consistent with the migration policy."""
-        source = json.loads((ROOT / 'settings.json').read_text())
+        source = json.loads((ROOT / 'settings.json').read_text(encoding="utf-8"))
         self.assertNotIn('autoCompactWindow', source)
         self.assertTrue(source['autoCompactEnabled'])
         self.assertFalse(source['enableArtifact'])
@@ -172,7 +172,7 @@ class ContextTests(unittest.TestCase):
     def test_existing_brag_skill_collision_preserves_everything(self):
         skill = self.home / 'skills/brag/SKILL.md'
         skill.parent.mkdir(parents=True)
-        skill.write_text('Independent customized BRAG skill')
+        skill.write_text('Independent customized BRAG skill', encoding="utf-8")
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'collision'):
             context.apply(self.home, 'claude')
@@ -195,7 +195,7 @@ class ContextTests(unittest.TestCase):
         # slim one; the personal prompt hook survives. De-registering without a
         # replacement is what silently removed per-request Council activation.
         context.apply(self.home, 'claude')
-        groups = json.loads((self.home / 'settings.json').read_text())['hooks']['UserPromptSubmit']
+        groups = json.loads((self.home / 'settings.json').read_text(encoding="utf-8"))['hooks']['UserPromptSubmit']
         commands = [h['command'] for g in groups for h in g['hooks']]
         self.assertEqual(commands.count('python3 "$HOME/.claude/hooks/improve-prompt.py"'), 1)
         self.assertNotIn('python3 ~/.claude/hooks/improve-prompt.py', commands)
@@ -204,7 +204,7 @@ class ContextTests(unittest.TestCase):
     def test_fresh_install_registers_the_prompt_injector(self):
         (self.home / 'settings.json').unlink()
         context.apply(self.home, 'claude')
-        groups = json.loads((self.home / 'settings.json').read_text())['hooks']['UserPromptSubmit']
+        groups = json.loads((self.home / 'settings.json').read_text(encoding="utf-8"))['hooks']['UserPromptSubmit']
         commands = [h['command'] for g in groups for h in g['hooks']]
         self.assertEqual(commands, ['python3 "$HOME/.claude/hooks/improve-prompt.py"'])
 
@@ -224,10 +224,10 @@ class ContextTests(unittest.TestCase):
             {'type': 'command', 'command': context.LEGACY_PR_ECHO_COMMAND},
             {'type': 'command', 'command': 'echo "gh pr create; console.log(d)"'},
             {'type': 'command', 'command': 'echo personal-bash'}]}]
-        (self.home / 'settings.json').write_text(json.dumps(self.settings))
+        (self.home / 'settings.json').write_text(json.dumps(self.settings), encoding="utf-8")
         before = snapshot(self.home)
         context.apply(self.home, 'claude')
-        actual = json.loads((self.home / 'settings.json').read_text())['hooks']
+        actual = json.loads((self.home / 'settings.json').read_text(encoding="utf-8"))['hooks']
         startup = [g for g in actual['SessionStart'] if any(
             context.council_hook(h['command'], self.home) and 'session-start.js' in h['command']
             for h in g['hooks'])]
@@ -252,12 +252,12 @@ class ContextTests(unittest.TestCase):
         skill = self.home / 'skills/python-patterns/SKILL.md'
         skill.parent.mkdir(parents=True)
         original = '---\nname: python-patterns\ndescription: Personal extension\n---\n\nKeep my custom guidance.\n'
-        skill.write_text(original)
+        skill.write_text(original, encoding="utf-8")
         before = snapshot(self.home)
         context.apply(self.home, 'claude')
-        self.assertIn('disable-model-invocation: true', skill.read_text())
-        self.assertIn('Keep my custom guidance.', skill.read_text())
-        self.assertNotIn('disable-model-invocation: true', (self.home / 'skills/council/SKILL.md').read_text())
+        self.assertIn('disable-model-invocation: true', skill.read_text(encoding="utf-8"))
+        self.assertIn('Keep my custom guidance.', skill.read_text(encoding="utf-8"))
+        self.assertNotIn('disable-model-invocation: true', (self.home / 'skills/council/SKILL.md').read_text(encoding="utf-8"))
         installed = snapshot(self.home)
         context.apply(self.home, 'claude')
         self.assertEqual(snapshot(self.home), installed)
@@ -267,7 +267,7 @@ class ContextTests(unittest.TestCase):
     def test_existing_guard_collision_preserves_everything(self):
         guard = self.home / 'scripts/hooks/go-discard-mutations.js'
         guard.parent.mkdir(parents=True)
-        guard.write_text('Personal guard implementation')
+        guard.write_text('Personal guard implementation', encoding="utf-8")
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'collision'):
             context.apply(self.home, 'claude')
@@ -326,7 +326,7 @@ class ContextTests(unittest.TestCase):
     def test_multiline_skill_flag_refused_without_mutation(self):
         skill = self.home / 'skills/python-patterns/SKILL.md'
         skill.parent.mkdir(parents=True)
-        skill.write_text('---\nname: custom\ndisable-model-invocation:\n  false\n---\nBody\n')
+        skill.write_text('---\nname: custom\ndisable-model-invocation:\n  false\n---\nBody\n', encoding="utf-8")
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'python-patterns/SKILL.md: Unsupported'):
             context.apply(self.home, 'claude')
@@ -334,7 +334,7 @@ class ContextTests(unittest.TestCase):
 
     def test_codex_config_parse_preservation_and_restore(self):
         context.apply(self.home, 'codex')
-        text = (self.home / 'config.toml').read_text()
+        text = (self.home / 'config.toml').read_text(encoding="utf-8")
         actual = tomllib.loads(text)
         original = tomllib.loads(self.before['config.toml'].decode())
         self.assertEqual(actual['model'], original['model'])
@@ -354,7 +354,7 @@ class ContextTests(unittest.TestCase):
         installed = snapshot(self.home)
         context.apply(self.home, 'claude', dry_run=True, restore=True)
         self.assertEqual(snapshot(self.home), installed)
-        (self.home / 'CLAUDE.md').write_text('Changed after migration')
+        (self.home / 'CLAUDE.md').write_text('Changed after migration', encoding="utf-8")
         changed = snapshot(self.home)
         for restore in (False, True):
             with self.assertRaisesRegex(ValueError, 'changed'):
@@ -383,14 +383,14 @@ class ContextTests(unittest.TestCase):
                      'sha256': hashlib.sha256(self.before['settings.json']).hexdigest(),
                      'original': base64.b64encode(b'overwritten').decode()}}}]
         for value in cases:
-            path.write_text(json.dumps(value))
+            path.write_text(json.dumps(value), encoding="utf-8")
             before = snapshot(self.home)
             with self.assertRaises(ValueError):
                 context.apply(self.home, 'codex', restore=True)
             self.assertEqual(snapshot(self.home), before)
 
     def test_inline_agents_refused_without_changes(self):
-        (self.home / 'config.toml').write_text('agents = { max_depth = 2 }\n')
+        (self.home / 'config.toml').write_text('agents = { max_depth = 2 }\n', encoding="utf-8")
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'standard'):
             context.apply(self.home, 'codex')
@@ -408,12 +408,12 @@ class ContextTests(unittest.TestCase):
         self.assertEqual((self.home / context.MANIFEST).stat().st_mode & 0o777, 0o600)
         context.apply(self.home, 'codex', restore=True)
         outside = self.home / 'outside'
-        outside.write_text('private')
+        outside.write_text('private', encoding="utf-8")
         (self.home / 'config.toml').unlink()
         (self.home / 'config.toml').symlink_to(outside)
         with self.assertRaisesRegex(ValueError, 'symlink'):
             context.apply(self.home, 'codex')
-        self.assertEqual(outside.read_text(), 'private')
+        self.assertEqual(outside.read_text(encoding="utf-8"), 'private')
 
 
 if __name__ == '__main__':

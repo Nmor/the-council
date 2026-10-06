@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def snippet(path: str, needle: str) -> str:
-    blocks = re.findall(r"```sql\n(.*?)\n```", (ROOT / path).read_text(), re.DOTALL)
+    blocks = re.findall(r"```sql\n(.*?)\n```", (ROOT / path).read_text(encoding="utf-8"), re.DOTALL)
     return next(block for block in blocks if needle in block)
 
 

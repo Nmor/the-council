@@ -26,12 +26,12 @@ class HookTests(unittest.TestCase):
         self.root = self.home / "project"
         self.root.mkdir()
         self.plan = self.home / "existing-plan.md"
-        self.plan.write_text("Existing requirements\n")
+        self.plan.write_text("Existing requirements\n", encoding="utf-8")
         (self.home / "council").mkdir()
         self.register([{"root": str(self.root), "plan": str(self.plan)}])
 
     def register(self, entries):
-        (self.home / "council" / "projects.json").write_text(json.dumps({"projects": entries}))
+        (self.home / "council" / "projects.json").write_text(json.dumps({"projects": entries}), encoding="utf-8")
 
     def event(self, event="PreToolUse", tool="apply_patch", value="", **extra):
         return {"hook_event_name": event, "cwd": str(self.root), "tool_name": tool,
@@ -49,7 +49,7 @@ class HookTests(unittest.TestCase):
     def test_longest_project_and_boundary(self):
         nested = self.root / "nested"
         second = self.home / "nested-plan.md"
-        second.write_text("nested")
+        second.write_text("nested", encoding="utf-8")
         self.register([{"root": str(self.root), "plan": str(self.plan)},
                        {"root": str(nested), "plan": str(second)}])
         self.assertEqual(hooks.project_plan(self.home, nested / "src"), second)
@@ -63,7 +63,7 @@ class HookTests(unittest.TestCase):
         # Default-on is stated per session, so the owner never has to name the
         # Council to get it (the Claude side regressed exactly this way).
         self.assertIn("Council default mode is ON for every request", context_text)
-        self.assertEqual(self.plan.read_text(), "Existing requirements\n")
+        self.assertEqual(self.plan.read_text(encoding="utf-8"), "Existing requirements\n")
 
     def test_patch_parser_preserves_multiple_operations_and_content(self):
         patch = "*** Begin Patch\n*** Add File: src/a.py\n+print(1)\n*** Update File: src/b.py\n*** Move to: src/c.py\n-old\n+new\n*** Delete File: src/d.py\n*** End Patch"

@@ -162,7 +162,7 @@ class QaInstructionTests(unittest.TestCase):
     def test_contracts_and_removed_guard_mutations(self) -> None:
         """All decisions survive wrapping, while deleting a guard invalidates them."""
         for contract in CONTRACTS:
-            source = (ROOT / contract.path).read_text()
+            source = (ROOT / contract.path).read_text(encoding="utf-8")
             normalized = " ".join(source.split())
             with self.subTest(path=contract.path, mutation="none"):
                 validate_contract(contract, source)
@@ -189,7 +189,7 @@ class QaInstructionTests(unittest.TestCase):
         for contract in CONTRACTS:
             if contract.path in mutations:
                 with self.subTest(path=contract.path):
-                    source = (ROOT / contract.path).read_text()
+                    source = (ROOT / contract.path).read_text(encoding="utf-8")
                     with self.assertRaises(ValueError):
                         validate_contract(
                             contract,
@@ -198,7 +198,7 @@ class QaInstructionTests(unittest.TestCase):
 
     def test_coverage_scopes_do_not_substitute_for_each_other(self) -> None:
         """Reject below-floor and unavailable metrics despite passing aggregate."""
-        source = (ROOT / "rules-library/common/testing.md").read_text()
+        source = (ROOT / "rules-library/common/testing.md").read_text(encoding="utf-8")
         expected = {"Touched files": 90, "Project total": 80, "Critical paths": 95}
         for scope, floor in expected.items():
             match = re.search(rf"\*\*{scope}\*\*.*?≥ \*\*(\d+)%\*\*", source, re.DOTALL)
@@ -228,13 +228,13 @@ class QaInstructionTests(unittest.TestCase):
         migrated = (
             ROOT / "skills/coding-quality-rules/references/testing-requirements.md"
         )
-        self.assertEqual(migrated.read_text(), source)
+        self.assertEqual(migrated.read_text(encoding="utf-8"), source)
 
     def test_fixture_lock_has_exact_versions_and_integrity(self) -> None:
         """Require exact formatter/compiler versions and their lock entries."""
         directory = ROOT / "tests/test-tools"
-        package = json.loads((directory / "package.json").read_text())
-        lock = json.loads((directory / "package-lock.json").read_text())
+        package = json.loads((directory / "package.json").read_text(encoding="utf-8"))
+        lock = json.loads((directory / "package-lock.json").read_text(encoding="utf-8"))
         self.assertTrue(package["private"])
         self.assertEqual(
             package["devDependencies"],
@@ -340,7 +340,7 @@ class VerificationWrapperTests(unittest.TestCase):
                 self.assertIn(f"{status} exit={exit_code}", result.stdout)
                 self.assertIn("RUNNING exit=unknown", result.stdout)
                 self.assertLessEqual(len(result.stdout.splitlines()), 5)
-                lines = (Path(directory) / "check.log").read_text().splitlines()
+                lines = (Path(directory) / "check.log").read_text(encoding="utf-8").splitlines()
                 self.assertEqual(len(lines), 201)
                 self.assertEqual(lines[0], "1")
                 self.assertEqual(lines[-1], "stderr evidence")
@@ -398,11 +398,11 @@ class VerificationWrapperTests(unittest.TestCase):
         """Reject a wrapper mutated to return successful display status."""
         with tempfile.TemporaryDirectory() as directory:
             mutated = Path(directory) / "masked.sh"
-            source = WRAPPER.read_text()
+            source = WRAPPER.read_text(encoding="utf-8")
             self.assertIn('exit "${producer_exit}"', source)
             written = mutated.write_text(
                 source.replace('exit "${producer_exit}"', "exit 0"),
-            )
+                encoding="utf-8")
             self.assertGreater(written, 0)
             result = self.run_wrapper(
                 directory,

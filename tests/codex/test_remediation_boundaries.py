@@ -70,7 +70,7 @@ class RemediationBoundaries(unittest.TestCase):
         self.assertEqual(initial.returncode, 1, initial.stdout + initial.stderr)
         self.assertIn("deep.md", initial.stderr)
         self.assertIn("plugins/installed_plugins.json", initial.stderr)
-        self.assertEqual(deep.write_text("Size budget: 8 KB\n"), 18)
+        self.assertEqual(deep.write_text("Size budget: 8 KB\n", encoding="utf-8"), 18)
         self.write(
             "source/scripts/instruction-budgets.json",
             json.dumps(
@@ -82,7 +82,7 @@ class RemediationBoundaries(unittest.TestCase):
         )
         healthy = self.budget("--check")
         self.assertEqual(healthy.returncode, 0, healthy.stdout + healthy.stderr)
-        self.assertEqual(config.write_text("x" * 1025), 1025)
+        self.assertEqual(config.write_text("x" * 1025, encoding="utf-8"), 1025)
         over = self.budget("--check")
         self.assertEqual(over.returncode, 1)
         self.assertIn("OVER  plugins/installed_plugins.json", over.stdout)
@@ -124,14 +124,14 @@ class RemediationBoundaries(unittest.TestCase):
         self.assertIn("skills/example/SKILL.md", missing.stderr)
         self.assertIn("agents/example.md", missing.stderr)
         self.write("outside.md", "NIST SP 800-53\n")
-        outside_text = skill.read_text() + "[outside](../../../outside.md)\n"
-        self.assertEqual(skill.write_text(outside_text), len(outside_text))
+        outside_text = skill.read_text(encoding="utf-8") + "[outside](../../../outside.md)\n"
+        self.assertEqual(skill.write_text(outside_text, encoding="utf-8"), len(outside_text))
         self.assertEqual(self.run_process(command).returncode, 1)
         self.write("source/skills/example/references/source.md", "NIST SP 800-53\n")
-        linked = skill.read_text() + "[authority](references/source.md)\n"
-        self.assertEqual(skill.write_text(linked), len(linked))
-        named = agent.read_text() + "PostgreSQL documentation\n"
-        self.assertEqual(agent.write_text(named), len(named))
+        linked = skill.read_text(encoding="utf-8") + "[authority](references/source.md)\n"
+        self.assertEqual(skill.write_text(linked, encoding="utf-8"), len(linked))
+        named = agent.read_text(encoding="utf-8") + "PostgreSQL documentation\n"
+        self.assertEqual(agent.write_text(named, encoding="utf-8"), len(named))
         healthy = self.run_process(command)
         self.assertEqual(healthy.returncode, 0, healthy.stdout + healthy.stderr)
         self.assertIn("does not validate", healthy.stdout)
@@ -315,7 +315,7 @@ class RemediationBoundaries(unittest.TestCase):
                         result.returncode, 1, result.stdout + result.stderr
                     )
                     self.assertIn("collision", result.stderr)
-                    self.assertEqual(owned.read_text(), "Personal procedure\n")
+                    self.assertEqual(owned.read_text(encoding="utf-8"), "Personal procedure\n")
                     self.assertEqual(
                         {
                             p.relative_to(home): p.read_bytes()

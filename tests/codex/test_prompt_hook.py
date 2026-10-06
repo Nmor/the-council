@@ -60,7 +60,7 @@ class PromptHookTests(unittest.TestCase):
                 self.assertEqual(result.stdout, '')
 
     def test_installed_settings_register_exactly_this_hook(self):
-        settings = json.loads((HOOK.parents[1] / 'settings.json').read_text())
+        settings = json.loads((HOOK.parents[1] / 'settings.json').read_text(encoding="utf-8"))
         groups = settings['hooks']['UserPromptSubmit']
         commands = [h['command'] for g in groups for h in g['hooks']]
         self.assertEqual(commands, ['python3 "$HOME/.claude/hooks/improve-prompt.py"'])

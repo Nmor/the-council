@@ -57,8 +57,8 @@ class LanguageFilesTests(unittest.TestCase):
             base, sibling = directory / "vault", directory / "vault-sibling"
             base.mkdir()
             sibling.mkdir()
-            self.assertGreater((base / "allowed").write_text("inside\n"), 0)
-            self.assertGreater((sibling / "outside").write_text("outside\n"), 0)
+            self.assertGreater((base / "allowed").write_text("inside\n", encoding="utf-8"), 0)
+            self.assertGreater((sibling / "outside").write_text("outside\n", encoding="utf-8"), 0)
             (base / "link").symlink_to(sibling / "outside")
             prefix = """
 #include <filesystem>
@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
 }
 """.replace('<< "\n"', '<< "\\n"')
             source, binary = directory / "containment.cpp", directory / "containment"
-            self.assertGreater(source.write_text(prefix + snippet + suffix), 0)
+            self.assertGreater(source.write_text(prefix + snippet + suffix, encoding="utf-8"), 0)
             self.successful(
                 [
                     compiler,
@@ -120,7 +120,7 @@ if (!f) throw std::runtime_error("open failed");
             self.assertGreater(
                 source.write_text(
                     prefix + textwrap.indent(insecure, "        ") + suffix
-                ),
+                , encoding="utf-8"),
                 0,
             )
             self.successful(
@@ -202,7 +202,7 @@ enum FixtureError: Error { case invariant }
             directory = Path(scratch)
             source, binary = directory / "repository.swift", directory / "repository"
             self.assertGreater(
-                source.write_text("import Foundation\n" + actor + fixture), 0
+                source.write_text("import Foundation\n" + actor + fixture, encoding="utf-8"), 0
             )
             options = [
                 compiler,
@@ -226,7 +226,7 @@ enum FixtureError: Error { case invariant }
             )
             self.assertNotEqual(mutant, actor)
             self.assertGreater(
-                source.write_text("import Foundation\n" + mutant + fixture), 0
+                source.write_text("import Foundation\n" + mutant + fixture, encoding="utf-8"), 0
             )
             self.successful(options, directory)
             result = execute([str(binary), str(directory)], directory)
@@ -280,7 +280,7 @@ verify().catch(error => { console.error(error); throw error; });
         with tempfile.TemporaryDirectory(prefix="council-rpc-") as scratch:
             directory = Path(scratch)
             source = directory / "rpc.ts"
-            self.assertGreater(source.write_text(prefix + snippet + fixture), 0)
+            self.assertGreater(source.write_text(prefix + snippet + fixture, encoding="utf-8"), 0)
             options = [
                 node,
                 str(compiler),
@@ -300,7 +300,7 @@ verify().catch(error => { console.error(error); throw error; });
                 "error || !data || data.success !== true", "error || !data"
             )
             self.assertNotEqual(snippet, mutant)
-            self.assertGreater(source.write_text(prefix + mutant + fixture), 0)
+            self.assertGreater(source.write_text(prefix + mutant + fixture, encoding="utf-8"), 0)
             self.successful(options, directory)
             result = execute([node, str(directory / "rpc.js")], directory)
             self.assertNotEqual(

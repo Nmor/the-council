@@ -15,7 +15,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "skills/django-patterns/references/service-layer.md"
-BLOCK = re.findall(r"```python\n(.*?)\n```", SOURCE.read_text(), re.DOTALL)[0]
+BLOCK = re.findall(r"```python\n(.*?)\n```", SOURCE.read_text(encoding="utf-8"), re.DOTALL)[0]
 PAYMENT: dict[str, Any] = {"__name__": __name__}
 exec(compile(BLOCK, str(SOURCE), "exec"), PAYMENT)
 
@@ -237,7 +237,7 @@ class DurableGuidanceTests(unittest.TestCase):
         self.assertEqual(rows(self.provider, "SELECT amount FROM charges"), [(6300,)])
 
     def test_outbox_commit_publish_ambiguity_reconciliation_and_dedup(self) -> None:
-        guidance = (ROOT / "skills/aws-serverless-patterns/SKILL.md").read_text()
+        guidance = (ROOT / "skills/aws-serverless-patterns/SKILL.md").read_text(encoding="utf-8")
         for invariant in (
             "Persist payload and publish intent atomically",
             "scheduled reconciliation",
