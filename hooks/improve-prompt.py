@@ -25,8 +25,12 @@ ACTIVATION = (
     'before the first file mutation). Load the Council skills matching the '
     'files and domains touched; weigh architecture, implementation, quality, '
     'security and testing where they bear; close with the verification gates. '
-    'Scale to the task - no division ceremony. An explicit Council mention '
-    'asks for the deep protocol (council-protocol skill).'
+    'Scale to the task - no division ceremony. Touching a changed external '
+    'contract, a platform behavior unverified at its pinned version (CI '
+    'runners, OS text defaults, workflow/hook schemas), or an unfamiliar '
+    'error: read the current primary docs first and cite what you read '
+    '(official-docs-first). An explicit Council mention asks for the deep '
+    'protocol (council-protocol skill).'
 )
 
 

@@ -22,6 +22,13 @@ Activates on any session that touches integration code against an external provi
 - Migrating off a deprecated provider scope, API version, or
   authentication shape.
 - Plan-mode work that proposes a new external dependency.
+- Changing platform surfaces that run against documented environment
+  behavior: CI workflows and runner images, Dockerfiles, cluster
+  manifests, OS/language platform defaults (text encoding, path
+  separators), and runtime hook/tool schemas. These are providers
+  without an SDK; their canon is the runner-image manifest, the
+  platform-defaults pages and the schema reference, read at the
+  pinned version.
 
 ## What to do (4 steps)
 

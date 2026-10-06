@@ -18,7 +18,18 @@ const INTEGRATION_PATTERNS = [
   /(\/integrations?\/|\/providers?\/|\/clients?\/|webhook|oauth|[-_]client\b|[-_]sdk\b|api[-_]?client)/i,
   /(stripe|twilio|paystack|flutterwave|sendgrid|\bses\b|\bfcm\b|\bapns\b|plaid|slack|clickup|graphql|grpc|calendar|msgraph)/i,
 ];
+// Platform surfaces are external contracts too: CI workflows, container builds
+// and cluster manifests run against documented runner/OS/scheduler behavior.
+// Three Windows CI rounds (CRLF, cp1252, path separators) were each a
+// documented platform fact none of the provider patterns matched (2026-10-06).
+const PLATFORM_PATTERNS = [
+  /\/\.github\/workflows\/[^/]+\.ya?ml$/i,
+  /(^|\/)dockerfile([^/]*)$/i,
+  /docker-compose[^/]*\.ya?ml$/i,
+  /(\/k8s\/|\/kustomiz|\/charts?\/|\/manifests?\/).*\.ya?ml$/i,
+];
 const INTEGRATION = { test: (file) => INTEGRATION_PATTERNS.some((pattern) => pattern.test(file)) };
+const PLATFORM = { test: (file) => PLATFORM_PATTERNS.some((pattern) => pattern.test(file)) };
 
 const { advise } = require('./lib/advise.js');
 
@@ -34,16 +45,18 @@ process.stdin.on('end', () => {
     if (file && sid) {
       const p = file.toLowerCase();
       const marker = markerPath('research', sid);
-      const integrationSource =
-        !p.includes('/.claude/') && // skip framework config / rules / agents
-        SRC_EXT.test(p) &&
-        INTEGRATION.test(p);
-      if (integrationSource && !hasPrivate(marker)) {
+      const framework = p.includes('/.claude/'); // skip framework config / rules / agents
+      const integrationSource = !framework && SRC_EXT.test(p) && INTEGRATION.test(p);
+      const platformSource = !framework && PLATFORM.test(p);
+      if ((integrationSource || platformSource) && !hasPrivate(marker)) {
+        const kind = integrationSource ? 'integration' : 'platform';
+        const docs = integrationSource
+          ? 'current provider docs (versions, breaking changes, auth) and validate the payload shape'
+          : 'current platform docs (runner images, OS defaults such as text encoding, schema of the workflow/manifest) at the pinned version';
         warn =
-          `[research-gate] Editing integration-shaped file "${path.basename(file)}" ` +
-          `without online research this session. Per council-default.md rule 11, run ` +
-          `WebSearch/WebFetch on the current provider docs (versions, breaking changes, ` +
-          `auth) and validate the payload shape before finalizing.`;
+          `[research-gate] Editing ${kind}-shaped file "${path.basename(file)}" ` +
+          `without online research this session. Per council-default.md rule 11 and ` +
+          `official-docs-first.md, read the ${docs} before finalizing.`;
       }
     }
   } catch (err) {

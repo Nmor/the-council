@@ -32,7 +32,12 @@ carries content blocks (fixed; an absent exit_code stays fail-closed) — and H1
 chained commands never produce verification proofs by design (documented
 discipline). CI environment hardening: node_modules excluded from source census,
 markdown/link sweeps and gitignore; CRLF pinned by .gitattributes; Windows path
-normalization in council_hook; macos reap timeout widened.
+normalization in council_hook; macos reap timeout widened. Research discipline
+upgraded from the same incident: the slim injector regained a bounded
+primary-docs mandate, research-gate now also fires on platform surfaces (CI
+workflows, Dockerfiles, cluster manifests), and official-docs-first (floor +
+detail) and provider-research record that platforms and runtimes are providers
+too, verified at the pinned version, with the delegated docs-agent pattern.
 
 **Skills, hooks and testing remediation (2026-10-05).** Fix the audited hook state,
 command recognition, verification evidence, installation/context handling and

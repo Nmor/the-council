@@ -165,6 +165,31 @@ Code comments do NOT carry the URLs (they rot — see `coding-style.md`
 ban on tracker pointers in comments). The provider-research file is
 the durable home.
 
+## Platforms and runtimes are providers too
+
+The rule's blind spot, paid for three CI rounds in a row (2026-10-06, the-council
+PR #16): CI runner images, operating-system defaults and schema'd config are
+primary-source territory exactly like a payment API, and none of them matched the
+provider-shaped triggers.
+
+- Round 1: Windows checkouts rewrite LF to CRLF unless `.gitattributes` pins
+  `eol` — documented git/actions behavior.
+- Round 2: `Path.read_text()` defaults to cp1252 on Windows until PEP 686 —
+  documented Python behavior; UTF-8 content mojibakes or throws.
+- Round 3: native path separators defeat posix-keyed config matching —
+  documented `pathlib`/`node:path` behavior.
+
+Each was knowable from the platform docs before the first push. Treat as
+providers: the runner image manifest, the language's platform-defaults pages,
+the workflow/manifest schema, and hook/tool contracts (for Claude hooks, the
+`tool_response` field table at code.claude.com/docs/en/hooks — reading it settled
+in minutes what payload guessing could not, via a delegated docs agent).
+
+Delegation pattern that worked: hand the exact question to the docs agent
+(claude-code-guide or WebFetch on the canonical page), demand verbatim field
+lists plus URLs, and record source + read-date in the artifact. Verify at the
+PINNED version the project uses, not latest.
+
 ## When to re-read the docs
 
 - A new feature on an already-integrated provider — re-read the

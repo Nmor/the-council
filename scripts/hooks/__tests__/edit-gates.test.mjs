@@ -203,6 +203,18 @@ describe('research-gate.js — integration code is not written from memory', () 
     });
   }
 
+  // Platform surfaces are external contracts too: three Windows CI rounds
+  // (CRLF, cp1252, path separators) were all documented runner behavior, and
+  // none of these paths matched the provider-shaped triggers (2026-10-06).
+  for (const file of ['/srv/app/.github/workflows/cd.yml', '/srv/app/Dockerfile',
+                      '/srv/app/deploy/docker-compose.yml', '/srv/app/k8s/predictor.yaml',
+                      '/srv/app/charts/app/templates/deployment.yaml']) {
+    test(`asks for the platform docs before editing: ${file}`, () => {
+      const r = edit(file);
+      assert.match(advice(r), /\[research-gate\]/, file);
+    });
+  }
+
   for (const [what, file] of [
     ['ordinary domain code', '/srv/app/internal/ledger.go'],
     ['a prose page about a provider', '/srv/app/docs/stripe.md'],

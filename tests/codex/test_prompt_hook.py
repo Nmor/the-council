@@ -33,8 +33,9 @@ class PromptHookTests(unittest.TestCase):
         context = output['additionalContext']
         self.assertIn('Council default mode is ON', context)
         self.assertIn('never needs to be named', context)
+        self.assertIn('official-docs-first', context)
         # One bounded block, not the old ~960-token mode script.
-        self.assertLessEqual(len(context.encode()), 700)
+        self.assertLessEqual(len(context.encode()), 1000)
         self.assertNotIn('PROMPT EVALUATION', result.stdout)
 
     def test_bypass_prefixes_and_acknowledgements_stay_silent(self):
