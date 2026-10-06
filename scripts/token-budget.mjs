@@ -13,6 +13,9 @@
 // Size budget: 12 KB. Check: wc -c; gate: token-budget.mjs --check.
 import { readdirSync, statSync, existsSync, readFileSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
+// Policy keys and reports are posix-form; Windows native separators must not
+// defeat instruction-budgets.json matching (found on the windows CI runner).
+const rel = (root, file) => relative(root, file).replaceAll('\\', '/');
 import { homedir } from 'node:os';
 import { parseArgs } from 'node:util';
 import { ruleIsScoped } from './lib/rule-scope.mjs';
@@ -82,7 +85,7 @@ const floorBytes = bytesOf(floorFiles);
 
 // Per-rule breakdown, largest first.
 const floorRules = floorFiles
-  .map((f) => ({ name: relative(ROOT, f), bytes: statSync(f).size }))
+  .map((f) => ({ name: rel(ROOT, f), bytes: statSync(f).size }))
   .sort((a, b) => b.bytes - a.bytes);
 
 // Skills: lazy, but a gated skill is deferred rather than free. When selected it is added to
@@ -196,7 +199,7 @@ if (process.argv.includes('--check')) {
   let declared = 0;
   const candidates = budgetCandidates();
   for (const f of candidates) {
-    const name = relative(ROOT, f);
+    const name = rel(ROOT, f);
     const configured = budgets.get(name);
     const budget = declaredBudget(f) || configured?.bytes;
     if (!Number.isSafeInteger(budget) || budget <= 0) {
@@ -205,7 +208,7 @@ if (process.argv.includes('--check')) {
     }
     declared++;
     const bytes = statSync(f).size;
-    if (bytes > budget) over.push({ name: relative(ROOT, f), bytes, budget });
+    if (bytes > budget) over.push({ name: rel(ROOT, f), bytes, budget });
   }
   const unmeasured = candidates.length - declared;
   process.stdout.write(

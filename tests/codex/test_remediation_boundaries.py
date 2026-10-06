@@ -178,6 +178,7 @@ class RemediationBoundaries(unittest.TestCase):
         self.assertIn("No check is claimed", missing_node.stdout)
         self.assertIn("exited with code 1", missing_node.stdout)
 
+    @unittest.skipIf(os.name == "nt", "POSIX shebang fixture (fake bin/node sh script)")
     def test_native_whitelist_preserves_block_and_bounds_escaped_output(self) -> None:
         assert NODE is not None
         fake = self.write(
@@ -206,6 +207,7 @@ class RemediationBoundaries(unittest.TestCase):
         self.assertNotIn("fake-secret", result.stdout)
         self.assertNotIn("arbitrary", response)
 
+    @unittest.skipIf(os.name == "nt", "POSIX shebang fixture (fake bin/node sh script)")
     def test_native_actual_timeout_preserves_failed_command_feedback(self) -> None:
         fake = self.write("bin/node", "#!/bin/sh\nexec /bin/sleep 30\n")
         fake.chmod(0o700)

@@ -85,7 +85,7 @@ class SdlcInstallTests(unittest.TestCase):
                         "utf-8"
                     )
                     self.assertIn(
-                        str(home / "council/resources/skills" / skill / "SKILL.md"),
+                        (home / "council/resources/skills" / skill / "SKILL.md").as_posix(),
                         wrapper,
                     )
                     source_name, description, body = installer.metadata(
