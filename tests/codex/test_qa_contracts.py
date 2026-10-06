@@ -388,7 +388,8 @@ class VerificationWrapperTests(unittest.TestCase):
             self.assertIn("RUNNING exit=unknown", initial)
             self.assertIsNone(process.poll())
             process.terminate()
-            output, errors = process.communicate(timeout=15)
+            # Loaded CI runners (macos) have taken >15s to reap the TERM'd child.
+            output, errors = process.communicate(timeout=60)
             self.assertEqual(process.returncode, 143, errors)
             self.assertIn("INTERRUPTED exit=143", output)
             self.assertNotIn("PASS exit=0", output)

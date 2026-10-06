@@ -73,17 +73,19 @@ def council_hook(command: str, home: Path) -> bool:
         return False
     if len(arguments) != 2:
         return False
+    # Windows homes produce backslash paths; ownership must not depend on them.
+    target = arguments[1].replace('\\', '/')
     if arguments[0] == 'python3':
         # The Council prompt injector is the one owned python hook.
         suffix = '/.claude/hooks/improve-prompt.py'
-        return arguments[1] in {f'$HOME{suffix}', f'${{HOME}}{suffix}', f'~{suffix}',
-                                str(home / 'hooks/improve-prompt.py')}
+        return target in {f'$HOME{suffix}', f'${{HOME}}{suffix}', f'~{suffix}',
+                          str(home / 'hooks/improve-prompt.py').replace('\\', '/')}
     if arguments[0] != 'node':
         return False
     for name in managed:
         suffix = f'/.claude/scripts/hooks/{name}'
-        if arguments[1] in {f'$HOME{suffix}', f'${{HOME}}{suffix}', f'~{suffix}',
-                            str(home / 'scripts/hooks' / name)}:
+        if target in {f'$HOME{suffix}', f'${{HOME}}{suffix}', f'~{suffix}',
+                      str(home / 'scripts/hooks' / name).replace('\\', '/')}:
             return True
     return False
 

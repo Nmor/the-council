@@ -50,6 +50,10 @@ function targetDir(cmd, cwd) {
 function classify(p) {
   const s = String(p).replace(/\\/g, '/');
   if (/(^|\/)\.claude\//.test(s)) return null;
+  // Installed dependency trees are neither product code nor docs; an untracked
+  // node_modules (CI installs fixture tools before the hook tests) exploded the
+  // verification source census past its bound and killed every proof.
+  if (/(^|\/)node_modules\//.test(s)) return null;
   if (/\.(md|mdx|rst|adoc)$/i.test(s) || /(^|\/)docs?\//i.test(s)) return 'docs';
   if (SRC_EXT.test(s)) return isTest(s) ? 'test' : 'code';
   return null;
