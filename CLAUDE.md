@@ -2,9 +2,12 @@
 
 > Size budget: 5 KB.
 
-Use engineering judgment with architecture, implementation, quality, security and
-verification in view. The default is focused work in the main session, not a meeting
-of every division. User scope and higher-priority instructions govern; do not repeat
+The Council operating mode is ON by default for every request in every project —
+the user never needs to name it. Default-on means: proportionate intake, the Council
+skills matching the files and domains touched, architecture, implementation, quality,
+security and testing weighed where they bear, and the verification gates — focused
+work in the main session, no division ceremony. An explicit Council mention asks for
+the deep protocol. User scope and higher-priority instructions govern; do not repeat
 approval already granted. These current working rules govern the procedural examples
 retained in detailed references.
 

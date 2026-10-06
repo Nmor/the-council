@@ -13,9 +13,10 @@
 // does not carry a parseable reset time, so the cost of a stale expiry is one more failed
 // call, which re-marks the tier. A success on the tier clears it at once.
 
-const { readFileSync, writeFileSync, mkdirSync } = require("node:fs");
-const { join, dirname } = require("node:path");
+const { join } = require("node:path");
 const { homedir } = require("node:os");
+const { readPrivate, writePrivate } = require("./private-state.js");
+const { redact } = require("./redaction.js");
 
 const TTL_MS = 5 * 60 * 60 * 1000; // one plan session window
 const TIERS = ["mythos", "fable", "opus", "sonnet", "haiku"];
@@ -27,16 +28,18 @@ const file = () =>
 
 function load() {
   try {
-    const o = JSON.parse(readFileSync(file(), "utf8"));
-    return o && typeof o === "object" ? o : {};
-  } catch {
-    return {}; // absent or unreadable means nothing is known to be exhausted
+    const o = JSON.parse(readPrivate(file(), { allowPublicFile: true }));
+    if (!o || typeof o !== "object" || Array.isArray(o)) return new Map();
+    return new Map(Object.entries(o).filter(([tier, record]) =>
+      TIERS.includes(tier) && record && typeof record === "object" && Number.isFinite(record.at)));
+  } catch (error) {
+    if (error.code !== "ENOENT") process.stderr.write("[model-exhaustion] unreadable state ignored\n");
+    return new Map(); // absent or unreadable means nothing is known to be exhausted
   }
 }
 
 function save(o) {
-  mkdirSync(dirname(file()), { recursive: true });
-  writeFileSync(file(), JSON.stringify(o, null, 2) + "\n");
+  writePrivate(file(), JSON.stringify(Object.fromEntries(o), null, 2) + "\n");
 }
 
 // Map "claude-opus-5-5", "Opus", "opus[1m]" to the ladder alias.
@@ -54,19 +57,19 @@ function tierInLimitMessage(text) {
 
 function exhausted(now = Date.now()) {
   const o = load();
-  return Object.keys(o).filter((t) => now - Number(o[t].at || 0) < TTL_MS);
+  return [...o].filter((entry) => now - entry[1].at < TTL_MS).map((entry) => entry[0]);
 }
 
 function mark(tier, message, now = Date.now()) {
   const o = load();
-  o[tier] = { at: now, message: String(message || "").slice(0, 200) };
+  if (!TIERS.includes(tier)) throw new TypeError("Unknown model tier");
+  o.set(tier, { at: now, message: redact(String(message || "")).slice(0, 200) });
   save(o);
 }
 
 function clear(tier) {
   const o = load();
-  if (!(tier in o)) return false;
-  delete o[tier];
+  if (!o.delete(tier)) return false;
   save(o);
   return true;
 }

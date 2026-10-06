@@ -22,8 +22,8 @@
 //   - only when a completion signal is present AND no parity block exists
 //   - fires at most ONCE per session (a tmp marker), like intake-gate
 
+const { markerPath, writePrivate, hasPrivate } = require('./lib/private-state.js');
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
 
 const MODE = String(process.env.CLAUDE_PARITY_GATE || 'nudge').toLowerCase();
@@ -50,8 +50,8 @@ process.stdin.on('end', () => {
 
     const lower = file.toLowerCase();
     const isPlan = lower.includes('/.claude/plans/') && lower.endsWith('.md');
-    const marker = path.join(os.tmpdir(), `claude-council-parity-${sid}`);
-    if (!isPlan || fs.existsSync(marker)) { process.exit(0); }
+    const marker = markerPath('parity', sid);
+    if (!isPlan || hasPrivate(marker)) { process.exit(0); }
 
     let content = '';
     try { content = fs.readFileSync(file, 'utf8'); } catch { process.exit(0); }
@@ -64,7 +64,7 @@ process.stdin.on('end', () => {
         + `and ships each new dimension's discovery/filter surface in the same wave. Add the `
         + `"Competitive parity (this phase/wave)" block. [CLAUDE_PARITY_GATE=off silences]`;
       // fire at most once per session
-      try { fs.writeFileSync(marker, '1'); } catch { /* marker best-effort */ }
+      try { writePrivate(marker, '1'); } catch { /* marker best-effort */ }
     }
   } catch (err) {
     warn = `[parity-gate] skipped: ${err.message}`;

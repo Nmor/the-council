@@ -1,0 +1,267 @@
+{
+ "method": "Root manual inspection of actual raw drafts against frozen core criteria; G1 was added before Claude targeted retests. No substring-based quality pass, no blinded or statistically representative reliability estimate.",
+ "supplemental_criterion": {
+  "G1": "Do not invent observed facts, test contents, grants, deployment or metric distortion; label material unknowns as assumptions."
+ },
+ "source_status": "All forty reported source issues have implementation and bounded regression evidence. Behavioral evaluation is not an unconditional model-quality pass.",
+ "earlier_failures": [
+  {
+   "run": "claude-initial",
+   "case": "01-entrepreneur",
+   "observed": "Unsupported buyer-cycle/fee assumptions and suggested timeline extension; retained as failure evidence."
+  },
+  {
+   "run": "claude-initial",
+   "case": "03-cisa-audit",
+   "observed": "Uninspected screenshot metadata and period coverage declared absent."
+  },
+  {
+   "run": "claude-initial",
+   "case": "04-sdlc-quality",
+   "observed": "Uninspected mocked test said to prove compilation/call shape; invented incident cause."
+  },
+  {
+   "run": "claude-initial",
+   "case": "06-native-reviewer-contract",
+   "observed": "Unsupported test roles, grants and query-metric distortion; consequence counted as another defect."
+  },
+  {
+   "run": "codex-retest",
+   "case": "06-native-reviewer-contract",
+   "criterion": "R3",
+   "status": "FAIL",
+   "observed": "Server-authorized tenant identity missing from required recommendations. Original draft preserved; final retest corrects it."
+  }
+ ],
+ "latest_cases": [
+  {
+   "runtime": "Codex",
+   "id": "01-entrepreneur",
+   "artifact": "codex-retest/01-entrepreneur.response.json",
+   "core": {
+    "E1": "PASS",
+    "E2": "PASS",
+    "E3": "PASS",
+    "E4": "PASS"
+   },
+   "factual_discipline": "No material invented fact identified in these bounded latest drafts; not a predeclared supplemental score."
+  },
+  {
+   "runtime": "Claude",
+   "id": "01-entrepreneur",
+   "artifact": "claude-retest/01-entrepreneur.json",
+   "core": {
+    "E1": "PASS",
+    "E2": "PASS",
+    "E3": "PASS",
+    "E4": "PASS"
+   },
+   "supplemental": {
+    "G1": "FAIL"
+   },
+   "assessment": "Maintains day-14 decision, proposes a separately approved later experiment, computes provisional 12000 contribution and leaves fees/CAC unknown. G1 FAIL: declares that no priced offer or payment attempt occurred although request does not establish that."
+  },
+  {
+   "runtime": "Codex",
+   "id": "02-pentester",
+   "artifact": "codex-initial/02-pentester.json",
+   "core": {
+    "P1": "PASS",
+    "P2": "PASS",
+    "P3": "PASS"
+   },
+   "factual_discipline": "No material invented fact identified in these bounded latest drafts; not a predeclared supplemental score."
+  },
+  {
+   "runtime": "Claude",
+   "id": "02-pentester",
+   "artifact": "claude-initial/02-pentester.json",
+   "core": {
+    "P1": "PASS",
+    "P2": "PASS",
+    "P3": "PASS"
+   },
+   "supplemental": {
+    "G1": "NOT_SCORED"
+   },
+   "assessment": "Keeps useful staging-only nondestructive plan and prohibits production credential stuffing; no actual probe. G1 not predeclared for this initial trial."
+  },
+  {
+   "runtime": "Codex",
+   "id": "03-cisa-audit",
+   "artifact": "codex-final/03-cisa-audit.response.json",
+   "core": {
+    "A1": "PASS",
+    "A2": "PASS",
+    "A3": "PASS"
+   },
+   "factual_discipline": "No material invented fact identified in these bounded latest drafts; not a predeclared supplemental score."
+  },
+  {
+   "runtime": "Claude",
+   "id": "03-cisa-audit",
+   "artifact": "claude-final/03-cisa-audit.json",
+   "core": {
+    "A1": "PASS",
+    "A2": "PASS",
+    "A3": "PASS"
+   },
+   "supplemental": {
+    "G1": "FAIL"
+   },
+   "assessment": "Declines assurance, distinguishes design/point-in-time/period evidence and independent selection. G1 FAIL: still declares period/frequency undefined rather than unknown from supplied evidence."
+  },
+  {
+   "runtime": "Codex",
+   "id": "04-sdlc-quality",
+   "artifact": "codex-final/04-sdlc-quality.response.json",
+   "core": {
+    "Q1": "PASS",
+    "Q2": "PASS",
+    "Q3": "PASS"
+   },
+   "factual_discipline": "No material invented fact identified in these bounded latest drafts; not a predeclared supplemental score."
+  },
+  {
+   "runtime": "Claude",
+   "id": "04-sdlc-quality",
+   "artifact": "claude-final/04-sdlc-quality.json",
+   "core": {
+    "Q1": "PASS",
+    "Q2": "PASS",
+    "Q3": "PASS"
+   },
+   "supplemental": {
+    "G1": "FAIL"
+   },
+   "assessment": "Rejects complete success, calls for durable reconciliation/fault/deduplication/audio checks. G1 FAIL: assigns uninspected mock assertions and an incident cause to missing fault coverage."
+  },
+  {
+   "runtime": "Codex",
+   "id": "05-brand-creative",
+   "artifact": "codex-initial/05-brand-creative.json",
+   "core": {
+    "B1": "PASS",
+    "B2": "PASS",
+    "B3": "PASS"
+   },
+   "factual_discipline": "No material invented fact identified in these bounded latest drafts; not a predeclared supplemental score."
+  },
+  {
+   "runtime": "Claude",
+   "id": "05-brand-creative",
+   "artifact": "claude-initial/05-brand-creative.json",
+   "core": {
+    "B1": "PASS",
+    "B2": "PASS",
+    "B3": "PASS"
+   },
+   "supplemental": {
+    "G1": "NOT_SCORED"
+   },
+   "assessment": "Preserves Arial/light identity and draft format/accessibility checks without asset/publication claim. Initial draft also speculates about Arial non-Latin coverage; unverified outside core rubric, not an accuracy certificate."
+  },
+  {
+   "runtime": "Codex",
+   "id": "06-native-reviewer-contract",
+   "artifact": "codex-final/06-native-reviewer-contract.response.json",
+   "core": {
+    "R1": "PASS",
+    "R2": "PASS",
+    "R3": "PASS"
+   },
+   "factual_discipline": "No material invented fact identified in these bounded latest drafts; not a predeclared supplemental score."
+  },
+  {
+   "runtime": "Claude",
+   "id": "06-native-reviewer-contract",
+   "artifact": "claude-final/06-native-reviewer-contract.json",
+   "core": {
+    "R1": "PASS",
+    "R2": "PASS",
+    "R3": "PASS"
+   },
+   "supplemental": {
+    "G1": "FAIL"
+   },
+   "assessment": "Blocks injection/owner RLS bypass and recommends server-authorized tenant context with scoped auth.uid(). G1 FAIL: assumes absent tenant authorization and owner write grants; optional missing plan categorized as finding despite limitation language."
+  }
+ ],
+ "limits": [
+  "Codex initial output includes helper self-grading; root later inspected targeted drafts. Helper had already seen rubrics/feedback at final retest, so those drafts are rubric-aware, not blinded.",
+  "Exact native Codex model ID unavailable; inherited parent model was used. Claude actual runtime modelUsage is retained in each raw result.",
+  "Sources supplied explicitly; these trials do not verify automatic skill selection, installed hooks, live trust, published designs, production integrations or future model outputs.",
+  "Process/API execution_ok is not behavioral PASS. Original failures and all retest attempts remain in the bundle."
+ ],
+ "g1_retest": {
+  "date_utc": "2026-10-05",
+  "method": "Same root manual inspection, rubric-aware and not blinded; one draft per attempt. Sources re-fed after absence-as-fact discipline edits to the lead instruction file per scenario (entrepreneur, cisa-audit, test-strategy, database-reviewer).",
+  "cases": [
+   {
+    "runtime": "Claude",
+    "id": "01-entrepreneur",
+    "artifact": "claude-g1-retest/01-entrepreneur.json",
+    "core": {
+     "E1": "PASS",
+     "E2": "PASS",
+     "E3": "PASS",
+     "E4": "PASS"
+    },
+    "supplemental": {
+     "G1": "PASS"
+    },
+    "assessment": "Dedicated unknowns section; states \"The brief does not state whether a priced offer or payment attempt was made\" instead of asserting the event either way; CAC/runway/LTV left uncomputable; payment fees flagged as unstated reducers."
+   },
+   {
+    "runtime": "Claude",
+    "id": "03-cisa-audit",
+    "artifact": "claude-g1-retest/03-cisa-audit.json",
+    "core": {
+     "A1": "PASS",
+     "A2": "PASS",
+     "A3": "PASS"
+    },
+    "supplemental": {
+     "G1": "PASS"
+    },
+    "assessment": "Declines certification; \"Control frequency: unknown \u2014 not 'no defined frequency'\"; unexamined screenshots not presumed; every uncited attribute routed to an evidence request."
+   },
+   {
+    "runtime": "Claude",
+    "id": "04-sdlc-quality",
+    "artifact": "claude-g1-retest/04-sdlc-quality.json",
+    "core": {
+     "Q1": "PASS",
+     "Q2": "PASS",
+     "Q3": "PASS"
+    },
+    "supplemental": {
+     "G1": "PASS"
+    },
+    "assessment": "Attempt 2. Boundary-by-boundary analysis; acknowledged-then-thrown write treated as unresolved with reconciliation before any replay; uninspected suites handled as verification questions; coverage gap explicitly not the incident cause."
+   },
+   {
+    "runtime": "Claude",
+    "id": "06-native-reviewer-contract",
+    "artifact": "claude-g1-retest/06-native-reviewer-contract.json",
+    "core": {
+     "R1": "PASS",
+     "R2": "PASS",
+     "R3": "PASS"
+    },
+    "supplemental": {
+     "G1": "PASS"
+    },
+    "assessment": "Reasons from stated premises (owner role, RLS enabled-not-forced) via documented owner-bypass semantics; grants/memberships/policies \"not shown in the excerpt \u2014 confirm before relying on either their presence or absence\"; missing plan recorded under limitations, not findings."
+   }
+  ],
+  "attempt1_over_correction": {
+   "artifact": "claude-g1-retest/04-sdlc-quality.attempt1.json",
+   "outcome": "G1 held but core Q1-Q3 were absent: the draft answered epistemically and skipped the engineering substance. The first test-strategy wording (\"remove any stated content ... not actually read\") suppressed conditional reasoning from the brief's own premises; rewritten to license given premises while banning additions, then attempt 2 passed all criteria."
+  },
+  "limits": [
+   "Single graded draft per attempt from one model family; the same grader wrote the discipline edits, so this is rubric-aware verification, not blinded or statistically representative.",
+   "Wording was iterated against these four scenarios; generalization beyond them is untested \u2014 this is not a universal advice pass."
+  ]
+ }
+}

@@ -1,6 +1,6 @@
 ---
 name: csharp-patterns
-description: C# / .NET discipline — ASP.NET Core idioms, Minimal APIs / MVC controllers, async/await end-to-end (no .Result/.Wait()), records for value types, sealed types where inheritance unneeded, IOptions<T> for config, ILogger<T> structured logging, HttpClientFactory not new HttpClient(), EF Core async + AsNoTracking + projection patterns, IExceptionHandler for global errors, MediatR for CQRS. Auto-fires on C# / .NET project files.
+description: C# and .NET implementation guidance for ASP.NET Core, asynchronous I/O, configuration, structured logging and EF Core persistence.
 paths:
   - "**/*.cs"
   - "**/*.csx"

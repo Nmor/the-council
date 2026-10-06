@@ -1,0 +1,97 @@
+{
+  "written_at_utc": "2026-10-05T19:08:46.704121+00:00",
+  "runtime": "Native Codex delegated conversation; inherited parent model",
+  "actual_model_id": "unavailable through accessible runtime; not inferred",
+  "worktree": "/Users/APPLE/claude-council",
+  "head": "759f9286c051753c7c99f8a1c4c8ec593ccd79e7",
+  "worktree_dirty": true,
+  "status_bytes_sha256": "ae128d641906c5eec082013fff13098764ceb15850df7c3317105a28ccddee4d",
+  "tracked_diff_bytes_sha256": "173d033d7060a1382c23bb1b663903855eba180c9d0b4de38050b71f76c6380e",
+  "source_scope_digest": "daff1b9aad041e71f193358fc1c077acd771a6385d14d581a3895eb18bdb26fe",
+  "sources": {
+    "skills/entrepreneur/SKILL.md": {
+      "sha256": "c247b6c1da09e5aa7ded2009b25574ce2a5f218102d917c92c240035e1add698",
+      "bytes": 3044,
+      "snapshot": "source-snapshots/skills/entrepreneur/SKILL.md"
+    },
+    "skills/entrepreneur/references/economics.md": {
+      "sha256": "df03c335b8421ceb4d6ec5195a22241441df455b167b6c4a149236b8825e578e",
+      "bytes": 2177,
+      "snapshot": "source-snapshots/skills/entrepreneur/references/economics.md"
+    },
+    "skills/lean-startup/SKILL.md": {
+      "sha256": "46eaa32a14041f922fa1c31bd8238fbdac3f9d7f1124f93ec86e73dad26e7530",
+      "bytes": 11964,
+      "snapshot": "source-snapshots/skills/lean-startup/SKILL.md"
+    },
+    "skills/lean-startup/references/core-patterns.md": {
+      "sha256": "95b42d4bcaa7e50002c281ea9df840fa0bd44c6d5040e6cefe2a83f978953a2a",
+      "bytes": 14473,
+      "snapshot": "source-snapshots/skills/lean-startup/references/core-patterns.md"
+    },
+    "skills/cisa-audit/SKILL.md": {
+      "sha256": "a7afac564f68d4707019327db1ead4c2301762b2422afb63083db4317372d601",
+      "bytes": 2923,
+      "snapshot": "source-snapshots/skills/cisa-audit/SKILL.md"
+    },
+    "skills/cisa-audit/references/sampling-and-findings.md": {
+      "sha256": "4537f476b376b3abc795fd8f83427a90c2117c01cdef27260fcf0b0277d39f74",
+      "bytes": 1678,
+      "snapshot": "source-snapshots/skills/cisa-audit/references/sampling-and-findings.md"
+    },
+    "skills/test-strategy/SKILL.md": {
+      "sha256": "41b12c65189b8d3fe2d5bea90c2d868782254997a194bf5630f8dd0cdfc8cf2e",
+      "bytes": 2922,
+      "snapshot": "source-snapshots/skills/test-strategy/SKILL.md"
+    },
+    "skills/requirements-acceptance/SKILL.md": {
+      "sha256": "06df986612e4a22f776a85c203546cda6ee5ecbc79b9d5459a8060161ad0023b",
+      "bytes": 2518,
+      "snapshot": "source-snapshots/skills/requirements-acceptance/SKILL.md"
+    },
+    "skills/data-reconciliation/SKILL.md": {
+      "sha256": "4f4d2f77f821b66ee6d9b0ed69d593702938580de87e50618979fad7281d55df",
+      "bytes": 2553,
+      "snapshot": "source-snapshots/skills/data-reconciliation/SKILL.md"
+    },
+    "skills/release-integration/SKILL.md": {
+      "sha256": "3dc6c85a39b8f1d490c65aeb9717d8ac93d01bd9db2087ce01afa6709d040dae",
+      "bytes": 2506,
+      "snapshot": "source-snapshots/skills/release-integration/SKILL.md"
+    },
+    "agents/database-reviewer.md": {
+      "sha256": "fbe39c407f6e533a3d9cc588e2db43a6854b393784b564a3098ab88c28bba64d",
+      "bytes": 9727,
+      "snapshot": "source-snapshots/agents/database-reviewer.md"
+    },
+    "agents/performance-reviewer.md": {
+      "sha256": "3831afc9f19c197e219afb1c9fca40ae9f9e22e02acf012add4e6858b84e1b08",
+      "bytes": 7688,
+      "snapshot": "source-snapshots/agents/performance-reviewer.md"
+    },
+    "agents/code-reviewer.md": {
+      "sha256": "feeb4ca7682d33723aa5af622a52966a14d238ff12c807fea69aa666d42e737f",
+      "bytes": 15878,
+      "snapshot": "source-snapshots/agents/code-reviewer.md"
+    },
+    "skills/postgres-patterns/SKILL.md": {
+      "sha256": "de0a0895cf96c846d5148db65910e5cc9468c2d96a5fe5068238bda071d4ed74",
+      "bytes": 10415,
+      "snapshot": "source-snapshots/skills/postgres-patterns/SKILL.md"
+    }
+  },
+  "protocol_sha256": "f84d8346f7e6387dc7b06455f66f0c99c3ad50d4c0ba95bd1c999763580a8e7c",
+  "case_ids": [
+    "01-entrepreneur",
+    "03-cisa-audit",
+    "04-sdlc-quality",
+    "06-native-reviewer-contract"
+  ],
+  "drafts_before_rubric_read": true,
+  "limits": [
+    "Single draft per case from selected current source guidance and relevant excerpts; no external services or live installed Claude runtime.",
+    "Same model produces and manually grades drafts; this is not blinded or independent grading.",
+    "Source snapshots preserve exact bytes; status/diff digests are not a whole-repository content hash.",
+    "Unchanged requests only were read before drafts; criteria/counterexample fields remain unread until draft artifacts are written."
+  ]
+}

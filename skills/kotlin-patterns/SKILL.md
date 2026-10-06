@@ -1,6 +1,6 @@
 ---
 name: kotlin-patterns
-description: Kotlin 2.0+ discipline — null safety (no !! force-unwrap; safe call + Elvis), immutability (val over var; data class + copy), sealed classes for closed hierarchies, scope functions (let/run/apply/also/with) used purposefully, structured concurrency via coroutines (no GlobalScope.launch; supervisor scopes + Job cancellation), CoroutineExceptionHandler for unhandled errors, ktlint + detekt at strict ruleset, expression bodies for one-liners, KDoc on public API. Auto-fires on Kotlin source.
+description: Kotlin 2.0+ discipline — null safety (no !! force-unwrap; safe call + Elvis), immutability (val over var; data class + copy), sealed classes for closed hierarchies, scope functions (let/run/apply/also/with) used purposefully, structured concurrency via coroutines (no GlobalScope.launch; supervisor scopes + Job cancellation), CoroutineExceptionHandler for unhandled errors, ktlint + detekt at strict ruleset, expression bodies for one-liners, KDoc on public API. Select explicitly when this guidance applies.
 paths:
   - "**/*.kt"
   - "**/*.kts"

@@ -70,7 +70,12 @@ Swift / SwiftUI, Dart / Flutter, Kotlin / Jetpack Compose / Android, and React N
 
 ## Severity levels
 
-Per global `code-reviewer` shape: BLOCKER / CRITICAL / MAJOR / MINOR / SUGGESTION.
+Apply the [severity and merge contract](code-reviewer.md#severity-and-merge-contract).
+Preserve source severity and report normalized severity plus action: BLOCKER/CRITICAL
+normalize to CRITICAL; MAJOR/HIGH to HIGH; MINOR/MEDIUM to MEDIUM; SUGGESTION/LOW to LOW.
+Unresolved CRITICAL/HIGH block merge; MEDIUM warns; LOW is a note. Unknown severity or
+unavailable required verification is CHANGES_REQUIRED. Classify by impact/likelihood,
+not by platform; use the same action for the same unresolved exploit.
 
 ## Review checklist
 

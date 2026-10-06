@@ -39,7 +39,7 @@ const write = (file_path, content) => ({
 const bash = (command, tool_response) => ({
   tool_name: 'Bash',
   tool_input: { command },
-  ...(tool_response ? { tool_response } : {}),
+  tool_response: { exit_code: 0, ...tool_response },
 });
 
 // A source file that is integration-shaped, un-tested, and outside /.claude/ — i.e. the file
@@ -253,7 +253,7 @@ describe('test-coverage-marker.js — measuring coverage is not reading about it
     'cargo tarpaulin --out Xml',
   ]) {
     test(`records a real measurement: ${cmd}`, () => {
-      assert.notEqual(fire(cmd, { stdout: 'ran' }), null);
+      assert.notEqual(fire(cmd, { stdout: 'coverage: 90% of statements' }), null);
     });
   }
 
@@ -267,13 +267,13 @@ describe('test-coverage-marker.js — measuring coverage is not reading about it
   ]) {
     test(`carries the real percentage out of ${label} output, not just "it ran"`, () => {
       const text = fire('go test ./... -coverprofile=c.out', { stdout: out });
-      assert.equal(JSON.parse(text).measured, expected);
+      assert.equal(JSON.parse(text).measured, Number(expected));
     });
   }
 
   test('reads the figure from stderr too, where several runners print it', () => {
     const text = fire('pytest --cov=app', { stderr: 'TOTAL   10    2    80%' });
-    assert.equal(JSON.parse(text).measured, '80');
+    assert.equal(JSON.parse(text).measured, 80);
   });
 
   test('the recorded marker is what stops the gate asking for a measurement', () => {
@@ -286,12 +286,12 @@ describe('test-coverage-marker.js — measuring coverage is not reading about it
       writeFileSync(src, 'export const a = 1;\n');
       writeFileSync(join(dir, 'mod.test.ts'), 'import "./mod";\n'); // so the no-companion-test arm stays quiet
       // The nudge fires once, late: prime the session's edit counter to just under the threshold.
-      writeFileSync(marker(counter), '11');
+      writeFileSync(marker(counter), '11', { mode: 0o600 });
 
       const asked = run('test-coverage-gate.js', { session_id: sid, ...write(src, 'export const a = 2;') });
       assert.match(advice(asked), /coverage has not\s+been measured/, 'the gate must ask when nothing was measured');
 
-      writeFileSync(marker(counter), '11');
+      writeFileSync(marker(counter), '11', { mode: 0o600 });
       run('test-coverage-marker.js', { session_id: sid, ...bash('go test ./... -coverprofile=c.out', { stdout: 'coverage: 91.0% of statements' }) });
       const quiet = run('test-coverage-gate.js', { session_id: sid, ...write(src, 'export const a = 3;') });
       assert.equal(said(quiet).trim(), '', 'the marker name must be exactly the one the gate reads');

@@ -331,9 +331,8 @@
   "scm.diffDecorationsGutterAction": "diff",
 
   // ============================================================
-  // Anthropic / Claude integration
+  // Claude Code extension (anthropic.claude-code)
   // ============================================================
-  "anthropic.claudeCode.alwaysThinkingEnabled": true,
-  "anthropic.claudeCode.permissionMode": "ask",
-  "anthropic.claudeCode.dangerouslySkipPermissions": false
+  "claudeCode.initialPermissionMode": "default",
+  "claudeCode.allowDangerouslySkipPermissions": false
 }

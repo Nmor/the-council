@@ -1,6 +1,6 @@
 ---
 name: ci-rules
-description: CI + hooks discipline — ci-test-memory-tuning (test-suite memory budget vs runner OS headroom; OOM vs worker-thrash diagnostic), github-actions-gotchas (named pitfalls: bash -e + pipefail, 21K char expression limit, SHA-pin actions, runner OOM, workerIdleMemoryLimit thrash, pull_request vs pull_request_target), hooks (lifecycle: SessionStart / PreToolUse / PostToolUse / PreCompact / Stop / SessionEnd). Auto-fires on CI workflow files + hook scripts.
+description: CI + hooks discipline — ci-test-memory-tuning (test-suite memory budget vs runner OS headroom; OOM vs worker-thrash diagnostic), github-actions-gotchas (named pitfalls: bash -e + pipefail, 21K char expression limit, SHA-pin actions, runner OOM, workerIdleMemoryLimit thrash, pull_request vs pull_request_target), hooks (lifecycle: SessionStart / PreToolUse / PostToolUse / PreCompact / Stop / SessionEnd). Select explicitly when this guidance applies.
 paths:
   - ".github/workflows/**/*.yml"
   - ".github/workflows/**/*.yaml"

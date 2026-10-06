@@ -1,6 +1,6 @@
 ---
 name: aws-serverless-patterns
-description: AWS Lambda + API Gateway + Step Functions + EventBridge + SQS/SNS patterns. Cold-start mitigation, async webhook backpressure, idempotency, fan-out via SNS topics, retry/DLQ design, and Serverless Framework / SAM / CDK conventions. Auto-fires for `serverless.yml`, `template.yaml` (SAM), and `handlers/*.ts`.
+description: Design AWS Lambda, API Gateway, DynamoDB, EventBridge and SQS workflows with durable publish intent, retries, idempotency and backpressure.
 disable-model-invocation: true
 ---
 
@@ -58,10 +58,13 @@ Every external webhook (Stripe, Slack, GitHub, ClickUp, Twilio, Shopify) has a t
 s). The synchronous Lambda must:
 
 1. **Verify the signature** (HMAC) — sync, < 10 ms
-2. **Claim an idempotency key** — sync DDB Put with `ConditionExpression:
-   "attribute_not_exists(pk)"`, < 50 ms
-3. **Enqueue to SQS** — sync, < 50 ms
-4. **Return 200** — total budget < 200 ms
+2. **Persist payload and publish intent atomically** — conditional DynamoDB write of
+   one event/outbox row. A duplicate must match the original payload and retain its
+   recoverable delivery state; it must not be mistaken for completed work.
+3. **Return 200 only after durable acceptance**, within the provider's deadline.
+4. **Publish asynchronously** — a DynamoDB Streams/outbox worker sends to SQS, then
+   records acknowledgment. A scheduled reconciliation worker recovers pending rows
+   beyond stream retention. An ambiguous send can duplicate; consumers deduplicate.
 
 The SQS worker then runs the heavy dispatch (API calls, AI inference, downstream writes) without
 blocking the upstream's retry timer.
@@ -84,10 +87,17 @@ functions:
           arn: !GetAtt StripeInboundQueue.Arn
           batchSize: 5
           functionResponseType: ReportBatchItemFailures
-    destinations:
-      onFailure:
-        type: sqs
-        arn: !GetAtt AsyncWorkerDLQ.Arn
+resources:
+  Resources:
+    StripeInboundDLQ:
+      Type: AWS::SQS::Queue
+    StripeInboundQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        VisibilityTimeout: 360
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt StripeInboundDLQ.Arn
+          maxReceiveCount: 3
 ```
 
 The synchronous handler stays thin; the worker owns the work.
@@ -98,8 +108,9 @@ Every async path delivers AT LEAST once. SQS, SNS, EventBridge, DynamoDB Streams
 none of them guarantee exactly-once. Defenses:
 
 - **Conditional writes** — `attribute_not_exists(pk)` rejects the second delivery atomically
-- **Idempotency keys** — claim a key with TTL = max retry window; subsequent deliveries see the
-  claim and short-circuit
+- **Idempotency keys** — distinguish pending, retryable and completed states. Do not
+  expire pending work or short-circuit it after a failed publish. A claim alone is not
+  proof of delivery; atomically retain payload and intent, and reconcile ambiguity.
 - **Last-writer-wins updates** — order-independent operations (`SET last_seen = :now` if `:now >
   last_seen`)
 
@@ -116,6 +127,11 @@ Configure every consumer Lambda with:
 - `RedrivePolicy: { maxReceiveCount: 3, deadLetterTargetArn }` — fail fast to a DLQ instead of
   redelivering forever
 - `VisibilityTimeout` — at least `6 * function timeout` (covers the BatchWrite retry window)
+
+A Lambda asynchronous destination does not control SQS poller retries. Use queue
+RedrivePolicy, visibility timeout and partial batch responses on the event-source path.
+Fault-test failed/ambiguous publish, duplicate consumer execution and poison records.
+[AWS transactional outbox](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html).
 
 A DLQ alarm is mandatory: any message in the DLQ is unprocessed business state and should page
 on-call.

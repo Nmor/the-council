@@ -30,9 +30,8 @@
 
 "use strict";
 
+const { markerPath, writePrivate, hasPrivate } = require('./lib/private-state.js');
 const fs = require("node:fs");
-const os = require("node:os");
-const path = require("node:path");
 const { isGitRepo, getGitModifiedFiles, readFile } = require("../lib/utils");
 
 // ──────────────────────────────────────────────────────────────
@@ -76,7 +75,6 @@ const CLAIM_AUDIT_PREFIX = "[stop-verify-claim-audit] ";
 const CLAIM_PATTERNS = [
   /\b(?:we[’']?re|i[’']?m)\s+done\b/i,
   /\bnow\s+done\b/i,
-  /\b(?:task|work|change|migration|refactor|feature|fix|implementation|rebuild)\s+(?:is\s+)?(?:done|complete|shipped|ready\s+to\s+ship|production[- ]?ready|fully\s+\w+(?:-backed|-migrated|-stripped))\b/i,
   /\b100%\s+(?:done|complete|solid|ready)\b/i,
   /\b(?:bulletproof|battle[- ]tested)\b/i,
   /\bshipped\.?$/im,
@@ -89,18 +87,19 @@ const CLAIM_PATTERNS = [
   /\bcomplete\.?$/im,
 ];
 
-const VERIFICATION_MARKERS = [
-  /verification\s*\((?:this\s+turn|after\s+\w+)\)\s*:/i,
-  /^\s*verification\s*:/im,
-  /lint\s+sweep\s*\([^)]*this\s+turn[^)]*\)\s*:/i,
-  /^\s*proper[- ]fix\s+audit\s*:/im,
-  // A markdown table row is NOT evidence of verification. The previous entry here was
-  // /^\s*\|.*\|.*\|.*$/m -- any three-column row -- and because the Floor rules ask for
-  // tables in most structured answers, it silenced this audit on nearly every real
-  // response. Measured 2026-09-21: 'The migration is complete.' alone fired; the same
-  // sentence plus a bare table did not. A verification line must name a GATE and carry a
-  // RESULT on the same line.
-  /(?:tsc|eslint|pytest|go\s+test|go\s+vet|staticcheck|golangci|vitest|jest|ruff|mypy|gosec|govulncheck|markdownlint|coverage)[^\n]{0,80}?(?:\d+\s*errors?|\d+\s*issues?|\d+\s*\/\s*\d+|\bclean\b|\bpassed?\b|\bok\b|[0-9.]+\s*%)/i,
+const CLAIM_SUBJECT = /\b(?:task|work|change|migration|refactor|feature|fix|implementation|rebuild)\b/gi;
+const CLAIM_STATUS = [/^(?:done|complete|shipped)\b/i, /^ready\s+to\s+ship\b/i,
+  /^production[- ]?ready\b/i, /^fully\s+\w+-(?:backed|migrated|stripped)\b/i];
+const VERIFICATION_HEADERS = [
+  /^verification\s*\((?:this\s+turn|after\s+\w+)\)\s*:/i,
+  /^verification\s*:/i,
+  /^lint\s+sweep\s*\([^)]{0,160}this\s+turn[^)]{0,160}\)\s*:/i,
+  /^proper[- ]fix\s+audit\s*:/i,
+];
+const VERIFICATION_GATES = new Set('tsc eslint pytest staticcheck golangci vitest jest ruff mypy gosec govulncheck markdownlint coverage'.split(' '));
+const VERIFICATION_RESULTS = [
+  /\b\d+\s*(?:errors?|issues?)/i, /\b\d+\s*\/\s*\d+/,
+  /\b(?:clean|passed?|ok)\b/i, /\b[0-9.]+\s*%/,
 ];
 
 // Force ONE continuation when a completion claim carries no verification.
@@ -119,10 +118,10 @@ const VERIFICATION_MARKERS = [
 // Disable with CLAUDE_CLAIM_WALL=off (the warning still prints).
 function claimWallLatched(promptId) {
   if (!promptId) return true; // no turn identity -> cannot latch -> never continue
-  const latch = path.join(os.tmpdir(), `claude-council-claimwall-${promptId}`);
-  if (fs.existsSync(latch)) return true;
+  const latch = markerPath('claimwall', promptId);
+  if (hasPrivate(latch)) return true;
   try {
-    fs.writeFileSync(latch, String(Date.now()));
+    writePrivate(latch, String(Date.now()));
   } catch {
     return true; // cannot latch -> do not risk a loop
   }
@@ -180,10 +179,10 @@ function extractFinalAssistantMessage(raw) {
     return null;
   }
 
-  for (let i = lines.length - 1; i >= 0; i--) {
+  for (const line of [...lines].reverse()) {
     let entry;
     try {
-      entry = JSON.parse(lines[i]);
+      entry = JSON.parse(line);
     } catch {
       continue;
     }
@@ -210,6 +209,14 @@ function extractText(msg) {
 }
 
 function findClaim(text) {
+  for (const subject of text.matchAll(CLAIM_SUBJECT)) {
+    let tail = text.slice(subject.index + subject[0].length).trimStart();
+    if (/^is\s/i.test(tail)) tail = tail.slice(2).trimStart();
+    for (const pattern of CLAIM_STATUS) {
+      const status = tail.match(pattern);
+      if (status) return (subject[0] + " " + status[0]).slice(0, 120);
+    }
+  }
   for (const re of CLAIM_PATTERNS) {
     const m = text.match(re);
     if (m) return m[0].slice(0, 120);
@@ -218,8 +225,16 @@ function findClaim(text) {
 }
 
 function hasVerificationBlock(text) {
-  for (const re of VERIFICATION_MARKERS) {
-    if (re.test(text)) return true;
+  for (const raw of text.split('\n')) {
+    const line = raw.trimStart();
+    if (VERIFICATION_HEADERS.some((pattern) => pattern.test(line))) return true;
+    for (const word of line.matchAll(/\b[a-z]+\b/gi)) {
+      const gate = word[0].toLowerCase();
+      const tail = line.slice(word.index + word[0].length, word.index + word[0].length + 80);
+      const goGate = gate === 'go' && /^\s+(?:test|vet)\b/.test(tail);
+      if ((VERIFICATION_GATES.has(gate) || goGate) &&
+          VERIFICATION_RESULTS.some((pattern) => pattern.test(tail))) return true;
+    }
   }
   return false;
 }

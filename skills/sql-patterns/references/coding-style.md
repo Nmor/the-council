@@ -1,19 +1,11 @@
-
-<!-- ============================================================
-     Section: sql/coding-style.md
-     ============================================================ -->
-
 # SQL Coding Style
 
-> Covers SQL formatting, naming and the ten style hard rules. Pointed at by the **Coding style** row
-> in [../SKILL.md](../SKILL.md).
->
 > Auto-fires on every `*.sql`, `migrations/**`, `db/**` file.
 > Standards: **SQL:2023 (ISO/IEC 9075)**, **PostgreSQL Style Guide**,
 > **Mode Analytics SQL Style Guide**, **GitLab Data Team SQL Style
 > Guide**, **sqlfluff** (linter / formatter).
 >
-> **Size budget: 9 KB** — `token-budget.mjs --check`.
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -201,8 +193,12 @@ DELETE on the referenced row scans the referencing table.
 Before merging:
 
 ```sql
-explain analyze select ... from ...;
+explain select ... from ...;
 ```
+
+EXPLAIN ANALYZE executes the query. Use it only on an authorized isolated target
+after checking writes, volatile functions and external side effects. A rollback does
+not undo every side effect; production profiling is not implied by a review request.
 
 Watch for:
 
@@ -215,7 +211,7 @@ Watch for:
 ```sql
 -- migrations/2026-05-26-add-orders-shipping-address.sql
 -- ADD a nullable column first; backfill; then add NOT NULL
--- (per ~/.claude/rules-library/common/schema-evolution.md)
+-- (per ~/.claude/rules/common/schema-evolution.md)
 
 begin;
 
@@ -266,12 +262,12 @@ indented_joins = true
 
 ## Cross-references
 
-- `~/.claude/rules-library/common/coding-style.md`
-- `~/.claude/rules-library/sql/no-discards.md`
-- `~/.claude/rules-library/sql/security.md`
-- `~/.claude/rules-library/sql/testing.md`
-- `~/.claude/rules-library/sql/patterns.md`
-- `~/.claude/rules-library/common/schema-evolution.md`
+- `~/.claude/rules/common/coding-style.md`
+- `~/.claude/rules/sql/no-discards.md`
+- `~/.claude/rules/sql/security.md`
+- `~/.claude/rules/sql/testing.md`
+- `~/.claude/rules/sql/patterns.md`
+- `~/.claude/rules/common/schema-evolution.md`
 - SQL:2023 standard (ISO/IEC 9075)
 - PostgreSQL Coding Style (postgresql.org)
 - Mode SQL Style Guide

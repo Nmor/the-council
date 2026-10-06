@@ -19,9 +19,7 @@
 // only the live call could settle it.
 'use strict';
 
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
+const { markerPath, writePrivate } = require('./lib/private-state.js');
 
 // An outbound call to something that is not us, or a schema document being fetched.
 const LOOKED = [
@@ -48,8 +46,8 @@ process.stdin.on('end', () => {
     if (NOT_LOOKING.test(cmd)) process.exit(0);
     if (!LOOKED.some((r) => r.test(cmd))) process.exit(0);
 
-    fs.writeFileSync(
-      path.join(os.tmpdir(), `claude-council-payload-${sid}`),
+    writePrivate(
+      markerPath('payload', sid),
       `${Date.now()}\n${input.prompt_id || ''}`,
     );
   } catch {

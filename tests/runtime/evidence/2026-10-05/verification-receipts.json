@@ -1,0 +1,51 @@
+{
+  "status": "completed documentation checks",
+  "checks": [
+    {
+      "name": "markdown",
+      "command": "node /opt/homebrew/lib/node_modules/markdownlint-cli2/markdownlint-cli2-bin.mjs INSTALL.md docs/SKILLS-HOOKS-AUDIT-2026-10-05.md tests/runtime/evidence/2026-10-05/README.md",
+      "workdir": "/Users/APPLE/claude-council",
+      "completed_exit_code": 0,
+      "output": "markdownlint-cli2 v0.22.1 (markdownlint v0.40.0)\nFinding: INSTALL.md docs/SKILLS-HOOKS-AUDIT-2026-10-05.md tests/runtime/evidence/2026-10-05/README.md **/*.md !node_modules/** !**/site-packages/** !**/*venv*/** !skills/synced/** !skills/.trash/** !skills/graphify/** !cache/** !projects/** !plugins/** !sessions/** !plans/** !audits/** !todos/** !statsig/** !shell-snapshots/** !**/.archive/** !.local/**\nLinting: 935 file(s)\nSummary: 0 error(s)\n",
+      "scope": "Actual CLI: 935 files, zero errors. Earlier no-op library invocation excluded."
+    },
+    {
+      "name": "links",
+      "command": "bash tests/verify-link-integrity.sh",
+      "workdir": "/Users/APPLE/claude-council",
+      "completed_exit_code": 0,
+      "output": "\u2500\u2500 Link integrity sweep \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nScanning 936 markdown files...\nScanned: 2143 links across 936 files\n\u2713 All in-repo links resolve.\n",
+      "scope": null
+    },
+    {
+      "name": "orphans",
+      "command": "bash tests/verify-no-orphans.sh",
+      "workdir": "/Users/APPLE/claude-council",
+      "completed_exit_code": 0,
+      "output": "\u2500\u2500 Orphan sweep \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nScanning 820 candidate files...\n\u2713 No orphans found across 820 candidate files.\n",
+      "scope": null
+    },
+    {
+      "name": "whitespace",
+      "command": "git diff --check",
+      "workdir": "/Users/APPLE/claude-council",
+      "completed_exit_code": 0,
+      "output": "",
+      "scope": null
+    }
+  ],
+  "source_suite_reuse": {
+    "reason": "Production hook/installer code unchanged in this runtime follow-up; existing completed source-suite receipts retained.",
+    "previous_node_passed": 1134,
+    "previous_python_passed": 113,
+    "previous_python_optional_skipped": 1,
+    "rerun_in_this_followup": false
+  },
+  "artifact_validation": {
+    "status": "passed local assertions",
+    "parsed_json_files_excluding_inventory": 11,
+    "source_provenance_hashes_checked": 10,
+    "inventory_excludes_itself": true,
+    "method": "All JSON parses, byte sizes and SHA-256 hashes checked; source snapshots checked against recorded provenance; final inventory validated after writes."
+  }
+}

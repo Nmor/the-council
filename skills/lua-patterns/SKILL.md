@@ -1,6 +1,6 @@
 ---
 name: lua-patterns
-description: Lua 5.x discipline — module pattern (local M = {}; return M); local-everywhere (no global pollution); pcall/xpcall for protected calls with proper handler; safe loadstring (text-only via load(s, 'chunk', 't')); OO via metatables when needed; coroutines for cooperative concurrency; embedding-specific patterns (OpenResty cosockets, Neovim vim.api, Redis EVAL determinism); luacheck strict + stylua format-check; NEVER setfenv on untrusted code; NEVER load with bytecode flag from network. Auto-fires on Lua source.
+description: Lua 5.x discipline — module pattern (local M = {}; return M); local-everywhere (no global pollution); pcall/xpcall for protected calls with proper handler; safe loadstring (text-only via load(s, 'chunk', 't')); OO via metatables when needed; coroutines for cooperative concurrency; embedding-specific patterns (OpenResty cosockets, Neovim vim.api, Redis EVAL determinism); luacheck strict + stylua format-check; NEVER setfenv on untrusted code; NEVER load with bytecode flag from network. Select explicitly when this guidance applies.
 paths:
   - "**/*.lua"
   - "**/*.rockspec"

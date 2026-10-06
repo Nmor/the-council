@@ -52,7 +52,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/model-ladder-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/model-ladder-gate.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -61,11 +62,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/dev-server-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/dev-server-gate.js\"",
+            "timeout": 20
           },
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/commit-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/commit-gate.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -74,7 +77,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pre-push-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-push-gate.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -83,7 +87,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pre-write-governance-sweep.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-write-governance-sweep.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -92,7 +97,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/research-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/research-gate.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -101,11 +107,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/intake-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/intake-gate.js\"",
+            "timeout": 20
           },
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-gate.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -114,7 +122,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -195,7 +204,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pre-compact-council-brief.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-compact-council-brief.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -204,7 +214,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pre-compact.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-compact.js\"",
+            "timeout": 20
           }
         ]
       }
@@ -215,7 +226,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/session-start.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/session-start.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -224,7 +236,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder"
+            "command": "~/.claude/hooks/cbm-session-reminder",
+            "timeout": 20
           }
         ]
       },
@@ -233,7 +246,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder"
+            "command": "~/.claude/hooks/cbm-session-reminder",
+            "timeout": 20
           }
         ]
       },
@@ -242,7 +256,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder"
+            "command": "~/.claude/hooks/cbm-session-reminder",
+            "timeout": 20
           }
         ]
       },
@@ -251,11 +266,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder"
+            "command": "~/.claude/hooks/cbm-session-reminder",
+            "timeout": 20
           },
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-compact-memory-reload.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-compact-memory-reload.js\"",
+            "timeout": 20
           }
         ]
       }
@@ -266,11 +283,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pr-created-notice.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pr-created-notice.js\"",
+            "timeout": 45
           },
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-marker.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-marker.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -279,7 +298,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-format.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-format.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -288,7 +308,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-typecheck.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-typecheck.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -297,7 +318,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-console-warn.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-console-warn.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -306,7 +328,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-no-discards.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-no-discards.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -315,7 +338,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof-marker.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof-marker.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -324,7 +348,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/docs-sync-marker.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/docs-sync-marker.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -333,7 +358,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/research-marker.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/research-marker.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -342,7 +368,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/intake-marker.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/intake-marker.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -351,7 +378,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/parity-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/parity-gate.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -360,7 +388,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/gate-marker.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/gate-marker.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -369,7 +398,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-ux-writing.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-ux-writing.js\"",
+            "timeout": 45
           }
         ]
       },
@@ -400,7 +430,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/check-console-log.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/check-console-log.js\"",
+            "timeout": 20
           },
           {
             "type": "command",
@@ -416,7 +447,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/session-end.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/session-end.js\"",
+            "timeout": 20
           }
         ]
       },
@@ -425,7 +457,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/evaluate-session.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/evaluate-session.js\"",
+            "timeout": 20
           }
         ]
       }
@@ -435,7 +468,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/subagent-verification-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/subagent-verification-gate.js\"",
+            "timeout": 20
           }
         ]
       }
@@ -445,7 +479,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/tool-failure-recorder.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/tool-failure-recorder.js\"",
+            "timeout": 20
           }
         ]
       }
@@ -455,7 +490,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/model-ladder-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/model-ladder-gate.js\"",
+            "timeout": 20
           }
         ]
       }
@@ -465,7 +501,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/task-completion-gate.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/task-completion-gate.js\"",
+            "timeout": 20
           }
         ]
       }
@@ -475,7 +512,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/permission-denied-audit.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/permission-denied-audit.js\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/improve-prompt.py\""
           }
         ]
       }

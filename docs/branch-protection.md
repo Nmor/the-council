@@ -91,7 +91,7 @@ that has admin read on this repo.
 ```bash
 # Replace OWNER/REPO with your fork's path if you mirrored it.
 OWNER=nmor
-REPO=the-claude-council
+REPO=the-council
 
 # 1) Branch protection on main
 gh api "repos/$OWNER/$REPO/branches/main/protection" \

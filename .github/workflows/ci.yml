@@ -1,7 +1,7 @@
 name: CI
 
-# Runs on every push and pull request. Verifies the global Claude
-# config repo passes:
+# Runs on every push and pull request. Verifies The Council's shared
+# guidance and runtime integrations pass:
 #   - bootstrap/verify.sh structural self-test
 #   - tests/verify-link-integrity.sh (every in-repo markdown link resolves)
 #   - tests/verify-no-orphans.sh (every tracked file is reachable)
@@ -232,5 +232,17 @@ jobs:
           persist-credentials: false
       - name: Enforce aggregate eager-context budget
         run: node scripts/token-budget.mjs --root . --check
+      - name: Set up fixture runtime
+        # actions/setup-node@v6.3.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Install pinned isolated formatter/compiler fixtures
+        working-directory: tests/test-tools
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Test Claude hooks and budget reporting
+        env:
+          COUNCIL_REQUIRE_EDIT_TOOLS: "1"
+          COUNCIL_TEST_NODE_MODULES: ${{ github.workspace }}/tests/test-tools/node_modules
         run: node --test scripts/hooks/__tests__/*.test.mjs

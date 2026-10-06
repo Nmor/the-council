@@ -1,6 +1,6 @@
 ---
 name: community-rules
-description: Community + governance discipline — code-of-conduct (Contributor Covenant v2.1 adoption; documented enforcement team + reporting paths + retaliation protection; quarterly transparency reports). Auto-fires on community/governance artifacts.
+description: Community + governance discipline — code-of-conduct (Contributor Covenant v2.1 adoption; documented enforcement team + reporting paths + retaliation protection; quarterly transparency reports). Select explicitly when this guidance applies.
 paths:
   - "CODE_OF_CONDUCT.md"
   - "**/CODE_OF_CONDUCT.md"

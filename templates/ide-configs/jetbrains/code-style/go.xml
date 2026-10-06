@@ -16,7 +16,7 @@
   guidance) — the linter (revive line-length-limit, lll) is what
   fails CI.
 -->
-<code_scheme name="Claude Council — Go" version="173">
+<code_scheme name="The Council — Go" version="173">
   <option name="RIGHT_MARGIN" value="120"/>
   <option name="LINE_SEPARATOR" value="&#10;"/>
 

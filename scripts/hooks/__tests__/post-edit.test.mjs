@@ -14,8 +14,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
-import { execFileSync } from 'node:child_process';
 import { run, advice, said } from './helpers.mjs';
+import { localTools, missingTools, prettierAvailable, typescriptAvailable } from './post-edit-tools.mjs';
 
 // A throwaway workspace per fixture. Fixtures must live outside ~/.claude/scripts/hooks,
 // because the UX-writing hook exempts its own tooling from its own rules.
@@ -37,7 +37,7 @@ process.on('exit', () => {
 
 // An Edit payload exactly as Claude Code sends it after a successful write.
 const edit = (hook, filePath, env = {}) =>
-  run(hook, { tool_name: 'Edit', tool_input: { file_path: filePath } }, env);
+  run(hook, { tool_name: 'Edit', tool_input: { file_path: filePath } }, { ...localTools, ...env });
 
 const HOOKS = [
   'post-edit-format.js',
@@ -81,20 +81,7 @@ describe('every per-edit hook — a broken payload must not break the turn', () 
 // post-edit-format.js — runs prettier over what was just written.
 // ---------------------------------------------------------------------------
 
-// Whether Prettier is installed decides which half of this hook's contract is under test,
-// so the suite asks first. Assuming made the reformat test fail wherever Prettier was
-// absent, hiding the real finding: the hook could not run AND said nothing.
-const prettierAvailable = (() => {
-  try {
-    execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['prettier', '--version'], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-      timeout: 20000,
-    });
-    return true;
-  } catch {
-    return false;
-  }
-})();
+// Positive checks use explicitly supplied local packages; absence is always tested.
 
 describe('post-edit-format.js — it formats what prettier owns and nothing else', () => {
   test('rewrites a JavaScript file that was saved badly spaced', { skip: !prettierAvailable && 'prettier is not installed here' }, () => {
@@ -109,9 +96,9 @@ describe('post-edit-format.js — it formats what prettier owns and nothing else
   // the same observable result before: an unchanged file and an empty stderr. That is how
   // this hook sat registered in settings.json formatting nothing for an unknown length of
   // time. It is still non-blocking — the notice is the whole product.
-  test('says so when prettier cannot be run at all, instead of passing silently', { skip: prettierAvailable && 'prettier is installed here' }, () => {
+  test('says so when prettier cannot be run at all, instead of passing silently', () => {
     const f = fixture('c.js', 'const  a=1\n');
-    const r = edit('post-edit-format.js', f);
+    const r = edit('post-edit-format.js', f, missingTools);
 
     assert.equal(r.code, 0, 'a missing formatter never fails an edit that already landed');
     assert.match(
@@ -124,18 +111,18 @@ describe('post-edit-format.js — it formats what prettier owns and nothing else
 
   // Once per session: the answer cannot change mid-session, and a notice repeated on every
   // single edit is a notice that gets ignored.
-  test('reports an absent prettier once per session, not on every edit', { skip: prettierAvailable && 'prettier is installed here' }, () => {
+  test('reports an absent prettier once per session, not on every edit', () => {
     const sid = 'format-notice-' + process.pid;
     const first = run('post-edit-format.js', {
       tool_name: 'Edit',
       session_id: sid,
       tool_input: { file_path: fixture('d.js', 'const  a=1\n') },
-    });
+    }, missingTools);
     const second = run('post-edit-format.js', {
       tool_name: 'Edit',
       session_id: sid,
       tool_input: { file_path: fixture('e.js', 'const  b=2\n') },
-    });
+    }, missingTools);
 
     assert.match(advice(first), /prettier is not available/i);
     assert.equal(advice(second), '', 'the same session is told once');
@@ -193,7 +180,7 @@ const BAD_TS = 'export const y: number = "not a number";\n';
 const GOOD_TS = 'export const x: number = 1;\n';
 
 describe('post-edit-typecheck.js — it reports the edited file, and only when tsc can run', () => {
-  test('reports the type error the edit just introduced', () => {
+  test('reports the type error the edit just introduced', { skip: !typescriptAvailable && 'explicit local TypeScript package absent' }, () => {
     const d = tsProject({ 'main.ts': BAD_TS });
     const r = edit('post-edit-typecheck.js', join(d, 'main.ts'));
     assert.equal(r.code, 0, 'PostToolUse cannot block — the edit has already landed');
@@ -201,13 +188,14 @@ describe('post-edit-typecheck.js — it reports the edited file, and only when t
     assert.match(advice(r), /TS2322/, 'it must quote tsc, not just announce that tsc ran');
   });
 
-  test('stays silent when the broken file is a different one from the edited file', () => {
+  test('reports a project failure without pinning another file error on the edit', { skip: !typescriptAvailable && 'explicit local TypeScript package absent' }, () => {
     const d = tsProject({ 'other.ts': GOOD_TS, 'main.ts': BAD_TS });
     const r = edit('post-edit-typecheck.js', join(d, 'other.ts'));
-    assert.equal(said(r), '', "another file's errors must not be pinned on this edit");
+    assert.match(advice(r), /project check did not pass/);
+    assert.doesNotMatch(advice(r), /TypeScript errors in other/);
   });
 
-  test('stays silent when the edited TypeScript file type-checks clean', () => {
+  test('stays silent when the edited TypeScript file type-checks clean', { skip: !typescriptAvailable && 'explicit local TypeScript package absent' }, () => {
     const d = tsProject({ 'main.ts': GOOD_TS });
     assert.equal(said(edit('post-edit-typecheck.js', join(d, 'main.ts'))), '');
   });
@@ -218,11 +206,11 @@ describe('post-edit-typecheck.js — it reports the edited file, and only when t
     assert.equal(said(edit('post-edit-typecheck.js', join(d, 'app.js'))), '');
   });
 
-  test('stays silent when there is no tsconfig.json above the file', () => {
+  test('reports an unavailable check when there is no tsconfig.json above the file', () => {
     const f = fixture('loose.ts', BAD_TS);
     const r = edit('post-edit-typecheck.js', f);
     assert.equal(r.code, 0);
-    assert.equal(said(r), '', 'a stray .ts outside a project is not a compile target');
+    assert.match(said(r), /no tsconfig\.json found.*No passing check is claimed/);
   });
 
   test('stays silent when the file was deleted between the edit and the check', () => {
@@ -237,41 +225,38 @@ describe('post-edit-typecheck.js — it reports the edited file, and only when t
 // post-edit-ux-writing.js — the four AI-writing tells, over lib/ux-writing-rules.js.
 // ---------------------------------------------------------------------------
 
-const uxFires = (r, rule) => {
-  assert.equal(r.code, 0, 'every UX-writing rule is a warning; none may block an edit');
-  assert.match(advice(r), new RegExp(`\\[${rule}\\]`), `expected the ${rule} rule to name itself`);
-};
+const uxFires = (r, rule) => r.code === 0 && advice(r).includes(`[${rule}]`);
 
 describe('post-edit-ux-writing.js — it catches the four tells in copy a user reads', () => {
   test('flags an em-dash welding two clauses where the author never chose the punctuation', () => {
     const f = fixture('copy.js', 'export const t = "Your balance is low — top up to keep sending.";\n');
-    uxFires(edit('post-edit-ux-writing.js', f), 'em-dash-connector');
+    assert.ok(uxFires(edit('post-edit-ux-writing.js', f), 'em-dash-connector'));
   });
 
   test('flags a word before the dash that ends in a combining mark, not a base letter', () => {
     // Yoruba copy went undetected because "rẹ̀ — ó" ends in U+0300, not in the letter.
     const f = fixture('yo.js', 'export const t = "Balà̀sẹ̀ — top up.";\n');
-    uxFires(edit('post-edit-ux-writing.js', f), 'em-dash-connector');
+    assert.ok(uxFires(edit('post-edit-ux-writing.js', f), 'em-dash-connector'));
   });
 
   test('flags a buzzword that promises a feeling instead of naming a behaviour', () => {
     const f = fixture('copy.js', 'export const t = "Seamless payouts, best-in-class.";\n');
-    uxFires(edit('post-edit-ux-writing.js', f), 'buzzword');
+    assert.ok(uxFires(edit('post-edit-ux-writing.js', f), 'buzzword'));
   });
 
   test('flags an opener that delays the sentence without adding to it', () => {
     const f = fixture('copy.js', 'export const t = "In today\'s fast-paced world, we pay you.";\n');
-    uxFires(edit('post-edit-ux-writing.js', f), 'empty-opener');
+    assert.ok(uxFires(edit('post-edit-ux-writing.js', f), 'empty-opener'));
   });
 
   test('flags the not-just-but contrast tic', () => {
     const f = fixture('copy.js', 'export const t = "Not just a wallet, but a financial life.";\n');
-    uxFires(edit('post-edit-ux-writing.js', f), 'not-just-but');
+    assert.ok(uxFires(edit('post-edit-ux-writing.js', f), 'not-just-but'));
   });
 
   test('scans a locale catalogue, where every value is a string somebody reads', () => {
     const f = fixture('locales/en.json', '{"low": "Your balance is low — top up to keep sending."}\n');
-    uxFires(edit('post-edit-ux-writing.js', f), 'em-dash-connector');
+    assert.ok(uxFires(edit('post-edit-ux-writing.js', f), 'em-dash-connector'));
   });
 
   test('names the file and the line so the author can find the sentence', () => {
@@ -285,52 +270,51 @@ describe('post-edit-ux-writing.js — it catches the four tells in copy a user r
 describe('post-edit-ux-writing.js — the dashes it must NOT flag', () => {
   const silent = (name, content) => {
     const r = edit('post-edit-ux-writing.js', fixture(name, content));
-    assert.equal(r.code, 0);
-    assert.equal(said(r), '', `${name}: nothing here is a sentence to re-punctuate`);
+    return r.code === 0 && said(r) === '';
   };
 
   test('a dash dividing two rendered values has no sentence to fix', () => {
-    silent('row.jsx', 'export const R = () => <span>{log.status} — {log.date}</span>;\n');
+    assert.ok(silent('row.jsx', 'export const R = () => <span>{log.status} — {log.date}</span>;\n'));
   });
 
   test('a lone dash standing in for an absent amount is a typographic convention', () => {
-    silent('cell.js', 'export const empty = "—";\n');
+    assert.ok(silent('cell.js', 'export const empty = "—";\n'));
   });
 
   test('a code comment is the author talking to engineers, not to a user', () => {
-    silent('note.js', '// the retry budget — three attempts — is deliberate\nconst n = 3;\n');
+    assert.ok(silent('note.js', '// the retry budget — three attempts — is deliberate\nconst n = 3;\n'));
   });
 
   test('a multi-line block comment is not product copy either', () => {
-    silent('block.js', '/*\n * Balance is low — top up to keep sending.\n */\nconst n = 1;\n');
+    assert.ok(silent('block.js', '/*\n * Balance is low — top up to keep sending.\n */\nconst n = 1;\n'));
   });
 
   test('a log line is written for whoever reads the logs at 3am', () => {
-    silent('boot.js', 'logger.info("chunk load failed — reloading once");\n');
+    assert.ok(silent('boot.js', 'logger.info("chunk load failed — reloading once");\n'));
   });
 
   test('a Markdown document is writing about the product, not product copy', () => {
-    silent('README.md', 'Your balance is low — top up to keep sending.\n');
+    assert.ok(silent('README.md', 'Your balance is low — top up to keep sending.\n'));
   });
 
   test('a Go file is out of scope even when it holds the same sentence', () => {
-    silent('main.go', 'var t = "Your balance is low — top up."\n');
+    assert.ok(silent('main.go', 'var t = "Your balance is low — top up."\n'));
   });
 
   test('a test file is a developer talking to a developer', () => {
-    silent('checkout.test.js', 'expect(msg).toBe("Balance low — top up.");\n');
+    assert.ok(silent('checkout.test.js', 'expect(msg).toBe("Balance low — top up.");\n'));
   });
 
   test('a file under __tests__ is exempt however it is named', () => {
-    silent('__tests__/checkout.js', 'expect(msg).toBe("Balance low — top up.");\n');
+    assert.ok(silent('__tests__/checkout.js', 'expect(msg).toBe("Balance low — top up.");\n'));
   });
 
   test('the hook tooling cannot be subject to its own rules', () => {
-    silent('proj/.claude/scripts/hooks/z.js', 'const t = "Balance low — top up.";\n');
+    assert.ok(silent('proj/.claude/scripts/hooks/z.js', 'const t = "Balance low — top up.";\n'));
   });
 
   test('clean copy produces no output at all', () => {
-    silent('clean.js', 'export const t = "Your balance is low. Top up to keep sending.";\n');
+    assert.ok(silent('clean.js', 'export const t = "Your balance is low. Top up to keep sending.";\n'));
   });
 });
 

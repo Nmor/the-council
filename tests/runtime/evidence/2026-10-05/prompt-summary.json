@@ -1,0 +1,111 @@
+{
+  "renders": [
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/codex-prompt-input.json",
+      "bytes": 16342,
+      "sha256": "9489d1ebb33b596f96dced60208d4420ee009e4b8eb4339e6e0f986b790e3e91",
+      "cli_version": "0.159.2",
+      "command": "codex debug prompt-input",
+      "completed_exit_code": 0,
+      "model_turns": 0,
+      "items": 5,
+      "council_router_declarations": 1,
+      "native_archived_hook_guard_count": 1,
+      "text_parts": [
+        {
+          "item": 0,
+          "role": "developer",
+          "utf8_bytes": [
+            2368,
+            3882,
+            920
+          ]
+        },
+        {
+          "item": 1,
+          "role": "developer",
+          "utf8_bytes": [
+            2429
+          ]
+        },
+        {
+          "item": 2,
+          "role": "developer",
+          "utf8_bytes": [
+            271
+          ]
+        },
+        {
+          "item": 3,
+          "role": "user",
+          "utf8_bytes": [
+            3432,
+            441
+          ]
+        },
+        {
+          "item": 4,
+          "role": "user",
+          "utf8_bytes": [
+            40
+          ]
+        }
+      ],
+      "full_prompt_packaged": false
+    },
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/codex-prompt-input-0160.json",
+      "bytes": 15952,
+      "sha256": "2798cc1dfd39b8126548fbe0630315b3ca0342cf615ef4cf16f9eb4b24ae0571",
+      "cli_version": "0.160.0",
+      "command": "codex debug prompt-input",
+      "completed_exit_code": 0,
+      "model_turns": 0,
+      "items": 5,
+      "council_router_declarations": 1,
+      "native_archived_hook_guard_count": 1,
+      "text_parts": [
+        {
+          "item": 0,
+          "role": "developer",
+          "utf8_bytes": [
+            2212,
+            3882,
+            920
+          ]
+        },
+        {
+          "item": 1,
+          "role": "developer",
+          "utf8_bytes": [
+            2429
+          ]
+        },
+        {
+          "item": 2,
+          "role": "developer",
+          "utf8_bytes": [
+            271
+          ]
+        },
+        {
+          "item": 3,
+          "role": "user",
+          "utf8_bytes": [
+            3198,
+            441
+          ]
+        },
+        {
+          "item": 4,
+          "role": "user",
+          "utf8_bytes": [
+            40
+          ]
+        }
+      ],
+      "full_prompt_packaged": false
+    }
+  ],
+  "boundary": "Offline render only; serialized bytes are not model token usage or a context-growth benchmark."
+}

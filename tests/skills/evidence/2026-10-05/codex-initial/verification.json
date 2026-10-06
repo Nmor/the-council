@@ -1,0 +1,10 @@
+{
+  "verified_at_utc": "2026-10-05T17:03:28.332992+00:00",
+  "check": "JSON parsing, frozen protocol SHA256, response-after-protocol timestamps, case/rubric agreement, mandatory manual-assessment presence, negative-control presence, case artifact SHA256 and source-snapshot SHA256",
+  "status": "PASS",
+  "cases": 6,
+  "manual_criteria_records": 19,
+  "negative_control_records": 6,
+  "source_snapshots": 18,
+  "meaning": "Artifact consistency only; does not independently prove response quality or runtime skill behavior."
+}

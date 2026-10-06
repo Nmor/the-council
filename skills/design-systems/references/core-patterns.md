@@ -342,50 +342,21 @@ Major version bumps without codemods strand consumers. Provide:
 A codemod that handles 90% of cases earns goodwill the next
 breaking change will cash in.
 
-### Pattern 16: High-fidelity, non-generic UIs (anti-"AI-slop") + design tooling
+### Pattern 16: Visual quality grounded in the product
 
-LLM-generated (and rushed human) UIs regress to a generic mean — samey hero +
-three-card grid, hand-rolled buttons that don't match the system, raw `#hex` in
-markup, no dark mode, stock art, sometimes fabricated testimonials. "AI-sloppy"
-is a SOURCING failure, not a talent gap: the fix is what you build ON, in this
-impact order.
+Start from the audience, task and existing identity. Search for suitable components
+and tokens in the project before adding another system. Reuse what fits; create missing
+components deliberately with the same accessibility and API conventions. A hand-built
+component is not automatically a quality failure, and a library is not automatically a fit.
 
-1. **Build on the REAL design system, never from scratch (the #1 lever).** If a
-   `components/ui/` set + tokens exist (in this or a sibling repo), USE them —
-   port/share, don't reinvent. A hand-authored Button is the tell; the shared
-   cva-variant, token-colored Button is invisible (in the good way). Search first
-   (Pattern 13 + `reuse-first.md`); consume Tier-2/3 tokens; zero raw hex.
-2. **Source polished sections from curated block libraries, then retheme to your
-   tokens** — don't hand-build what a designer already did better: **Tailwind
-   Plus** (official; highest quality; paid), **shadcn.io / shadcnblocks** (large
-   catalog), **Aceternity UI** (animated SaaS landing; Framer Motion), **Magic
-   UI**, **21st.dev**. Copy the block, swap raw values for your tokens, delete
-   the unused.
-3. **Make the MODEL source instead of invent — design MCP servers:**
-   - **shadcn MCP** — reads the project's `components.json` + registry, installs
-     REAL components. PROJECT-scoped: `pnpm dlx shadcn@latest mcp init --client
-     claude` (run in a shadcn-initialised project; no API key for the public
-     registry; a user/global add fails-connect outside a shadcn project).
-   - **21st.dev "Magic" MCP** — `/ui <describe>` generates polished shadcn
-     components (free API key).
-   - **Figma Dev Mode MCP** (official; bidirectional Claude Code, 2026) — point
-     at a real Figma frame for faithful, token-mapped code (Figma auth). If a
-     design exists, design-to-code beats prompt-to-code every time. Or paste a
-     screenshot as the visual target (no MCP needed). Auth/key MCPs are added
-     interactively — `claude mcp list` to verify.
-4. **Ground every build in a NAMED reference aesthetic** (e.g. "Stripe/Linear
-   calm" vs "Vercel bold") — "make it look good" regresses to generic. Add
-   CUSTOM brand assets (a bespoke SVG illustration system, real logo, real
-   photography); generic stock/undraw undoes the uniqueness. Author illustrations
-   in one cohesive visual language, token-colored so they theme in light/dark.
-5. **Enforce constraints from line one:** three-tier tokens (Pattern 1), fixed
-   spacing/type/radius/motion scales, light AND dark as a token swap (Pattern 6),
-   WCAG 2.2 AA (Pattern 5). Constraints make independent sections read as ONE
-   product.
-6. **Verify VISUALLY + iterate:** build → serve → LOOK (both themes, mobile +
-   desktop) → human eye → fix. One-shot high-fidelity is a myth; the review loop
-   is the method (Storybook + visual regression, Pattern 10; paste screenshots
-   for critique).
+Use licensed references or a provided design to understand hierarchy, spacing and
+interaction. Optional component registries and design tools can help when available,
+compatible and authorized. Check their licenses, dependency cost and actual output.
+Do not mandate paid tools, install integrations by default or copy a competitor's identity.
+For wider art direction use [brand creative direction](../../brand-creative-direction/SKILL.md).
 
-Honesty gate: never fabricate testimonials, logos, or metrics to fill a design —
-use real trust signals + clearly-labelled placeholders.
+Define consistent type, spacing, semantic color, radius and motion scales where relevant.
+Support the themes and media the brief requires. Familiar fonts and standard layouts
+are valid choices when they support the task. Test responsive behavior, accessibility
+and representative content. Inspect the rendered result and iterate against the brief;
+state what was verified. Use real claims and trust signals or clearly labeled placeholders.

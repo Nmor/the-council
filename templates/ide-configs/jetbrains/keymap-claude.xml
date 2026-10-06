@@ -12,7 +12,7 @@
   plugin's action IDs change in a future release, update this file
   + bump the JetBrains plugin version pin in install scripts.
 -->
-<keymap version="1" name="Claude Council" parent="$default">
+<keymap version="1" name="The Council" parent="$default">
   <!-- Claude Code primary surface -->
   <action id="anthropic.claudecode.OpenSidebar">
     <keyboard-shortcut first-keystroke="meta ESCAPE"/>

@@ -1,24 +1,31 @@
-# Contributing to The Claude Council
+# Contributing to The Council
 
 > How to add a rule, skill, or agent — or improve an existing one.
 > Every contribution follows the principal-level mandate and passes
 > through the same Council protocol it enforces.
 
+Contributions support Claude Code and Codex through shared guidance and separate
+runtime adapters. Identify which runtime a change affects and preserve the
+[native compatibility contract](CODEX.md#native-compatibility-contract). Claude
+tool names, hook events and model labels do not imply equivalent Codex behavior.
+
 ## Quick start
 
 ```bash
 # 1. Fork + clone
-git clone https://github.com/<your-fork>/the-claude-council.git
-cd the-claude-council
+git clone https://github.com/<your-fork>/the-council.git
+cd the-council
 
 # 2. Install hooks (cross-platform; reads .githooks/)
-git config core.hooksPath .githooks 2>/dev/null || true
+git config core.hooksPath .githooks
 
 # 3. Run the local verifier suite — the same gate CI runs
 bash bootstrap/verify.sh --prefix "$PWD" --verbose
 bash tests/verify-link-integrity.sh
 bash tests/verify-no-orphans.sh
 bash tests/verify-standards-citations.sh
+python3 -m unittest discover -s tests/codex -v
+node scripts/token-budget.mjs --root . --check
 
 # 4. Markdown + shell lint (CI runs the same)
 npx --yes markdownlint-cli2 "**/*.md" "#node_modules" "#sessions" \
@@ -26,7 +33,7 @@ npx --yes markdownlint-cli2 "**/*.md" "#node_modules" "#sessions" \
 shellcheck -S style bootstrap/*.sh tests/*.sh
 ```
 
-All four verifiers must pass before you open the PR. CI re-runs them
+The verifiers and applicable adapter/lint checks must pass before you open the PR. CI re-runs them
 and will block the merge if anything is red.
 
 ## Choosing what to file
@@ -528,7 +535,7 @@ Contributions are licensed under the repository's license. See the
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/Nmor/the-claude-council/discussions)
+Open a [GitHub Discussion](https://github.com/Nmor/the-council/discussions)
 or an issue. Public-facing comms follow the discipline of
 [`comms-reviewer`](../agents/comms-reviewer.md) — clear, specific,
 constructive.

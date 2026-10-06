@@ -1,101 +1,42 @@
 # frontend-patterns: Visual design quality
 
-> Covers design thinking before coding, typography, colour + theme, motion, spatial composition,
-> visual detail, implementation-complexity matching, and the never-ship anti-patterns. Routed from
-> the SKILL.md Reference map row **Visual design quality**.
->
-> **Size budget: 8 KB** — `token-budget.mjs --check`.
+> Size budget: 8 KB. Detailed guidance loads on demand from the reference map.
 
-## Visual design quality
+## Design from the brief
 
-Architecture without aesthetics ships generic UI. This section
-covers the design-quality discipline that complements every
-pattern above. Apply BEFORE writing UI code — choose the
-aesthetic direction with intent.
+Before changing UI, understand its purpose, audience, existing brand, task hierarchy
+and constraints. Choose a direction that serves them. Distinctiveness matters when it
+supports the product; familiarity and density can be valuable for operational tools.
+Use [brand creative direction](../../brand-creative-direction/SKILL.md) for a broader
+identity or campaign brief. An existing design does not need a redesign on every task.
 
-### Design thinking (before coding)
+## Typography and color
 
-Commit to a clear aesthetic direction:
+Use established type and color tokens where available. Common fonts such as Inter,
+Roboto, Arial and system fonts are valid when they fit the brief, language coverage,
+licensing, readability and performance needs. Add distinctive display typography only
+when it improves hierarchy and identity. Check real content and intended device sizes.
 
-- **Purpose** — what problem does this interface solve? Who uses it?
-- **Tone** — pick a clear direction: brutally minimal, luxury /
-  refined, soft / pastel, industrial / utilitarian, editorial /
-  magazine, playful, retro-futuristic, organic, art deco, or any
-  intentional aesthetic.
-- **Differentiation** — what makes this interface memorable? What
-  will users notice in 5 seconds?
+Use a coherent semantic palette and verify contrast for text, controls and states.
+Brand colors and gradients are acceptable when appropriate. Define raw values at the
+project's token layer when it has one; respect repository conventions. Implement only
+the themes required by the product. Do not claim a palette performs better without data.
 
-**Key principle**: intentionality > intensity. Bold maximalism +
-refined minimalism BOTH work — execute the chosen vision with
-precision.
+## Composition, motion and detail
 
-### Typography rules
+Prioritize clear reading order, useful hierarchy, spacing and responsive behavior.
+Conventional grids and layouts can fit a task well. Use asymmetry, overlap, decoration
+or dense composition only when they preserve understanding and operation. Visual effects
+are optional; avoid adding dependencies or costly effects merely to appear distinctive.
 
-- **DO** — choose fonts that are beautiful, unique, characterful.
-  Pair a distinctive display font with a refined body font.
-- **NEVER** — `Inter`, `Roboto`, `Arial`, `system-ui`, or other
-  generic overused fonts. Every project deserves a distinctive
-  typographic identity. (Also avoid converging on the same
-  "interesting" choice — `Space Grotesk`, `Manrope` — across every
-  project.)
+Motion should clarify changes, feedback or transitions. Respect reduced motion and
+keyboard/touch behavior; preserve a usable static state. Choose CSS or an existing
+library based on actual needs. Avoid decorative delay and hover-only information.
 
-### Color + theme rules
+## Inspect the result
 
-- Commit to a cohesive color system using CSS variables / design
-  tokens (per `~/.claude/rules-library/common/no-discards.md` — raw hex /
-  rgb / hsl / oklch literals in component files are hook-rejected).
-- Dominant colors with sharp accents outperform timid, evenly-
-  distributed palettes.
-- **NEVER** — purple gradients on white backgrounds, or other
-  cliched AI-generated colour schemes (mint-green + lavender,
-  Stripe-purple, etc.).
-- Vary between light + dark themes across projects — don't
-  converge on one default.
-
-### Motion + animation
-
-- **High-impact moments** — one well-orchestrated page load with
-  staggered reveals creates more delight than scattered
-  micro-interactions.
-- **CSS-first** for HTML / Vue / simple components.
-- **Motion library** (or Framer Motion) for React when richer
-  control is genuinely needed.
-- **Respect `prefers-reduced-motion`** (per `a11y.md`).
-- Scroll-triggering + hover states that surprise.
-
-### Spatial composition
-
-- Unexpected layouts: asymmetry, overlap, diagonal flow, grid-
-  breaking elements.
-- Generous negative space OR controlled density — both valid; the
-  middle ground is forgettable.
-- Avoid predictable, cookie-cutter component arrangements
-  (centre-aligned hero + 3-column features + 2-column CTA — the
-  default-AI shape).
-
-### Visual details + atmosphere
-
-Create depth + atmosphere rather than defaulting to solid colours:
-
-- Gradient meshes, noise textures, geometric patterns
-- Layered transparencies, dramatic shadows, decorative borders
-- Grain overlays, custom cursors, contextual effects
-- Match visual effects to the overall aesthetic direction
-
-### Implementation complexity matching
-
-- **Maximalist designs** — elaborate code with extensive animations
-  - effects justified
-- **Minimalist designs** — restraint, precision, careful spacing +
-  typography
-- **Elegance = executing the vision well**, not adding more effects
-
-### Anti-patterns (NEVER ship)
-
-- Generic font families (`Inter`, `Roboto`, `Arial`, system fonts)
-- Cliched colour schemes (purple gradient on white)
-- Predictable layouts + component arrangements
-- Cookie-cutter design that lacks context-specific character
-- Same aesthetic across every project
-- Raw colour literals in component files (per `no-discards.md`
-  hook — design-token-only)
+Review representative content, small/large layouts, required themes, loading/empty/error
+states, focus and accessibility. Inspect the rendered artifact using available tools;
+source inspection is not visual verification. Match implementation effort to the brief.
+Report unverified cases. Reject fabricated testimonials or metrics, unreadable type,
+inconsistent tokens, inaccessible interactions and design choices unsupported by context.

@@ -1,6 +1,6 @@
 ---
 name: i18n-rules
-description: Internationalisation discipline — every user-facing string in a catalog (no inline strings); ICU MessageFormat for plurals + interpolation; Intl APIs for date / number / currency / list / collation; BCP 47 locale identifiers; RTL mirroring for Arabic / Hebrew / Persian / Urdu; locale-aware sort + search; per-country address + name formats; currency placement varies by locale; transactional emails / SMS / push routed through the same i18n pipeline. Auto-fires on i18n / locales / translations / message catalogs.
+description: Internationalisation discipline — every user-facing string in a catalog (no inline strings); ICU MessageFormat for plurals + interpolation; Intl APIs for date / number / currency / list / collation; BCP 47 locale identifiers; RTL mirroring for Arabic / Hebrew / Persian / Urdu; locale-aware sort + search; per-country address + name formats; currency placement varies by locale; transactional emails / SMS / push routed through the same i18n pipeline. Select explicitly when this guidance applies.
 paths:
   - "**/i18n/**"
   - "**/locales/**"

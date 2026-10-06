@@ -180,7 +180,7 @@ DatabaseCleaner with truncation strategy.
 require "simplecov"
 SimpleCov.start "rails" do
   minimum_coverage 80
-  minimum_coverage_by_file 70  # tightened to 90 for touched files in CI
+  minimum_coverage_by_file 80  # separate touched/critical gates require 90/95
 end
 ```
 

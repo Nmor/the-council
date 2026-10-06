@@ -264,7 +264,7 @@ Options:
 
 1. Read each installed rule .md file
 2. Ask the user about their preferences:
-   - Test coverage target (default 70%)
+   - Coverage targets (90% touched / 80% project / 95% critical paths for supported metrics; honor repository/user requirements)
    - Preferred formatting tools
    - Git workflow conventions
    - Security requirements

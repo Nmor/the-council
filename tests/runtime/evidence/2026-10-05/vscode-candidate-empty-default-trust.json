@@ -1,0 +1,107 @@
+{
+  "profile": "candidate",
+  "vscodeVersion": "1.140.0",
+  "workspaceTrusted": true,
+  "effectiveSettings": {
+    "claudeCode.initialPermissionMode": "default",
+    "claudeCode.allowDangerouslySkipPermissions": false,
+    "chatgpt.openOnStartup": false,
+    "chatgpt.followUpQueueMode": "steer"
+  },
+  "inspectedSettings": {
+    "claudeCode.initialPermissionMode": {
+      "key": "claudeCode.initialPermissionMode",
+      "defaultValue": "",
+      "globalLocalValue": "default",
+      "globalValue": "default"
+    },
+    "claudeCode.allowDangerouslySkipPermissions": {
+      "key": "claudeCode.allowDangerouslySkipPermissions",
+      "defaultValue": false,
+      "globalLocalValue": false,
+      "globalValue": false
+    },
+    "chatgpt.openOnStartup": {
+      "key": "chatgpt.openOnStartup",
+      "defaultValue": false,
+      "globalLocalValue": false,
+      "globalValue": false
+    },
+    "chatgpt.followUpQueueMode": {
+      "key": "chatgpt.followUpQueueMode",
+      "defaultValue": "queue",
+      "globalLocalValue": "steer",
+      "globalValue": "steer"
+    }
+  },
+  "contracts": [
+    {
+      "host": "vscode",
+      "registeredSettings": [
+        "claudeCode.initialPermissionMode",
+        "claudeCode.allowDangerouslySkipPermissions",
+        "chatgpt.openOnStartup",
+        "chatgpt.followUpQueueMode"
+      ]
+    },
+    {
+      "host": "cursor",
+      "registeredSettings": [
+        "claudeCode.initialPermissionMode",
+        "claudeCode.allowDangerouslySkipPermissions"
+      ]
+    },
+    {
+      "host": "windsurf",
+      "registeredSettings": [
+        "claudeCode.initialPermissionMode",
+        "claudeCode.allowDangerouslySkipPermissions"
+      ]
+    }
+  ],
+  "negativeControlsRejected": 3,
+  "extensions": [
+    {
+      "id": "Anthropic.claude-code",
+      "version": "2.1.289",
+      "availableInExtensionHost": true,
+      "active": true,
+      "untrustedWorkspaceSupport": {
+        "supported": false,
+        "description": "untusted workspaces are not supported"
+      }
+    },
+    {
+      "id": "openai.chatgpt",
+      "version": "26.5930.51102",
+      "availableInExtensionHost": true,
+      "active": true,
+      "untrustedWorkspaceSupport": null
+    }
+  ],
+  "codexExportType": "undefined",
+  "appServerInitialized": true,
+  "registeredCodexCommands": [
+    "chatgpt.sidebarView.open",
+    "chatgpt.sidebarView.focus",
+    "chatgpt.sidebarView.resetViewLocation",
+    "chatgpt.sidebarSecondaryView.open",
+    "chatgpt.sidebarSecondaryView.focus",
+    "chatgpt.sidebarSecondaryView.resetViewLocation",
+    "chatgpt.sidebarSecondaryView.toggleVisibility",
+    "chatgpt.sidebarSecondaryView.removeView",
+    "chatgpt.implementTodo",
+    "chatgpt.openSidebar",
+    "chatgpt.openCommandMenu",
+    "chatgpt.newCodexPanel",
+    "chatgpt.addToThread",
+    "chatgpt.addFileToThread",
+    "chatgpt.showLspMcpCliArgs",
+    "chatgpt.newChat",
+    "chatgpt.dumpNuxState",
+    "chatgpt.resetNuxState"
+  ],
+  "apiModelTurns": 0,
+  "hookTrustChanged": false,
+  "liveSettingsChanged": false
+}

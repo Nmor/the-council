@@ -6,15 +6,17 @@ They do not certify tests or grant permissions. Go mutation checks run a native
 Node scanner and read-only git discovery, storing temporary signature snapshots.
 """
 
+# Size budget: 14 KB. Check: token-budget.mjs --check.
 import argparse
 import json
-from pathlib import Path
 import re
 import subprocess
 import sys
-
+from pathlib import Path
 
 EVENTS = {"SessionStart", "PreToolUse", "PostToolUse", "PreCompact", "Stop"}
+MAX_CONTEXT_BYTES = 2048
+MAX_MESSAGE_CHARS = 650
 PLAN_NAMES = {"plan.md", "implementation-plan.md", "implementation_plan.md"}
 
 
@@ -23,6 +25,8 @@ def project_plan(home, cwd):
     registry = Path(home) / "council" / "projects.json"
     if not registry.exists():
         return None
+    if registry.stat().st_size > 1_048_576:
+        raise ValueError("projects.json exceeds the configuration size limit")
     data = json.loads(registry.read_text(encoding="utf-8"))
     if not isinstance(data, dict) or not isinstance(data.get("projects"), list):
         raise ValueError("projects.json must contain a projects array")
@@ -87,8 +91,56 @@ def alternate_plan(path, cwd, canonical):
     return agent_plans or candidate.name.lower() in PLAN_NAMES
 
 
+def bounded(message):
+    """Limit context without reflecting arbitrary exception or tool output."""
+    return message[:MAX_MESSAGE_CHARS] + ("…" if len(message) > MAX_MESSAGE_CHARS else "")
+
+
 def context(event, message):
-    return {"hookSpecificOutput": {"hookEventName": event, "additionalContext": message}}
+    return {"hookSpecificOutput": {"hookEventName": event, "additionalContext": bounded(message)}}
+
+
+def merge_responses(event, *responses):
+    """Keep independent feedback and blocking decisions in one bounded response."""
+    merged = {}
+    specific = {"hookEventName": event}
+    for response in responses:
+        for key, value in response.items():
+            if key == "hookSpecificOutput" and isinstance(value, dict):
+                for field, content in value.items():
+                    if field == "additionalContext" and isinstance(content, str):
+                        specific[field] = specific.get(field, "") + "\n" + bounded(content)
+                    elif field == "permissionDecision" and isinstance(content, str) and content in {"allow", "deny", "ask"}:
+                        if specific.get(field) != "deny":
+                            specific[field] = content
+                    elif field == "permissionDecisionReason" and isinstance(content, str):
+                        specific[field] = bounded(content)
+            elif key in {"systemMessage", "reason"} and isinstance(value, str):
+                merged[key] = merged.get(key, "") + "\n" + bounded(value)
+            elif key == "decision" and isinstance(value, str) and value in {"block", "approve"}:
+                if merged.get(key) != "block":
+                    merged[key] = value
+    if len(specific) > 1:
+        merged["hookSpecificOutput"] = specific
+    # JSON escaping can expand a string beyond its character count.
+    limit = MAX_MESSAGE_CHARS
+    while True:
+        for field in ("systemMessage", "reason"):
+            if field in merged:
+                merged[field] = merged[field].strip()[:limit]
+        for field in ("additionalContext", "permissionDecisionReason"):
+            if field in specific:
+                specific[field] = specific[field].strip()[:limit]
+        if len(json.dumps(merged).encode()) <= MAX_CONTEXT_BYTES:
+            return merged
+        limit //= 2
+
+
+def input_error(error):
+    # OSError strings can contain credential-bearing paths or thousands of bytes.
+    detail = bounded(str(error)) if isinstance(error, ValueError) else type(error).__name__
+    return {"systemMessage": "Council hook could not evaluate its input/configuration: "
+            + detail + ". No verification or permission decision was made."}
 
 
 def command_status(response):
@@ -134,7 +186,7 @@ def go_mutation_guard(payload, home):
             raise ValueError("scanner response must be an object")
         return value
     except (OSError, ValueError, subprocess.SubprocessError) as error:
-        return {"systemMessage": f"Council Go mutation check unavailable: {error}. No check is claimed; run local lint."}
+        return {"systemMessage": f"Council Go mutation check unavailable ({type(error).__name__}). No check is claimed; run local lint."}
 
 def dispatch(payload, home):
     if not isinstance(payload, dict):
@@ -151,7 +203,8 @@ def dispatch(payload, home):
                "Use the project's existing implementation plan and keep handoff evidence there. "
                "No plan is registered for this directory; locate the existing plan before creating one.")
     if event == "SessionStart":
-        return context(event, "Council: read the installed Council instructions and relevant skills. " + handoff)
+        return context(event, "Council default mode is ON for every request; it never needs naming. "
+                       "Read the installed Council instructions and relevant skills. " + handoff)
     if event in {"PreCompact", "Stop"}:
         return {"systemMessage": "Council handoff reminder: " + handoff}
     tool = payload.get("tool_name")
@@ -177,8 +230,11 @@ def dispatch(payload, home):
                                                 "If the user changed the authoritative plan, update its registration first.",
                 }}
     mutation = go_mutation_guard(payload, home)
-    if mutation:
-        return mutation
+    feedback = command_feedback(event, tool, text, payload)
+    return merge_responses(event, mutation, feedback)
+
+
+def command_feedback(event, tool, text, payload):
     if tool in {"Bash", "exec_command", "shell_command"}:
         if event == "PreToolUse" and re.search(
                 r"\b(?:git\s+(?:push|reset|clean)|rm|terraform\s+(?:apply|destroy)|kubectl\s+delete)\b", text):
@@ -197,6 +253,10 @@ def dispatch(payload, home):
     return {}
 
 
+def payload_event(output):
+    return output.get("hookSpecificOutput", {}).get("hookEventName", "Stop")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--home", required=True, type=Path)
@@ -205,9 +265,8 @@ def main():
         output = dispatch(json.load(sys.stdin), args.home)
     except (ValueError, OSError, TypeError) as error:
         # Do not use unsupported blocking shapes or silently imply enforcement.
-        output = {"systemMessage": f"Council hook could not evaluate its input/configuration: {error}. "
-                                  "No verification or permission decision was made."}
-    print(json.dumps(output))
+        output = input_error(error)
+    print(json.dumps(merge_responses(payload_event(output), output)))
 
 
 if __name__ == "__main__":

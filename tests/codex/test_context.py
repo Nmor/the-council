@@ -190,6 +190,24 @@ class ContextTests(unittest.TestCase):
         context.apply(self.home, 'claude', restore=True)
         self.assertEqual(snapshot(self.home), before)
 
+    def test_claude_registers_the_slim_prompt_injector_once(self):
+        # The legacy ~960-token injector registration is replaced by the canonical
+        # slim one; the personal prompt hook survives. De-registering without a
+        # replacement is what silently removed per-request Council activation.
+        context.apply(self.home, 'claude')
+        groups = json.loads((self.home / 'settings.json').read_text())['hooks']['UserPromptSubmit']
+        commands = [h['command'] for g in groups for h in g['hooks']]
+        self.assertEqual(commands.count('python3 "$HOME/.claude/hooks/improve-prompt.py"'), 1)
+        self.assertNotIn('python3 ~/.claude/hooks/improve-prompt.py', commands)
+        self.assertIn('echo personal', commands)
+
+    def test_fresh_install_registers_the_prompt_injector(self):
+        (self.home / 'settings.json').unlink()
+        context.apply(self.home, 'claude')
+        groups = json.loads((self.home / 'settings.json').read_text())['hooks']['UserPromptSubmit']
+        commands = [h['command'] for g in groups for h in g['hooks']]
+        self.assertEqual(commands, ['python3 "$HOME/.claude/hooks/improve-prompt.py"'])
+
     def test_lifecycle_upgrade_preserves_personal_hooks_and_removes_payload_echo(self):
         hooks = self.settings['hooks']
         hooks['SessionStart'] = [

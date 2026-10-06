@@ -29,13 +29,23 @@ Read [sampling and findings](references/sampling-and-findings.md) before claimin
 effectiveness. Establish population completeness, selection method, evidence provenance,
 period coverage and exceptions. Do not fabricate samples, extrapolate a convenient sample
 statistically or infer effectiveness from absent logs. Use controlled redacted evidence.
+Not supplied is not confirmed absent. If metadata, period coverage or control design has
+not been inspected, mark it unknown and request it rather than recording an observed defect.
+Carry that distinction into tables and conclusions: an unspecified period, metadata or
+control frequency is unknown, not confirmed undefined or absent. Owner selection limits
+representativeness; it does not establish the owner's motive or the direction of bias.
+Owner-selected screenshots cannot establish a population conclusion, but they may support
+specific observations once examined. Do not presume what unseen screenshots contain.
 
 ## Report the conclusion
 
 For each finding, record criteria, observed condition, evidence, supported cause,
 business consequence, severity rationale, owner and corrective action. Mark unavailable
 evidence and untested controls explicitly. Distinguish proven deficiency from an evidence
-gap. Recommend remediation and a retest; do not silently repair audit evidence or assert
+gap. Attach the supporting artifact to every claimed condition; an attribute with no
+artifact moves to the evidence-request list as "not evidenced in the supplied material",
+not as a stated property of the control. Final scan: any "undefined", "absent" or
+"not performed" without a cited artifact becomes an evidence request. Recommend remediation and a retest; do not silently repair audit evidence or assert
 closure without new evidence. Preserve the existing audit/implementation plan and user scope.
 
 ## Learning hooks

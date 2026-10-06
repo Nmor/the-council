@@ -105,9 +105,13 @@ Fix: What to change
 
 ## Approval Criteria
 
-- **Approve**: No CRITICAL or HIGH issues
-- **Warning**: MEDIUM issues only (can merge with caution)
-- **Block**: CRITICAL or HIGH issues found
+Apply the [severity and merge contract](code-reviewer.md#severity-and-merge-contract);
+preserve source severity and report normalized severity plus action.
+
+- **Approve**: Required verification passed; no unresolved CRITICAL/HIGH or domain veto
+- **Warning**: Only unresolved MEDIUM issues, with verification passed and no domain veto
+- **Block**: Unresolved CRITICAL/HIGH, including BLOCKER/MAJOR aliases, unknown severity,
+  domain veto or unavailable required verification
 
 ## Framework Checks
 

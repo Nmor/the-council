@@ -19,12 +19,13 @@
 // Unwritable paths are simulated with ENOTDIR (a HOME whose parent is a regular file)
 // rather than chmod 000: chmod does not stop root, and a mode-500 directory left behind
 // by a failed run breaks the next one's cleanup.
+import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
 import { test, describe, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync, utimesSync, existsSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { run, uniq, advice, said } from './helpers.mjs';
 
 const BOXES = [];
@@ -449,7 +450,12 @@ describe('suggest-compact.js — speaks at the checkpoint and nowhere else', () 
     return last;
   };
   const session = (extra = {}) => ({ TMPDIR: box(), CLAUDE_SESSION_ID: uniq('sc'), ...extra });
-  const counter = (env) => join(env.TMPDIR, `claude-tool-count-${env.CLAUDE_SESSION_ID}`);
+  const state = createRequire(import.meta.url)('../lib/private-state.js');
+  const counter = (env) => {
+    const file = state.markerPath('tool-count', env.CLAUDE_SESSION_ID, env.TMPDIR);
+    state.privateDirectory(dirname(file));
+    return file;
+  };
 
   test('suggests a compact once the threshold is reached', () => {
     const env = session({ COMPACT_THRESHOLD: '3' });
@@ -472,9 +478,9 @@ describe('suggest-compact.js — speaks at the checkpoint and nowhere else', () 
 
   test('offers the next checkpoint 25 calls later, not sooner', () => {
     const env = session({ COMPACT_THRESHOLD: '3' });
-    writeFileSync(counter(env), '26');
+    writeFileSync(counter(env), '26', { mode: 0o600 });
     assert.equal(said(tick(env, 1)).trim(), '', 'call 27 is not a checkpoint');
-    writeFileSync(counter(env), '27');
+    writeFileSync(counter(env), '27', { mode: 0o600 });
     assert.match(advice(tick(env, 1)), /28 tool calls/);
   });
 
@@ -489,9 +495,9 @@ describe('suggest-compact.js — speaks at the checkpoint and nowhere else', () 
 
   test('falls back to 50 rather than firing constantly when the threshold is not a number', () => {
     const env = session({ COMPACT_THRESHOLD: 'abc' });
-    writeFileSync(counter(env), '5');
+    writeFileSync(counter(env), '5', { mode: 0o600 });
     assert.equal(said(tick(env, 1)).trim(), '', 'a garbage threshold must not collapse to "every call"');
-    writeFileSync(counter(env), '49');
+    writeFileSync(counter(env), '49', { mode: 0o600 });
     assert.match(advice(tick(env, 1)), /50 tool calls reached/);
   });
 
@@ -514,7 +520,7 @@ describe('suggest-compact.js — speaks at the checkpoint and nowhere else', () 
 
   test('restarts the count when the counter file is corrupt instead of crashing', () => {
     const env = session({ COMPACT_THRESHOLD: '3' });
-    writeFileSync(counter(env), 'garbage');
+    writeFileSync(counter(env), 'garbage', { mode: 0o600 });
     const r = tick(env, 1);
     assert.equal(r.code, 0);
     assert.equal(said(r).trim(), '');
@@ -523,7 +529,7 @@ describe('suggest-compact.js — speaks at the checkpoint and nowhere else', () 
 
   test('clamps an absurd counter value rather than trusting it', () => {
     const env = session({ COMPACT_THRESHOLD: '3' });
-    writeFileSync(counter(env), '9'.repeat(30));
+    writeFileSync(counter(env), '9'.repeat(30), { mode: 0o600 });
     tick(env, 1);
     assert.equal(read(counter(env)), '1', 'a 1e29 count would make every subsequent comparison meaningless');
   });

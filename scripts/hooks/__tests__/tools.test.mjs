@@ -105,7 +105,10 @@ describe('reflow-md — rewraps prose without changing what the document says', 
 
 describe('split-skill — moves detail out of SKILL.md and loses nothing', () => {
   const FRONT = '---\nname: demo\ndescription: A demo skill.\npaths:\n  - "**/*.demo"\n---\n';
-  const section = (h, n) => `## ${h}\n\n${Array.from({ length: n }, (_, i) => `${h} line ${i}: ${LONG(12)}`).join('\n')}\n`;
+  const section = (h, n) => {
+    const lines = Array.from({ length: n }, (_, i) => `${h} line ${i}: ${LONG(12)}`).join('\n');
+    return `## ${h}\n\n${lines}\n`;
+  };
   const skill = (body) => {
     const d = join(tmp(), 'demo');
     mkdirSync(d);
@@ -266,7 +269,7 @@ describe('token-budget --check — the gate fails when a file exceeds its own bu
   test('exits non-zero and names the file when it is over its declared budget', () => {
     const r = node('token-budget.mjs', ['--check'], { HOME: home(3000, 1) });
     assert.equal(r.code, 1);
-    assert.match(r.out, /OVER\s+r\.md/);
+    assert.match(r.out, /OVER\s+rules\/common\/r\.md/);
   });
 
   test('passes when every declaring file is within budget', () => {

@@ -156,3 +156,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New anti-pattern entry when a Go shortcut recurs
 - Tightening of `golangci-lint` config when chronic class observed
 - New pairing entry when sister agent consistently engages on Go builds
+
+Primary reference for the relevant review: [Go diagnostics documentation](https://go.dev/doc/diagnostics).

@@ -1,0 +1,237 @@
+{
+  "started_at_utc": "2026-10-05T16:59:14.661400+00:00",
+  "worktree": "/Users/APPLE/claude-council",
+  "base_head": "759f9286c051753c7c99f8a1c4c8ec593ccd79e7",
+  "dirty": true,
+  "dirty_digest_sha256": "4f78f164e65588c8213d5c80a686732db468c3da9b3806c17eb9ca429e1ee383",
+  "dirty_digest_definition": "SHA256 of compact sorted JSON containing SHA256 of git status --porcelain=v1 -z --untracked-files=all, SHA256 of git diff --binary HEAD, and git ls-files --others --exclude-standard -z paths with their file-content SHA256. Snapshot is not atomic while others work.",
+  "sources": [
+    {
+      "path": "skills/entrepreneur/SKILL.md",
+      "sha256": "5d367506952db4ceec1795b2a39fa5348eb0796e7e1c7bcf605e14a204213f3f",
+      "bytes": 2566
+    },
+    {
+      "path": "skills/entrepreneur/references/economics.md",
+      "sha256": "df03c335b8421ceb4d6ec5195a22241441df455b167b6c4a149236b8825e578e",
+      "bytes": 2177
+    },
+    {
+      "path": "skills/lean-startup/SKILL.md",
+      "sha256": "46eaa32a14041f922fa1c31bd8238fbdac3f9d7f1124f93ec86e73dad26e7530",
+      "bytes": 11964
+    },
+    {
+      "path": "skills/lean-startup/references/core-patterns.md",
+      "sha256": "87a832625fbf6a25027050e2301a25d59f8c06712879e38286cb90a701372ae7",
+      "bytes": 14328
+    },
+    {
+      "path": "skills/pentester/SKILL.md",
+      "sha256": "45e95489aaba8c1c4ee0ad02ef8330bacd9dc370da73f2fbc5a2e3d49605e470",
+      "bytes": 2376
+    },
+    {
+      "path": "skills/pentester/references/rules-of-engagement.md",
+      "sha256": "05df327141a88eadc718a28bad8abfb02a887fe3e4e5ee20310b3094eda09249",
+      "bytes": 1675
+    },
+    {
+      "path": "skills/cisa-audit/SKILL.md",
+      "sha256": "ad9883f206c85c1e57cc0a766e0b16a509217ccb3981184ef0a51add32273405",
+      "bytes": 2566
+    },
+    {
+      "path": "skills/cisa-audit/references/sampling-and-findings.md",
+      "sha256": "4537f476b376b3abc795fd8f83427a90c2117c01cdef27260fcf0b0277d39f74",
+      "bytes": 1678
+    },
+    {
+      "path": "docs/SDLC-SKILLS.md",
+      "sha256": "a88772ff6a4d0d53d2345c637a572f147d38d1a745494ce972419eb77a91ea75",
+      "bytes": 4319
+    },
+    {
+      "path": "skills/test-strategy/SKILL.md",
+      "sha256": "e38ef1bd6c393a417f8cc671b1f0fbe9ebeb080920142d97f5bf024cb189c04a",
+      "bytes": 2681
+    },
+    {
+      "path": "skills/requirements-acceptance/SKILL.md",
+      "sha256": "06df986612e4a22f776a85c203546cda6ee5ecbc79b9d5459a8060161ad0023b",
+      "bytes": 2518
+    },
+    {
+      "path": "skills/data-reconciliation/SKILL.md",
+      "sha256": "4f4d2f77f821b66ee6d9b0ed69d593702938580de87e50618979fad7281d55df",
+      "bytes": 2553
+    },
+    {
+      "path": "skills/release-integration/SKILL.md",
+      "sha256": "3dc6c85a39b8f1d490c65aeb9717d8ac93d01bd9db2087ce01afa6709d040dae",
+      "bytes": 2506
+    },
+    {
+      "path": "skills/brand-creative-direction/SKILL.md",
+      "sha256": "8e2b29010251afef98db9fd919907e6a14e847fbeeea735b5829f07974ab0359",
+      "bytes": 3076
+    },
+    {
+      "path": "agents/database-reviewer.md",
+      "sha256": "9311d645dbf34dd6e7f546528356259b73c2dbfe6e895957c9928c3f02e38dcd",
+      "bytes": 9389
+    },
+    {
+      "path": "agents/performance-reviewer.md",
+      "sha256": "5f4619c57c691f50228c477498e7df328bc1ce717fcdedeace373d540782b555",
+      "bytes": 7357
+    },
+    {
+      "path": "agents/code-reviewer.md",
+      "sha256": "980abf600e7b83ab2be082fe84ed4a4fcff37a9dcab452f356ae3492a9c1f2c4",
+      "bytes": 15355
+    },
+    {
+      "path": "skills/postgres-patterns/SKILL.md",
+      "sha256": "11e39c7682a71b2fd27999a62e59a4292444fa4ae5adc3078a4b2030cc99d9f8",
+      "bytes": 10021
+    }
+  ],
+  "runtime": {
+    "interface": "Native delegated Codex agent session",
+    "declared_family": "GPT-6 per session developer instructions",
+    "exact_model_id": "not exposed by available interface",
+    "selection": "inherits parent model; no override or subprocess/model API invocation",
+    "source_model_metadata_is_runtime_proof": false,
+    "installed_claude_runtime_exercised": false
+  },
+  "limits": [
+    "Single child generated all six responses; manually self-assessed against prewritten rubrics. No independent grader or repeated model trials.",
+    "Draft-only artifacts; no target probes, production/staging connections, business spending, evidence collection, asset generation, publishing, deployment or installation.",
+    "Source files read selectively; complete source snapshots are reproducibility artifacts, not extra loaded guidance.",
+    "Prior source/audit work exists in session history; existing audit conclusions and repository expected-answer scenarios were not read or used as the oracle for this evaluation. This is not blinded from all prior context.",
+    "Read-only primary-source web research was used for SOC assurance, RLS ownership, break-even arithmetic and caption guidance.",
+    "No claim about all skills, installed/trusted Claude hooks or end-to-end deployment/runtime behavior."
+  ],
+  "protocol_sha256": "f84d8346f7e6387dc7b06455f66f0c99c3ad50d4c0ba95bd1c999763580a8e7c",
+  "responses_completed_at_utc": "2026-10-05T17:02:27.165889+00:00",
+  "primary_authorities": [
+    {
+      "url": "https://www.postgresql.org/docs/18/ddl-rowsecurity.html",
+      "used_for": "ordinary table-owner bypass and FORCE/BYPASSRLS limitations"
+    },
+    {
+      "url": "https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services",
+      "used_for": "SOC assurance offerings by CPAs, separate from this draft"
+    },
+    {
+      "url": "https://legacy.sba.gov/business-guide/plan-your-business/calculate-your-startup-costs/break-even-point",
+      "used_for": "period-consistent fixed-cost/contribution formula only; no Nigeria-specific market claims"
+    },
+    {
+      "url": "https://www.w3.org/WAI/WCAG22/quickref/?showtechniques=122#captions-prerecorded",
+      "used_for": "prerecorded digital caption guidance, not accessibility certification"
+    }
+  ],
+  "case_artifacts": [
+    {
+      "path": "01-entrepreneur.json",
+      "sha256": "63324a4c2a0096ef32e278717973e776ff4c60d1663e9cb688fe6238969892e2"
+    },
+    {
+      "path": "02-pentester.json",
+      "sha256": "deedc5e49292d2b08ef19fb8e3d4db2abbd1981542b7bfc5459b4f610206fcf5"
+    },
+    {
+      "path": "03-cisa-audit.json",
+      "sha256": "361eeb2b5ada8b8ef6f991da5261ce165944e2939beb4c0211ffe3cb58b45d3f"
+    },
+    {
+      "path": "04-sdlc-quality.json",
+      "sha256": "2e7af6d33a44beb4a9d6e3adbbfb3f711986a01534960745361546850af60f1d"
+    },
+    {
+      "path": "05-brand-creative.json",
+      "sha256": "a99040cbad12ed72463e5dcc287f4e79b2c5e5c26d172580db7452a322125c6c"
+    },
+    {
+      "path": "06-native-reviewer-contract.json",
+      "sha256": "ef142917627cafef4161877060d272bef2a9dbb87bb5d9bc4ca3116cd6bf1639"
+    }
+  ],
+  "source_end_check": [
+    {
+      "path": "skills/entrepreneur/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/entrepreneur/references/economics.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/lean-startup/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/lean-startup/references/core-patterns.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/pentester/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/pentester/references/rules-of-engagement.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/cisa-audit/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/cisa-audit/references/sampling-and-findings.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "docs/SDLC-SKILLS.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/test-strategy/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/requirements-acceptance/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/data-reconciliation/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/release-integration/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/brand-creative-direction/SKILL.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "agents/database-reviewer.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "agents/performance-reviewer.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "agents/code-reviewer.md",
+      "changed_since_snapshot": false
+    },
+    {
+      "path": "skills/postgres-patterns/SKILL.md",
+      "changed_since_snapshot": false
+    }
+  ],
+  "artifact_format_finalized_at_utc": "2026-10-05T17:03:28.326052+00:00"
+}

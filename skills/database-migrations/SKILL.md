@@ -32,7 +32,7 @@ Safe, reversible database schema changes for production systems.
 Before applying any migration:
 
 - [ ] Migration has both UP and DOWN (or is explicitly marked irreversible)
-- [ ] No full table locks on large tables (use concurrent operations)
+- [ ] Lock level and acquisition timeout assessed, including metadata-only changes
 - [ ] New columns have defaults or are nullable (never add NOT NULL without default)
 - [ ] Indexes created concurrently (not inline with CREATE TABLE for existing tables)
 - [ ] Data backfill is a separate migration from schema change
@@ -44,16 +44,21 @@ Before applying any migration:
 ### Adding a Column Safely
 
 ```sql
--- GOOD: Nullable column, no lock
+-- Metadata-only addition still acquires ACCESS EXCLUSIVE; bound lock acquisition.
+BEGIN;
+SET LOCAL lock_timeout = '2s';
 ALTER TABLE users ADD COLUMN avatar_url TEXT;
+COMMIT;
 
--- GOOD: Column with default (Postgres 11+ is instant, no rewrite)
+-- PostgreSQL 11+: a non-volatile constant default can avoid a rewrite, but still locks.
 ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
 
--- BAD: NOT NULL without default on existing table (requires full rewrite)
+-- Invalid on populated tables: existing rows violate NOT NULL (23502).
 ALTER TABLE users ADD COLUMN role TEXT NOT NULL;
--- This locks the table and rewrites every row
 ```
+
+Check the target PostgreSQL version and default expression; volatile defaults can
+rewrite rows. Lock timeout is a retryable migration failure, not proof of execution.
 
 ### Adding an Index Without Downtime
 
@@ -76,13 +81,17 @@ Never rename directly in production. Use the expand-contract pattern:
 -- Step 1: Add new column (migration 001)
 ALTER TABLE users ADD COLUMN display_name TEXT;
 
--- Step 2: Backfill data (migration 002, data migration)
+-- Step 2: Deploy compatible atomic writes to both columns on EVERY writer.
+-- Keep readers on username until reconciliation succeeds.
+
+-- Step 3: Backfill in bounded batches while dual writes remain active.
 UPDATE users SET display_name = username WHERE display_name IS NULL;
 
--- Step 3: Update application code to read/write both columns
--- Deploy application changes
+-- Step 4: Reconcile mismatches, including concurrent writes and delayed jobs.
+SELECT count(*) FROM users WHERE display_name IS DISTINCT FROM username;
+-- Require zero; switch readers to display_name and observe through rollback window.
 
--- Step 4: Stop writing to old column, drop it (migration 003)
+-- Step 5: Retire old readers/writers and drain old jobs, then drop in a later migration.
 ALTER TABLE users DROP COLUMN username;
 ```
 

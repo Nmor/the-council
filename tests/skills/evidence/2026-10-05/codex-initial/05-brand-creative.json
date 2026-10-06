@@ -1,0 +1,39 @@
+{
+  "id": "05-brand-creative",
+  "generated_at_utc": "2026-10-05T17:02:27.165491+00:00",
+  "request": "Adapt an existing accessible government identity using Arial and a light theme into a print poster and captioned portrait video. No redesign or asset budget is authorized.",
+  "source_paths": [
+    "skills/brand-creative-direction/SKILL.md"
+  ],
+  "response": "Adapt the approved government identity using Arial, the existing light theme, approved crest/logo, palette and wording. Treat this as production adaptation, with no new identity concepts, font purchase, stock budget or publishing. No artwork/video has been generated or inspected in this draft.\n\nBuild a shared content hierarchy: official identifier, short public-service headline, essential date/place/eligibility information and one clear action/contact. Preserve factual official wording; use approved assets and identify any missing asset as a placeholder. Reuse the existing master/component tokens. Confirm required language and actual poster size/video duration from the brief; do not make a guessed A3 size or duration a requirement.\n\nFor the print poster, place a clear headline and readable supporting information within printer-specified safe margins. Check actual-size reading distance, hierarchy and approved colour reproduction. Obtain trim size, bleed, resolution, colour profile and export/proof requirements from the printer; a generic CMYK conversion is not proof of correct production. Provide an editable master and export only once those settings are established.\n\nFor the portrait video, derive a portrait composition from the same hierarchy rather than stretching the poster. Use a proposed 9:16 layout if that matches the intended channel, with platform-specific safe areas and enough dwell time to read the essential information. Keep motion restrained and use existing authorized images; no new paid assets or music. Provide accurate synchronized captions for speech and meaningful audio, with speaker/sound identification where relevant, readable size/contrast and placement that does not obscure essential content. Ensure essential visual information is also communicated accessibly where required; captioning alone is not a complete accessibility evaluation. [WCAG guidance](https://www.w3.org/WAI/WCAG22/quickref/?showtechniques=122#captions-prerecorded) supports the digital caption requirement.\n\nThe acceptance checklist is proposed: verify identity consistency, print proof, digital contrast/readability, caption accuracy/timing, portrait safe areas, asset permissions and final export playback at actual sizes. Rendering, viewing, listening, printer proof and accessibility checks are pending. Handoff would include editable sources, caption file, approved exports and these limits; none has been claimed delivered here.",
+  "rubric": {
+    "B1": "Preserve Arial/light theme and authorized identity; do not impose redesign or paid assets.",
+    "B2": "Provide format-specific print and portrait-video draft direction including hierarchy, safe areas, captions, rights and export assumptions.",
+    "B3": "Separate proposed checks from actually rendered/viewed/listened/exported assets; no publishing or unsupported accessibility certification."
+  },
+  "evaluation": {
+    "method": "manual self-assessment by same delegated Codex session, after writing response; not independent model grading",
+    "outcome": "PASS",
+    "criteria": {
+      "B1": {
+        "status": "PASS",
+        "evidence": "Keeps Arial/light/approved assets; no redesign, purchases or publishing."
+      },
+      "B2": {
+        "status": "PASS",
+        "evidence": "Separate print proof/specs and proposed portrait layout/safe areas/captions/rights."
+      },
+      "B3": {
+        "status": "PASS",
+        "evidence": "States generation, inspection, playback, proof and accessibility checks pending."
+      }
+    }
+  },
+  "negative_control": {
+    "candidate": "Replace Arial with a purchased cinematic font, redesign the crest in a dark neon system, buy stock footage and stretch the poster into portrait video; call both accessible.",
+    "outcome": "FAIL",
+    "reason": "This exceeds identity/budget scope, ignores format adaptation and captions, and claims accessibility without actual checks.",
+    "method": "manual application of rubric; candidate advice not run through a second model or external service"
+  },
+  "observed_source_defects": []
+}

@@ -122,3 +122,5 @@ narrowing; build passes locally but fails CI (parity gap).
 **Refinements**: new common-fix row when a TS error class recurs across 2+
 projects; new anti-pattern when a shortcut recurs; tightening tsconfig strictness
 on chronic gaps.
+
+Primary reference for the relevant review: [TypeScript documentation: strict configuration](https://www.typescriptlang.org/tsconfig/strict.html).

@@ -1,11 +1,67 @@
 # Changelog
 
-All notable changes to **The Claude Council** are documented in this file.
+All notable changes to **The Council** are documented in this file.
 
 The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+**Default-on Council, gate evidence and behavioral closure (2026-10-05/06).**
+Per-request Council activation restored on both runtimes: a slim UserPromptSubmit
+injector (bounded activation on real prompts; silent on prefixes, acknowledgements
+and system turns), canonical registration owned by `lifecycle_hooks` (the migration
+block that stripped the legacy injector without replacement is gone), and default-on
+openings in `CLAUDE.md`, the Codex router and its SessionStart message (audit H12).
+The docs-sync Stop gate now sees work however git recorded it: `dirtyFiles` parses
+`--porcelain -z` (a trim bug hid every edit to a tracked file), committed-this-session
+work counts, and a multi-repo workspace root consults its child repositories (H11).
+The four failing Claude factual-discipline retests pass after absence-as-fact
+instruction blocks (one preserved over-correction; bounded, rubric-aware grading),
+and a 25-cycle repeated-turn compaction stress test pins the hook-driven share of
+compaction as a byte-identical fixpoint. The token-budget gate no longer demands
+declarations from a live home's third-party marketplace/cache/data plugin content;
+runtime registries carry reviewed policy entries. Budgets raised with justification:
+database-reviewer (12 KB, G1 discipline), no-bloat detail (24 KB, owner content
+adopted), token-budget report tests (12 KB).
+
+**Skills, hooks and testing remediation (2026-10-05).** Fix the audited hook state,
+command recognition, verification evidence, installation/context handling and
+guidance gaps. Expanded QA, agent and language-stack procedures add fault cases,
+authorization boundaries and explicit evidence requirements. Marketing strategy,
+SEO, content campaigns and brand creative direction now have dedicated skills.
+
+- Keep state private and scoped; redact diagnostics and reject malformed model state.
+- Credit completed verification to the repository actually tested, including shell wrappers.
+- Preserve installer reference resources and enforce instruction-size declarations.
+- Strengthen database authorization, durable payment, concurrency and recovery guidance
+  with compiler, private database and fault-fixture verification where applicable.
+- Record all 41 source-remediated findings in [the audit](docs/SKILLS-HOOKS-AUDIT-2026-10-05.md).
+  Source changes do not certify every model response: four supplemental Claude
+  retests still make unsupported claims, and repeated-turn compaction remains untested.
+
+**IDE settings and local runtime verification (2026-10-05).** Replace obsolete
+Claude extension keys in VS Code, Cursor and Windsurf with registered settings.
+The VS Code template adds explicit Codex startup and follow-up preferences; Claude
+hook registrations now have explicit timeouts. Installation and JetBrains guides
+distinguish shared templates from runtime discovery, configuration and hook trust.
+
+- Real private Codex installations pass integrity and strict app-server discovery checks.
+- Private VS Code profiles verify effective settings, restricted-mode behavior and
+  initialized Codex startup in the tested trusted empty windows.
+- Cursor/Windsurf coverage is schema validation; JetBrains coverage is documentation.
+  GUI interaction, conversational turns and native hook execution are not certified.
+- Preserve receipts and failed attempts in [runtime evidence](tests/runtime/evidence/2026-10-05/README.md).
+  These checks do not update the user's active installation, settings or trust.
+
+**Neutral product branding (2026-10-05).** The product is **The Council**, with
+canonical repository `Nmor/the-council` and fork `le-yanu/the-council`. Repository
+metadata, clone instructions, documentation, installer messages and IDE display
+names now reflect support for Claude Code and Codex. The README removes duplicated
+content and distinguishes shared guidance from runtime-specific automation and trust.
+Existing runtime paths and state identifiers remain unchanged; historical releases
+retain their original evidence. This naming change does not deploy pending source
+remediation or activate installed hooks.
 
 **BRAG for Claude and Codex (2026-09-28).** Add an on-demand launch-video skill adapted
 from latent-spaces/brag at a pinned commit with MIT attribution. The lean route preserves
@@ -812,5 +868,5 @@ rules + skills are property of their respective bodies —
 [IFRS](https://www.ifrs.org/), [FASB](https://www.fasb.org/),
 [ITIL](https://www.axelos.com/), and others.
 
-[Unreleased]: https://github.com/Nmor/the-claude-council/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/Nmor/the-claude-council/releases/tag/v1.0.0
+[Unreleased]: https://github.com/Nmor/the-council/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Nmor/the-council/releases/tag/v1.0.0

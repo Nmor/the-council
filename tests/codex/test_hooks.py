@@ -58,7 +58,11 @@ class HookTests(unittest.TestCase):
 
     def test_session_points_to_exact_existing_plan(self):
         response = hooks.dispatch(self.event("SessionStart"), self.home)
-        self.assertIn(str(self.plan), response["hookSpecificOutput"]["additionalContext"])
+        context_text = response["hookSpecificOutput"]["additionalContext"]
+        self.assertIn(str(self.plan), context_text)
+        # Default-on is stated per session, so the owner never has to name the
+        # Council to get it (the Claude side regressed exactly this way).
+        self.assertIn("Council default mode is ON for every request", context_text)
         self.assertEqual(self.plan.read_text(), "Existing requirements\n")
 
     def test_patch_parser_preserves_multiple_operations_and_content(self):
@@ -88,9 +92,9 @@ class HookTests(unittest.TestCase):
             self.assertTrue(self.denied(hooks.dispatch(self.event(value=patch), self.home)))
 
     def test_canonical_plan_cannot_be_deleted_or_moved(self):
-        for patch in [f"*** Delete File: {self.plan}",
-                      f"*** Update File: {self.plan}\n*** Move to: notes.md\n+x"]:
-            self.assertTrue(self.denied(hooks.dispatch(self.event(value=patch), self.home)))
+        for patch_text in [f"*** Delete File: {self.plan}",
+                           f"*** Update File: {self.plan}\n*** Move to: notes.md\n+x"]:
+            self.assertTrue(self.denied(hooks.dispatch(self.event(value=patch_text), self.home)))
 
     def test_existing_other_plan_update_is_not_creation(self):
         self.assertEqual(hooks.dispatch(self.event(value="*** Update File: docs/plan.md\n+x"), self.home), {})

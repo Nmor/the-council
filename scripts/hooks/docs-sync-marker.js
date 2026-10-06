@@ -14,9 +14,7 @@
 // Markers are session-scoped temp files; they evaporate with the
 // session so each session must earn its own sync. Always exits 0.
 'use strict';
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+const { markerPath, writePrivate } = require('./lib/private-state.js');
 
 const SRC_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|cs|rb|php|swift|sql)$/i;
 
@@ -53,8 +51,8 @@ process.stdin.on('end', () => {
     if (sid && file) {
       const kind = classify(String(file));
       if (kind) {
-        fs.writeFileSync(
-          path.join(os.tmpdir(), `claude-docs-sync-${kind}-${sid}`),
+        writePrivate(
+          markerPath(`docs-sync-${kind}`, sid),
           String(Date.now()),
           'utf8',
         );

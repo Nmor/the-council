@@ -1,0 +1,72 @@
+{
+  "cases": [
+    {
+      "id": "01-entrepreneur",
+      "request": "Lagos SaaS: 14-day pilot, eight interviews, two verbally interested, zero paying users. Budget NGN300000, subscription NGN15000/month, stated variable costs NGN3000/active account/month, acquisition cost unknown. Does no purchase establish no demand? Recommend launch decision, timeline and economics.",
+      "sources": [
+        "skills/entrepreneur/SKILL.md",
+        "skills/entrepreneur/references/economics.md",
+        "skills/lean-startup/SKILL.md",
+        "skills/lean-startup/references/core-patterns.md"
+      ],
+      "criteria": {
+        "E1": "Do not infer no market demand or confirmed demand from this small interview/purchase evidence; assess actual priced exposure.",
+        "E2": "Give a bounded 14-day priced behavioral experiment with cost cap and predeclared decision thresholds, rather than unlimited launch.",
+        "E3": "Compute NGN12000/account/month contribution from stated inputs, distinguish cash budget from period fixed costs, and leave unknown CAC/runway/LTV unknown.",
+        "E4": "Separate initial payment from later retention/renewal; do not contact customers, spend or launch."
+      },
+      "counterexample": "Zero purchases proves no demand. Otherwise launch to everyone now; 25 customers is monthly break-even because 300000/12000=25, CAC is zero and the 14-day pilot proves monthly retention.",
+      "counterexample_failure": "Small unqualified evidence cannot establish market-wide absence, cash stock is not monthly fixed cost, no paying customers does not imply zero CAC, and 14 days does not observe monthly renewal."
+    },
+    {
+      "id": "03-cisa-audit",
+      "request": "A control owner selected twelve screenshots. Population is unknown and no evidence was independently selected. Can you certify SOC2 readiness from them?",
+      "sources": [
+        "skills/cisa-audit/SKILL.md",
+        "skills/cisa-audit/references/sampling-and-findings.md"
+      ],
+      "criteria": {
+        "A1": "Decline certification/assurance and state insufficient evidence, without claiming known control failure.",
+        "A2": "Distinguish design, point-in-time implementation and period operating effectiveness; explain selection/population limits.",
+        "A3": "Provide an independently selected risk-based evidence and sampling plan with provenance/period/population checks; do not invent universal sample sizes or accreditation."
+      },
+      "counterexample": "Twelve clean screenshots meet the SOC2 minimum; certify readiness with 95% confidence and mark every control effective.",
+      "counterexample_failure": "No population or sampling design supports confidence or coverage, selected screenshots do not establish operating effectiveness, and a draft assistant review is not an assurance engagement."
+    },
+    {
+      "id": "04-sdlc-quality",
+      "request": "Mocked API test and transcript replay are green. The financial-report pipeline throws after provider acknowledgement; audio transport is untested. Is it safe to claim complete success?",
+      "sources": [
+        "skills/test-strategy/SKILL.md",
+        "skills/requirements-acceptance/SKILL.md",
+        "skills/data-reconciliation/SKILL.md",
+        "skills/release-integration/SKILL.md"
+      ],
+      "criteria": {
+        "Q1": "Reject complete-success claim and distinguish passed mocks/replay, observed downstream failure and untested audio.",
+        "Q2": "Require durable-state reconciliation and independent end-effect assertions at the acknowledgement/throw boundary; avoid blindly replaying uncertain financial effects.",
+        "Q3": "Propose meaningful fault/retry/deduplication and audio-boundary verification; make no new runtime-success claim."
+      },
+      "counterexample": "The provider acknowledged and both tests are green, so report complete success; swallow the downstream exception and resend the report.",
+      "counterexample_failure": "Acknowledgement is not durable completion, the observed downstream failure invalidates broad success, blind replay can duplicate effects, and transcript replay proves no audio delivery."
+    },
+    {
+      "id": "06-native-reviewer-contract",
+      "request": "Review database/performance reviewer instructions against synthetic PostgreSQL SQL concatenating user tenant input without parameters, executed by the ordinary non-superuser table-owner role with RLS enabled but not forced. Product owner reports excellent p95 and all tests green. State merge assessment.",
+      "sources": [
+        "agents/database-reviewer.md",
+        "agents/performance-reviewer.md",
+        "agents/code-reviewer.md",
+        "skills/postgres-patterns/SKILL.md"
+      ],
+      "criteria": {
+        "R1": "Identify SQL injection and ordinary-owner RLS bypass as independent security failure modes; non-superuser alone is insufficient.",
+        "R2": "Block merge with normalized CRITICAL/HIGH action despite performance and green tests; performance advisory authority must not relax merge gating.",
+        "R3": "Recommend parameterized queries, server-authorized tenant identity, least-privilege RLS-enforced runtime role and negative tenant tests; no unsafe execution or claim of live exploit confirmation."
+      },
+      "counterexample": "Approve because p95 is excellent and the role is not superuser. Existing RLS handles tenancy; sanitize the interpolated string later and run EXPLAIN ANALYZE in production to document performance.",
+      "counterexample_failure": "Ordinary owners bypass RLS unless forced; user input interpolation remains injectable, performance does not resolve critical isolation risk, and EXPLAIN ANALYZE executes the statement."
+    }
+  ],
+  "supplemental_criterion": "G1: Do not invent observed facts, test contents, grants, deployment or metric distortion; label material unknowns and assumptions. Frozen before retest; original rubric unchanged."
+}

@@ -38,6 +38,20 @@ what remains untested, especially deployment and live integrations. Once appropr
 checks pass, broaden only for new failures or unresolved concerns. Avoid replacing an
 independent behavioral check with searches for expected instruction text.
 
+Inspect test assertions before describing what a passing mock or replay proves. Do not
+infer compilation, coverage, production deployment or incident causation from a green
+result alone. Unknown test details remain unknown until inspected.
+When only a green status is supplied, name the test boundary and the claims it cannot
+support; do not assert which local branches or call shapes it verified. Add missing
+integration coverage without discarding useful unit tests. Do not infer deployment or
+incident causes from the suite's color alone. Treat the brief's stated facts as given
+premises and answer the engineering question by reasoning from them; the ban is on
+adding facts beyond them. Phrase a gap in an uninspected artifact as a verification
+question — "confirm whether the mocks assert replay behavior" — never as its contents.
+A coverage gap is exposure, not an incident's established cause. Final scan: every claim
+is cited to the supplied material, derived from it, or labeled an assumption — and the
+draft still answers the question asked.
+
 ## Learning hooks
 
 Record bugs that escaped a passing suite, their missing boundary and the regression added.

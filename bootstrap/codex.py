@@ -7,13 +7,14 @@ import base64
 import hashlib
 import json
 import os
-from pathlib import Path, PurePosixPath
 import re
 import shlex
 import shutil
 import subprocess
 import sys
 import tempfile
+from pathlib import Path, PurePosixPath
+
 import tomllib
 
 SOURCE = Path(__file__).resolve().parents[1]
@@ -87,7 +88,8 @@ def check_installed(home: Path, manifest: dict) -> None:
 
 
 def tracked_resources(source: Path) -> list[str]:
-    result = subprocess.run(['git', '-C', str(source), 'ls-files', '-z', '--', *SURFACES],
+    result = subprocess.run(['git', '-C', str(source), 'ls-files', '-z', '--cached', '--others',
+                             '--exclude-standard', '--', *SURFACES],
                             check=True, capture_output=True)
     names = []
     for raw in result.stdout.decode().split('\0'):
@@ -104,8 +106,8 @@ def tracked_resources(source: Path) -> list[str]:
         names.append(raw)
     if not any(p.endswith('/SKILL.md') for p in names):
         raise ValueError('Install from a complete Git checkout of the Council repository')
-    return sorted(names + [name for name in ('CLAUDE.md', 'README.md', 'INSTALL.md', 'LICENSE')
-                           if (source / name).is_file()])
+    return sorted(set(names + [name for name in ('CLAUDE.md', 'README.md', 'INSTALL.md', 'LICENSE')
+                           if (source / name).is_file()]))
 
 
 def metadata(text: str) -> tuple[str, str, str]:
@@ -165,7 +167,13 @@ def agent_toml(name: str, description: str, body: str, home: Path) -> bytes:
                     'Return concise findings with evidence and stop. Do not delegate further unless explicitly requested. '
                     'User scope, authorization and higher-priority instructions govern source procedures below. '
                     'Inherit the parent model. Update only the existing plan when needed. '
-                    'Do not execute archived Claude scripts.\n\n' + adapt_reference(body, home))
+                    'Do not execute archived Claude scripts. Before deciding or editing, read the relevant '
+                    'specialist procedure linked below. Unresolved CRITICAL/HIGH or BLOCKER/MAJOR findings '
+                    'block the reviewed change; specialist vetoes follow their linked procedure: verified '
+                    'remediation, removal of scope, or only an explicitly permitted lawful exception. '
+                    'Merely documenting risk does not clear a veto.\n\n'
+                    f'Specialist procedure: {home.as_posix()}/council/resources/agents/'
+                    f'{name.removeprefix("council-")}.md\n')
     value = '\n'.join(f'{key} = {json.dumps(val, ensure_ascii=False)}' for key, val in (
         ('name', name), ('description', description[:180]), ('developer_instructions', instructions))) + '\n'
     tomllib.loads(value)

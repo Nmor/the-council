@@ -1,0 +1,8 @@
+{
+  "id": "03-cisa-audit",
+  "request": "A control owner selected twelve screenshots. Population is unknown and no evidence was independently selected. Can you certify SOC2 readiness from them?",
+  "sources": [
+    "skills/cisa-audit/SKILL.md",
+    "skills/cisa-audit/references/sampling-and-findings.md"
+  ]
+}

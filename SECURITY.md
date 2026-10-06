@@ -1,8 +1,8 @@
 # Security policy
 
 Thank you for taking the time to disclose responsibly. This repo
-ships rules, skills, and agents that thousands of engineers may
-adopt into their global Claude Code configuration; a vulnerability
+ships guidance, skills, agents and runtime integrations for Claude Code and
+Codex; a vulnerability
 here can ripple into every consumer's local environment. Quiet,
 coordinated disclosure protects them.
 
@@ -23,7 +23,7 @@ original bug.
 
 Use **GitHub Security Advisories** (private):
 
-→ <https://github.com/Nmor/the-claude-council/security/advisories/new>
+→ <https://github.com/Nmor/the-council/security/advisories/new>
 
 Or email the maintainer with the subject `[SECURITY] <one-line>`:
 the canonical address is published in the maintainer's GitHub
@@ -76,7 +76,7 @@ Out of scope:
 - Reports against a downstream consumer's local config that
   forked our content (we can advise but cannot remediate
   there — file the issue with the downstream)
-- Reports against Claude Code itself, Anthropic's APIs, or
+- Reports against Claude Code or Codex themselves, Anthropic's or OpenAI's APIs, or
   the upstream tools we cite (RFCs, OWASP, vendor docs) —
   please route those to the appropriate maintainer.
 

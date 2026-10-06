@@ -70,7 +70,11 @@ for cost-amplifying changes.
 
 ### Database
 
-- Query plan reviewed via `EXPLAIN ANALYZE` for non-trivial queries
+- Default to plain `EXPLAIN` for non-trivial queries. `EXPLAIN ANALYZE` executes the
+  statement; follow the [database execution profiling boundary](database-reviewer.md#execution-profiling-boundary):
+  authorized isolated target, explicit side-effect analysis and rollback limitations.
+  Never execute a write-query review against production data; report unavailable
+  profiling when safe execution is outside scope.
 - No `Seq Scan` on > 10k row tables (require index)
 - N+1 detection (eager-load / batch-load)
 - Connection pool sized per service (avoid PgBouncer transaction-mode pitfalls for prepared
@@ -92,6 +96,9 @@ for cost-amplifying changes.
 - Result caching where deterministic
 - Streaming response where UX benefits
 
+Normalize findings using the [severity and merge contract](code-reviewer.md#severity-and-merge-contract).
+Domain vetoes may add restrictions but must not relax blocking findings.
+
 ## Output shape
 
 ```text
@@ -112,8 +119,14 @@ Verdict: APPROVED / CHANGES_REQUIRED
 
 ## Anti-patterns to reject
 
+Apply [review evidence discipline](code-reviewer.md#confidence-based-filtering).
+Request missing measurements when material; do not invent a regression or metric
+distortion. Distinguish unavailable required checks from optional profiling. A security
+blocker remains blocking without an additional speculative performance finding.
+
 - New hot path without a latency budget
-- Database query without `EXPLAIN ANALYZE`
+- Database query without plan evidence (plain EXPLAIN is sufficient for a scoped review;
+  missing authorization for execution profiling must not force unsafe execution)
 - N+1 in a list endpoint
 - Synchronous external call in a request path without a timeout
 - ML / LLM call without a fallback
@@ -158,3 +171,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New auto-fire trigger when a recurring perf-impact pattern surfaces
 - Tightening of perf budgets when chronic miss observed
 - New pairing entry when a sister division consistently engages on perf work
+
+Primary reference for the relevant review: [Go diagnostics documentation: profiling and tracing](https://go.dev/doc/diagnostics).

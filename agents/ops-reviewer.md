@@ -159,3 +159,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New pre-deploy check when a deploy failure class recurs
 - New anti-pattern when an ops shortcut recurs across 2+ incidents
 - New pairing entry when a sister division consistently engages on ops work
+
+Primary reference for the relevant review: [Google SRE: reliability principles](https://sre.google/sre-book/table-of-contents/).

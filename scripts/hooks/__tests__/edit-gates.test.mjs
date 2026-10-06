@@ -17,7 +17,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { run, uniq, marker, cleanup, advice, said } from './helpers.mjs';
 
-const touchMarker = (name) => writeFileSync(marker(name), '');
+const touchMarker = (name) => writeFileSync(marker(name), '', { mode: 0o600 });
 
 // ──────────────────────────────────────────────────────────────────────────
 // intake-gate.js — a plan precedes code mutation
@@ -414,7 +414,7 @@ describe('pre-write-governance-sweep.js — a second CONTRIBUTING.md is a mistak
   });
 
   test('allows a governance file outside any git repo, where there is nothing to collide with', () => {
-    assert.equal(write('/private/tmp/no-such-repo-here/CONTRIBUTING.md').code, 0);
+    assert.equal(write(join(tmpdir(), 'council-non-git-' + process.pid, 'AGENTS.md')).code, 0);
   });
 
   test('leaves Edit alone — it only guards the creation of a new file', () => {

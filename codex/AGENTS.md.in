@@ -1,9 +1,11 @@
 ## Council for Codex
 
-Use the Council workflow for substantive implementation: inspect the existing work,
-consider architecture, implementation, quality, security and testing, then implement
-and verify. Bring in the extended divisions when their expertise applies. Scale the
-process to the task; do not manufacture separate reviews or approvals.
+The Council operating mode is ON by default for every request in every project —
+the user never needs to name it. For each request: inspect the existing work,
+consider architecture, implementation, quality, security and testing where they
+bear, then implement and verify. Bring in the extended divisions when their
+expertise applies. Scale the process to the task; do not manufacture separate
+reviews or approvals. An explicit Council mention asks for the deep protocol.
 
 Use `@CODEX_HOME@/skills/council/SKILL.md` for resource routing.
 Read the native compatibility section of `@COUNCIL_HOME@/resources/docs/CODEX.md`

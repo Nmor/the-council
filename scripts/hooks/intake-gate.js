@@ -31,8 +31,8 @@
 // prose" is not mechanically possible (it is model text, not a tool call); this gates
 // the observable proxy — a plan must precede code mutation on non-trivial work.
 
+const { markerPath, writePrivate, hasPrivate } = require('./lib/private-state.js');
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
 const pc = require('./lib/project-context.js');
 const { advise } = require('./lib/advise.js');
@@ -40,7 +40,8 @@ const { advise } = require('./lib/advise.js');
 const MODE = String(process.env.CLAUDE_INTAKE_GATE || 'nudge').toLowerCase();
 // Real source files — the surface a non-trivial task mutates. Config/markdown/JSON
 // are intentionally excluded so docs/config tweaks never trip the gate.
-const SRC = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|scala|cs|rb|php|swift|m|mm|c|h|cc|cpp|hpp|vue|svelte|sql)$/i;
+const SOURCE_EXTENSIONS = new Set('ts tsx js jsx mjs cjs py go rs java kt kts scala cs rb php swift m mm c h cc cpp hpp vue svelte sql'.split(' '));
+const SRC = { test: (file) => SOURCE_EXTENSIONS.has(path.extname(String(file)).slice(1).toLowerCase()) };
 
 // The session began when its transcript was created; a plan written since then is this
 // session's plan. Without a transcript path there is no session start to compare against.
@@ -74,13 +75,12 @@ process.stdin.on('end', () => {
   const lower = file.toLowerCase();
   if (lower.includes('/.claude/') || !SRC.test(lower)) process.exit(0);
 
-  const tmp = os.tmpdir();
   const planned =
-    fs.existsSync(path.join(tmp, `claude-council-intake-${sid}`)) || planWrittenThisSession(input, file);
+    hasPrivate(markerPath('intake', sid)) || planWrittenThisSession(input, file);
   if (planned) process.exit(0);
 
-  const nudged = path.join(tmp, `claude-council-intake-nudged-${sid}`);
-  if (MODE !== 'block' && fs.existsSync(nudged)) process.exit(0); // said it once already
+  const nudged = markerPath('intake-nudged', sid);
+  if (MODE !== 'block' && hasPrivate(nudged)) process.exit(0); // said it once already
 
   const msg =
     `[intake-gate] About to modify "${path.basename(file)}" with no plan for this session's ` +
@@ -94,7 +94,7 @@ process.stdin.on('end', () => {
   }
   advise(input, msg);
   try {
-    fs.writeFileSync(nudged, String(Date.now()));
+    writePrivate(nudged, String(Date.now()));
   } catch (err) {
     process.stderr.write(`[intake-gate] could not record the nudge (${err.code || 'error'}); it may repeat.\n`);
   }

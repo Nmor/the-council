@@ -1,6 +1,6 @@
 ---
 name: dynamodb-patterns
-description: DynamoDB single-table design, composite keys, GSI design, conditional writes, BatchWrite/BatchGet chunking, atomic counters, TTL, streams, and cross-tenant isolation patterns. Auto-fires for files importing from `@aws-sdk/lib-dynamodb` or `@aws-sdk/client-dynamodb`.
+description: DynamoDB single-table design, composite keys, GSI design, conditional writes, BatchWrite/BatchGet chunking, atomic counters, TTL, streams, and cross-tenant isolation patterns. Select explicitly when this guidance applies.
 disable-model-invocation: true
 ---
 

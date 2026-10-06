@@ -8,14 +8,17 @@
 // Pairs with council-default.md rule 11 + verify-before-claim.md done-gate;
 // the research-marker PostToolUse hook clears it once WebSearch/WebFetch runs.
 'use strict';
-const fs = require('fs');
-const os = require('os');
+const { markerPath, hasPrivate } = require('./lib/private-state.js');
 const path = require('path');
 
 // Source-code extensions only (skip docs/config).
 const SRC_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|cs|rb|php|swift)$/i;
 // Integration signals: external-contract code where currency matters.
-const INTEGRATION = /(\/integrations?\/|\/providers?\/|\/clients?\/|webhook|oauth|[-_]client\b|[-_]sdk\b|api[-_]?client|stripe|twilio|paystack|flutterwave|sendgrid|\bses\b|\bfcm\b|\bapns\b|plaid|slack|clickup|graphql|grpc|calendar|msgraph)/i;
+const INTEGRATION_PATTERNS = [
+  /(\/integrations?\/|\/providers?\/|\/clients?\/|webhook|oauth|[-_]client\b|[-_]sdk\b|api[-_]?client)/i,
+  /(stripe|twilio|paystack|flutterwave|sendgrid|\bses\b|\bfcm\b|\bapns\b|plaid|slack|clickup|graphql|grpc|calendar|msgraph)/i,
+];
+const INTEGRATION = { test: (file) => INTEGRATION_PATTERNS.some((pattern) => pattern.test(file)) };
 
 const { advise } = require('./lib/advise.js');
 
@@ -30,12 +33,12 @@ process.stdin.on('end', () => {
     const sid = input.session_id || '';
     if (file && sid) {
       const p = file.toLowerCase();
-      const marker = path.join(os.tmpdir(), `claude-council-research-${sid}`);
+      const marker = markerPath('research', sid);
       const integrationSource =
         !p.includes('/.claude/') && // skip framework config / rules / agents
         SRC_EXT.test(p) &&
         INTEGRATION.test(p);
-      if (integrationSource && !fs.existsSync(marker)) {
+      if (integrationSource && !hasPrivate(marker)) {
         warn =
           `[research-gate] Editing integration-shaped file "${path.basename(file)}" ` +
           `without online research this session. Per council-default.md rule 11, run ` +

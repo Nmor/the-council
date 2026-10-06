@@ -9,7 +9,7 @@
 > (how it stays current), `project-memory.md` (where the pointer lives),
 > `project-scoped-artifacts.md` (where plans live), `no-bloat.md` (one home per thing).
 >
-> **Size budget: 5 KB** — `token-budget.mjs --check`.
+> **Size budget: 6 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -1,4 +1,4 @@
-// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
+// Size budget: 12 KB. Check: wc -c; gate: token-budget.mjs --check.
 // token-budget.mjs, report half: the numbers CLAUDE.md quotes about its own cost.
 //
 // The --check gate is tested in tools.test.mjs. The report was not, so the figures the
@@ -114,6 +114,23 @@ describe('token-budget selected root and independent eager cap', () => {
     assert.deepEqual(report.scopedRules, { bytes: block.length + inline.length, files: 2 });
   });
 
+  test('third-party marketplace and cache plugin content is not Council source', (t) => {
+    // A LIVE home's plugins/ holds installed marketplaces and runtime caches; the
+    // gate demanding budget declarations from a vendor's files made every live run
+    // red (found 2026-10-06 while closing the H11/H12 live installs).
+    const root = fixture(t, {
+      'CLAUDE.md': 'x',
+      'plugins/marketplaces/vendor/skills/big/SKILL.md': 'no budget header',
+      'plugins/cache/vendor/notes.md': 'no budget header',
+      'plugins/data/vendor/scan-tip.json': '{}',
+      'plugins/own-plugin/guide.md': 'no budget header',
+    });
+    const r = selected(root, '--check');
+    const out = r.stdout + r.stderr;
+    assert.match(out, /own-plugin\/guide\.md/, 'our own plugin source still needs a budget');
+    assert.doesNotMatch(out, /marketplaces|plugins\/cache|plugins\/data/);
+  });
+
   test('raising file declarations cannot evade aggregate eager cap', (t) => {
     const content = '# Rule\nSize budget: 1000 KB\n' + 'x'.repeat(13000);
     const root = fixture(t, { 'CLAUDE.md': content, 'rules/nested/eager.md': content });
@@ -125,15 +142,30 @@ describe('token-budget selected root and independent eager cap', () => {
     assert.equal(selected(root, '--check', '--max-floor-bytes', '30000').status, 0);
   });
 
+  for (const scope of ['[null]', '[~]', '[false]', '[123]', '[""]', "['']", '["  "]',
+    '["src/**", null]', '\n  - null', '\n  - ""', '\n  - "src/**"\n  - null',
+    '["src/**"]\npaths: []']) {
+    test(`invalid path scope stays eager and fails aggregate cap: ${JSON.stringify(scope)}`, (t) => {
+      const body = `---\npaths: ${scope}\n---\nSize budget: 8 KB\n` + 'x'.repeat(1000);
+      const root = fixture(t, { 'rules/a.md': body });
+      const measured = selected(root, '--json');
+      assert.equal(measured.status, 0);
+      assert.equal(JSON.parse(measured.stdout).floor.bytes, body.length);
+      const result = selected(root, '--check', '--max-floor-bytes', '100');
+      assert.equal(result.status, 1);
+      assert.match(result.stderr, /aggregate cap/);
+    });
+  }
+
   test('scoped content is excluded from aggregate cap but keeps its declared gate', (t) => {
-    const root = fixture(t, { 'CLAUDE.md': '# Floor',
+    const root = fixture(t, { 'CLAUDE.md': '# Floor\nSize budget: 8 KB\n',
       'rules/scoped.md': '---\npaths:\n  - "src/**"\n---\nSize budget: 50 KB\n' + 'x'.repeat(30000) });
     assert.equal(selected(root, '--check').status, 0);
     writeFileSync(join(root, 'rules/scoped.md'),
       '---\npaths: ["src/**"]\n---\nSize budget: 1 KB\n' + 'x'.repeat(3000));
     const result = selected(root, '--check');
     assert.equal(result.status, 1);
-    assert.match(result.stdout, /OVER\s+scoped\.md/);
+    assert.match(result.stdout, /OVER\s+rules\/scoped\.md/);
   });
 
   test('invalid explicit root and aggregate limit fail with clear errors', (t) => {

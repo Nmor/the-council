@@ -91,3 +91,5 @@ Per `continuous-learning-mandate.md`:
 `NU1605` downgrades (centralize versions via `Directory.Packages.props`);
 `#pragma warning disable` attempts. **Refinements**: new common-fix row on a
 recurring `CSxxxx`; new anti-pattern on a recurring shortcut.
+
+Primary reference for the relevant review: [Microsoft .NET documentation: testing and diagnostics](https://learn.microsoft.com/en-us/dotnet/core/testing/).

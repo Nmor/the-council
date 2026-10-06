@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 'use strict';
-const fs = require('node:fs');
+const { privateDirectory } = require('./lib/private-state.js');
 const os = require('node:os');
 const path = require('node:path');
 const { adviceJSON, context, pointers, readInput } = require('./lib/lifecycle-context.js');
@@ -10,7 +10,7 @@ const { adviceJSON, context, pointers, readInput } = require('./lib/lifecycle-co
 // Native startup/resume already loads instructions and memory.
 readInput('SessionStart', input => {
   if (input.source === 'compact') return;
-  fs.mkdirSync(path.join(os.homedir(), '.claude', 'sessions'), { recursive: true });
+  privateDirectory(path.join(os.homedir(), '.claude', 'sessions'));
   const targets = pointers(context(input));
   if (!targets.length) return;
   process.stdout.write(adviceJSON('SessionStart', 'Continue the requested task. If durable state is needed, read only the ' +

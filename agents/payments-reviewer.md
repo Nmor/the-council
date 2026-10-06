@@ -86,8 +86,8 @@ For every triggered task:
 | # | Check |
 | --- | --- |
 | 1 | Tokenization at the edge — raw PAN / CVV never touches your servers (Stripe Elements, Adyen Drop-in, Square Web Payments SDK)? |
-| 2 | Webhook signature verified against PROVIDER signing key BEFORE deserialisation (Stripe `constructEvent` over raw body; Adyen HMAC; Square X-Square-Signature)? |
-| 3 | Webhook timestamp within ±5 minutes (replay protection)? |
+| 2 | Provider + webhook variant identified; bounded parsing and signature verification follow its signed protocol below, before business actions? |
+| 3 | Time window enforced only against a supported authenticated timestamp; durable deduplication and legitimate retry handling verified? |
 | 4 | Webhook event-id deduplicated in durable store (Redis with persistence, Postgres, DDB) ≥ 30 days? |
 | 5 | Idempotency-Key header accepted on every state-mutating endpoint? |
 | 6 | Idempotency cache key includes tenant + endpoint + api_version + key (not just key alone)? |
@@ -108,7 +108,7 @@ For every triggered task:
 | 21 | State MTL requirements identified (NY DFS Parts 200+417, CA DFPI, TX DOB, FL OFR, etc.) AND federal FinCEN MSB registration if applicable? |
 | 22 | AMLD6 / BSA program in place (CIP / CDD / EDD / transaction monitoring / SAR filing) for custodial flows? |
 | 23 | OFAC / EU CFSP / UN 1267 / UK OFSI screening on every payee (transaction-time + periodic)? |
-| 24 | IRS 1099-K (≥$600 since 2024 ARP) + Form 8300 ($10,000 cash) + FinCEN BOI rule (effective Jan 2024) covered? |
+| 24 | Reporting applicability dated and scoped by jurisdiction, tax year, rail, reporting entity and exemption under the reporting requirements below? |
 | 25 | FAPI 2.0 conformance for open-banking flows (mTLS, PAR per RFC 9126, DPoP per RFC 9449, JARM)? |
 | 26 | Double-entry ledger writes happen IN the same transaction as the business-state write? |
 | 27 | Reconciliation pipeline runs daily; variance tolerance documented; variance > tolerance pages on-call? |
@@ -120,6 +120,41 @@ For every triggered task:
 | 33 | Cross-border FX: rate-lock window respected; settlement currency vs presentation currency clearly distinguished? |
 | 34 | Refund window enforced (no refunds past PSP's window without explicit business-rule override + audit log)? |
 | 35 | Dispute auto-response runbook present (per `runbook-template.md`)? |
+
+### Webhook verification protocol
+
+- Stripe: preserve raw bytes for `constructEvent`; verify the signed timestamp using
+  the configured tolerance in [Stripe's protocol](https://docs.stripe.com/webhooks/signature).
+- Adyen standard: bounded schema parsing is needed to locate
+  `additionalData.hmacSignature`; verify each item's selected signed fields with the
+  official validator. `eventDate` is not signed and must not authorize a freshness gate.
+- Adyen header-signature variants: preserve raw body bytes; use that variant's
+  header verification. Follow [Adyen HMAC verification](https://docs.adyen.com/development-resources/webhooks/secure-webhooks/verify-hmac-signatures/).
+- Square: verify the notification URL plus raw body using its signing key and
+  `x-square-hmacsha256-signature`, per [Square verification](https://developer.squareup.com/docs/webhooks/step3validate).
+- Bound body size, parsing depth and item count; malformed input fails closed.
+  Signature verification precedes business actions and trusted event storage.
+  Enforce time windows only against supported authenticated timestamps; do not
+  impose a generic five-minute event-age cutoff on unsigned fields or legitimate retries.
+  Test official vectors, signed-field/raw-byte tampering, malformed input, duplicate
+  deliveries and legitimate delayed retries for each supported variant.
+
+### Reporting requirements
+
+As verified 2026-10-05, determine jurisdiction, tax year, payment rail, reporting entity
+and exemptions before applying thresholds; refresh official guidance for each review.
+Federal TPSO Form 1099-K reporting requires over $20,000 AND more than 200 transactions
+for goods/services; payment-card reporting has no minimum amount or transaction count.
+State thresholds and voluntary lower reporting may differ; a reporting threshold is
+not an income-tax exemption. See [IRS guidance](https://www.irs.gov/businesses/understanding-your-form-1099-k).
+Assess Form 8300 separately for qualifying cash receipts under IRC §6050I.
+FinCEN BOI under 31 CFR §1010.380 exempts U.S.-created companies; assess foreign-created
+entities registered in a U.S. state/Tribal jurisdiction and their exemptions and deadlines.
+The final rule effective August 14, 2026 also exempts U.S. person BOI; §1010.230 is CDD,
+not BOI reporting. See [FinCEN current guidance](https://www.fincen.gov/boi).
+
+Normalize findings using the [severity and merge contract](code-reviewer.md#severity-and-merge-contract).
+Domain vetoes may add restrictions but must not relax blocking findings.
 
 ## Output shape
 
@@ -133,7 +168,8 @@ State MTLs required: [list, or "N/A — no custodial activity"]
 KYC/AML status: [CIP + CDD in place / N/A]
 Sanctions screening: [OFAC + EU + UN + UK OFSI configured]
 3DS2 / SCA strategy: [always / SCA-exempt + documented / N/A — non-EEA]
-Webhook verification: [provider + method + replay protection]
+Webhook verification: [provider + variant + signed inputs + parsing bounds + retry evidence]
+Reporting applicability: [as-of date + jurisdiction + tax year + rail + entity + exemptions + citation]
 Idempotency: [cache layer + TTL + collision handling]
 Reconciliation: [pipeline + tolerance + alert threshold]
 Findings:
@@ -207,8 +243,8 @@ Every finding cites:
 - **PCI-DSS v4.0** Requirement number (1.x through 12.x)
 - **PSD2** + **EBA RTS** Article (Strong Customer Authentication; Article 18 exemptions)
 - **FAPI 2.0** profile (Baseline vs Advanced; mTLS; DPoP; JARM; PAR)
-- **FinCEN** rule citation (31 CFR §1022.380 MSB registration; 31 CFR §1010.230 BOI Rule effective
-  Jan 2024)
+- **FinCEN** rule citation (31 CFR §1022.380 MSB registration; 31 CFR §1010.380 BOI;
+  31 CFR §1010.230 CDD) with current entity scope, exemptions and effective date
 - **State MTL** (NY DFS Part 200 + 417; CA DFPI Money Transmission Act; TX Finance Code Ch 152; FL
   Ch 560 Pt II; CSBS Model MTL)
 - **AMLD6** (EU Directive 2018/843); **BSA** (31 USC §5311+); **OFAC** SDN list maintenance

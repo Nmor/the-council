@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------
-// Cursor User Settings — The Claude Council
+// Cursor User Settings — The Council
 // ---------------------------------------------------------------
 //
 // Cursor is a VS Code fork, so the entire VS Code settings surface
@@ -386,14 +386,10 @@
   ],
 
   // ============================================================
-  // Anthropic Claude Code integration (Cursor extension)
+  // Claude Code extension (anthropic.claude-code)
   // ============================================================
-  "anthropic.claudeCode.alwaysThinkingEnabled": true,
-  "anthropic.claudeCode.maxThinkingTokens": 31999,
-  "anthropic.claudeCode.permissionMode": "ask",
-  "anthropic.claudeCode.dangerouslySkipPermissions": false,
-  "anthropic.claudeCode.preserveConfigOnUpgrade": true,
-  "anthropic.claudeCode.enableTelemetry": false,
+  "claudeCode.initialPermissionMode": "default",
+  "claudeCode.allowDangerouslySkipPermissions": false,
 
   // ============================================================
   // GitLens (when installed)

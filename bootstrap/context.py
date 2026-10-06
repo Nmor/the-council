@@ -71,7 +71,14 @@ def council_hook(command: str, home: Path) -> bool:
         arguments = shlex.split(command)
     except ValueError:
         return False
-    if len(arguments) != 2 or arguments[0] != 'node':
+    if len(arguments) != 2:
+        return False
+    if arguments[0] == 'python3':
+        # The Council prompt injector is the one owned python hook.
+        suffix = '/.claude/hooks/improve-prompt.py'
+        return arguments[1] in {f'$HOME{suffix}', f'${{HOME}}{suffix}', f'~{suffix}',
+                                str(home / 'hooks/improve-prompt.py')}
+    if arguments[0] != 'node':
         return False
     for name in managed:
         suffix = f'/.claude/scripts/hooks/{name}'
@@ -84,7 +91,8 @@ def council_hook(command: str, home: Path) -> bool:
 def lifecycle_hooks(settings, source_hooks, home):
     """Replace owned context hooks; preserve personal hooks and security gates."""
     hooks_by_event = settings.setdefault('hooks', {})
-    events = ('SessionStart', 'PreCompact', 'PostCompact', 'PreToolUse', 'PostToolUse')
+    events = ('SessionStart', 'PreCompact', 'PostCompact', 'PreToolUse', 'PostToolUse',
+              'UserPromptSubmit')
     for event in events:
         retained = []
         for group in hooks_by_event.get(event, []):
@@ -127,7 +135,10 @@ def claude_payload(home):
     paths += ['docs/CONTEXT.md', 'rules-library/common/agents.md',
               'skills/council-rules/references/agent-delegation.md', 'skills/mcp-builder/SKILL.md',
               'skills/council-protocol/SKILL.md', 'skills/iterative-retrieval/SKILL.md']
-    paths += [name for name in core.tracked_resources(ROOT) if name.startswith('skills/brag/')]
+    paths += [name for name in core.tracked_resources(ROOT)
+              if name.startswith(('skills/', 'rules-library/', 'agents/', 'commands/'))]
+    paths += [name for name in core.tracked_resources(ROOT)
+              if name.startswith('scripts/hooks/lib/') and name.endswith('.js')]
     paths += ['docs/BRAG.md', 'docs/no-discards.md', 'scripts/hooks/go-discard-mutations.js']
     paths += list(LIFECYCLE_FILES)
     paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'skills').glob('*/SKILL.md')]
@@ -149,7 +160,9 @@ def claude_payload(home):
                 result[name] = compact_entrypoint(content.decode('utf-8')).encode('utf-8')
             except ValueError as error:
                 raise ValueError(f'{name}: {error}') from error
-    settings = json.loads(target(home, 'settings.json').read_text(encoding='utf-8'))
+    settings_path = target(home, 'settings.json')
+    settings = json.loads((settings_path if settings_path.exists() else ROOT / 'settings.json')
+                          .read_text(encoding='utf-8'))
     if not isinstance(settings, dict) or not isinstance(settings.get('env', {}), dict):
         raise TypeError('Claude settings must contain JSON objects')
     settings.update(autoCompactEnabled=True, disableWorkflows=True,
@@ -160,17 +173,9 @@ def claude_payload(home):
     settings.setdefault('env', {}).pop('autoCompactEnabled', None)  # Not an environment variable.
     settings.setdefault('env', {}).update(CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH='1',
                                          CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY='2')
-    groups = settings.get('hooks', {}).get('UserPromptSubmit', [])
-    retained = []
-    for group in groups:
-        hooks = [h for h in group.get('hooks', []) if 'hooks/improve-prompt.py' not in h.get('command', '')]
-        if hooks:
-            retained.append({**group, 'hooks': hooks})
-    if groups:
-        if retained:
-            settings['hooks']['UserPromptSubmit'] = retained
-        else:
-            del settings['hooks']['UserPromptSubmit']
+    # UserPromptSubmit is owned by lifecycle_hooks: legacy injector registrations
+    # (any spelling of hooks/improve-prompt.py) are replaced by the canonical slim
+    # one, and personal prompt hooks are preserved.
     source_hooks = json.loads((ROOT / 'settings.json').read_text(encoding='utf-8'))['hooks']
     lifecycle_hooks(settings, source_hooks, home)
     guard_name = 'go-discard-mutations.js'
@@ -258,7 +263,9 @@ def _apply(home, kind, dry_run=False, restore=False):
         entries = {}
         for name, content in payload.items():
             path = target(home, name)
-            protected = (name.startswith('skills/brag/') or name in LIFECYCLE_FILES or
+            protected = ((name.startswith('skills/') and not name.endswith('/SKILL.md')) or
+                         name.startswith(('rules-library/', 'agents/', 'commands/', 'skills/brag/',
+                                          'scripts/hooks/lib/')) or name in LIFECYCLE_FILES or
                          name in ('scripts/hooks/go-discard-mutations.js', 'skills/council/SKILL.md'))
             if (protected
                     and name not in old['files'] and

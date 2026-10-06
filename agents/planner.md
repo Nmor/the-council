@@ -211,7 +211,7 @@ Stripe Checkout, and webhook events keep subscription status in sync.
 - [ ] Webhook correctly syncs subscription status
 - [ ] Free users cannot access Pro features
 - [ ] Downgrade/cancellation works correctly
-- [ ] All tests pass with 80%+ coverage
+- [ ] Applicable tests pass; canonical 90% touched / 80% project / 95% critical-path coverage defaults meet supported metrics
 ```
 
 ## When Planning Refactors
@@ -331,3 +331,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New verification-gate type when post-phase gaps recur
 - New anti-pattern entry when a planning shortcut recurs across 2+ plans
 - Tightening of phase-sizing heuristics when chronic estimation miss observed
+
+Primary reference for the relevant review: [arc42: architecture decisions and risks](https://docs.arc42.org/).

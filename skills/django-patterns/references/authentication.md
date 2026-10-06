@@ -39,7 +39,7 @@ AUTH_USER_MODEL = 'users.User'
 ### Password Hashing
 
 ```python
-# Django uses PBKDF2 by default. For stronger security:
+# Django 5.2 defaults to PBKDF2. Install argon2-cffi to opt into Argon2.
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
@@ -47,6 +47,10 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 ```
+
+Retain every hasher used by existing accounts during migration. Check effective
+settings, hardware cost and authentication/rehash of old passwords; naming Argon2
+in guidance does not enable it in the application.
 
 ### Session Management
 

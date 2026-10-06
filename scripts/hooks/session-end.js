@@ -17,12 +17,11 @@ const {
   getDateString,
   getTimeString,
   getSessionIdShort,
-  ensureDir,
   readFile,
-  writeFile,
-  replaceInFile,
   log
 } = require('../lib/utils');
+const { pruneSessions, readPrivate, writePrivate } = require('./lib/private-state.js');
+const { redact } = require('./lib/redaction.js');
 
 /**
  * Extract a meaningful summary from the session transcript.
@@ -31,76 +30,56 @@ const {
  * - Tools used
  * - Files modified
  */
+function userText(entry) {
+  if (entry.type !== 'user' && entry.role !== 'user' && entry.message?.role !== 'user') return '';
+  const content = entry.message?.content ?? entry.content;
+  if (typeof content === 'string') return content;
+  return Array.isArray(content) ? content.map(block => block?.text || '').join(' ') : '';
+}
+
+function rememberTool(entry, tools, files) {
+  const name = entry.tool_name || entry.name || '';
+  if (name) tools.add(redact(name, 100));
+  const file = entry.tool_input?.file_path || entry.input?.file_path;
+  if (file && (name === 'Edit' || name === 'Write')) files.add(redact(file, 300));
+}
+
+function collectEntry(entry, messages, tools, files) {
+  const text = userText(entry).trim();
+  if (text) messages.push(redact(text, 200));
+  if (entry.type === 'tool_use' || entry.tool_name) rememberTool(entry, tools, files);
+  if (entry.type !== 'assistant' || !Array.isArray(entry.message?.content)) return;
+  for (const block of entry.message.content) {
+    if (block?.type === 'tool_use') rememberTool(block, tools, files);
+  }
+}
+
 function extractSessionSummary(transcriptPath) {
   const content = readFile(transcriptPath);
   if (!content) return null;
-
   const lines = content.split('\n').filter(Boolean);
-  const userMessages = [];
-  const toolsUsed = new Set();
-  const filesModified = new Set();
-  let parseErrors = 0;
-
+  const messages = [];
+  const tools = new Set();
+  const files = new Set();
+  let errors = 0;
   for (const line of lines) {
-    try {
-      const entry = JSON.parse(line);
-
-      // Collect user messages (first 200 chars each)
-      if (entry.type === 'user' || entry.role === 'user' || entry.message?.role === 'user') {
-        // Support both direct content and nested message.content (Claude Code JSONL format)
-        const rawContent = entry.message?.content ?? entry.content;
-        const text = typeof rawContent === 'string'
-          ? rawContent
-          : Array.isArray(rawContent)
-            ? rawContent.map(c => (c && c.text) || '').join(' ')
-            : '';
-        if (text.trim()) {
-          userMessages.push(text.trim().slice(0, 200));
-        }
-      }
-
-      // Collect tool names and modified files (direct tool_use entries)
-      if (entry.type === 'tool_use' || entry.tool_name) {
-        const toolName = entry.tool_name || entry.name || '';
-        if (toolName) toolsUsed.add(toolName);
-
-        const filePath = entry.tool_input?.file_path || entry.input?.file_path || '';
-        if (filePath && (toolName === 'Edit' || toolName === 'Write')) {
-          filesModified.add(filePath);
-        }
-      }
-
-      // Extract tool uses from assistant message content blocks (Claude Code JSONL format)
-      if (entry.type === 'assistant' && Array.isArray(entry.message?.content)) {
-        for (const block of entry.message.content) {
-          if (block.type === 'tool_use') {
-            const toolName = block.name || '';
-            if (toolName) toolsUsed.add(toolName);
-
-            const filePath = block.input?.file_path || '';
-            if (filePath && (toolName === 'Edit' || toolName === 'Write')) {
-              filesModified.add(filePath);
-            }
-          }
-        }
-      }
-    } catch {
-      parseErrors++;
-    }
+    try { collectEntry(JSON.parse(line), messages, tools, files); }
+    catch { errors++; }
   }
+  if (errors) log(`[SessionEnd] Skipped ${errors}/${lines.length} unparseable transcript lines`);
+  if (!messages.length) return null;
+  return { userMessages: messages.slice(-10), toolsUsed: [...tools].slice(0, 20),
+    filesModified: [...files].slice(0, 30), totalMessages: messages.length };
+}
 
-  if (parseErrors > 0) {
-    log(`[SessionEnd] Skipped ${parseErrors}/${lines.length} unparseable transcript lines`);
-  }
-
-  if (userMessages.length === 0) return null;
-
-  return {
-    userMessages: userMessages.slice(-10), // Last 10 user messages
-    toolsUsed: Array.from(toolsUsed).slice(0, 20),
-    filesModified: Array.from(filesModified).slice(0, 30),
-    totalMessages: userMessages.length
-  };
+function replaceBlankSummary(content, summary) {
+  if (!summary || !content.includes('[Session context goes here]')) return content;
+  const start = content.indexOf('## Current State');
+  const context = content.indexOf('### Context to Load', start);
+  const fence = content.indexOf('```', context);
+  const end = content.indexOf('```', fence + 3);
+  if (start < 0 || context < 0 || fence < 0 || end < 0) return content;
+  return content.slice(0, start) + buildSummarySection(summary) + content.slice(end + 3);
 }
 
 // Read hook input from stdin (Claude Code provides transcript_path via stdin JSON)
@@ -121,7 +100,7 @@ process.stdin.on('end', () => {
 
 function runMain() {
   main().catch(err => {
-    console.error('[SessionEnd] Error:', err.message);
+    log(`[SessionEnd] Persistence unavailable: ${err.code || 'unsafe state'}`);
     process.exit(0);
   });
 }
@@ -142,7 +121,7 @@ async function main() {
   const shortId = getSessionIdShort();
   const sessionFile = path.join(sessionsDir, `${today}-${shortId}-session.tmp`);
 
-  ensureDir(sessionsDir);
+  pruneSessions(sessionsDir);
 
   const currentTime = getTimeString();
 
@@ -153,33 +132,15 @@ async function main() {
     if (fs.existsSync(transcriptPath)) {
       summary = extractSessionSummary(transcriptPath);
     } else {
-      log(`[SessionEnd] Transcript not found: ${transcriptPath}`);
+      log('[SessionEnd] Transcript not found');
     }
   }
 
   if (fs.existsSync(sessionFile)) {
-    // Update existing session file
-    const updated = replaceInFile(
-      sessionFile,
-      /\*\*Last Updated:\*\*.*/,
-      `**Last Updated:** ${currentTime}`
-    );
-    if (!updated) {
-      log(`[SessionEnd] Failed to update timestamp in ${sessionFile}`);
-    }
-
-    // If we have a new summary and the file still has the blank template, replace it
-    if (summary) {
-      const existing = readFile(sessionFile);
-      if (existing && existing.includes('[Session context goes here]')) {
-        // Use a flexible regex that tolerates CRLF, extra whitespace, and minor template variations
-        const updatedContent = existing.replace(
-          /## Current State\s*\n\s*\[Session context goes here\][\s\S]*?### Context to Load\s*\n```\s*\n\[relevant files\]\s*\n```/,
-          buildSummarySection(summary)
-        );
-        writeFile(sessionFile, updatedContent);
-      }
-    }
+    const existing = redact(readPrivate(sessionFile, { allowPublicFile: true }), 1024 * 1024);
+    const timestamped = existing.replace(/\*\*Last Updated:\*\*.*/, `**Last Updated:** ${currentTime}`);
+    const content = replaceBlankSummary(timestamped, summary);
+    writePrivate(sessionFile, content);
 
     log(`[SessionEnd] Updated session file: ${sessionFile}`);
   } else {
@@ -198,7 +159,7 @@ async function main() {
 ${summarySection}
 `;
 
-    writeFile(sessionFile, template);
+    writePrivate(sessionFile, template);
     log(`[SessionEnd] Created session file: ${sessionFile}`);
   }
 

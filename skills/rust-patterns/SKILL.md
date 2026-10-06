@@ -1,6 +1,6 @@
 ---
 name: rust-patterns
-description: Rust idioms — ownership-first design; types encode invariants (newtype pattern for UserId / Cents / etc.); errors as values (Result<T, E> + thiserror for libs + anyhow for apps); enums for closed sets (exhaustive match); builders for many-optional inputs; protocol-style traits for ports (dependency inversion); DI via struct composition (Arc<dyn Trait>); async/await + tokio with structured concurrency (try_join! / JoinSet); no .unwrap() outside tests (use ? or expect with reason); no panic! in library code; cargo clippy --pedantic; cargo audit + cargo deny. Auto-fires on Rust source.
+description: Rust idioms — ownership-first design; types encode invariants (newtype pattern for UserId / Cents / etc.); errors as values (Result<T, E> + thiserror for libs + anyhow for apps); enums for closed sets (exhaustive match); builders for many-optional inputs; protocol-style traits for ports (dependency inversion); DI via struct composition (Arc<dyn Trait>); async/await + tokio with structured concurrency (try_join! / JoinSet); no .unwrap() outside tests (use ? or expect with reason); no panic! in library code; cargo clippy --pedantic; cargo audit + cargo deny. Select explicitly when this guidance applies.
 paths:
   - "**/*.rs"
   - "Cargo.toml"

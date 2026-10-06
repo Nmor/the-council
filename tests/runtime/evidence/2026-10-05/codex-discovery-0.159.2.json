@@ -1,0 +1,212 @@
+{
+  "binary": "/Users/leyanu/.vscode/extensions/openai.chatgpt-26.5928.31416-darwin-arm64/bin/macos-aarch64/codex",
+  "candidate_install": {
+    "files": 1101,
+    "source_revision": "759f9286c051753c7c99f8a1c4c8ec593ccd79e7",
+    "skill_profile": "compact",
+    "dry_run": false
+  },
+  "candidate_context": {
+    "client": "codex",
+    "files": 1,
+    "dry_run": false,
+    "restored": false
+  },
+  "candidate_integrity": {
+    "files": 1101,
+    "source_revision": "759f9286c051753c7c99f8a1c4c8ec593ccd79e7",
+    "integrity": "passed",
+    "runtime": "not checked",
+    "hooks": "review trust with /hooks"
+  },
+  "live": {
+    "initialized": {
+      "userAgent": "codex_vscode/0.159.2 (Mac OS 27.2.0; arm64) dumb (council-ide-probe; 1)",
+      "codexHome": "/Users/leyanu/.codex",
+      "platformFamily": "unix",
+      "platformOs": "macos"
+    },
+    "strict_config_loaded": true,
+    "selected_effective_config": {
+      "model": "gpt-6.1-sol",
+      "model_reasoning_effort": "low",
+      "model_auto_compact_token_limit": 100000,
+      "approval_policy": null,
+      "sandbox_mode": null,
+      "agents": {
+        "enabled": null,
+        "max_concurrent_threads_per_session": 1,
+        "max_depth": null,
+        "default_subagent_model": null,
+        "default_subagent_reasoning_effort": null,
+        "job_max_runtime_seconds": null,
+        "interrupt_message": null
+      }
+    },
+    "config_layers": [
+      {
+        "name": {
+          "type": "user",
+          "file": "/Users/leyanu/.codex/config.toml",
+          "profile": null
+        },
+        "version": "sha256:76a9004c5bc9b9795df481d035d52b6ca17ec46fb257f0a7a67b72d78377378f",
+        "disabled_reason": null
+      },
+      {
+        "name": {
+          "type": "system",
+          "file": "/etc/codex/config.toml"
+        },
+        "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "disabled_reason": null
+      }
+    ],
+    "skills": [
+      {
+        "cwd": "/Users/APPLE/claude-council",
+        "council": [
+          {
+            "name": "council",
+            "enabled": true
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "hooks": [
+      {
+        "cwd": "/Users/APPLE/claude-council",
+        "hooks": [
+          {
+            "event": "preToolUse",
+            "enabled": true,
+            "trustStatus": "trusted",
+            "source": "user"
+          },
+          {
+            "event": "postToolUse",
+            "enabled": true,
+            "trustStatus": "trusted",
+            "source": "user"
+          },
+          {
+            "event": "preCompact",
+            "enabled": true,
+            "trustStatus": "trusted",
+            "source": "user"
+          },
+          {
+            "event": "sessionStart",
+            "enabled": true,
+            "trustStatus": "trusted",
+            "source": "user"
+          },
+          {
+            "event": "stop",
+            "enabled": true,
+            "trustStatus": "trusted",
+            "source": "user"
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "parse_errors": []
+  },
+  "candidate": {
+    "initialized": {
+      "userAgent": "codex_vscode/0.159.2 (Mac OS 27.2.0; arm64) dumb (council-ide-probe; 1)",
+      "codexHome": "/private/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/codex-candidate",
+      "platformFamily": "unix",
+      "platformOs": "macos"
+    },
+    "strict_config_loaded": true,
+    "selected_effective_config": {
+      "model": null,
+      "model_reasoning_effort": null,
+      "model_auto_compact_token_limit": 100000,
+      "approval_policy": null,
+      "sandbox_mode": null,
+      "agents": {
+        "enabled": null,
+        "max_concurrent_threads_per_session": 1,
+        "max_depth": null,
+        "default_subagent_model": null,
+        "default_subagent_reasoning_effort": null,
+        "job_max_runtime_seconds": null,
+        "interrupt_message": null
+      }
+    },
+    "config_layers": [
+      {
+        "name": {
+          "type": "user",
+          "file": "/private/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/codex-candidate/config.toml",
+          "profile": null
+        },
+        "version": "sha256:975e707620c80940628ff6f974b7eb4c1c4822cee7d72595f60bc830c02c4ca9",
+        "disabled_reason": null
+      },
+      {
+        "name": {
+          "type": "system",
+          "file": "/etc/codex/config.toml"
+        },
+        "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "disabled_reason": null
+      }
+    ],
+    "skills": [
+      {
+        "cwd": "/Users/APPLE/claude-council",
+        "council": [
+          {
+            "name": "council",
+            "enabled": true
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "hooks": [
+      {
+        "cwd": "/Users/APPLE/claude-council",
+        "hooks": [
+          {
+            "event": "preToolUse",
+            "enabled": true,
+            "trustStatus": "untrusted",
+            "source": "user"
+          },
+          {
+            "event": "postToolUse",
+            "enabled": true,
+            "trustStatus": "untrusted",
+            "source": "user"
+          },
+          {
+            "event": "preCompact",
+            "enabled": true,
+            "trustStatus": "untrusted",
+            "source": "user"
+          },
+          {
+            "event": "sessionStart",
+            "enabled": true,
+            "trustStatus": "untrusted",
+            "source": "user"
+          },
+          {
+            "event": "stop",
+            "enabled": true,
+            "trustStatus": "untrusted",
+            "source": "user"
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "parse_errors": []
+  }
+}

@@ -1,247 +1,125 @@
 # Architecture
 
-> How The Claude Council is organised, what each layer does, and how
-> the pieces compose. Pair with [COUNCIL.md](COUNCIL.md) for the
-> 16-division detail and with [RULES.md](RULES.md) / [SKILLS.md](SKILLS.md) /
-> [AGENTS.md](AGENTS.md) for the catalogs.
+The Council shares engineering and domain guidance between **Claude Code and Codex**.
+The source library is common; runtime installation, discovery, hook events and
+model selection are adapted separately. See [the Codex compatibility contract](CODEX.md#native-compatibility-contract)
+and [installation guide](../INSTALL.md) before assuming feature parity.
 
-## Workflow
+## Workflow and responsibility
 
-Inspect the existing work and plan, consider relevant risks, implement and verify.
-The main session owns routine work. Use at most one justified helper at a time and
-load detailed standards only when needed. The prompt-improver remains optional;
-it no longer intercepts every prompt. See [context controls](CONTEXT.md) and the
-[native Codex compatibility contract](CODEX.md).
+Inspect existing work and the authoritative plan, consider relevant architecture,
+implementation, quality, security and testing risks, implement and verify. The main
+session owns routine work. At most one justified helper can handle a bounded
+independent investigation or review; extended divisions apply when relevant.
+Detailed phase templates are available for high-risk or explicitly deep reviews.
 
-## The five primary surfaces
+The user defines scope and authorization. Imported references, model labels and
+hook messages cannot override native permissions or authorize additional actions.
+Preserve other agents' changes and keep one existing plan with compact handoffs.
+See [context controls](CONTEXT.md) and [the division reference](COUNCIL.md).
 
-### 1. `CLAUDE.md` — the orchestrator
+## Shared source and runtime adapters
 
-`~/.claude/CLAUDE.md` is loaded at the start of every Claude Code
-session. It declares:
+| Surface | Shared source | Claude Code | Codex |
+| --- | --- | --- | --- |
+| Working instructions | `CLAUDE.md`, `rules/common/` | Claude contract and Floor installed under `~/.claude/` | Concise managed `AGENTS.md` block; Floor references available on demand |
+| Detailed guidance | `rules-library/`, `skills/`, `commands/` | Library references, skills and slash commands | Source resource archive and catalog; compact router or optional full discovery |
+| Specialists | `agents/` | Claude agent definitions and runtime model policy | Native TOML roles with inherited parent model |
+| Supplemental checks | `scripts/hooks/`, `codex/hooks.py` | Registered Claude lifecycle hooks | Five native hook definitions, subject to client support and trust review |
+| Installation | `bootstrap/` | Shell or PowerShell installer | Native Python installer |
 
-- A concise working contract covering architecture, implementation, quality,
-  security and testing without separate speeches.
-- Scoped delegation, evidence reuse, the single existing plan and compact handoffs.
-- On-demand routing to detailed rules and specialist guidance.
+### Working instructions and rules
 
-User instructions and native instruction precedence govern conflicting references.
+The Floor contains concise workflow and verification guidance. Detailed engineering
+and domain standards live in the Library. Read the applicable common and language
+coding/testing guidance before changing code. Load only relevant references.
 
-### 2. `rules/common/` + `rules-library/` — the principles
+Project-specific facts and procedures stay with the project. A Claude project can
+layer `<workspace>/.claude/` instructions on its global installation. Codex uses
+native project instructions and the longest matching root in `council/projects.json`
+to locate an existing plan. A project mapping does not create or rewrite that plan.
+See [rules](RULES.md) and [project bootstrap](PROJECT-BOOTSTRAP.md).
 
-Rules are pure guidance. They never name a specific project, vendor,
-or session — only abstract principles, banned patterns, verification
-checklists, and cross-references. Per
-[`rule-authoring-global-vs-project.md`](../rules/common/rule-authoring-global-vs-project.md),
-project specifics live in `<workspace>/.claude/rules/`.
+### Skills and commands
 
-Two flavors:
+Skills describe how to perform a task; rules describe constraints and verification.
+Select skills by task relevance, description or explicit invocation. File patterns
+in source guidance are routing suggestions. Skill `paths:` metadata does not
+implement automatic activation.
 
-- **`rules/common/`** — universal guidance that applies regardless of
-  language. Examples: `no-discards.md`, `verify-before-claim.md`,
-  `secrets-management.md`, `audit-logging.md`, `idempotency.md`.
-- **`rules-library/<lang>/`** — language-specific extensions of the common
-  rules. Each language has its own `coding-style.md`,
-  `no-discards.md`, `security.md`, `testing.md`, `patterns.md`,
-  `hooks.md`. The lang rule **extends** the common rule with
-  language-specific banned patterns and linter configs.
+The default Codex profile exposes one Council router and a catalog. The optional
+full profile adds namespaced skill and command entrypoints. Claude slash commands
+and tool names remain Claude conventions; use available native Codex tools for the
+procedure's intent. An accessible reference is not necessarily executable automation.
+See [skills](SKILLS.md), [SDLC procedures](SDLC-SKILLS.md) and [BRAG](BRAG.md).
 
-[Browse the rules catalog](RULES.md).
+### Specialists and model selection
 
-### 3. `skills/` — the patterns
+Specialists have bounded responsibilities, review criteria and output guidance.
+Consider applicable expertise in the main session; delegate only when a concrete
+independent task justifies another model request. Never fabricate separate reviews,
+votes or passing tests.
 
-Skills are reusable patterns and methodologies. Where a rule says
-"do not write X," a skill says "here is how to design Y."
+The source agent frontmatter includes Claude tools and model labels. Codex's
+adapter generates native roles and inherits the parent model. Claude model-ladder
+and exhaustion behavior is not emulated in Codex. See [the agents catalog](AGENTS.md)
+for source roles and the [compatibility table](CODEX.md#native-compatibility-contract)
+for runtime behavior.
 
-Skills are selected by their descriptions, task relevance or explicit invocation.
-File patterns in source guidance are routing suggestions; skill `paths:` metadata
-does not implement automatic activation. Native Codex compact discovery uses one
-router and a catalog; full discovery is optional.
+### Hooks and verification boundaries
 
-Skills span 13 domain clusters: code-quality, accessibility,
-security-compliance, finance-accounting, investment, AI/ML, design,
-org/management, infrastructure, industrial, structural engineering,
-innovation, interpersonal, research/history.
+Claude hooks are registered in `settings.json`; the native Codex installer registers
+its own dispatcher. Archived Claude scripts in Codex's resource tree are reference
+material and must not be executed as native Codex hooks.
 
-[Browse the skills catalog](SKILLS.md).
+Codex's five definitions cover supported `PreToolUse`, `PostToolUse`, `SessionStart`,
+`PreCompact` and `Stop` events. They provide plan/handoff reminders, command feedback
+and bounded Go blank-assignment checks. Formatting, typechecking, research and
+coverage checks still require explicit task verification. Clients and specialized
+tool paths can omit events. New or changed Codex definitions require normal `/hooks`
+review and trust; installation integrity does not establish trust.
 
-### 4. `agents/` — the specialists
+Hooks supplement native permissions and repository checks. A post-edit check may
+report a violation after an edit has already happened; it cannot certify or undo
+all writes. Starting a test is not a passing result. Report unavailable checks,
+limits, skipped tests and terminal failures explicitly.
 
-Agents are delegatable specialists, each with a frontmatter declaring
-`name`, `description`, `tools`, and `model`. The Council protocol
-delegates to an agent when its expertise is needed.
+## Installation, IDEs and project layering
 
-The agents follow the principal-level mandate per
-[`principal-level-mandate.md`](../rules/common/principal-level-mandate.md):
-every agent has identity + mission, declared global-rules enforcement,
-auto-fire triggers, decision authority, a review checklist or
-workflow, standards-cited references, structured output shape,
-anti-patterns to reject, pairing model, and escalation triggers.
+Use the runtime selector in [INSTALL.md](../INSTALL.md). Claude's shell/PowerShell
+installers target `.claude`; the Python installer targets the selected Codex home
+and preserves unrelated configuration. [Context migration](CONTEXT.md) offers an
+additive path for existing customized installations.
 
-Model selection follows the user's policy: opus for
-coding/reviewing/planning work, sonnet for narrow-scope or
-verification-loop work, haiku only for mechanical doc work.
+The optional IDE templates live in `templates/ide-configs/` for VS Code, Cursor,
+Windsurf and JetBrains. They provide recommended editor settings and runtime-specific
+integration guidance; the VS Code template includes registered Claude and Codex
+preferences. Copying templates does not install or activate an extension or CLI.
+Use each runtime's native installer separately. VS Code startup/configuration has
+local runtime evidence; Cursor/Windsurf settings have schema validation, and
+JetBrains integration remains documentation-only. See [the evidence and limits](../tests/runtime/evidence/2026-10-05/README.md).
 
-[Browse the agents catalog](AGENTS.md).
+The Claude project scaffold is `templates/project-claude-scaffold/`. Codex projects
+use native instructions and existing-plan mappings; they do not need a Claude
+scaffold to run the Council. Runtime-specific filenames and state identifiers retain
+their functional names regardless of the product's neutral branding.
 
-### 5. `hooks/` + `scripts/hooks/` — the mechanical gates
+## Learning and handoffs
 
-Hooks turn rules into machinery. They run automatically at lifecycle
-events:
+Learning procedures collect candidates for review and possible promotion. Claude's
+audit/transcript hooks are runtime-specific; Codex does not automatically reproduce
+those events. Durable task evidence belongs in the authoritative plan, including
+worktree, commits, implemented behavior, completed verification, remaining work and
+next action. Candidate promotion must respect the user's scope and authorization.
 
-| Event | What runs |
-| ----- | --------- |
-| `SessionStart` | Loads workspace `CLAUDE.md`, primes context, surfaces workspace rules |
-| `UserPromptSubmit` | Prompt-improver evaluates clarity; vague prompts route through the `prompt-improver` skill |
-| `PreToolUse` | Validates parameters; enforces allow/deny lists; asks the user on risky actions |
-| `PostToolUse` | Auto-format, lint, IDE diagnostics, hook-enforced rule checks (no-discards, secret patterns, hardcoded creds) |
-| `PreCompact` | Persists running plan + intermediate state to durable memory |
-| `Stop` | Final verification of touched files; surfaces remaining gaps |
-| `SessionEnd` | Persists learnings, evaluates patterns, logs telemetry |
+## Repository quality gates
 
-The hooks make it impossible to silently drift past a rule — if a
-banned pattern lands in a `PostToolUse` diff, the hook blocks the
-edit and returns the error to the agent.
+Repository CI checks structure, Markdown links, orphaned files, citations, Markdown
+and shell lint, secrets, Codex adapter tests, Claude hook tests and context budgets.
+Run checks appropriate to changed code and reuse evidence for unchanged code.
+Source fixtures do not certify all model outputs or deployed integrations.
 
-## How layers compose
-
-A non-trivial task flows like this:
-
-1. **Prompt arrives** → `UserPromptSubmit` hook evaluates clarity.
-   Vague prompts route through the `prompt-improver` skill which
-   runs the trigger-gated
-   [task-intake-due-diligence](../rules/common/task-intake-due-diligence.md)
-   intake — an always-fire high-signal core plus the domain questions
-   whose triggers match the task.
-2. **Council Phase 0 (Deep Research)** → online research, codebase
-   exploration, primary-source citation per
-   [`official-docs-first.md`](../rules/common/official-docs-first.md).
-3. **Council Phase 1 (Discussion)** → five Core Divisions speak in
-   order. Extended Eleven auto-fire on
-   [trigger signals](../rules/common/council-triggers.md).
-4. **Council Phase 2 (Consensus)** → GO/NO-GO decision with the
-   tiebreaker matrix applied if divisions disagree.
-5. **Council Phase 3 (Implementation)** → tdd-guide writes tests
-   first, implementation writes code, refactor-cleaner sweeps,
-   security-reviewer audits, code-reviewer reviews, e2e-runner
-   validates, doc-updater documents.
-6. **Hooks fire continuously** during Phase 3 — every edit triggers
-   `PostToolUse` checks for discards, suppressions, hardcoded
-   credentials, raw colour literals, merge-conflict markers.
-7. **Verification block** closes the task — same-turn proof per
-   [`verify-before-claim.md`](../rules/common/verify-before-claim.md).
-
-## Project layering
-
-The repo's `claude-home/` directory is a one-to-one mirror of what
-gets installed to `~/.claude/`. Workspaces add their own
-`<workspace>/.claude/` on top with the same shape:
-
-```text
-<workspace>/.claude/
-├── CLAUDE.md                  # workspace-level rules + vendor table
-├── rules/                     # project-specific rules (extend global)
-├── skills/                    # project-specific skills
-├── agents/                    # project-specific agents (rare)
-├── plans/                     # workspace plans
-├── memory/                    # workspace memories (feedback/project/reference)
-└── audits/                    # workspace audits + learning events
-```
-
-Per
-[`project-scoped-artifacts.md`](../rules/common/project-scoped-artifacts.md),
-every workspace gets its scaffold on first significant Council-
-mediated work. The scaffold template lives at
-`~/.claude/templates/project-claude-scaffold/`.
-
-[Read the project bootstrap guide](PROJECT-BOOTSTRAP.md).
-
-## Cross-IDE integration
-
-The repo's `ide-integrations/` directory contains drop-in configs
-for VS Code, Cursor, JetBrains, and Windsurf. Each follows the same
-principle: the IDE config provides the surface (extensions, settings,
-keymaps), and the rules + skills + agents provide the logic.
-
-| IDE | What ships |
-| --- | --- |
-| VS Code | `settings.json` (security-hardened), `extensions.json` (publisher-allowlisted), `keybindings.json` |
-| Cursor | Same shape as VS Code (Cursor uses the VS Code engine) |
-| JetBrains | Plugin install instructions for Claude Code [Beta], keymap XML, recommended plugins (publisher-allowlisted), per-language code style |
-| Windsurf | VS Code-engine compatible settings + extensions |
-
-The publisher allowlist comes from
-[`install-allowlist.md`](../rules-library/common/install-allowlist.md).
-
-## Cross-OS support
-
-The repo is cross-platform by design. Two parallel bootstrap paths:
-
-- **macOS / Linux / WSL2** — `bash bootstrap/install.sh` then
-  `bash bootstrap/verify.sh`.
-- **Windows (native PowerShell, no WSL2 required)** —
-  `.\bootstrap\install.ps1` then `.\bootstrap\verify.ps1`.
-
-Both flows are fully native to their host platform. Windows users
-do not need WSL2 or Git Bash.
-
-## Continuous learning
-
-Every Council-mediated task produces learning candidates that land
-in `audits/learning-events.jsonl`. The
-[`continuous-learning-mandate.md`](../rules/common/continuous-learning-mandate.md)
-rule + the `continuous-learning-v2` skill close the loop:
-candidates are batched, surfaced to the user via AskUserQuestion,
-and approved candidates update the artifact in the same session.
-
-Patterns observed in 2+ workspaces are eligible for promotion to
-global; global rules contradicted in practice are flagged for
-demotion review.
-
-## Verification + commit policy
-
-Per [`verify-before-claim.md`](../rules/common/verify-before-claim.md),
-every claim of completion attaches a same-turn verification block:
-
-```text
-Verification (this turn):
-- tsc --noEmit: 0 errors
-- eslint <files>: 0 warnings
-- vitest run: PASS
-- IDE diagnostics: 0
-- proper-fixes audit: green
-- docs-sync gate: feature page exists; landing accurate
-```
-
-For multi-phase plans, the active plan file declares its
-`commit-policy` in the Context section. Three valid policies:
-`single` (one commit at end), `per-phase` (one per phase boundary),
-`per-task` (one per atomic task). Per
-[`plan-completion-before-push.md`](../rules/common/plan-completion-before-push.md),
-no `git push` until the plan is complete + verified — narrow
-bug-fix exceptions require explicit user override.
-
-## Why this shape
-
-The Council protocol exists because individual model output drifts
-toward the easiest plausible answer. Five divisions speaking in
-order with named tiebreakers force a different shape: every task
-gets architectural, implementation, quality, security, and testing
-input before code is written, and Extended Divisions add
-compliance, UX, ops, data, finance, risk, strategy, people, ESG,
-ethics, and communications when their triggers match.
-
-The rules + skills + agents + hooks make the protocol mechanical
-rather than aspirational. The principal-level mandate ensures the
-contributions are deep, cited, and decisive — not boilerplate.
-
-## See also
-
-- [COUNCIL.md](COUNCIL.md) — the 16-division reference
-- [RULES.md](RULES.md) — the rules catalog
-- [SKILLS.md](SKILLS.md) — the skills catalog
-- [AGENTS.md](AGENTS.md) — the agents catalog
-- [PROJECT-BOOTSTRAP.md](PROJECT-BOOTSTRAP.md) — workspace scaffold
-- [CONTRIBUTING.md](CONTRIBUTING.md) — how to add a rule / skill / agent
-- [../CLAUDE.md](../CLAUDE.md) — the Council orchestrator
-- [../CHANGELOG.md](../CHANGELOG.md) — release history
+Commit and push policy comes from the user's instructions and the existing plan.
+Council guidance cannot grant permission to push, merge, deploy or contact others.
+See [contributing](CONTRIBUTING.md), [security](../SECURITY.md) and
+[release history](../CHANGELOG.md).

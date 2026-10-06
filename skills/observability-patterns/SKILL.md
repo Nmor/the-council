@@ -1,6 +1,6 @@
 ---
 name: observability-patterns
-description: Structured logging, EMF metrics, request-id propagation, per-tenant dimensions, and CloudWatch / OTEL conventions for serverless and long-running services. Auto-fires for handler files, lib code, and middleware where logs / metrics are emitted. Also lazy-loads observability.md content migrated from rules/common/ on 2026-06-02.
+description: Structured logging, EMF metrics, request-id propagation, per-tenant dimensions, and CloudWatch / OTEL conventions for serverless and long-running services. Select explicitly when this guidance applies. Also lazy-loads observability.md content migrated from rules/common/ on 2026-06-02.
 paths:
   - "**/handlers/**"
   - "**/handler.*"

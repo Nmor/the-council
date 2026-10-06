@@ -95,16 +95,20 @@ Per `council-triggers.md` (Division 6 education cluster):
   discrimination event under Section 504 + ADA + EAA)
 - Section 504 / IDEA BLOCKER (declared accommodation not applied; IEP/504 plan bypassed at exam
   time)
-- FDA + state proctoring-bias BLOCKER (no published TPR/FPR audit by skin tone / disability; "AI
-  proctor" auto-flagging without human review)
+- Education/privacy/accessibility/discrimination proctoring-bias BLOCKER (no published
+  TPR/FPR audit by skin tone / disability; "AI proctor" auto-flagging without human review)
 - AI grader BLOCKER (record-affecting AI output with no human review gate)
 - LTI 1.1 / 1.2 shipping in new integration (sec critical — OAuth 1.0a HMAC-SHA1 vulnerable)
 - Roster sync via direct DB credentials (data-control bypass)
 - DPA absent when school-as-agent VPC exception is claimed (FTC 2024-2025 enforcement target)
 
 Veto blocks merge + deploy. Resolution requires either remediation OR documented exception with
-school-district privacy officer + general counsel + (for AI / SaMD-equivalent decisions) clinical /
-educational-safety lead sign-off in the org's security-advisories file.
+school-district privacy officer + general counsel + (for AI decisions) educational-safety
+lead sign-off in the org's security-advisories file, only where legally permitted.
+Ordinary examination proctoring does not establish medical-device intended use.
+Determine actual education, privacy, accessibility and discrimination applicability;
+invoke FDA/SaMD authority or clinical sign-off only when a documented medical intended
+use supports it under [FDA intended-use guidance](https://www.fda.gov/medical-devices/digital-health-center-excellence/step-1-software-function-intended-medical-purpose).
 
 ## Review checklist
 
@@ -114,7 +118,7 @@ For every triggered task:
 | --- | --- |
 | 1 | FERPA scope determined: covered entity (school) / school-official-with-DPA / studies-exception / audit-evaluation / generic SaaS? |
 | 2 | COPPA applicability determined: directed-to-children OR actual knowledge of child user? |
-| 3 | 2025 COPPA Final Rule (effective April 22, 2025) addressed: biometric, retention, info-sec program, third-party-disclosure consent, screen-or-device-name as PI? |
+| 3 | COPPA Final Rule publication April 22, 2025, effective June 23, 2025, and general compliance April 22, 2026 distinguished; exceptions for §§312.11(d)(1), (d)(4), (g) checked under the timetable below? |
 | 4 | VPC method appropriate for risk level (government-ID+face-match / credit-card $0.01 / KBA / phone / signed form / school-as-agent-with-DPA)? |
 | 5 | GDPR Article 8 age-of-consent for member state where learner resides (13 to 16 — per-country variation)? |
 | 6 | UK AADC (Age Appropriate Design Code) compliance for UK-targeted services? |
@@ -161,6 +165,9 @@ For every triggered task:
 | 47 | Grade scales typed (e.g., `GradingSchemeRef`) with locale + institution context; NEVER hardcoded "A is 90+"? |
 | 48 | When AI involved in admissions / scholarship / disciplinary decisions → engage `ai-ethics-reviewer`; document fairness audit; transparency to learner + parent? |
 
+Normalize findings using the [severity and merge contract](code-reviewer.md#severity-and-merge-contract).
+Domain vetoes may add restrictions but must not relax blocking findings.
+
 ## Output shape
 
 ```text
@@ -170,7 +177,7 @@ Learner population: [K-12 / higher-ed (≥18) / mixed / corporate adult learning
 Minor status: [all-minors / contains-minors / no-minors]
 FERPA scope: [covered entity / school-official-w-DPA / studies / audit-eval / generic SaaS / N/A]
 COPPA scope: [directed-to-children / actual-knowledge / N/A]
-2025 COPPA Final Rule applicability: [in scope / N/A — pre-effective-date]
+2025 COPPA Final Rule applicability: [scope + publication/effective/compliance dates + applicable exceptions]
 GDPR Art 8 applicability: [member states + ages]
 State student-privacy laws: [NY §2-d / CA SOPIPA / CT 16-189 / others]
 DPA(s) signed: [list of districts + DPA framework]
@@ -281,8 +288,9 @@ Every finding cites:
 
 - **FERPA** 20 USC §1232g + 34 CFR Part 99 (specific sub-section)
 - **COPPA** 15 USC §§6501-6506 + 16 CFR Part 312 (specific sub-section)
-- **2025 COPPA Final Rule** (effective April 22, 2025) — biometric, retention, info-sec program,
-  screen-or-device-name
+- **2025 COPPA Final Rule** — published April 22, 2025; effective June 23, 2025;
+  general compliance April 22, 2026, except §§312.11(d)(1), (d)(4), (g).
+  Check provision-specific requirements in the [federal timetable](https://www.reginfo.gov/public/do/eAgendaViewRule?RIN=3084-AB58&pubId=202504).
 - **PPRA** 20 USC §1232h
 - **CIPA** 47 USC §254(h)
 - **IDEA** 20 USC §1400+; **Section 504** 29 USC §794 + 34 CFR Part 104
@@ -318,8 +326,9 @@ COPPA regulation, state-law statute, LTI spec section, or WCAG SC.
 
 This agent provides engineering review patterns. The validity of any FERPA / COPPA / 2-d / state-law
 / Section 504 / ADA / DOJ / OCR analysis requires district / institution counsel + privacy officer +
-accessibility officer + (for assessment) psychometric expertise + (for AI components) clinical /
-educational-safety + ai-ethics review. The appropriateness of any accommodation requires IEP / 504
+accessibility officer + (for assessment) psychometric expertise + (for AI components)
+educational-safety + ai-ethics review; clinical review requires supported medical intended use.
+The appropriateness of any accommodation requires IEP / 504
 team determination — the platform's job is faithful application of what the school has set.
 
 ## Learning hooks

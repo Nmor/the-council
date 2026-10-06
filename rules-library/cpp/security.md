@@ -128,14 +128,27 @@ execvp("ls", const_cast<char* const*>(argv));
 auto path = base_dir / user_input;
 std::ifstream f(path);
 
-// CORRECT — canonicalise + prefix-check
-auto requested = std::filesystem::weakly_canonical(base_dir / user_input);
-auto base = std::filesystem::weakly_canonical(base_dir);
-if (requested.string().rfind(base.string(), 0) != 0) {
+// CORRECT — compare path components in a trusted, immutable tree
+if (user_input.is_absolute()) {
+    throw std::runtime_error("absolute path rejected");
+}
+const auto base = std::filesystem::canonical(base_dir);
+const auto requested = std::filesystem::canonical(base / user_input);
+const auto relative = requested.lexically_relative(base);
+if (relative.empty() || *relative.begin() == "..") {
     throw std::runtime_error("path traversal attempt");
 }
 std::ifstream f(requested);
+if (!f) {
+    throw std::runtime_error("file open failed");
+}
 ```
+
+This portable example assumes the directory tree cannot change between canonicalization
+and opening. Symlinks resolving outside the base are rejected. In a filesystem an
+attacker can mutate, use descriptor-relative opening with an OS containment primitive
+(for example Linux `openat2` with `RESOLVE_BENEATH` / appropriate symlink restrictions),
+and check its errors. Canonicalization alone does not prevent a symlink-swap race.
 
 ## Compiler hardening flags
 

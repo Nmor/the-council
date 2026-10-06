@@ -1,6 +1,6 @@
 ---
 name: tdd-guide
-description: Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Ensures 80%+ test coverage.
+description: Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Applies canonical 90% touched / 80% project / 95% critical-path defaults for supported metrics.
 tools: ["Read", "Write", "Edit", "Bash", "Grep"]
 model: opus
 ---
@@ -58,7 +58,7 @@ Remove duplication, improve names, optimize -- tests must stay green.
 
 ```bash
 npm run test:coverage
-# Required: 80%+ branches, functions, lines, statements
+# Project default: 80% line + branch; touched: 90%; critical paths: 95%
 ```
 
 ## Test Types Required
@@ -97,7 +97,7 @@ npm run test:coverage
 - [ ] Mocks used for external dependencies
 - [ ] Tests are independent (no shared state)
 - [ ] Assertions are specific and meaningful
-- [ ] Coverage is 80%+
+- [ ] Supported coverage meets canonical touched/project/critical-path thresholds
 
 For detailed mocking patterns and framework-specific examples, see `skill: tdd-workflow`.
 

@@ -21,7 +21,7 @@ paths:
 - [ ] Setup/teardown via fixtures, not repeated code
 - [ ] Edge cases covered (null, empty, boundary values)
 - [ ] Memory sanitizers enabled in test builds (ASan, UBSan)
-- [ ] Coverage meets 70% minimum
+- [ ] Coverage meets canonical 90% touched / 80% project / 95% critical-path defaults for supported line/branch metrics
 
 ## Skill Chain
 

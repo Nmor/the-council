@@ -69,7 +69,7 @@ The detail lives in `references/`. Read the row that matches the work; do not lo
 | **No-discards — banned patterns + SwiftLint config**: force-unwrap, `try!`, empty catch, ignored results, `@discardableResult`, implicitly unwrapped optionals, `Any` returns, `print`, unremoved observers, retain cycles, required `.swiftlint.yml`, verification block | [`references/no-discards.md`](references/no-discards.md) |
 | **Swift patterns — architecture + concurrency + SwiftUI**: project layout, value types, `Sendable` + `actor`, `async let` / `TaskGroup`, protocols with associated types, `Result`, SwiftUI, DI, Combine vs AsyncSequence, reuse-first libraries | [`references/patterns.md`](references/patterns.md) |
 | **Swift security**: Keychain, App Transport Security, input validation, biometric auth | [`references/security.md`](references/security.md) |
-| **Swift testing**: 70% coverage floor, Swift Testing (`@Test` / `#expect`), protocol-based mocking | [`references/testing.md`](references/testing.md) |
+| **Swift testing**: canonical touched/project/critical-path coverage defaults, Swift Testing (`@Test` / `#expect`), protocol-based mocking | [`references/testing.md`](references/testing.md) |
 
 <!-- ============================================================
      Migration appendix: 2026-06-02 lazy-rules-loading

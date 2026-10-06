@@ -29,7 +29,7 @@ function adviceJSON(event, text) {
   return output;
 }
 
-function readInput(label, handler) {
+function readInput(label, handler, allowedEvents = EVENTS) {
   const chunks = [];
   let bytes = 0;
   let failed = false;
@@ -49,7 +49,7 @@ function readInput(label, handler) {
       if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('expected JSON object');
       if (input.cwd !== undefined && (typeof input.cwd !== 'string' || !input.cwd)) throw new Error('invalid cwd');
       if (input.session_id !== undefined && typeof input.session_id !== 'string') throw new Error('invalid session ID');
-      if (input.hook_event_name !== undefined && !EVENTS.has(input.hook_event_name)) throw new Error('invalid hook event');
+      if (input.hook_event_name !== undefined && !allowedEvents.has(input.hook_event_name)) throw new Error('invalid hook event');
       handler(input);
     } catch (error) {
       process.stderr.write(`[${label}] skipped: ${bounded(error.code || error.message, 300)}\n`);

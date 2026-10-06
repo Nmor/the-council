@@ -103,6 +103,18 @@ describe('a tier that hits its plan limit is routed around automatically', () =>
     assert.equal(out(spawn(e, { ...STRATEGIC, model: 'fable' })).permissionDecision, undefined);
   });
 
+  test('malformed records cannot deny a healthy tier or poison subsequent writes', () => {
+    const e = env();
+    seed(e, JSON.parse('{"fable":null,"opus":{"at":"invalid"},"__proto__":{"at":1}}'));
+    const response = spawn(e, { ...STRATEGIC, model: 'fable' });
+    assert.equal(response.code, 0);
+    assert.equal(out(response).permissionDecision, undefined);
+    assert.equal(mark(e, 'Sonnet').code, 0);
+    const saved = record(e);
+    assert.deepEqual(Object.keys(saved), ['sonnet']);
+    assert.equal(typeof saved.sonnet.at, 'number');
+  });
+
   test('CLAUDE_MODEL_LADDER=off records nothing', () => {
     const e = { ...env(), CLAUDE_MODEL_LADDER: 'off' };
     mark(e, 'Fable');

@@ -27,6 +27,15 @@ add `--full` for the Hyperframes route. It checks local tools without installing
 calling a model. Report missing dependencies, install them within the user's scope,
 and verify again. Read only relevant project files or the requested website.
 
+## Creative brief
+
+Carry over the audience, proposition, approved claims and brand constraints from an
+existing campaign. Use [content campaigns](../content-campaigns/SKILL.md) or
+[brand creative direction](../brand-creative-direction/SKILL.md) only when those decisions
+are unresolved. Confirm the delivery channel, framing and readable text areas; provide
+captions when required by the brief. Derive portrait/square variants deliberately when
+requested rather than cropping a landscape composition blindly.
+
 ## One plan, honest content
 
 Reuse the project's existing implementation plan for progress and handoffs. Record

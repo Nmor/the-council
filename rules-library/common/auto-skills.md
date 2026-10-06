@@ -3,19 +3,23 @@ paths:
   - "**/*"
 ---
 
-# Auto-Skill & Agent Activation
+# Skill and Specialist Routing Catalog
 
-> This rule fires on every file. It ensures all installed skills AND agents are automatically
-> applied based on file context — no slash commands or explicit invocation needed.
->
 > **Size budget: 50 KB** — `token-budget.mjs --check`.
 
-## How It Works
+## How to use this catalog
 
-When you touch any file, automatically apply the relevant skills from `~/.claude/skills/` AND
-delegate to the relevant agents from `~/.claude/agents/` based on the file type and context below.
-Read and follow each skill's SKILL.md guidelines as part of your work. Delegate to agents when their
-expertise is needed. Do not announce activations — just apply them silently.
+Select only guidance relevant to the task. File patterns below are routing hints,
+not automatic skill activation or permission to dispatch every listed agent.
+Read the applicable language rules before editing; select a concrete specialist
+review only when its independent evidence is useful and delegation is available.
+Follow the current runtime's concurrency limit and the user's authorization.
+
+Claude compact entrypoints with `disable-model-invocation: true` require explicit
+selection. Codex uses the Council router/catalog; source `paths:` metadata does
+not establish automatic activation in Codex. Load references on demand and keep
+one authoritative plan. Report actual independent reviews separately from your
+own analysis. Missing agents/tools require local review and an accurate limitation.
 
 ## File-to-Skill-and-Agent Mapping
 
@@ -721,7 +725,7 @@ touched. They are the "first contact with a repo" gate.
   (specifics in `<workspace>/.claude/rules/`) before writing.
 - [`council-default.md`](../../rules/common/council-default.md) — Council is the
   default for every interaction. Core Five always speak; Extended
-  Eleven auto-fire per `council-triggers.md`. No bypass surfaces.
+  Consult the applicable trigger summaries; select only relevant procedures.
 - [`council-triggers.md`](../../rules/common/council-triggers.md) — per-division
   engagement signals (file patterns, keywords, change scope) for
   the 11 Extended Council Divisions.
@@ -897,7 +901,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - File type touched without auto-activating its mapped skill (mapping gap or rule weakening)
 - New file extension / framework arriving without a mapping row (e.g., new IaC tool, new mobile
   framework)
-- Skill auto-fires but contributes no findings consistently across sessions (low-value skill —
+- Selected skill contributes no useful evidence consistently across sessions (low-value skill —
   refinement candidate)
 - Skill fires too late (after edits committed) instead of pre-edit (lifecycle drift)
 - Auto-load global rule missing for a class of work that needs first-touch enforcement

@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { run, uniq, cleanup, advice, said } from './helpers.mjs';
+import { run, uniq, cleanup, verificationProof, advice, said } from './helpers.mjs';
 
 const trash = [];
 after(() => { for (const d of trash) rmSync(d, { recursive: true, force: true }); });
@@ -139,7 +139,7 @@ describe('task-completion-gate.js — "done" with no gate run this session', () 
   const complete = (sid, env = {}) => run('task-completion-gate.js', { session_id: sid }, env);
 
   const withGateMarker = (sid) => {
-    writeFileSync(join(tmpdir(), `claude-council-gate-${sid}`), `${Date.now()}\nturn-1\n`);
+    verificationProof(sid, 'turn-1');
     return sid;
   };
 
@@ -289,7 +289,7 @@ describe('permission-denied-audit.js — the bypass log actually gets fed', () =
   test('truncates the detail, because a denied command can carry a secret in its args', () => {
     const home = sandboxHome();
     deny({ session_id: 's1', reason: `AWS_SECRET=${'x'.repeat(600)}` }, home);
-    assert.equal(auditRows(home, 'bypass-log.jsonl')[0].detail.length, 300);
+    assert.equal(auditRows(home, 'bypass-log.jsonl')[0].detail, 'AWS_SECRET=[REDACTED]');
   });
 
   test('falls back to message when the payload has no reason', () => {

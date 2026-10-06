@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "execution": "Review the supplied brief using the applicable source skill. Draft only; no spending, outreach, publication, configuration changes or runtime installation. Keep model judgment separate from installer and runtime verification.",
+  "cases": [
+    {
+      "id": "pre-revenue-budget",
+      "skill": "marketing-strategy",
+      "request": "Prepare an affordable next marketing experiment for a pre-revenue SaaS in Lagos.",
+      "artifacts": {
+        "budget": "NGN 300,000 total; no channel prices or conversion baseline supplied.",
+        "evidence": "Audience, demand and retention remain unmeasured. The founder wants to predict ROI immediately."
+      }
+    },
+    {
+      "id": "private-invoices-indexing",
+      "skill": "seo",
+      "request": "Review the private invoice area and explain why a public page is absent from search.",
+      "artifacts": {
+        "invoices": "Invoice URLs are disallowed in robots.txt; access-control evidence is absent.",
+        "public_page": "Public product page has noindex. Intended indexing policy is not specified."
+      }
+    },
+    {
+      "id": "unsupported-campaign-claims",
+      "skill": "content-campaigns",
+      "request": "Draft a landing page and social campaign using the proposed product claims.",
+      "artifacts": {
+        "claims": "50% cost saving, with no measurement or methodology supplied.",
+        "quote": "Customer quotation proposed; permission and usage rights are absent."
+      }
+    },
+    {
+      "id": "government-mixed-media",
+      "skill": "brand-creative-direction",
+      "request": "Extend the existing government portal identity into a print poster and captioned portrait video.",
+      "artifacts": {
+        "brand": "Existing accessible portal uses Arial and a light theme. No redesign requested.",
+        "delivery": "Poster printer specifications and video dimensions must be confirmed. No paid assets or vendor accounts authorized."
+      }
+    }
+  ]
+}

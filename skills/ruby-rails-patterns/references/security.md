@@ -119,7 +119,9 @@ Per `~/.claude/rules-library/common/dependency-vulnerabilities.md`.
 
 ### A07 — Identification + Auth
 
-- Devise's defaults are sane (Argon2id since v4.10)
+- Devise's default encryptor uses bcrypt; verify the installed version and cost.
+  Argon2id requires an explicitly supported adapter/configuration. Keep old hashers
+  usable during migration and test authentication plus rehash of existing accounts.
 - Two-factor: devise-two-factor / rotp
 - Lockout: devise lockable module
 - Session timeout: `Devise.timeout_in = 30.minutes`

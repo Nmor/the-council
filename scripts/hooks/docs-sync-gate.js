@@ -34,9 +34,8 @@
 // means a Stop hook already forced this continuation. A project that runs without a plan says
 // so once, as `Active plan: none`.
 "use strict";
+const { markerPath, readPrivate } = require('./lib/private-state.js');
 const fs = require("fs");
-const os = require("os");
-const path = require("path");
 const gs = require("./lib/git-state.js");
 const pc = require("./lib/project-context.js");
 const { lintMemory, format } = require("./lib/memory-lint.js");
@@ -51,8 +50,8 @@ const markerTime = (sid, kind) => {
   try {
     return (
       Number(
-        fs.readFileSync(
-          path.join(os.tmpdir(), `claude-docs-sync-${kind}-${sid}`),
+        readPrivate(
+          markerPath(`docs-sync-${kind}`, sid),
           "utf8",
         ),
       ) || 0
@@ -74,13 +73,13 @@ const sessionStart = (transcript) => {
 };
 
 function codeEvidence(cwd, since, sid) {
-  const root = gs.repoRoot(cwd);
-  if (!root || !since)
-    return { changed: [], codeTime: sid ? markerTime(sid, "code") : 0 };
-  const changed = gs.dirtyFiles(root)
-    .filter((f) => ["code", "test"].includes(gs.classify(f)))
-    .filter((f) => gs.newestMtime(root, [f]) > since);
-  return { changed, codeTime: gs.newestMtime(root, changed) };
+  // Dirty AND committed work, from cwd's repo or a workspace root's child repos —
+  // the session marker only backstops contexts where git offers nothing.
+  if (!since) return { changed: [], codeTime: sid ? markerTime(sid, "code") : 0 };
+  const evidence = gs.changedSince(cwd, since);
+  if (!evidence.codeTime && sid)
+    return { changed: [], codeTime: markerTime(sid, "code") };
+  return evidence;
 }
 
 function planReasons(cwd, codeTime, changed) {

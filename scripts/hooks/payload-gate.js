@@ -27,9 +27,7 @@
 // other gate weaker. CLAUDE_PAYLOAD_GATE=block to enforce, =off to disable.
 'use strict';
 
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
+const { markerPath, hasPrivate } = require('./lib/private-state.js');
 const { advise } = require('./lib/advise.js');
 
 const SRC = /\.(go|ts|tsx|js|jsx|mjs|cjs|py|rb|java|kt|cs|rs|php|swift)$/i;
@@ -39,7 +37,8 @@ const DECODE = [
   /json\.Unmarshal\(\s*(?:resp|response|body|res|raw|data)\b/i,
   /json\.NewDecoder\(\s*(?:resp|response|res)\b[^)]*\)\s*\.Decode/i,
   /\b(?:resp|response|res)\b[^\n]{0,40}\.json\(\)/i,
-  /JSON\.parse\(\s*(?:await\s+)?(?:resp|response|res|body|text|raw)\b/i,
+  /JSON\.parse\(\s*(?:resp|response|res|body|text|raw)\b/i,
+  /JSON\.parse\(\s*await\s+(?:resp|response|res|body|text|raw)\b/i,
   /json\.loads\(\s*(?:resp|response|r)\b/i,
   /\.ReadFrom\(\s*(?:resp|response)\.Body/i,
 ];
@@ -84,7 +83,7 @@ process.stdin.on('end', () => {
   if (!DECODE.some((r) => r.test(added))) process.exit(0);
   if (!INTEGRATION_PATH.test(file) && !INTEGRATION_CONTENT.test(added)) process.exit(0);
 
-  if (fs.existsSync(path.join(os.tmpdir(), `claude-council-payload-${sid}`))) process.exit(0);
+  if (hasPrivate(markerPath('payload', sid))) process.exit(0);
 
   const msg = [
     'PAYLOAD GATE — the shape is being assumed, not confirmed.',

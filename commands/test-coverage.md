@@ -8,7 +8,7 @@ command: true
 
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
-Analyze test coverage, identify gaps, and generate missing tests to reach 80%+ coverage.
+Analyze test coverage, identify gaps, and generate missing tests against the canonical thresholds in [testing requirements](../rules-library/common/testing.md): 90% touched, 80% project and 95% critical paths for supported line/branch metrics. Record unavailable metrics explicitly.
 
 ## Step 1: Detect Test Framework
 
@@ -25,7 +25,7 @@ Analyze test coverage, identify gaps, and generate missing tests to reach 80%+ c
 
 1. Run the coverage command
 2. Parse the output (JSON summary or terminal output)
-3. List files **below 80% coverage**, sorted worst-first
+3. List touched files below their applicable threshold, sorted worst-first; report project and critical-path denominators separately
 4. For each under-covered file, identify:
    - Untested functions or methods
    - Missing branch coverage (if/else, switch, error paths)
@@ -44,7 +44,7 @@ For each under-covered file, generate tests following this priority:
 
 - Place tests adjacent to source: `foo.ts` → `foo.test.ts` (or project convention)
 - Use existing test patterns from the project (import style, assertion library, mocking approach)
-- Mock external dependencies (database, APIs, file system)
+- Use mocks for unit boundaries; use isolated real persistence and fault tests for durability claims, with provider contract evidence reported separately
 - Each test should be independent — no shared mutable state between tests
 - Name tests descriptively: `test_create_user_with_duplicate_email_returns_409`
 
@@ -52,7 +52,7 @@ For each under-covered file, generate tests following this priority:
 
 1. Run the full test suite — all tests must pass
 2. Re-run coverage — verify improvement
-3. If still below 80%, repeat Step 3 for remaining gaps
+3. If an applicable threshold remains unmet, address its gaps and rerun only relevant checks
 
 ## Step 5: Report
 
@@ -62,8 +62,8 @@ Show before/after comparison:
 Coverage Report
 ──────────────────────────────
 File                   Before  After
-src/services/auth.ts   45%     88%
-src/utils/validation.ts 32%    82%
+src/services/auth.ts   45%     96%
+src/utils/validation.ts 32%    92%
 ──────────────────────────────
 Overall:               67%     84%  ✅
 ```

@@ -13,9 +13,31 @@ body:
 
         **Before filing:**
         - Search existing issues — your report may already be tracked.
-        - Try `bash bootstrap/verify.sh --verbose` first; many issues
-          surface there.
+        - For Claude Code, run `bootstrap/verify.sh --verbose` or
+          `bootstrap/verify.ps1 -Verbose`. For Codex, run
+          `python3 bootstrap/codex.py verify`.
         - Do NOT include real secrets, API keys, or PII in this report.
+
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Affected runtime
+      description: Which runtime were you using when the issue occurred?
+      options:
+        - Claude Code
+        - Codex
+        - Both runtimes
+        - Shared guidance or repository tooling
+    validations:
+      required: true
+
+  - type: input
+    id: runtime-version
+    attributes:
+      label: Runtime version
+      description: Paste the version from `claude --version` or `codex --version`, if applicable.
+    validations:
+      required: false
 
   - type: dropdown
     id: surface
@@ -23,13 +45,14 @@ body:
       label: Affected surface
       description: Which part of the config has the bug?
       options:
-        - Rule (`rules/common/*` or `rules/<lang>/*`)
+        - Rule (`rules/common/*` or `rules-library/*`)
         - Skill (`skills/<name>/SKILL.md` or its sub-assets)
         - Agent (`agents/<name>.md`)
         - Command (`commands/<name>.md`)
-        - Verifier script (`tests/*.sh` or `bootstrap/verify.sh`)
-        - Install script (`bootstrap/install.sh` or `install.ps1`)
-        - IDE integration (`ide-integrations/<ide>/`)
+        - Verifier (`tests/`, `bootstrap/verify.*` or `bootstrap/codex.py verify`)
+        - Installer (`bootstrap/install.*` or `bootstrap/codex.py install`)
+        - Native Codex adapter (`codex/` or `bootstrap/codex.py`)
+        - IDE integration (`templates/ide-configs/<ide>/`)
         - Template (`templates/<name>/`)
         - Documentation (`docs/`, `README.md`, `CHANGELOG.md`)
         - Hook (`hooks/` or `scripts/hooks/`)
