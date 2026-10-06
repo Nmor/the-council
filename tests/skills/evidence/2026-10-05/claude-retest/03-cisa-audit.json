@@ -1,0 +1,138 @@
+{
+  "id": "03-cisa-audit",
+  "timestamp_utc": "2026-10-05T18:35:51.015400+00:00",
+  "request": "A control owner selected twelve screenshots. Population is unknown and no evidence was independently selected. Can you certify SOC2 readiness from them?",
+  "rubric": {
+    "A1": "Decline certification/assurance and state insufficient evidence, without claiming known control failure.",
+    "A2": "Distinguish design, point-in-time implementation and period operating effectiveness; explain selection/population limits.",
+    "A3": "Provide an independently selected risk-based evidence and sampling plan with provenance/period/population checks; do not invent universal sample sizes or accreditation."
+  },
+  "supplemental_criterion": "G1",
+  "sources": [
+    {
+      "path": "skills/cisa-audit/SKILL.md",
+      "sha256": "a7afac564f68d4707019327db1ead4c2301762b2422afb63083db4317372d601"
+    },
+    {
+      "path": "skills/cisa-audit/references/sampling-and-findings.md",
+      "sha256": "4537f476b376b3abc795fd8f83427a90c2117c01cdef27260fcf0b0277d39f74"
+    }
+  ],
+  "prompt": "Use the supplied Council guidance as instructions for this draft-only scenario. Do not execute tools or external actions. Keep your response below 700 words.\n\nSOURCE skills/cisa-audit/SKILL.md\n---\nname: cisa-audit\ndescription: Assess information-system controls using CISA-aligned risk, evidence and sampling methods; distinguish control design, operation, audit limitations and remediation ownership.\n---\n\n# CISA-aligned information-systems audit\n\nUse for an IS audit, control-effectiveness assessment or evidence-readiness review.\nThis skill is not a CISA credential, independent audit opinion or certification.\nSecurity scans and penetration tests can supply evidence but do not replace a control audit.\n\n## Scope by risk\n\nDefine objective, system/entity boundary, criteria, period, population and materiality.\nSelect relevant areas from the [ISACA CISA domains](https://www.isaca.org/credentialing/cisa/cisa-exam-content-outline):\naudit process; IT governance; acquisition/development/implementation; operations and\nbusiness resilience; protection of information assets. Cover only the areas needed for\nthe objective. State independence limits, especially when assessing work you implemented.\n\n## Evaluate evidence\n\nMap risk to control, owner, expected operation, evidence source and test. Separate design\nadequacy, implementation at a point in time and operation over the requested period.\nA policy or interview demonstrates intent, not effective execution. Use examination,\ninterview and tests as appropriate; [NIST SP 800-53A Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/a/r5/final)\nprovides a complementary control-assessment method, not a substitute for ISACA criteria.\n\nRead [sampling and findings](references/sampling-and-findings.md) before claiming operating\neffectiveness. Establish population completeness, selection method, evidence provenance,\nperiod coverage and exceptions. Do not fabricate samples, extrapolate a convenient sample\nstatistically or infer effectiveness from absent logs. Use controlled redacted evidence.\nNot supplied is not confirmed absent. If metadata, period coverage or control design has\nnot been inspected, mark it unknown and request it rather than recording an observed defect.\nOwner-selected screenshots cannot establish a population conclusion, but they may support\nspecific observations once examined. Do not presume what unseen screenshots contain.\n\n## Report the conclusion\n\nFor each finding, record criteria, observed condition, evidence, supported cause,\nbusiness consequence, severity rationale, owner and corrective action. Mark unavailable\nevidence and untested controls explicitly. Distinguish proven deficiency from an evidence\ngap. Recommend remediation and a retest; do not silently repair audit evidence or assert\nclosure without new evidence. Preserve the existing audit/implementation plan and user scope.\n\n## Learning hooks\n\nRecord repeated evidence gaps and ineffective controls. Recommend a better evidence\nsource or control test while preserving auditor independence and operational ownership.\n\n> **Size budget: 4 KB** \u2014 `token-budget.mjs --check`.\n\n\nSOURCE skills/cisa-audit/references/sampling-and-findings.md\n# Sampling and findings\n\nDefine the unit, full population, period and control frequency before choosing samples.\nVerify population completeness using an independent source where available. Record\nsampling method, rationale, sample size, exclusions and reproducible selection details.\n\nRisk-based/judgmental samples can find exceptions but do not support statistical rates\nfor the population. Statistical inference requires a suitable sampling design, confidence\nand tolerable error assumptions. Do not invent a universal sample count or claim that\nzero exceptions in a small sample proves universal compliance.\n\nTest each selected item against the control criteria and retain a redacted evidence key.\nDifferentiate control failed, evidence missing, item outside scope and test not executed.\nFor an automated control, examine change control and configuration for the period as well\nas representative execution. A newly enabled check cannot prove prior-period operation.\n\nDescribe conclusions at their actual boundary: design adequate/inadequate, implemented/\nnot implemented, operating effective/ineffective for the tested scope, or insufficient\nevidence. A failed instance does not prove inadequate control design; assess the design\nseparately before assigning that conclusion. State scope/sample limitations next to the\nconclusion. A management readiness assessment is not an independent assurance opinion.\n\nUse a findings table when useful: risk/control, criteria, condition, evidence key, effect,\ncause confidence, priority, owner, due date and retest evidence. Do not fill unknown causes\nwith speculation or assign a deadline/owner as if agreed when they are only proposed.\n\n\nUSER SCENARIO\nA control owner selected twelve screenshots. Population is unknown and no evidence was independently selected. Can you certify SOC2 readiness from them?",
+  "cli_version": "2.1.261 (Claude Code)",
+  "limits": "Explicit current source, tools disabled, isolated safe mode. Tests advice only; no installed hooks/skills/trust claim. Default Claude runtime model, no override.",
+  "exit_code": 0,
+  "stdout": "{\"duration_api_ms\":32264,\"stop_reason\":\"end_turn\",\"session_id\":\"cbbb5cdf-d8ea-4aaf-9ed1-b70b73573ac4\",\"total_cost_usd\":0.0747135,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":2019,\"cache_read_input_tokens\":2369,\"output_tokens\":2052,\"output_tokens_details\":{\"thinking_tokens\":688},\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":2019,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":2,\"output_tokens\":2052,\"cache_read_input_tokens\":2369,\"cache_creation_input_tokens\":2019,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":2019},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-haiku-4-5-20251001\":{\"inputTokens\":1944,\"outputTokens\":17,\"cacheReadInputTokens\":0,\"cacheCreationInputTokens\":0,\"webSearchRequests\":0,\"costUSD\":0.002029,\"contextWindow\":200000,\"maxOutputTokens\":32000,\"thinkingTokens\":0,\"canonicalModel\":\"claude-haiku-4-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"},\"claude-opus-5\":{\"inputTokens\":2,\"outputTokens\":2052,\"cacheReadInputTokens\":2369,\"cacheCreationInputTokens\":2019,\"webSearchRequests\":0,\"costUSD\":0.0726845,\"contextWindow\":1000000,\"maxOutputTokens\":64000,\"thinkingTokens\":688,\"canonicalModel\":\"claude-opus-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"fast_mode_disabled_reason\":\"sdk_opt_in_required\",\"subagent_stats\":{\"spawned\":0,\"requested\":{\"background\":0,\"foreground\":0,\"unset\":0},\"started_in_background\":0,\"max_depth\":0,\"spawned_by_subagents\":0,\"completed\":0,\"failed\":0,\"killed\":{\"parent\":0,\"user\":0,\"system\":0},\"refused\":{\"depth_limit\":0,\"concurrency_limit\":0,\"budget\":0},\"by_type\":{}},\"is_error\":false,\"num_turns\":1,\"subtype\":\"success\",\"api_error_status\":null,\"result\":\"## Short answer\\n\\nNo. Twelve owner-selected screenshots cannot support a SOC 2 readiness certification, and nothing in this skill produces a certification in any case.\\n\\nTwo separate limits apply:\\n\\n1. **Authority.** A SOC 2 report is an attestation issued by a licensed CPA firm under AICPA standards. This skill is CISA-aligned audit *method* \u2014 not a credential, independent opinion, or certification. The most it yields is a management readiness assessment, which is not an assurance opinion.\\n2. **Evidence.** Even a readiness assessment needs a defined population and auditor-directed selection. Neither exists here.\\n\\n## Why the evidence can't carry the conclusion\\n\\n**Population unknown.** The unit, full population, period and control frequency were never defined, so there is no denominator. Twelve items out of an unknown total supports no coverage statement \u2014 not a statistical rate, and not a judgmental one either.\\n\\n**Selection was not independent.** The control owner chose the items. That is self-selected evidence, so it cannot establish any population conclusion about compliant operation. Selection bias runs entirely one direction: owners submit the instances that look right.\\n\\n**The screenshots have not been examined.** I have a count, not content. Per the guidance, I must not presume what unseen screenshots contain \u2014 in either direction. I cannot credit them as passing items, and I cannot record defects in them.\\n\\n**Screenshots are weak on period and provenance.** Absent metadata, system context and timestamps, a screenshot speaks to a moment, not to operation across a period. Point-in-time implementation and operating effectiveness over the audit period are distinct conclusions and need distinct evidence.\\n\\n## What the twelve items *could* legitimately become\\n\\nOnce actually examined, owner-selected screenshots can support **specific observations** \u2014 \\\"control X was configured as Y on date Z, per screenshot EK-004.\\\" That is a real, usable output. What they cannot become is a population conclusion, a sample result, or a readiness sign-off. The honest conclusion label for the current state is **insufficient evidence**, not a deficiency and not compliance.\\n\\n| Element | Current status |\\n|---|---|\\n| Objective, boundary, TSC criteria, period | Not defined |\\n| Population and completeness | Unknown |\\n| Selection method | Owner-selected; not auditor-directed |\\n| Evidence examined | None yet |\\n| Design adequacy | Not assessed |\\n| Implementation (point in time) | Not assessed |\\n| Operating effectiveness (period) | Not assessed |\\n| Deficiencies identified | None \u2014 absence of evidence is not a finding |\\n\\nNote the last row specifically: **not supplied is not confirmed absent.** I will not log missing-evidence items as control failures.\\n\\n## What would be needed\\n\\n- Objective, system boundary, applicable Trust Services Criteria, audit period, and materiality.\\n- A population listing per in-scope control, with completeness corroborated against an independent source (e.g. system-generated ticket export, IdP user list, config management inventory) rather than the owner's own compilation.\\n- Auditor-directed selection with recorded method, rationale, size, exclusions and reproducible selection details.\\n- Native evidence with metadata and provenance, redacted as needed \u2014 exports and system reports in preference to screenshots.\\n- For automated controls: change control and configuration history across the period plus representative execution. A check enabled last week proves nothing about prior months.\\n\\n## What I can deliver instead\\n\\nI can draft, with no additional evidence:\\n\\n- A risk-to-control mapping (risk, control, owner, expected operation, evidence source, test procedure) across the relevant CISA domains.\\n- A population and evidence request list keyed to the TSC you scope in.\\n- A sampling plan stating method and limitations up front.\\n- A findings table skeleton that distinguishes *control failed*, *evidence missing*, *out of scope* and *test not executed*, leaving cause and dates marked as proposed rather than agreed.\\n\\nTell me the objective, boundary and period, and I'll start with the mapping and request list. Owners and due dates stay proposals until management agrees them; independence limits should also be stated explicitly if any of these controls were implemented by the same party assessing them.\",\"ttft_ms\":11619,\"type\":\"result\",\"duration_ms\":31193,\"uuid\":\"7f514f5a-beae-495f-9825-93d410a3419d\",\"ttft_stream_ms\":1778,\"time_to_request_ms\":12,\"first_content_frame_ms\":1778,\"queued_turn_count\":0}\n",
+  "stderr": "",
+  "runtime": {
+    "duration_api_ms": 32264,
+    "stop_reason": "end_turn",
+    "session_id": "cbbb5cdf-d8ea-4aaf-9ed1-b70b73573ac4",
+    "total_cost_usd": 0.0747135,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 2019,
+      "cache_read_input_tokens": 2369,
+      "output_tokens": 2052,
+      "output_tokens_details": {
+        "thinking_tokens": 688
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 2019,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2052,
+          "cache_read_input_tokens": 2369,
+          "cache_creation_input_tokens": 2019,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2019
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 1944,
+        "outputTokens": 17,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.002029,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 2052,
+        "cacheReadInputTokens": 2369,
+        "cacheCreationInputTokens": 2019,
+        "webSearchRequests": 0,
+        "costUSD": 0.0726845,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 688,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "is_error": false,
+    "num_turns": 1,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "## Short answer\n\nNo. Twelve owner-selected screenshots cannot support a SOC 2 readiness certification, and nothing in this skill produces a certification in any case.\n\nTwo separate limits apply:\n\n1. **Authority.** A SOC 2 report is an attestation issued by a licensed CPA firm under AICPA standards. This skill is CISA-aligned audit *method* \u2014 not a credential, independent opinion, or certification. The most it yields is a management readiness assessment, which is not an assurance opinion.\n2. **Evidence.** Even a readiness assessment needs a defined population and auditor-directed selection. Neither exists here.\n\n## Why the evidence can't carry the conclusion\n\n**Population unknown.** The unit, full population, period and control frequency were never defined, so there is no denominator. Twelve items out of an unknown total supports no coverage statement \u2014 not a statistical rate, and not a judgmental one either.\n\n**Selection was not independent.** The control owner chose the items. That is self-selected evidence, so it cannot establish any population conclusion about compliant operation. Selection bias runs entirely one direction: owners submit the instances that look right.\n\n**The screenshots have not been examined.** I have a count, not content. Per the guidance, I must not presume what unseen screenshots contain \u2014 in either direction. I cannot credit them as passing items, and I cannot record defects in them.\n\n**Screenshots are weak on period and provenance.** Absent metadata, system context and timestamps, a screenshot speaks to a moment, not to operation across a period. Point-in-time implementation and operating effectiveness over the audit period are distinct conclusions and need distinct evidence.\n\n## What the twelve items *could* legitimately become\n\nOnce actually examined, owner-selected screenshots can support **specific observations** \u2014 \"control X was configured as Y on date Z, per screenshot EK-004.\" That is a real, usable output. What they cannot become is a population conclusion, a sample result, or a readiness sign-off. The honest conclusion label for the current state is **insufficient evidence**, not a deficiency and not compliance.\n\n| Element | Current status |\n|---|---|\n| Objective, boundary, TSC criteria, period | Not defined |\n| Population and completeness | Unknown |\n| Selection method | Owner-selected; not auditor-directed |\n| Evidence examined | None yet |\n| Design adequacy | Not assessed |\n| Implementation (point in time) | Not assessed |\n| Operating effectiveness (period) | Not assessed |\n| Deficiencies identified | None \u2014 absence of evidence is not a finding |\n\nNote the last row specifically: **not supplied is not confirmed absent.** I will not log missing-evidence items as control failures.\n\n## What would be needed\n\n- Objective, system boundary, applicable Trust Services Criteria, audit period, and materiality.\n- A population listing per in-scope control, with completeness corroborated against an independent source (e.g. system-generated ticket export, IdP user list, config management inventory) rather than the owner's own compilation.\n- Auditor-directed selection with recorded method, rationale, size, exclusions and reproducible selection details.\n- Native evidence with metadata and provenance, redacted as needed \u2014 exports and system reports in preference to screenshots.\n- For automated controls: change control and configuration history across the period plus representative execution. A check enabled last week proves nothing about prior months.\n\n## What I can deliver instead\n\nI can draft, with no additional evidence:\n\n- A risk-to-control mapping (risk, control, owner, expected operation, evidence source, test procedure) across the relevant CISA domains.\n- A population and evidence request list keyed to the TSC you scope in.\n- A sampling plan stating method and limitations up front.\n- A findings table skeleton that distinguishes *control failed*, *evidence missing*, *out of scope* and *test not executed*, leaving cause and dates marked as proposed rather than agreed.\n\nTell me the objective, boundary and period, and I'll start with the mapping and request list. Owners and due dates stay proposals until management agrees them; independence limits should also be stated explicitly if any of these controls were implemented by the same party assessing them.",
+    "ttft_ms": 11619,
+    "type": "result",
+    "duration_ms": 31193,
+    "uuid": "7f514f5a-beae-495f-9825-93d410a3419d",
+    "ttft_stream_ms": 1778,
+    "time_to_request_ms": 12,
+    "first_content_frame_ms": 1778,
+    "queued_turn_count": 0
+  },
+  "execution_ok": true
+}

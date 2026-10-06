@@ -18,10 +18,14 @@ wrong-patient errors. Treat every ePHI surface as patient-life-affecting.
 - `security.md` — OWASP Top 10 + ePHI encryption mandates (AES-256-GCM at rest; TLS 1.2+ in transit)
 - `secrets-management.md` — Epic/Cerner/SMART-on-FHIR client secrets, X.509 client certs, signing
   keys in vault; AWS Keychain via aws-vault for dev profiles
-- `audit-logging.md` — HIPAA Security Rule §164.312(b) audit controls; immutable, tamper-evident, ≥
-  6-year retention (HIPAA §164.530(j))
-- `data-retention.md` — patient records 6 years minimum federal (state laws override longer — TX 7y,
-  NY 6y for adults / 6y past majority for minors, etc.)
+- `audit-logging.md` — HIPAA Security Rule §164.312(b) audit controls; classify logs and
+  compliance evidence before selecting their retention schedule
+- `data-retention.md` — HIPAA does not prescribe medical-record retention periods.
+  Identify record category, jurisdiction, applicable state/federal program law,
+  contractual duties and legal holds; protect PHI through disposal. HIPAA-required
+  documentation has a six-year rule under 45 CFR §164.530(j) / §164.316(b)(2)(i),
+  measured from creation or last effective date, whichever is later; it is not a
+  universal patient-record or audit-log period. See [HHS retention FAQ](https://www.hhs.gov/hipaa/for-professionals/faq/does-hipaa-require-covered-entities-to-keep-medical-records-for-any-period/index.html).
 - `gdpr-ccpa.md` — when EU patients OR California consumer-health-data flows (Washington My Health
   My Data Act effective 2024 also)
 - `error-handling-with-context.md` — clinical errors carry stable `error_code` (resource_not_found,
@@ -97,7 +101,7 @@ For every triggered task:
 | 2 | ePHI encrypted at rest (AES-256-GCM minimum; KMS-managed keys; key rotation ≤ 12 months)? |
 | 3 | ePHI encrypted in transit (TLS 1.2+; HSTS; certificate pinning for mobile)? |
 | 4 | Audit controls record WHO accessed WHAT PHI WHEN WHERE (HIPAA §164.312(b))? |
-| 5 | Audit logs immutable + retained ≥ 6 years + separate from operational logs? |
+| 5 | Medical records, audit logs and HIPAA-required documentation classified separately; applicable retention authority, trigger and legal holds recorded; logs protected from alteration? |
 | 6 | Access controls enforce minimum-necessary (role-based; need-to-know; break-the-glass with audit)? |
 | 7 | Patient access right implemented (§164.524 — 30 days to fulfill; electronic format; designated record set)? |
 | 8 | Accounting of disclosures (§164.528) implemented for ≥ 6 years? |
@@ -120,7 +124,7 @@ For every triggered task:
 | 25 | mHealth (HealthKit / Health Connect) ingest validates the OS-attested provenance + has BAA when data feeds covered-entity workflow? |
 | 26 | Patient-matching uses M-PI (multiple identifiers: name + DOB + SSN-last-4 + address) — NEVER single-field match? |
 | 27 | Wrong-patient risk mitigated (patient banner with name + DOB + MRN persistent on every clinical screen)? |
-| 28 | Clinical decision support: scope + intended use documented; FDA SaMD classification assessed (CDS Rule 21 CFR §170.315(b)(11))? |
+| 28 | CDS intended use documented; FDA device/non-device analysis separate from ONC health IT certification applicability under 45 CFR §170.315(b)(11)? |
 | 29 | CDS alerts ranked by clinical severity; over-alerting fatigue managed (medication interaction Tier 1/2/3 differentiation)? |
 | 30 | Allergy + drug-drug-interaction alerts SOURCE-of-TRUTH integrated (First Databank, Cerner Multum, Lexicomp, Wolters Kluwer)? |
 | 31 | Telehealth platform encrypts video (WebRTC + DTLS-SRTP) + complies with applicable state telehealth statutes? |
@@ -139,6 +143,18 @@ For every triggered task:
 | 44 | If 21 CFR Part 11: electronic-signature controls (unique user + biometric or 2FA + audit trail + non-repudiation)? |
 | 45 | Backup encrypted + tested + offsite; backup retention matches operational retention; backups within BAA scope? |
 
+### CDS applicability
+
+[ONC decision-support interventions](https://healthit.gov/test-method/decision-support-interventions/)
+under 45 CFR §170.315(b)(11) is a health IT certification criterion, not an FDA device rule.
+Determine whether the module is within that certification scope. Separately assess
+medical intended use, device definition and applicable non-device CDS exclusions
+before applying FDA requirements; see [FDA intended-use guidance](https://www.fda.gov/medical-devices/digital-health-center-excellence/step-1-software-function-intended-medical-purpose).
+AI use or ONC certification alone does not establish FDA device status.
+
+Normalize findings using the [severity and merge contract](code-reviewer.md#severity-and-merge-contract).
+Domain vetoes may add restrictions but must not relax blocking findings.
+
 ## Output shape
 
 ```text
@@ -149,11 +165,13 @@ Covered entity / business associate boundary: [where this code sits]
 BAA(s) required: [list of subprocessors that need BAA — confirmed signed?]
 ePHI surfaces: [collection / storage / display / transmission / disclosure]
 Encryption: [at rest + in transit — confirmed]
-Audit controls: [access logged + retained ≥ 6y]
+Retention: [record/evidence category + jurisdiction + authority + trigger + legal holds]
+Audit controls: [access logged + integrity + applicable retention schedule]
 Authorization model: [TPO / specific authorization / 42 CFR Part 2 consent / minor consent]
 FHIR / HL7 / DICOM / X12 conformance: [version + IG + validator confirmed]
 Terminology: [code system + version pinned]
-FDA classification: [non-device / Class I / Class II / Class III — with 510(k) / De Novo / PMA citation]
+ONC certification scope: [in scope / out of scope + 45 CFR §170.315(b)(11) rationale]
+FDA classification: [intended use + device/non-device basis; if device, class + regulatory pathway]
 State telehealth compliance: [licensed states / compact memberships]
 Breach detection: [signal + 60-day clock starting condition]
 Findings:
@@ -264,8 +282,9 @@ Every finding cites:
   ERA, 837 claim)
 - **ICD-10-CM/PCS** (CMS); **SNOMED-CT** (NLM); **LOINC** (Regenstrief); **RxNorm** (NLM); **CPT**
   (AMA); **HCPCS** (CMS); **NDC** (FDA)
-- **FDA 21 CFR Part 820** (Quality System Regulation); **Part 11** (electronic records +
-  signatures); **§170.315(b)(11)** (CDS criteria)
+- **FDA 21 CFR Part 820** (device quality system); **Part 11** (electronic records + signatures)
+- **ONC 45 CFR §170.315(b)(11)** (decision-support interventions certification), separately
+  from FDA intended-use/device classification
 - **FDA Software as a Medical Device (SaMD)** — IMDRF framework + FDA Guidance Sep 2022
 - **FDA Predetermined Change Control Plan (PCCP)** — for AI/ML SaMD updates without new 510(k)
 - **DEA 21 CFR §1311** — EPCS

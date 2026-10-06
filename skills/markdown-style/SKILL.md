@@ -1,11 +1,12 @@
 ---
 name: markdown-style
-description: Markdown style — CommonMark + GFM compliant, yamllint-clean YAML frontmatter, markdownlint rules enforced (MD004 dashes for ul, MD022 blanks around headings, MD031 blanks around fenced code, MD032 blanks around lists, MD040 fenced code language tag, MD025 single H1, MD034 no bare URLs, MD047 single trailing newline). Line length capped at 100 chars (longer tolerated only on unbreakable table rows or URLs). One H1 per document; heading hierarchy never skips levels. Auto-fires on markdown sources.
+description: Markdown style — CommonMark + GFM compliant, yamllint-clean YAML frontmatter, markdownlint rules enforced (MD004 dashes for ul, MD022 blanks around headings, MD031 blanks around fenced code, MD032 blanks around lists, MD040 fenced code language tag, MD025 single H1, MD034 no bare URLs, MD047 single trailing newline). Line length capped at 100 chars (longer tolerated only on unbreakable table rows or URLs). One H1 per document; heading hierarchy never skips levels. Select explicitly when this guidance applies.
 paths:
   - "**/*.md"
   - "**/*.mdc"
   - "**/*.markdown"
   - "**/*.mdx"
+disable-model-invocation: true
 ---
 
 # markdown-style

@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / "codex" / "hooks.py"
@@ -17,18 +18,20 @@ SPEC.loader.exec_module(hooks)
 
 class HookTests(unittest.TestCase):
     def setUp(self):
+        # Mutation engine is covered by real paired-event bridge fixtures.
+        self.enterContext(patch.object(hooks, "go_mutation_guard", return_value={}))
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.home = Path(self.temporary.name).resolve()
         self.root = self.home / "project"
         self.root.mkdir()
         self.plan = self.home / "existing-plan.md"
-        self.plan.write_text("Existing requirements\n")
+        self.plan.write_text("Existing requirements\n", encoding="utf-8")
         (self.home / "council").mkdir()
         self.register([{"root": str(self.root), "plan": str(self.plan)}])
 
     def register(self, entries):
-        (self.home / "council" / "projects.json").write_text(json.dumps({"projects": entries}))
+        (self.home / "council" / "projects.json").write_text(json.dumps({"projects": entries}), encoding="utf-8")
 
     def event(self, event="PreToolUse", tool="apply_patch", value="", **extra):
         return {"hook_event_name": event, "cwd": str(self.root), "tool_name": tool,
@@ -46,7 +49,7 @@ class HookTests(unittest.TestCase):
     def test_longest_project_and_boundary(self):
         nested = self.root / "nested"
         second = self.home / "nested-plan.md"
-        second.write_text("nested")
+        second.write_text("nested", encoding="utf-8")
         self.register([{"root": str(self.root), "plan": str(self.plan)},
                        {"root": str(nested), "plan": str(second)}])
         self.assertEqual(hooks.project_plan(self.home, nested / "src"), second)
@@ -55,8 +58,12 @@ class HookTests(unittest.TestCase):
 
     def test_session_points_to_exact_existing_plan(self):
         response = hooks.dispatch(self.event("SessionStart"), self.home)
-        self.assertIn(str(self.plan), response["hookSpecificOutput"]["additionalContext"])
-        self.assertEqual(self.plan.read_text(), "Existing requirements\n")
+        context_text = response["hookSpecificOutput"]["additionalContext"]
+        self.assertIn(str(self.plan), context_text)
+        # Default-on is stated per session, so the owner never has to name the
+        # Council to get it (the Claude side regressed exactly this way).
+        self.assertIn("Council default mode is ON for every request", context_text)
+        self.assertEqual(self.plan.read_text(encoding="utf-8"), "Existing requirements\n")
 
     def test_patch_parser_preserves_multiple_operations_and_content(self):
         patch = "*** Begin Patch\n*** Add File: src/a.py\n+print(1)\n*** Update File: src/b.py\n*** Move to: src/c.py\n-old\n+new\n*** Delete File: src/d.py\n*** End Patch"
@@ -85,9 +92,9 @@ class HookTests(unittest.TestCase):
             self.assertTrue(self.denied(hooks.dispatch(self.event(value=patch), self.home)))
 
     def test_canonical_plan_cannot_be_deleted_or_moved(self):
-        for patch in [f"*** Delete File: {self.plan}",
-                      f"*** Update File: {self.plan}\n*** Move to: notes.md\n+x"]:
-            self.assertTrue(self.denied(hooks.dispatch(self.event(value=patch), self.home)))
+        for patch_text in [f"*** Delete File: {self.plan}",
+                           f"*** Update File: {self.plan}\n*** Move to: notes.md\n+x"]:
+            self.assertTrue(self.denied(hooks.dispatch(self.event(value=patch_text), self.home)))
 
     def test_existing_other_plan_update_is_not_creation(self):
         self.assertEqual(hooks.dispatch(self.event(value="*** Update File: docs/plan.md\n+x"), self.home), {})
@@ -151,3 +158,18 @@ class HookTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class UnmockedDispatchTests(unittest.TestCase):
+    """H6 acceptance: no guard mock — the real dispatch path end to end."""
+
+    def test_failed_command_feedback_survives_the_correlation_warning(self):
+        with tempfile.TemporaryDirectory() as directory:
+            payload = {"hook_event_name": "PostToolUse", "cwd": directory,
+                       "tool_name": "exec_command", "tool_input": "go test ./...",
+                       "tool_response": {"exit_code": 1}}
+            response = hooks.dispatch(payload, Path(directory))
+            text = response["hookSpecificOutput"]["additionalContext"]
+            self.assertIn("no mutation check is claimed", text)
+            self.assertIn("exited with code 1", text)
+            self.assertLess(len(text), 1000)

@@ -1,6 +1,7 @@
 ---
 name: lean-startup
 description: Principal-level methodology for building products under extreme uncertainty — validated learning, build-measure-learn loops, MVPs, innovation accounting, pivot-or-persevere, customer development, and engines of growth.
+disable-model-invocation: true
 ---
 
 # Lean Startup

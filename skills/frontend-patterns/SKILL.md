@@ -17,6 +17,7 @@ paths:
   - "**/views/**"
   - "**/pages/**"
   - "**/layouts/**"
+disable-model-invocation: true
 ---
 
 # Frontend Development Patterns

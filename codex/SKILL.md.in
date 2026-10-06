@@ -9,6 +9,10 @@ Use [the catalog](<@COUNCIL_HOME@/catalog.md>) to select
 only relevant skills, commands, rules and agents. Full source reference trees are
 preserved under `@COUNCIL_HOME@/resources/`.
 
+For code edits, read `rules-library/common/coding-style.md` and the applicable
+language's coding-style/testing guidance from that resource root before writing.
+Return-value handling applies to tests as well as production code.
+
 For substantial work, inspect existing implementation and the authoritative plan;
 consider architecture, implementation, quality, security and testing; include
 extended divisions only when relevant. Work locally by default. A concrete independent task can justify one native

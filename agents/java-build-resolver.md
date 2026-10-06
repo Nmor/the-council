@@ -93,3 +93,5 @@ Per `continuous-learning-mandate.md`:
 `@SuppressWarnings`/`!!` attempts (violation); annotation-processor path errors
 recurring; JPMS `requires` gaps. **Refinements**: new common-fix row on a recurring
 error; new anti-pattern on a recurring shortcut.
+
+Primary reference for the relevant review: [Java compiler documentation: javac options](https://docs.oracle.com/en/java/javase/21/docs/specs/man/javac.html).

@@ -1,6 +1,6 @@
 # Code of Conduct
 
-The Claude Council adopts the **Contributor Covenant**, version
+The Council adopts the **Contributor Covenant**, version
 **2.1**, as its Code of Conduct.
 
 - **Canonical text**: <https://www.contributor-covenant.org/version/2/1/code_of_conduct/>
@@ -36,7 +36,7 @@ Two reporting channels are supported:
 
 1. **GitHub Security Advisories** (private, recommended for
    sensitive reports):
-   <https://github.com/Nmor/the-claude-council/security/advisories/new>
+   <https://github.com/Nmor/the-council/security/advisories/new>
    (note: this surface accepts conduct reports in addition to
    security reports — flag the advisory as "Conduct" in the
    first line of the report)

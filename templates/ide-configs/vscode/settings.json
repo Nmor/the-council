@@ -1,18 +1,17 @@
-// VS Code settings template — security-hardened + Claude-integrated.
+// VS Code settings template — Council guidance for Claude Code and Codex.
 // Apply by merging into the platform's User/settings.json:
 //   macOS:   ~/Library/Application Support/Code/User/settings.json
 //   Linux:   ~/.config/Code/User/settings.json
 //   Windows: %APPDATA%\Code\User\settings.json
 //   WSL2:    ~/.vscode-server/data/Machine/settings.json (remote profile)
 //
-// Security-hardened per ~/.claude/rules-library/common/install-allowlist.md and
-// ~/.claude/rules-library/common/secrets-management.md.
+// Council references below are relative to the source or installed resources root.
 //
 // References:
-// - ~/.claude/rules-library/common/extreme-lint-policy.md (format-on-save mandatory)
-// - ~/.claude/rules-library/common/install-allowlist.md (no autoUpdate; allowlist publishers)
-// - ~/.claude/rules-library/common/no-discards.md (lint diagnostics surface on hover)
-// - ~/.claude/rules-library/common/secrets-management.md (workspace trust mandatory)
+// - rules-library/common/extreme-lint-policy.md (format-on-save mandatory)
+// - rules-library/common/install-allowlist.md (no autoUpdate; allowlist publishers)
+// - rules-library/common/no-discards.md (lint diagnostics surface on hover)
+// - rules-library/common/secrets-management.md (workspace trust mandatory)
 {
   // ============================================================
   // Security & workspace trust (per install-allowlist.md)
@@ -474,9 +473,16 @@
   ],
 
   // ============================================================
-  // Anthropic / Claude integration
+  // Claude Code extension (anthropic.claude-code)
   // ============================================================
-  "anthropic.claudeCode.alwaysThinkingEnabled": true,
-  "anthropic.claudeCode.permissionMode": "ask",
-  "anthropic.claudeCode.dangerouslySkipPermissions": false
+  "claudeCode.initialPermissionMode": "default",
+  "claudeCode.allowDangerouslySkipPermissions": false,
+
+  // ============================================================
+  // Codex extension (openai.chatgpt)
+  // Model, sandbox, approval and compaction settings belong in Codex config.toml.
+  // Hook trust is reviewed separately in Codex; editor settings do not grant it.
+  // ============================================================
+  "chatgpt.openOnStartup": false,
+  "chatgpt.followUpQueueMode": "steer"
 }

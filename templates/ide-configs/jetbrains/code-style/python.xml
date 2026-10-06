@@ -13,7 +13,7 @@
   Function length / parameter count / cognitive complexity enforced
   by inspections (Ruff + SonarLint), not here.
 -->
-<code_scheme name="Claude Council — Python" version="173">
+<code_scheme name="The Council — Python" version="173">
   <option name="RIGHT_MARGIN" value="100"/>
   <option name="LINE_SEPARATOR" value="&#10;"/>
 

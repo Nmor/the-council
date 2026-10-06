@@ -1,6 +1,6 @@
 ---
 name: resilience-rules
-description: Resilience patterns — circuit-breaker (per-DEPENDENCY breaker; CLOSED/OPEN/HALF-OPEN), graceful-degradation (P0-P3 criticality tiers; explicit degraded UX never silent), feature-flags (every flag has owner + expiry + decision criteria; OpenFeature spec; kill switches pre-built), idempotency (Stripe keys; RFC 9110 method semantics; webhook event-id dedupe), rate-limiting (multi-layer; per-endpoint defaults; RFC 6585), deploy-failures-become-checks (every deploy failure becomes a pre-deploy check). Sister to observability-patterns. Auto-fires on resilience/feature-flag/rate-limit code paths.
+description: Resilience patterns — circuit-breaker (per-DEPENDENCY breaker; CLOSED/OPEN/HALF-OPEN), graceful-degradation (P0-P3 criticality tiers; explicit degraded UX never silent), feature-flags (every flag has owner + expiry + decision criteria; OpenFeature spec; kill switches pre-built), idempotency (Stripe keys; RFC 9110 method semantics; webhook event-id dedupe), rate-limiting (multi-layer; per-endpoint defaults; RFC 6585), deploy-failures-become-checks (every deploy failure becomes a pre-deploy check). Sister to observability-patterns. Select explicitly when this guidance applies.
 paths:
   - "**/*circuit*"
   - "**/*breaker*"
@@ -15,6 +15,7 @@ paths:
   - "**/release*"
   - "**/canary*"
   - "**/rollback*"
+disable-model-invocation: true
 ---
 
 # resilience-rules

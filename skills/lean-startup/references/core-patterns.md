@@ -167,9 +167,11 @@ Customer Discovery → Customer Validation │ Customer Creation → Company Bui
    fit                fit          │   scaling          M&A
 ```
 
-**Customer Discovery** — find a problem worth solving. Get out
-of the building. Test problem hypothesis via 100+ unstructured
-interviews. The Mom Test (Rob Fitzpatrick 2013) gives
+**Customer Discovery** — test whether a problem is worth solving with
+an affordable, targeted interview batch. Choose participants, questions and
+decision criteria before collecting evidence; expand only to resolve a
+specific uncertainty. No universal interview count proves demand.
+The Mom Test (Rob Fitzpatrick 2013) gives
 interview discipline: ask about specific past behaviour, not
 hypothetical future actions.
 

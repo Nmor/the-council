@@ -1,6 +1,6 @@
 ---
 name: go-test
-description: Enforce TDD workflow for Go. Write table-driven tests first, then implement. Verify 80%+ coverage with go test -cover.
+description: Enforce TDD workflow for Go. Write table-driven tests first, then implement. Verify canonical touched/project/critical-path statement coverage and explicit branch behavior.
 ---
 
 # Go TDD Command
@@ -17,7 +17,7 @@ patterns.
 3. **Run Tests**: Verify tests fail for the right reason
 4. **Implement Code**: Write minimal code to pass (GREEN)
 5. **Refactor**: Improve while keeping tests green
-6. **Check Coverage**: Ensure 80%+ coverage
+6. **Check Coverage**: Apply canonical 90% touched / 80% project / 95% critical-path defaults to native statement coverage; branch coverage is unavailable and requires explicit behavioral cases
 
 ## When to Use
 

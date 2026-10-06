@@ -1,6 +1,7 @@
 ---
 name: postgres-patterns
 description: PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based on Supabase best practices.
+disable-model-invocation: true
 ---
 
 # PostgreSQL Patterns
@@ -65,7 +66,11 @@ CREATE INDEX idx ON users (email) WHERE deleted_at IS NULL;
 -- Smaller index, only includes active users
 ```
 
-**RLS Policy (Optimized):**
+**RLS Policy (Supabase):**
+
+Use this form only when `auth.uid()` exists and comes from the trusted authentication
+context. Plain PostgreSQL needs its own server-authorized tenant context; never substitute
+an arbitrary caller-provided tenant ID for authorization.
 
 ```sql
 CREATE POLICY policy ON orders
@@ -201,12 +206,16 @@ discipline, EXPLAIN ANALYZE reading, connection pooling, autovacuum tuning.
 
 ## Verification Checklist
 
-- [ ] EXPLAIN ANALYZE confirms index usage on all hot queries
+- [ ] Inspect estimated plans first. Run EXPLAIN ANALYZE only on an authorized,
+  bounded workload: it executes the statement, including writes and functions.
+  Judge cost and measured latency; a sequential scan can be the correct plan.
 - [ ] Foreign keys + check constraints on every relationship / invariant
 - [ ] All queries parameterised; no string-interpolated user input
 - [ ] PgBouncer (or equivalent) configured; pool size matches workload
 - [ ] Autovacuum tuned for write volume (`autovacuum_vacuum_scale_factor`)
-- [ ] RLS policies for multi-tenant tables (verified with non-superuser test)
+- [ ] Verify cross-tenant reads and writes with the actual runtime role; it must
+  lack superuser, BYPASSRLS and ownership bypass. Test missing tenant context and
+  pooled connection reuse. Use FORCE ROW LEVEL SECURITY where owners need isolation.
 - [ ] JSONB columns have GIN indexes only where queries need them
 - [ ] Slow query log enabled (`log_min_duration_statement = 200`)
 - [ ] Partitioning for tables > 100M rows (range / list / hash per access pattern)
@@ -228,7 +237,7 @@ discipline, EXPLAIN ANALYZE reading, connection pooling, autovacuum tuning.
 Postgres is the most powerful open-source RDBMS — and the easiest to misuse: missing indexes,
 JSONB-everywhere schemas, OFFSET pagination, disabled autovacuum, queries that look fast on 10K rows
 and grind to a halt at 10M. The patterns above codify the production-ready posture: parameterised
-queries, intentional indexing, RLS for tenancy, EXPLAIN ANALYZE before merge, PgBouncer for
+queries, intentional indexing, enforced RLS for tenancy, safely assessed query plans, PgBouncer for
 connection management. Apps following these defaults survive growth without DB-rewrite quarters.
 
 ## Learning hooks
@@ -237,7 +246,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Sequential scan on table > 100k rows (missing index — EXPLAIN ANALYZE shows Seq Scan)
+- Costly sequential scans under representative load (assess selectivity and workload
+  before deciding whether an index is needed)
 - N+1 query pattern in handler (multiple round-trips when a JOIN / IN-clause would suffice)
 - Long-running transaction holding locks > 10s (advisory + connection-pool starvation risk)
 - `SELECT *` in production code (over-fetch + schema-evolution coupling)

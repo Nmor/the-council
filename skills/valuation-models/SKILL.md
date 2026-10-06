@@ -1,6 +1,7 @@
 ---
 name: valuation-models
 description: Principal-level valuation methodologies — DCF, trading comparables, precedent transactions, LBO, sum-of-the-parts, venture capital method, real options. Cite valuation outputs as ranges with explicit assumption sensitivity, never a single point estimate.
+disable-model-invocation: true
 ---
 
 # Valuation Models

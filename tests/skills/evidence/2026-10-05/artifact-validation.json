@@ -1,0 +1,17 @@
+{
+ "verified_at_utc": "2026-10-05T22:20:03.128867+00:00",
+ "status": "PASS",
+ "meaning": "Artifact consistency and actual recorded process completion, not advice quality.",
+ "artifacts_checked": 51,
+ "source_versions": 30,
+ "claude_cases": 18,
+ "checks": [
+  "Packaged SHA-256 and size",
+  "JSON parse",
+  "Exact source snapshot hashes against native manifests",
+  "Verbatim wrapped response hashes",
+  "Claude prompt contains exact supplied source bytes",
+  "Claude actual terminal exit 0 and non-error API response",
+  "G1 retest: five claude-g1-retest artifacts parsed; four final drafts hash-match current sources with exact prompt containment and exit 0; attempt 1 preserved with pre-rewrite test-strategy sources (hash drift expected and documented)"
+ ]
+}

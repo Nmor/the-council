@@ -59,7 +59,7 @@ When creating PRs:
    - Write tests first (RED)
    - Implement to pass tests (GREEN)
    - Refactor (IMPROVE)
-   - Verify 70%+ coverage
+   - Verify the applicable canonical touched/project/critical-path thresholds coverage
 
 3. **Code Review**
    - Use **code-reviewer** agent immediately after writing code

@@ -1,6 +1,6 @@
 ---
 name: dockerfile-patterns
-description: Dockerfile + container discipline — multi-stage builds (build → runtime); pinned base image with tag + sha256 digest; non-root USER mandatory; COPY over ADD (except verified tarball); chained apt-get install + cache cleanup in same RUN layer; explicit WORKDIR; exec-form CMD/ENTRYPOINT; layer ordering least-frequent → most-frequent change; EXPOSE documentary; HEALTHCHECK for long-running services; OCI labels (org.opencontainers.image.*); .dockerignore mandatory; Hadolint at strict ruleset; BuildKit secret mounts (--mount=type=secret) never ENV/ARG for secrets. Auto-fires on Dockerfile + Compose files.
+description: Dockerfile + container discipline — multi-stage builds (build → runtime); pinned base image with tag + sha256 digest; non-root USER mandatory; COPY over ADD (except verified tarball); chained apt-get install + cache cleanup in same RUN layer; explicit WORKDIR; exec-form CMD/ENTRYPOINT; layer ordering least-frequent → most-frequent change; EXPOSE documentary; HEALTHCHECK for long-running services; OCI labels (org.opencontainers.image.*); .dockerignore mandatory; Hadolint at strict ruleset; BuildKit secret mounts (--mount=type=secret) never ENV/ARG for secrets. Select explicitly when this guidance applies.
 paths:
   - "**/Dockerfile"
   - "**/Dockerfile.*"
@@ -13,6 +13,7 @@ paths:
   - "**/compose*.yaml"
   - ".dockerignore"
   - "**/.dockerignore"
+disable-model-invocation: true
 ---
 
 # dockerfile-patterns

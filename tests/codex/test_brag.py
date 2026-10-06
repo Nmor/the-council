@@ -46,8 +46,8 @@ class RenderTests(unittest.TestCase):
                         '-c:a', 'aac', str(cls.output / 'brag.mp4')], check=True, timeout=30)
         subprocess.run(['ffmpeg', '-v', 'error', '-i', str(cls.output / 'brag.mp4'),
                         '-frames:v', '1', str(cls.output / 'brag.jpg')], check=True, timeout=30)
-        (cls.output / 'share-copy.txt').write_text('Synthetic pipeline fixture, not a launch demo.')
-        (cls.output / 'storyboard.md').write_text('One second of blue and tone for media verification.')
+        (cls.output / 'share-copy.txt').write_text('Synthetic pipeline fixture, not a launch demo.', encoding="utf-8")
+        (cls.output / 'storyboard.md').write_text('One second of blue and tone for media verification.', encoding="utf-8")
 
     def test_real_render_passes(self):
         result = brag.verify(self.output, 1, 'landscape', 'required')

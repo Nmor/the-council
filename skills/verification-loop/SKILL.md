@@ -1,6 +1,7 @@
 ---
 name: verification-loop
 description: "A comprehensive verification system for Claude Code sessions."
+disable-model-invocation: true
 ---
 
 # Verification Loop Skill
@@ -18,15 +19,31 @@ Invoke this skill:
 - When you want to ensure quality gates pass
 - After refactoring
 
+Scale checks to the changed risk and repository/user requirements. Record why a
+check is inapplicable; reuse completed evidence only while its revision, inputs and
+acceptance boundary still match. Do not put secrets in command arguments or shared logs.
+
 ## Verification Phases
+
+Follow [verification evidence](../../rules/common/verify-before-claim.md): record the
+command, revision (including dirty changes), environment, completed exit status and
+acceptance boundary. Use the shared [run-check wrapper](references/run-check.sh),
+which captures full output before displaying a bounded tail and returns the producer
+status. Do not pipe a running check to `head`/`tail` or replace failure with `echo`.
+
+```bash
+# Resolve this skill's installed path; use a private temporary evidence directory.
+check="/path/to/verification-loop/references/run-check.sh"
+logs="$(mktemp -d)"
+```
 
 ### Phase 1: Build Verification
 
 ```bash
 # Check if project builds
-npm run build 2>&1 | tail -20
+bash "$check" -l "$logs/build.log" -n 20 -- npm run build
 # OR
-pnpm build 2>&1 | tail -20
+bash "$check" -l "$logs/build.log" -n 20 -- pnpm build
 ```
 
 If build fails, STOP and fix before continuing.
@@ -35,10 +52,10 @@ If build fails, STOP and fix before continuing.
 
 ```bash
 # TypeScript projects
-npx tsc --noEmit 2>&1 | head -30
+bash "$check" -l "$logs/types.log" -- npx --no-install tsc --noEmit
 
 # Python projects
-pyright . 2>&1 | head -30
+bash "$check" -l "$logs/types.log" -- pyright .
 ```
 
 Report all type errors. Fix critical ones before continuing.
@@ -47,20 +64,20 @@ Report all type errors. Fix critical ones before continuing.
 
 ```bash
 # JavaScript/TypeScript
-npm run lint 2>&1 | head -30
+bash "$check" -l "$logs/lint.log" -- npm run lint
 
 # Python
-ruff check . 2>&1 | head -30
+bash "$check" -l "$logs/lint.log" -- ruff check .
 ```
 
 ### Phase 4: Test Suite
 
 ```bash
 # Run tests with coverage
-npm run test -- --coverage 2>&1 | tail -50
+bash "$check" -l "$logs/tests.log" -n 50 -- npm run test -- --coverage
 
 # Check coverage threshold
-# Target: 70% minimum
+# Apply the repository/user policy and canonical testing policy linked below.
 ```
 
 Report:
@@ -68,25 +85,23 @@ Report:
 - Total tests: X
 - Passed: X
 - Failed: X
-- Coverage: X%
+- Coverage: measured metric and denominator for touched files, project and critical paths;
+  apply [canonical testing policy](../../rules-library/common/testing.md).
 
 ### Phase 5: Security Scan
 
-```bash
-# Check for secrets
-grep -rn "sk-" --include="*.ts" --include="*.js" . 2>/dev/null | head -10
-grep -rn "api_key" --include="*.ts" --include="*.js" . 2>/dev/null | head -10
-
-# Check for console.log
-grep -rn "console.log" --include="*.ts" --include="*.tsx" src/ 2>/dev/null | head -10
-```
+Run the repository's configured secret scanner and relevant dependency/security
+checks through the same wrapper. A text search for keys is not a secret-scan PASS.
+Report SKIPPED or UNAVAILABLE with the reason when a scan did not complete; required
+security checks remain blocking. Review logging separately using a scoped source search.
 
 ### Phase 6: Diff Review
 
 ```bash
 # Show what changed
 git diff --stat
-git diff HEAD~1 --name-only
+git diff --name-only
+git diff --cached --name-only
 ```
 
 Review each changed file for:
@@ -103,11 +118,13 @@ After running all phases, produce a verification report:
 VERIFICATION REPORT
 ==================
 
-Build:     [PASS/FAIL]
-Types:     [PASS/FAIL] (X errors)
-Lint:      [PASS/FAIL] (X warnings)
-Tests:     [PASS/FAIL] (X/Y passed, Z% coverage)
-Security:  [PASS/FAIL] (X issues)
+Revision/environment/acceptance boundary: ...
+Per check: command + completed exit status + evidence log + reason for skips
+Build:     [PASS/FAIL/SKIPPED/UNAVAILABLE/INTERRUPTED/RUNNING]
+Types:     [same states] (X errors)
+Lint:      [same states] (X warnings)
+Tests:     [same states] (X/Y passed; coverage metric/denominator or UNAVAILABLE)
+Security:  [same states] (scan actually completed, X issues)
 Diff:      [X files changed]
 
 Overall:   [READY/NOT READY] for PR
@@ -116,6 +133,11 @@ Issues to Fix:
 1. ...
 2. ...
 ```
+
+Only completed, inspected checks may PASS. RUNNING has no completed exit status;
+SKIPPED is not PASS. Required failed, unavailable, interrupted, running or skipped
+checks mean NOT READY. Retain logs locally for evidence; redact before sharing and
+remove the private directory when no longer needed.
 
 ## Continuous Mode
 
@@ -137,8 +159,8 @@ Hooks catch issues immediately; this skill provides comprehensive review.
 
 ## Cross-rule Gates (mandatory before "done")
 
-These gates ride alongside the build/test/lint loop above. Each must
-pass before any change is declared complete:
+These gates ride alongside the build/test/lint loop above where their scope applies.
+Record inapplicable gates as SKIPPED with a reason; required gates must complete:
 
 - **Docs-sync gate** (`~/.claude/rules-library/common/docs-sync-with-code.md`)
   — every feature page under `docs/` reflects what shipped; README,
@@ -281,14 +303,14 @@ cleanly so the next session resumes without re-derivation.
 | Pattern | Why bad | Correct alternative |
 | --- | --- | --- |
 | "Looks clean, shipping it" | Aspiration, not verification | Run the per-language gate THIS turn; quote the result |
-| Verification gate ran 3 turns ago; file unchanged since | Stale; new edits invalidate prior runs | Re-run when ANY file in scope has changed since last run |
-| Run only the test for the file you edited | Misses regressions in callers | Full test suite for the service; per-file just for spot-check |
+| Reuse evidence after relevant inputs changed | Earlier pass cannot certify new behavior | Re-run affected gates when revision, inputs or acceptance boundary changes |
+| Scope tests without considering affected callers | May miss cross-file regressions | Include affected boundaries; broaden only for new failures or unresolved risk |
 | Skip IDE diagnostics ("it builds") | SonarLint / type-checker / a11y catch what the compiler doesn't | Read every diagnostic the IDE surfaced; fix or document |
 | `continue-on-error: true` in CI | Gate becomes advisory; ship-blocks turn into warnings | Hard fail; treat warnings as errors per `extreme-lint-policy.md` |
 | Compaction without state persistence | Next session re-derives from scratch | Snapshot plan file + TodoWrite state before compaction |
 | Verification block missing from the response | User can't audit completion | Explicit block: tool ran, command ran, exit-code observed |
 | Tests pass locally but CI is different | Local-CI parity gap | Run the same command CI runs (`pnpm verify` / `make verify`) |
-| Coverage drift from 90% to 70% silently | Test debt accumulates | Coverage threshold enforced per `extreme-lint-policy.md`: ≥90% touched / ≥80% project |
+| Coverage drift below an applicable gate silently | Test debt accumulates | Apply canonical `testing.md` policy: defaults ≥90% touched / ≥80% project / ≥95% critical, repository/user precedence |
 
 ## Verification Checklist
 

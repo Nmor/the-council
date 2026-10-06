@@ -1,6 +1,7 @@
 ---
 name: security-scan
 description: Scan a Claude Code configuration surface (`.claude/` directory, `CLAUDE.md`, `settings.json`, MCP servers, hooks, agent definitions) for security vulnerabilities, misconfigurations, and prompt-injection risks using AgentShield (`ecc-agentshield`). Sister to `security-review` (broader OWASP / source-code audit). Use this skill when the target is the AGENT CONFIG, not the application source.
+disable-model-invocation: true
 ---
 
 # Security Scan (AgentShield)

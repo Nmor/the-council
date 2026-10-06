@@ -15,10 +15,9 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { run, uniq, marker, cleanup } from './helpers.mjs';
+import { run, uniq, cleanup, verificationProof } from './helpers.mjs';
 import { ISOLATED, git, setMtime, world, edit } from './plan-world.mjs';
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -28,8 +27,8 @@ describe('commit-gate.js — a commit carries a current plan, and docs or a Docs
     if (stage) git(w.repo, 'add', '-A');
     const sid = uniq('sid');
     const pid = uniq('pid');
-    writeFileSync(marker(`claude-council-gate-${sid}`), `${Date.now() + 5000}\n${pid}`);
-    writeFileSync(marker(`claude-council-coverage-${sid}`), '80');
+    verificationProof(sid, pid, w.repo, w.env);
+    verificationProof(sid, pid, w.repo, w.env, true);
     try {
       return run('commit-gate.js', {
         session_id: sid, prompt_id: pid, cwd: w.repo,

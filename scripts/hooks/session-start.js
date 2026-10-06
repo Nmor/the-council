@@ -1,81 +1,18 @@
 #!/usr/bin/env node
 // Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
-/**
- * SessionStart Hook - Load previous context on new session
- *
- * Cross-platform (Windows, macOS, Linux)
- *
- * Runs when a new Claude session starts. Loads the most recent session
- * summary into Claude's context via stdout, and reports available
- * sessions and learned skills.
- */
+'use strict';
+const { privateDirectory } = require('./lib/private-state.js');
+const os = require('node:os');
+const path = require('node:path');
+const { adviceJSON, context, pointers, readInput } = require('./lib/lifecycle-context.js');
 
-const {
-  getSessionsDir,
-  getLearnedSkillsDir,
-  findFiles,
-  ensureDir,
-  readFile,
-  log,
-  output
-} = require('../lib/utils');
-const { getPackageManager, getSelectionPrompt } = require('../lib/package-manager');
-const { listAliases } = require('../lib/session-aliases');
-
-async function main() {
-  const sessionsDir = getSessionsDir();
-  const learnedDir = getLearnedSkillsDir();
-
-  // Ensure directories exist
-  ensureDir(sessionsDir);
-  ensureDir(learnedDir);
-
-  // Check for recent session files (last 7 days)
-  const recentSessions = findFiles(sessionsDir, '*-session.tmp', { maxAge: 7 });
-
-  if (recentSessions.length > 0) {
-    const latest = recentSessions[0];
-    log(`[SessionStart] Found ${recentSessions.length} recent session(s)`);
-    log(`[SessionStart] Latest: ${latest.path}`);
-
-    // Read and inject the latest session content into Claude's context
-    const content = readFile(latest.path);
-    if (content && !content.includes('[Session context goes here]')) {
-      // Only inject if the session has actual content (not the blank template)
-      output(`Previous session summary:\n${content}`);
-    }
-  }
-
-  // Check for learned skills
-  const learnedSkills = findFiles(learnedDir, '*.md');
-
-  if (learnedSkills.length > 0) {
-    log(`[SessionStart] ${learnedSkills.length} learned skill(s) available in ${learnedDir}`);
-  }
-
-  // Check for available session aliases
-  const aliases = listAliases({ limit: 5 });
-
-  if (aliases.length > 0) {
-    const aliasNames = aliases.map(a => a.name).join(', ');
-    log(`[SessionStart] ${aliases.length} session alias(es) available: ${aliasNames}`);
-    log(`[SessionStart] Use /sessions load <alias> to continue a previous session`);
-  }
-
-  // Detect and report package manager
-  const pm = getPackageManager();
-  log(`[SessionStart] Package manager: ${pm.name} (${pm.source})`);
-
-  // If no explicit package manager config was found, show selection prompt
-  if (pm.source === 'default') {
-    log('[SessionStart] No package manager preference found.');
-    log(getSelectionPrompt());
-  }
-
-  process.exit(0);
-}
-
-main().catch(err => {
-  console.error('[SessionStart] Error:', err.message);
-  process.exit(0); // Don't block on errors
+// Shared session exports are historical records, not a project handoff.
+// Native startup/resume already loads instructions and memory.
+readInput('SessionStart', input => {
+  if (input.source === 'compact') return;
+  privateDirectory(path.join(os.homedir(), '.claude', 'sessions'));
+  const targets = pointers(context(input));
+  if (!targets.length) return;
+  process.stdout.write(adviceJSON('SessionStart', 'Continue the requested task. If durable state is needed, read only the ' +
+    'current handoff and relevant sections; do not reload full memory or plan history.\n' + targets.join('\n')));
 });

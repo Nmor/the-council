@@ -89,3 +89,5 @@ Per `continuous-learning-mandate.md`:
 `# rubocop:disable`/`T.unsafe` attempts (violation); gem-conflict churn.
 **Refinements**: new common-fix row on a recurring error; new anti-pattern on a
 recurring shortcut.
+
+Primary reference for the relevant review: [Ruby documentation](https://docs.ruby-lang.org/en/master/).

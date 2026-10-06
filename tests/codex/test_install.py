@@ -26,21 +26,28 @@ class InstallTests(unittest.TestCase):
         self.base = Path(self.temp.name)
         self.home = self.base / 'codex home'
         self.home.mkdir()
-        (self.home / 'config.toml').write_text('[mcp_servers.example]\nurl = "https://example.invalid"\n')
-        (self.home / 'AGENTS.md').write_text('# Personal instructions\nRetain this exact content.\n')
+        (self.home / 'config.toml').write_text('[mcp_servers.example]\nurl = "https://example.invalid"\n', encoding="utf-8")
+        (self.home / 'AGENTS.md').write_text('# Personal instructions\nRetain this exact content.\n', encoding="utf-8")
         (self.home / 'hooks.json').write_text(json.dumps({'hooks': {'Stop': [
-            {'hooks': [{'type': 'command', 'command': 'echo personal'}]}]}}))
+            {'hooks': [{'type': 'command', 'command': 'echo personal'}]}]}}), encoding="utf-8")
         (self.home / 'skills/my-skill').mkdir(parents=True)
-        (self.home / 'skills/my-skill/SKILL.md').write_text('Personal resource')
+        (self.home / 'skills/my-skill/SKILL.md').write_text('Personal resource', encoding="utf-8")
         self.before = snapshot(self.home)
 
     def install(self, **kwargs):
         return installer.install(self.home, ROOT, **kwargs)
 
+    def test_missing_node_preflight_preserves_home(self):
+        with patch.object(installer.shutil, 'which', return_value=None):
+            with self.assertRaisesRegex(ValueError, 'Node.js 18'):
+                self.install()
+        self.assertEqual(snapshot(self.home), self.before)
+
     def test_install_reinstall_and_uninstall_preserve_personal_files(self):
         first = self.install()
         self.assertGreater(first['files'], 300)
         installer.verify(self.home)
+        self.assertTrue((self.home / "council/go-discard-mutations.js").is_file())
         installed = snapshot(self.home)
         self.assertEqual(installed['config.toml'], self.before['config.toml'])
         self.assertEqual(installed['skills/my-skill/SKILL.md'], b'Personal resource')
@@ -73,7 +80,7 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(snapshot(self.home), before)
 
     def test_invalid_existing_hooks_refuses_without_partial_changes(self):
-        (self.home / 'hooks.json').write_text('{"hooks": {"Stop": "invalid"}}')
+        (self.home / 'hooks.json').write_text('{"hooks": {"Stop": "invalid"}}', encoding="utf-8")
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'arrays'):
             self.install()
@@ -82,7 +89,7 @@ class InstallTests(unittest.TestCase):
     def test_collision_refuses_without_partial_changes(self):
         path = self.home / 'skills/council/SKILL.md'
         path.parent.mkdir(parents=True)
-        path.write_text('Existing independent council')
+        path.write_text('Existing independent council', encoding="utf-8")
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'collision'):
             self.install()
@@ -134,7 +141,7 @@ class InstallTests(unittest.TestCase):
         project = self.base / 'project'
         project.mkdir()
         plan = project / 'old-plan.md'
-        plan.write_text('Existing plan; never rewrite during install.')
+        plan.write_text('Existing plan; never rewrite during install.', encoding="utf-8")
         self.install(projects=[str(project)], plan=str(plan))
         second = self.base / 'second'
         second.mkdir()
@@ -190,9 +197,9 @@ class InstallTests(unittest.TestCase):
     def test_pre_profile_install_migrates_to_compact(self):
         self.install(skill_profile='full')
         path = self.home / 'council/manifest.json'
-        manifest = json.loads(path.read_text())
+        manifest = json.loads(path.read_text(encoding="utf-8"))
         del manifest['skill_profile']
-        path.write_text(json.dumps(manifest))
+        path.write_text(json.dumps(manifest), encoding="utf-8")
         self.assertEqual(self.install()['skill_profile'], 'compact')
         self.assertEqual(len(list((self.home / 'skills').glob('council*/SKILL.md'))), 1)
 
@@ -200,7 +207,7 @@ class InstallTests(unittest.TestCase):
         path = self.home / 'council/manifest.json'
         path.parent.mkdir()
         for value in [[], {'version': 1, 'files': {'AGENTS.md': None}}]:
-            path.write_text(json.dumps(value))
+            path.write_text(json.dumps(value), encoding="utf-8")
             with self.assertRaises(ValueError):
                 self.install()
 
@@ -211,7 +218,7 @@ class InstallTests(unittest.TestCase):
         self.assertIn('~/.claude/plans/example.md', converted)
 
     def test_override_instructions_refused_not_silently_shadowed(self):
-        (self.home / 'AGENTS.override.md').write_text('Override')
+        (self.home / 'AGENTS.override.md').write_text('Override', encoding="utf-8")
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'shadows'):
             self.install()
@@ -231,7 +238,7 @@ class InstallTests(unittest.TestCase):
     def test_manifest_traversal_refused(self):
         (self.home / 'council').mkdir()
         (self.home / 'council/manifest.json').write_text(json.dumps({'version': 1, 'files': {
-            '../outside': {'sha256': 'x', 'original': None}}}))
+            '../outside': {'sha256': 'x', 'original': None}}}), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, 'Unexpected managed path'):
             installer.uninstall(self.home)
 

@@ -1,6 +1,7 @@
 ---
 name: communication-patterns
 description: Principal-level communication methodology — Pyramid Principle, audience analysis, written + verbal + visual modes, executive presence, narrative structure, presentations + memos + slack + email, difficult conversations, listening discipline, cross-cultural delivery, and the patterns that turn knowing the answer into the answer landing.
+disable-model-invocation: true
 ---
 
 # Communication Patterns

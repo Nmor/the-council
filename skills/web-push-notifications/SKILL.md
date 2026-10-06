@@ -1,6 +1,7 @@
 ---
 name: web-push-notifications
 description: VAPID-signed Web Push (RFC 8030, 8291, 8292) — subscribe lifecycle, endpoint hashing, payload size cap, pushsubscriptionchange routing, and how to wire alarms / notifications across browser + service worker.
+disable-model-invocation: true
 ---
 
 # Web Push + VAPID

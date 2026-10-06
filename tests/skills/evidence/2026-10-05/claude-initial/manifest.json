@@ -1,0 +1,30 @@
+{
+  "cli_version": "2.1.261 (Claude Code)",
+  "method": "Sequential isolated Claude print-mode scenarios using explicit current source, safe-mode and tools disabled; source behavior only, no native install/trust changes",
+  "results": [
+    {
+      "id": "01-entrepreneur",
+      "execution_ok": true
+    },
+    {
+      "id": "02-pentester",
+      "execution_ok": true
+    },
+    {
+      "id": "03-cisa-audit",
+      "execution_ok": true
+    },
+    {
+      "id": "04-sdlc-quality",
+      "execution_ok": true
+    },
+    {
+      "id": "05-brand-creative",
+      "execution_ok": true
+    },
+    {
+      "id": "06-native-reviewer-contract",
+      "execution_ok": true
+    }
+  ]
+}

@@ -11,7 +11,7 @@ paths:
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
-## Minimum Test Coverage: 70%
+## Coverage: 90% touched / 80% project / 95% critical paths
 
 ## Testing Framework
 

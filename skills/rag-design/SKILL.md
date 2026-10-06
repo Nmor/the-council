@@ -1,6 +1,7 @@
 ---
 name: rag-design
-description: Retrieval-Augmented Generation (RAG) system design — chunking, embeddings, vector storage, hybrid retrieval, reranking, evaluation, grounding, and the RAG-vs-fine-tune-vs-long-context decision. Auto-fires when the work touches RAG pipelines, vector databases, embeddings, semantic search, document grounding, or knowledge-base-backed LLM applications.
+description: Retrieval-Augmented Generation (RAG) system design — chunking, embeddings, vector storage, hybrid retrieval, reranking, evaluation, grounding, and the RAG-vs-fine-tune-vs-long-context decision. Select explicitly when this guidance applies.
+disable-model-invocation: true
 ---
 
 # RAG Design

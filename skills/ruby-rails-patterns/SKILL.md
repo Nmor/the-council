@@ -1,6 +1,6 @@
 ---
 name: ruby-rails-patterns
-description: Ruby 3.3+ / Rails 7-8 discipline — Sandi Metz rules (classes ≤ 100 LOC, methods ≤ 5 LOC, ≤ 4 args), frozen_string_literal mandatory, RuboCop at strict (cyclomatic ≤ 7, AbcSize ≤ 15), modern Ruby idioms (endless methods, pattern matching, hash shorthand, numbered block params), service objects + form objects + query objects + value objects, Rails 8 Solid Queue / Solid Cache / Solid Cable defaults, no monkey-patching outside Refinements / Module#prepend, Brakeman + bundler-audit + RSpec at strict. Auto-fires on Ruby / Rails project files.
+description: Ruby 3.3+ / Rails 7-8 discipline — Sandi Metz rules (classes ≤ 100 LOC, methods ≤ 5 LOC, ≤ 4 args), frozen_string_literal mandatory, RuboCop at strict (cyclomatic ≤ 7, AbcSize ≤ 15), modern Ruby idioms (endless methods, pattern matching, hash shorthand, numbered block params), service objects + form objects + query objects + value objects, Rails 8 Solid Queue / Solid Cache / Solid Cable defaults, no monkey-patching outside Refinements / Module#prepend, Brakeman + bundler-audit + RSpec at strict. Select explicitly when this guidance applies.
 paths:
   - "**/*.rb"
   - "**/*.rake"
@@ -11,6 +11,7 @@ paths:
   - "**/config.ru"
   - "**/.rspec"
   - "**/spec/**/*.rb"
+disable-model-invocation: true
 ---
 
 # ruby-rails-patterns

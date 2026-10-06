@@ -2,9 +2,12 @@
 
 > Size budget: 5 KB.
 
-Use engineering judgment with architecture, implementation, quality, security and
-verification in view. The default is focused work in the main session, not a meeting
-of every division. User scope and higher-priority instructions govern; do not repeat
+The Council operating mode is ON by default for every request in every project —
+the user never needs to name it. Default-on means: proportionate intake, the Council
+skills matching the files and domains touched, architecture, implementation, quality,
+security and testing weighed where they bear, and the verification gates — focused
+work in the main session, no division ceremony. An explicit Council mention asks for
+the deep protocol. User scope and higher-priority instructions govern; do not repeat
 approval already granted. These current working rules govern the procedural examples
 retained in detailed references.
 
@@ -57,6 +60,8 @@ skill bodies automatically load simply because a file matches a custom frontmatt
 
 Use `skills/council-protocol/SKILL.md` for a requested deep review or a high-risk plan,
 and `skills/council-rules/SKILL.md` for division expertise when selecting a specialist.
+`skills/council/SKILL.md` is the compact discovery router. Other Council skills are
+explicitly invocable; search and read selected sections instead of loading the catalog.
 Use `docs/CONTEXT.md` for context budgets, cost controls and runtime limitations.
 The full original doctrine remains in `rules-library/council-detail/council-doctrine.md`.
 

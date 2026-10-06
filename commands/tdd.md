@@ -1,13 +1,16 @@
 ---
 name: tdd
-description: Enforce test-driven development workflow. Scaffold interfaces, generate tests FIRST, then implement minimal code to pass. Ensure 80%+ coverage.
+description: Enforce test-driven development workflow. Scaffold interfaces, generate tests FIRST, then implement minimal code to pass. Apply repository/user and canonical coverage policy.
 ---
 
 # TDD Command
 
 > **Size budget: 10 KB** — `token-budget.mjs --check`.
 
-This command invokes the **tdd-guide** agent to enforce test-driven development methodology.
+Apply **tdd-guide** guidance to substantive behavior changes. Use a delegated agent
+only when available and authorized by the active workflow; otherwise work in the
+main session. Repository/user requirements govern; reversible low-impact prose or
+configuration edits need proportionate verification.
 
 ## What This Command Does
 
@@ -15,7 +18,7 @@ This command invokes the **tdd-guide** agent to enforce test-driven development 
 2. **Generate Tests First** - Write failing tests (RED)
 3. **Implement Minimal Code** - Write just enough to pass (GREEN)
 4. **Refactor** - Improve code while keeping tests green (REFACTOR)
-5. **Verify Coverage** - Ensure 80%+ test coverage
+5. **Verify Coverage** - Apply canonical risk-appropriate coverage gates
 
 ## When to Use
 
@@ -37,7 +40,7 @@ The tdd-guide agent will:
 4. **Write minimal implementation** to make tests pass
 5. **Run tests** and verify they pass
 6. **Refactor** code while keeping tests green
-7. **Check coverage** and add more tests if below 80%
+7. **Check coverage** and add more tests if below the applicable metric/scope threshold
 
 ## TDD Cycle
 
@@ -251,7 +254,7 @@ File           | % Stmts | % Branch | % Funcs | % Lines
 ---------------|---------|----------|---------|--------
 liquidity.ts   |   100   |   100    |   100   |   100
 
-Coverage: 100% ✅ (Target: 80%)
+Coverage: 100% lines/branches on this touched example; project/critical scope checked separately
 ```text
 
 ✅ TDD session complete!
@@ -267,7 +270,7 @@ Coverage: 100% ✅ (Target: 80%)
 - ✅ Write minimal code to make tests pass
 - ✅ Refactor only after tests are green
 - ✅ Add edge cases and error scenarios
-- ✅ Aim for 80%+ coverage (100% for critical code)
+- ✅ Apply repository/user policy and canonical touched/project/critical coverage gates
 
 **DON'T:**
 
@@ -302,12 +305,13 @@ Coverage: 100% ✅ (Target: 80%)
 
 ## Coverage Requirements
 
-- **80% minimum** for all code
-- **100% required** for:
-  - Financial calculations
-  - Authentication logic
-  - Security-critical code
-  - Core business logic
+Follow [canonical testing policy](../rules-library/common/testing.md): repository/user
+requirements take precedence; otherwise default to touched 90%, project 80% and
+critical-path 95% line/branch metrics where supported. Report each denominator and
+UNAVAILABLE metrics honestly. Go native coverage reports approximate basic-block
+statement coverage, not branch coverage. Choose test types by changed risk and
+failure boundary. Assert stable errors, side effects and independently read durable
+state; negative controls must catch suppressed errors and lost writes.
 
 ## Important Notes
 

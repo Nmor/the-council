@@ -1,137 +1,75 @@
-# JetBrains IDE setup (IntelliJ IDEA / GoLand / WebStorm / PyCharm / PhpStorm / RubyMine)
+# The Council — JetBrains setup
 
-> Per `~/.claude/rules-library/common/install-allowlist.md`, every plugin
-> install passes through publisher review. The plugins below are
-> all from verified vendors (JetBrains, Anthropic, SonarSource,
-> JetBrains Marketplace verified publishers).
+Use these editor templates with Claude Code or Codex. Install the Council for your
+chosen runtime through [INSTALL.md](../../../INSTALL.md); importing a code style
+or keymap does not install an agent or enable Council hooks.
 
-## 1. Claude Code [Beta] plugin (mandatory)
+## Choose an agent
 
-Install via the JetBrains Marketplace:
+### Claude Code
 
-1. Open Settings → Plugins → Marketplace.
-2. Search for "Claude Code".
-3. Install the **Anthropic** publisher's version.
-4. Restart the IDE.
-5. Authenticate via Settings → Tools → Claude Code → Sign in.
+Install the separate Claude Code CLI and Anthropic's Claude Code plugin from the
+JetBrains Marketplace. Restart the IDE, open the project and run `claude` in its
+integrated terminal. If the IDE cannot find the CLI, configure the plugin's
+**Claude command** setting. The documented launch shortcut is **Cmd+Esc** on macOS
+or **Ctrl+Esc** on Windows/Linux. See [Anthropic's integration guide](https://code.claude.com/docs/en/jetbrains).
 
-Default keybinding: **Cmd+Esc** (macOS) / **Ctrl+Esc** (Windows /
-Linux) opens the Claude Code sidebar.
+### Codex
 
-## 2. Recommended plugins (per IDE)
+JetBrains AI Assistant offers Codex as an agent. Complete its agent setup and select
+Codex in AI Chat. Follow [JetBrains' Codex guide](https://www.jetbrains.com/help/ai-assistant/codex-agent.html)
+for authentication and available commands; these can differ from the terminal CLI.
+Keep AI Assistant enabled when using that integration.
 
-All JetBrains products:
+JetBrains documents `AGENTS.md` for Codex project instructions and `CLAUDE.md` for
+Claude Agent. See [its agent reference](https://www.jetbrains.com/help/ai-assistant/agents.html).
+Reuse the project's authoritative implementation plan. Confirm the Council router,
+selected home and effective configuration in your actual session before assuming
+the IDE uses the same installation as a terminal. See [Council's native compatibility contract](../../../docs/CODEX.md#native-compatibility-contract).
 
-- **SonarLint** (SonarSource) — strict ruleset per
-  `~/.claude/rules-library/common/extreme-lint-policy.md`
-- **GitToolBox** (zielu) — git status in editor gutter
-- **.env files support** (Borys Pierov)
-- **Prettier** (JetBrains)
-- **EditorConfig** (JetBrains, built-in but verify enabled)
-- **Mermaid** (JetBrains) — diagram preview
+## Shared code styles
 
-Language-specific (most are built in):
+Review the XML schemes before importing them through **Settings → Editor → Code
+Style → Scheme → Import**. Preserve your existing scheme so it can be restored.
 
-- **GoLand**: Go support is built in
-- **PyCharm**: Python + Django + Flask + FastAPI built in
-- **WebStorm**: TypeScript + Vue + React + Angular built in
-- **IntelliJ IDEA Ultimate**: Java + Spring Boot + Kotlin + Scala
-  built in
-- **PhpStorm**: PHP + Laravel + Symfony built in
-- **RubyMine**: Ruby + Rails built in
-
-## 3. Disable noisy plugins
-
-Disable these by default (re-enable per-project only if needed):
-
-- **AI Assistant** (JetBrains' built-in AI) — to avoid prompting
-  competition with Claude Code; use one AI tool at a time
-- **Code With Me** — unless actively pair programming
-
-## 4. Code-style settings (per language)
-
-Use the included `code-style/*.xml` files. Apply via:
-
-Settings → Editor → Code Style → [Language] → Scheme → Import.
-
-Files in this directory:
-
-- [`code-style/typescript.xml`](code-style/typescript.xml) — TS / JS;
-  2-space indent; 100-char margin; single quotes; trailing commas
-- [`code-style/python.xml`](code-style/python.xml) — PEP 8;
-  4-space indent; 100-char margin; Black / Ruff-aligned
-- [`code-style/go.xml`](code-style/go.xml) — gofmt;
-  tab indent; 120-char visual guide (no hard wrap — gofmt doesn't
-  wrap)
-- [`code-style/java.xml`](code-style/java.xml) — Google Java Style;
-  4-space indent; 120-char margin; ordered imports
-
-Function length / parameter count / cognitive complexity caps from
-[`../../../rules-library/common/extreme-lint-policy.md`](../../../rules-library/common/extreme-lint-policy.md)
-are enforced by **Inspection profiles** (SonarLint + language
-linters), not by code-style schemes. Both ship together.
-
-## 5. Keybindings
-
-Use the included `keymap-claude.xml`:
-
-Settings → Keymap → ⚙️ → Import Keymap from XML.
-
-Default Anthropic mappings:
-
-| Action | Default |
+| Scheme | Settings |
 | --- | --- |
-| Open Claude Code sidebar | Cmd+Esc / Ctrl+Esc |
-| Quick fix from Claude | Alt+Enter (uses Claude when AI Assistant disabled) |
-| Toggle Claude inline | Cmd+I / Ctrl+I |
+| [TypeScript / JavaScript](code-style/typescript.xml) | 2-space indent, 100-character margin, single quotes |
+| [Python](code-style/python.xml) | 4-space indent, 100-character margin |
+| [Go](code-style/go.xml) | Tabs, 120-character visual guide; use gofmt |
+| [Java](code-style/java.xml) | 4-space indent, 120-character margin; a Council scheme with deviations from Google Java Style |
 
-## 6. Hardened security defaults
+Formatting schemes do not enforce test quality, function complexity or security.
+Run the repository's strict linters and required tests. Consult the shared
+[lint policy](../../../rules-library/common/extreme-lint-policy.md) and applicable
+language guidance through your Council catalog; those references are not tied to
+a particular user's `~/.claude` directory.
 
-Settings → Appearance & Behavior → System Settings:
+## Optional Claude keymap
 
-- **Allow plugins to access internal API**: OFF
-- **Auto-update plugins**: OFF (per
-  `~/.claude/rules-library/common/install-allowlist.md`)
-- **Allow data sharing**: OFF (per
-  `~/.claude/rules-library/common/secrets-management.md`)
+[keymap-claude.xml](keymap-claude.xml) is a Claude-specific template. Its action IDs
+have not been validated against a local JetBrains plugin. Check each action in the
+installed plugin's keymap before importing; restore your previous keymap if it
+does not resolve. It is not a Codex keymap.
 
-Settings → Tools → Server Certificates:
+## Plugin setup
 
-- **Accept non-trusted certificates automatically**: OFF
+Review the publisher, requested access and compatible IDE versions on the current
+Marketplace listing. The repository does not certify every optional plugin vendor.
+Choose plugins required by your project; do not disable the integration hosting
+your chosen agent.
 
-Settings → Version Control → Git:
+For automated installation, JetBrains supports `installPlugins` with exact plugin
+IDs from each Marketplace listing. Use your product's actual launcher and copy the
+**Plugin ID**, rather than guessing an ID from the display name. See [JetBrains' command-line instructions](https://www.jetbrains.com/help/idea/install-plugins-from-the-command-line.html).
 
-- **Allow force push to protected branches**: OFF
-- **Sign commits and tags**: ON
-- **Run commit hooks before commit**: ON
-- Per `~/.claude/rules/common/plan-completion-before-push.md`,
-  never push until the active plan is complete.
+Review updates and configure certificate handling, data sharing and Git protections
+according to your organization's policy. Editor templates do not grant permission
+to push, deploy, send messages or trust hooks.
 
-## 7. Install via command line
+## Verification limits
 
-For automated setup, JetBrains products ship a CLI:
-
-```bash
-# Examples (adjust to your IDE — `idea`, `goland`, `pycharm`, etc.)
-idea installPlugins anthropic.claudecode sonarlint
-goland installPlugins anthropic.claudecode sonarlint
-pycharm installPlugins anthropic.claudecode sonarlint ruff
-webstorm installPlugins anthropic.claudecode sonarlint
-```
-
-If the `idea` / `goland` / etc. CLI is not on PATH, create the
-launchers via Tools → Create Command-line Launcher inside the
-running IDE.
-
-## 8. References
-
-- `~/.claude/rules-library/common/install-allowlist.md` — publisher
-  allowlist + denylist
-- `~/.claude/rules-library/common/extreme-lint-policy.md` — strictness
-  thresholds the IDE inspections enforce
-- `~/.claude/rules-library/common/secrets-management.md` — no telemetry,
-  no auto-update of plugins
-- `~/.claude/rules-library/common/git-workflow.md` — signed commits +
-  hooks-before-commit
-- `~/.claude/rules/common/plan-completion-before-push.md` — push
-  gate
+Local runtime evidence covers Codex discovery and VS Code extension startup/settings;
+Cursor and Windsurf templates received schema checks. No JetBrains instance, plugin
+activation, keymap action or Council hook execution was tested in this session.
+See [the verification receipts and limits](../../../tests/runtime/evidence/2026-10-05/README.md).

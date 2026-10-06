@@ -96,3 +96,5 @@ Per `continuous-learning-mandate.md`:
 **Signals**: force-unwrap (`!`/`try!`/`as!`) attempts (violation); recurring
 availability-gating misses; package-resolution churn. **Refinements**: new
 common-fix row on a recurring error; new anti-pattern on a recurring shortcut.
+
+Primary reference for the relevant review: [Swift documentation](https://www.swift.org/documentation/).

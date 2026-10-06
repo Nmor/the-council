@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transactional, additive Council installer for Codex (Python 3.11+, Git checkout)."""
+"""Transactional, additive Council installer for Codex (Python 3.11+, Node.js 18+, Git checkout)."""
 from __future__ import annotations
 
 import argparse
@@ -7,12 +7,14 @@ import base64
 import hashlib
 import json
 import os
-from pathlib import Path, PurePosixPath
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
+from pathlib import Path, PurePosixPath
+
 import tomllib
 
 SOURCE = Path(__file__).resolve().parents[1]
@@ -36,7 +38,7 @@ def managed_path(name: str) -> bool:
     if not parts or '..' in parts or PurePosixPath(name).is_absolute() or '\\' in name:
         return False
     return (name in ('AGENTS.md', 'hooks.json', MANIFEST, 'council/projects.json',
-                     'council/hooks.py', 'council/catalog.md')
+                     'council/hooks.py', 'council/go-discard-mutations.js', 'council/catalog.md')
             or name.startswith('council/resources/')
             or (len(parts) >= 3 and parts[0] == 'skills'
                 and (parts[1] == 'council' or parts[1].startswith('council-')))
@@ -86,7 +88,8 @@ def check_installed(home: Path, manifest: dict) -> None:
 
 
 def tracked_resources(source: Path) -> list[str]:
-    result = subprocess.run(['git', '-C', str(source), 'ls-files', '-z', '--', *SURFACES],
+    result = subprocess.run(['git', '-C', str(source), 'ls-files', '-z', '--cached', '--others',
+                             '--exclude-standard', '--', *SURFACES],
                             check=True, capture_output=True)
     names = []
     for raw in result.stdout.decode().split('\0'):
@@ -103,8 +106,8 @@ def tracked_resources(source: Path) -> list[str]:
         names.append(raw)
     if not any(p.endswith('/SKILL.md') for p in names):
         raise ValueError('Install from a complete Git checkout of the Council repository')
-    return sorted(names + [name for name in ('CLAUDE.md', 'README.md', 'INSTALL.md', 'LICENSE')
-                           if (source / name).is_file()])
+    return sorted(set(names + [name for name in ('CLAUDE.md', 'README.md', 'INSTALL.md', 'LICENSE')
+                           if (source / name).is_file()]))
 
 
 def metadata(text: str) -> tuple[str, str, str]:
@@ -164,7 +167,13 @@ def agent_toml(name: str, description: str, body: str, home: Path) -> bytes:
                     'Return concise findings with evidence and stop. Do not delegate further unless explicitly requested. '
                     'User scope, authorization and higher-priority instructions govern source procedures below. '
                     'Inherit the parent model. Update only the existing plan when needed. '
-                    'Do not execute archived Claude scripts.\n\n' + adapt_reference(body, home))
+                    'Do not execute archived Claude scripts. Before deciding or editing, read the relevant '
+                    'specialist procedure linked below. Unresolved CRITICAL/HIGH or BLOCKER/MAJOR findings '
+                    'block the reviewed change; specialist vetoes follow their linked procedure: verified '
+                    'remediation, removal of scope, or only an explicitly permitted lawful exception. '
+                    'Merely documenting risk does not clear a veto.\n\n'
+                    f'Specialist procedure: {home.as_posix()}/council/resources/agents/'
+                    f'{name.removeprefix("council-")}.md\n')
     value = '\n'.join(f'{key} = {json.dumps(val, ensure_ascii=False)}' for key, val in (
         ('name', name), ('description', description[:180]), ('developer_instructions', instructions))) + '\n'
     tomllib.loads(value)
@@ -174,9 +183,9 @@ def agent_toml(name: str, description: str, body: str, home: Path) -> bytes:
 def hook_groups(home: Path) -> dict:
     argv = [sys.executable, str(home / 'council/hooks.py'), '--home', str(home)]
     handler = {'type': 'command', 'command': shlex.join(argv),
-               'commandWindows': subprocess.list2cmdline(argv), 'timeout': 10,
+               'commandWindows': subprocess.list2cmdline(argv), 'timeout': 20,
                'statusMessage': 'Council native checks'}
-    return {event: [{'hooks': [handler], **({'matcher': 'Bash|apply_patch|Edit|Write'}
+    return {event: [{'hooks': [handler], **({'matcher': 'Bash|exec_command|shell_command|apply_patch|Edit|Write|MultiEdit|write_stdin'}
              if event in ('PreToolUse', 'PostToolUse') else {})}]
             for event in ('SessionStart', 'PreToolUse', 'PostToolUse', 'PreCompact', 'Stop')}
 
@@ -222,6 +231,7 @@ def build_payload(source: Path, home: Path, manifest: dict,
     payload['council/catalog.md'] = ('\n'.join(catalog) + '\n').encode()
     payload['council/resources/docs/CODEX.md'] = (source / 'docs/CODEX.md').read_bytes()
     payload['council/hooks.py'] = (source / 'codex/hooks.py').read_bytes()
+    payload['council/go-discard-mutations.js'] = (source / 'scripts/hooks/go-discard-mutations.js').read_bytes()
     if skill_profile == 'compact':
         payload = {name: value for name, value in payload.items() if not name.startswith('skills/')}
     payload['skills/council/SKILL.md'] = render((source / 'codex/SKILL.md.in').read_text(encoding="utf-8"), home).encode()
@@ -303,6 +313,12 @@ def transact(home: Path, changes: dict[str, bytes | None]) -> None:
 
 
 def install(home: Path, source: Path, projects=(), plan=None, dry_run=False, skill_profile=None) -> dict:
+    node = shutil.which('node')
+    if node is None:
+        raise ValueError('Node.js 18+ is required for the native Go mutation guard; install Node before installing Council')
+    version = subprocess.check_output([node, '--version'], text=True, timeout=5).strip()
+    if not re.fullmatch(r'v\d+\.\d+\.\d+', version) or int(version[1:].split('.')[0]) < 18:
+        raise ValueError('Node.js 18+ is required for the native Go mutation guard')
     manifest = load_manifest(home)
     check_installed(home, manifest)
     if (home / 'AGENTS.override.md').exists():

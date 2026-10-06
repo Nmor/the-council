@@ -18,8 +18,7 @@
 // Set CLAUDE_SUPERSEDE_PROOF=block to hard-block (exit 2) instead;
 // CLAUDE_SUPERSEDE_PROOF=off disables it entirely.
 'use strict';
-const fs = require('fs');
-const os = require('os');
+const { markerPath, hasPrivate } = require('./lib/private-state.js');
 const path = require('path');
 
 const MODE = (process.env.CLAUDE_SUPERSEDE_PROOF || 'warn').toLowerCase();
@@ -30,26 +29,47 @@ const SRC_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|cs|rb|php|swift)$
 // Declaration shapes across the languages this workspace uses. A removal of
 // one of these from old_string is a candidate supersede.
 const DECL_PATTERNS = [
-  /^\s*func\s+(\([^)]*\)\s*)?[A-Z_a-z][\w]*\s*\(/m, // Go func / method
-  /^\s*(export\s+)?(async\s+)?function\s+[\w$]+\s*[<(]/m, // JS/TS function
-  /^\s*export\s+(const|class|interface|type)\s+[\w$]+/m, // TS export
-  /^\s*(public|private|protected|internal)\s+[\w<>[\],\s]+\s+[\w$]+\s*\(/m, // Java/C#/Kotlin
-  /^\s*def\s+[\w]+\s*\(/m, // Python
-  /^\s*(pub\s+)?fn\s+[\w]+\s*[<(]/m, // Rust
+  /^func [A-Z_a-z]\w* *\(/,
+  /^func \([^)]*\) [A-Z_a-z]\w* *\(/,
+  /^(?:export )?(?:async )?function [\w$]+ *[<(]/,
+  /^export (?:const|class|interface|type) [\w$]+/,
+  /^def \w+ *\(/,
+  /^(?:pub )?fn \w+ *[<(]/,
 ];
+const ACCESS = new Set(['public', 'private', 'protected', 'internal']);
 
 // The durable proof marker the rule asks for.
 const PROOF_RE = /SUPERSEDE\s+PROOF/i;
 
 function countDecls(text) {
-  if (!text) return 0;
-  let n = 0;
-  for (const re of DECL_PATTERNS) {
-    const g = new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g');
-    const m = text.match(g);
-    if (m) n += m.length;
+  return String(text || '').split('\n').reduce((count, raw) => {
+    const line = raw.trim().replace(/\s+/g, ' ');
+    const tokens = line.split('(')[0].split(' ');
+    const method = line.includes('(') && ACCESS.has(tokens[0]) && tokens.length >= 3;
+    return count + Number(method || DECL_PATTERNS.some((pattern) => pattern.test(line)));
+  }, 0);
+}
+
+function editParts(input) {
+  if (typeof input.old_string === 'string') {
+    return { removed: input.old_string, added: typeof input.new_string === 'string' ? input.new_string : '' };
   }
-  return n;
+  const edits = Array.isArray(input.edits) ? input.edits : [];
+  return {
+    removed: edits.map((edit) => edit.old_string).filter((text) => typeof text === 'string').join('\n'),
+    added: edits.map((edit) => edit.new_string).filter((text) => typeof text === 'string').join('\n'),
+  };
+}
+
+function removalCount(input, file, sid) {
+  const lower = String(file).toLowerCase();
+  if (!file || lower.includes('/.claude/') || !SRC_EXT.test(lower) ||
+      /(_test\.|\.test\.|\.spec\.|\/tests?\/|_spec\.)/.test(lower)) return 0;
+  const { removed, added } = editParts(input);
+  const delta = countDecls(removed) - countDecls(added);
+  if (delta <= 0 || PROOF_RE.test(added) || PROOF_RE.test(removed)) return 0;
+  if (sid && hasPrivate(markerPath('supersede-proof', sid))) return 0;
+  return delta;
 }
 
 const { advise } = require('./lib/advise.js');
@@ -65,48 +85,9 @@ process.stdin.on('end', () => {
     const ti = input.tool_input || {};
     const file = ti.file_path || '';
     const sid = input.session_id || '';
-    const p = String(file).toLowerCase();
-
-    // Skip framework config, tests, and non-source files. Test deletions
-    // are covered by the rule's "tests migrate" axis but flagging every
-    // test edit would drown the signal.
-    const skip =
-      !file ||
-      p.includes('/.claude/') ||
-      !SRC_EXT.test(p) ||
-      /(_test\.|\.test\.|\.spec\.|\/tests?\/|_spec\.)/.test(p);
-
-    if (!skip) {
-      // Gather the edit's before/after text across Edit and MultiEdit shapes.
-      let removed = '';
-      let added = '';
-      if (typeof ti.old_string === 'string') {
-        removed = ti.old_string;
-        added = typeof ti.new_string === 'string' ? ti.new_string : '';
-      } else if (Array.isArray(ti.edits)) {
-        for (const e of ti.edits) {
-          if (typeof e.old_string === 'string') removed += '\n' + e.old_string;
-          if (typeof e.new_string === 'string') added += '\n' + e.new_string;
-        }
-      }
-
-      const removedDecls = countDecls(removed);
-      const addedDecls = countDecls(added);
-      const netRemoval = removedDecls > 0 && removedDecls > addedDecls;
-
-      if (netRemoval) {
-        // Proof may live in this very edit (a SUPERSEDE PROOF comment on the
-        // replacement) or in a marker written earlier this session when the
-        // replacement landed in a different file.
-        const marker = sid
-          ? path.join(os.tmpdir(), `claude-supersede-proof-${sid}`)
-          : '';
-        const proofInEdit = PROOF_RE.test(added) || PROOF_RE.test(removed);
-        const proofInSession = marker !== '' && fs.existsSync(marker);
-
-        if (!proofInEdit && !proofInSession) {
-          const n = removedDecls - addedDecls;
-          warn =
+    const n = removalCount(ti, file, sid);
+    if (n > 0) {
+      warn =
             `[supersede-proof] Net removal of ${n} declaration(s) from ` +
             `"${path.basename(file)}" with no SUPERSEDE PROOF in the change.\n` +
             `[supersede-proof] Per no-bloat.md rule 6a + wiring-and-usage-review.md rule 9: ` +
@@ -120,8 +101,6 @@ process.stdin.on('end', () => {
             `[supersede-proof] Record it as a "SUPERSEDE PROOF" comment on the replacement ` +
             `+ a "Supersede proof" line in the verification block.\n` +
             `[supersede-proof] Modes: CLAUDE_SUPERSEDE_PROOF=block | warn (default) | off`;
-        }
-      }
     }
   } catch (err) {
     warn = `[supersede-proof] skipped: ${err.message}`;

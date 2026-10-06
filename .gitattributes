@@ -1,0 +1,3 @@
+# The Council is byte-exact content: payload expectations, installer integrity
+# hashes and context budgets all assume LF. Never let a checkout rewrite EOLs.
+* text=auto eol=lf

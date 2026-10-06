@@ -1,6 +1,7 @@
 ---
 name: accessible-forms
 description: Production form accessibility — labels, errors, autocomplete, validation timing, multi-step flows, file inputs, date pickers, and the WCAG 2.2 Redundant Entry + Accessible Authentication SCs.
+disable-model-invocation: true
 ---
 
 # Accessible Forms

@@ -97,3 +97,4 @@ skills/synced/
 skills/.trash/
 skills/graphify/
 rules/owner-preferences-*.md
+node_modules/

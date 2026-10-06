@@ -14,14 +14,17 @@
 // the rule is the coverage gate in each project's verify script.
 // CLAUDE_TEST_COVERAGE_HOOK=off disables it.
 'use strict';
+const { markerPath, readPrivate, writePrivate, hasPrivate } = require('./lib/private-state.js');
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
+const { proofFor } = require('./lib/verification.js');
 
 const SRC_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|cs|rb|php|swift|dart)$/i;
 // Files that are not product behaviour, so a missing test says nothing.
-const NOT_PRODUCT =
-  /(\.(test|spec|stories|d)\.|[-_]test\.|_test\.go$|\/(tests?|__tests__|mocks?|__mocks__|fixtures?|testdata|migrations?|generated|dist|build|vendor|node_modules)\/|\/\.claude\/(?!scripts\/|hooks\/)|\.config\.|\.min\.)/i;
+const NOT_PRODUCT = [/\.(test|spec|stories|d)\./i, /(?:[-_]test\.|_test\.go$)/i,
+  /\/(tests?|__tests__|mocks?|__mocks__|fixtures?|testdata)\//i,
+  /\/(migrations?|generated|dist|build|vendor|node_modules)\//i,
+  /\/\.claude\/(?!scripts\/|hooks\/)/i, /\.config\.|\.min\./i];
 
 // Where a companion test would live, per language convention.
 function testCandidates(file) {
@@ -63,7 +66,7 @@ function coveredByNearbySuite(file) {
       continue;
     }
     for (const name of entries.slice(0, 50)) {
-      if (!/\.(test|spec)\.(m|c)?[jt]sx?$/i.test(name)) continue;
+      if (!/\.(test|spec)\.[mc]?[jt]sx?$/i.test(name)) continue;
       try {
         if (fs.readFileSync(path.join(d, name), 'utf8').includes(needle)) return true;
       } catch {
@@ -88,7 +91,7 @@ process.stdin.on('end', () => {
     input = JSON.parse(data || '{}');
     const file = (input.tool_input && input.tool_input.file_path) || '';
     const sid = input.session_id || '';
-    if (!file || !sid || !SRC_EXT.test(file) || NOT_PRODUCT.test(file)) {
+    if (!file || !sid || !SRC_EXT.test(file) || NOT_PRODUCT.some(expression => expression.test(file))) {
       process.exit(0);
     }
 
@@ -101,7 +104,7 @@ process.stdin.on('end', () => {
     // disabled the commit block. Measured 2026-09-21: with that one variable set, a commit
     // that should have been refused went from exit 2 to exit 0. A switch for a nudge must
     // never turn off a wall.
-    fs.writeFileSync(path.join(os.tmpdir(), `claude-council-lastedit-${sid}`), String(Date.now()));
+    writePrivate(markerPath('lastedit', sid), String(Date.now()));
 
     if (process.env.CLAUDE_TEST_COVERAGE_HOOK === 'off') process.exit(0);
 
@@ -110,20 +113,19 @@ process.stdin.on('end', () => {
 
     // Count source edits this session so the coverage nudge fires once, late,
     // rather than on every write.
-    const counterPath = path.join(os.tmpdir(), `claude-council-srcedits-${sid}`);
+    const counterPath = markerPath('srcedits', sid);
     let edits = 0;
     try {
-      edits = Number(fs.readFileSync(counterPath, 'utf8')) || 0;
+      edits = Number(readPrivate(counterPath)) || 0;
     } catch {
       edits = 0;
     }
     edits += 1;
-    fs.writeFileSync(counterPath, String(edits));
+    writePrivate(counterPath, String(edits));
 
-    const coverageMarker = path.join(os.tmpdir(), `claude-council-coverage-${sid}`);
-    const measured = fs.existsSync(coverageMarker);
-    const noticedPath = path.join(os.tmpdir(), `claude-council-covnudge-${sid}`);
-    const alreadyNudged = fs.existsSync(noticedPath);
+    const measured = Boolean(proofFor('coverage', input));
+    const noticedPath = markerPath('covnudge', sid);
+    const alreadyNudged = hasPrivate(noticedPath);
 
     if (!hasTest) {
       warn =
@@ -133,7 +135,7 @@ process.stdin.on('end', () => {
         `behaviour breaks — write one that names the defect it prevents, or say plainly ` +
         `why this file carries no behaviour.`;
     } else if (!measured && edits >= EDITS_BEFORE_COVERAGE_NUDGE && !alreadyNudged) {
-      fs.writeFileSync(noticedPath, String(Date.now()));
+      writePrivate(noticedPath, String(Date.now()));
       warn =
         `[test-coverage] ${edits} source files edited this session and coverage has not ` +
         `been measured once. Per functional-test-coverage.md rule 1, coverage is a ` +

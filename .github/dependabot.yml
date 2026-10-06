@@ -1,4 +1,4 @@
-# Dependabot configuration — The Claude Council
+# Dependabot configuration — The Council
 #
 # Scope: this repo is overwhelmingly Markdown + shell + PowerShell.
 # The only managed-dependency surface is GitHub Actions (third-

@@ -160,3 +160,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New verification step when a cleanup class reintroduces work
 - Tightening of safety checklist when chronic mis-removal observed
 - New pairing entry when sister agent consistently catches cleanup gaps
+
+Primary reference for the relevant review: [OWASP ASVS 5.0.0: preserve verified security controls](https://owasp.org/projects/asvs).

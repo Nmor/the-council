@@ -46,15 +46,12 @@ correctly.
 
 ## Severity levels
 
-Per global `code-reviewer` shape:
-
-| Level | Description | Action |
-| --- | --- | --- |
-| BLOCKER | Data loss / security flaw / crash on a hot path | Fix before merge |
-| CRITICAL | Major bug / significant perf issue | Fix before merge |
-| MAJOR | Code smell / maintainability concern | Should fix before merge |
-| MINOR | Style / minor improvement | Fix or ticket |
-| SUGGESTION | Optional enhancement | Consider |
+Apply the [severity and merge contract](code-reviewer.md#severity-and-merge-contract).
+Preserve source severity and report normalized severity plus action: BLOCKER/CRITICAL
+normalize to CRITICAL; MAJOR/HIGH to HIGH; MINOR/MEDIUM to MEDIUM; SUGGESTION/LOW to LOW.
+Unresolved CRITICAL/HIGH block merge; MEDIUM warns; LOW is a note. Unknown severity or
+unavailable required verification is CHANGES_REQUIRED. Classify by impact/likelihood,
+not by language; use the same action for the same unresolved exploit.
 
 ## Review checklist
 

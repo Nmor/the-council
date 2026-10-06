@@ -1,6 +1,6 @@
 ---
 name: dependency-rules
-description: Dependency hygiene — dependency-pinning (lockfiles committed, image digest pins, Actions SHA-pinned), dependency-vulnerabilities (CVE gate: MODERATE+ blocks), dependency-overrides-not-exceptions (fix the tree first via pnpm.overrides), license-allowlist-gate (SPDX allowlist + Trove cross-check), install-allowlist (no silent global installs; publisher allowlist). Auto-fires on manifests + lockfiles across every ecosystem.
+description: Dependency hygiene — dependency-pinning (lockfiles committed, image digest pins, Actions SHA-pinned), dependency-vulnerabilities (CVE gate: MODERATE+ blocks), dependency-overrides-not-exceptions (fix the tree first via pnpm.overrides), license-allowlist-gate (SPDX allowlist + Trove cross-check), install-allowlist (no silent global installs; publisher allowlist). Select explicitly when this guidance applies.
 paths:
   - "**/package.json"
   - "**/pnpm-lock.yaml"
@@ -27,6 +27,7 @@ paths:
   - "**/pubspec.lock"
   - "**/composer.json"
   - "**/composer.lock"
+disable-model-invocation: true
 ---
 
 # dependency-rules

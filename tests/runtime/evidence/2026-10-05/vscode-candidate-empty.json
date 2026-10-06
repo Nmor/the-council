@@ -1,0 +1,83 @@
+{
+  "profile": "candidate",
+  "vscodeVersion": "1.140.0",
+  "workspaceTrusted": false,
+  "effectiveSettings": {
+    "claudeCode.initialPermissionMode": "default",
+    "claudeCode.allowDangerouslySkipPermissions": false,
+    "chatgpt.openOnStartup": false,
+    "chatgpt.followUpQueueMode": "steer"
+  },
+  "inspectedSettings": {
+    "claudeCode.initialPermissionMode": {
+      "key": "claudeCode.initialPermissionMode",
+      "globalLocalValue": "default",
+      "globalValue": "default"
+    },
+    "claudeCode.allowDangerouslySkipPermissions": {
+      "key": "claudeCode.allowDangerouslySkipPermissions",
+      "globalLocalValue": false,
+      "globalValue": false
+    },
+    "chatgpt.openOnStartup": {
+      "key": "chatgpt.openOnStartup",
+      "globalLocalValue": false,
+      "globalValue": false
+    },
+    "chatgpt.followUpQueueMode": {
+      "key": "chatgpt.followUpQueueMode",
+      "globalLocalValue": "steer",
+      "globalValue": "steer"
+    }
+  },
+  "contracts": [
+    {
+      "host": "vscode",
+      "registeredSettings": [
+        "claudeCode.initialPermissionMode",
+        "claudeCode.allowDangerouslySkipPermissions",
+        "chatgpt.openOnStartup",
+        "chatgpt.followUpQueueMode"
+      ]
+    },
+    {
+      "host": "cursor",
+      "registeredSettings": [
+        "claudeCode.initialPermissionMode",
+        "claudeCode.allowDangerouslySkipPermissions"
+      ]
+    },
+    {
+      "host": "windsurf",
+      "registeredSettings": [
+        "claudeCode.initialPermissionMode",
+        "claudeCode.allowDangerouslySkipPermissions"
+      ]
+    }
+  ],
+  "negativeControlsRejected": 3,
+  "extensions": [
+    {
+      "id": "Anthropic.claude-code",
+      "version": "2.1.289",
+      "availableInExtensionHost": false,
+      "active": false,
+      "untrustedWorkspaceSupport": {
+        "supported": false,
+        "description": "untusted workspaces are not supported"
+      }
+    },
+    {
+      "id": "openai.chatgpt",
+      "version": "26.5930.51102",
+      "availableInExtensionHost": false,
+      "active": false,
+      "untrustedWorkspaceSupport": null
+    }
+  ],
+  "codexExportType": "undefined",
+  "registeredCodexCommands": [],
+  "apiModelTurns": 0,
+  "hookTrustChanged": false,
+  "liveSettingsChanged": false
+}

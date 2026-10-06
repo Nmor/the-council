@@ -22,8 +22,7 @@
  */
 
 const { execFileSync } = require('child_process');
-const fs = require('fs');
-const os = require('os');
+const { markerPath, writePrivate, hasPrivate } = require('./lib/private-state.js');
 const path = require('path');
 const { advise } = require('./lib/advise.js');
 
@@ -38,10 +37,10 @@ const NPX = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 /** True the first time this session asks; false afterwards. */
 function firstTimeThisSession(sid, kind) {
   if (!sid) return true;
-  const marker = path.join(os.tmpdir(), `claude-council-${kind}-${sid}`);
+  const marker = markerPath(kind, sid);
   try {
-    if (fs.existsSync(marker)) return false;
-    fs.writeFileSync(marker, String(Date.now()));
+    if (hasPrivate(marker)) return false;
+    writePrivate(marker, String(Date.now()));
   } catch {
     return true; // cannot remember: better to say it twice than never
   }

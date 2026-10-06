@@ -38,7 +38,7 @@ const SECURITY =
 // Ladders, from model-tier-selection.md. Best first, floor last.
 // `fable` appears in exactly one ladder by design — reserving it for the work where
 // first-shot correctness offsets the premium is what stops it inflating routine cost.
-const LADDERS = {
+const LADDERS = new Map(Object.entries({
   "strategic-deep-reasoning": ["fable", "opus", "sonnet"],
   "security-and-regulated-review": ["opus", "sonnet"], // fable EXCLUDED — classifiers refuse
   "deep-review-general": ["opus", "sonnet"],
@@ -46,12 +46,12 @@ const LADDERS = {
   "mechanical-build-fix": ["sonnet", "haiku"],
   "search-explore": ["haiku", "sonnet"],
   "doc-codemap": ["haiku", "sonnet"],
-};
+}));
 
 // Role resolution is by subagent_type first, because that is a declared fact about the spawn.
 // The prompt is consulted only to promote architect/planner onto the strategic ladder, since
 // those two serve both routine and strategic work and only the task tells them apart.
-const BY_AGENT = {
+const BY_AGENT = new Map(Object.entries({
   architect: "strategic-deep-reasoning",
   planner: "strategic-deep-reasoning",
 
@@ -88,7 +88,7 @@ const BY_AGENT = {
   "general-purpose": "search-explore",
 
   "doc-updater": "doc-codemap",
-};
+}));
 
 // Work that earns the top rung: novel architecture, long-horizon migration, the hardest
 // non-security debugging. Deliberately narrow — a loose pattern here would field the most
@@ -117,7 +117,7 @@ function available() {
     );
     const models = raw
       .split("\n")
-      .map((l) => l.replace(/#.*$/, "").trim().toLowerCase())
+      .map((l) => l.split("#", 1)[0].trim().toLowerCase())
       .filter(Boolean);
     if (models.length) return models;
   } catch {
@@ -127,7 +127,7 @@ function available() {
 }
 
 function roleFor(input) {
-  const base = BY_AGENT[String(input.subagent_type || "").trim()];
+  const base = BY_AGENT.get(String(input.subagent_type || "").trim());
   if (!base) return null;
   if (base === "strategic-deep-reasoning") {
     const text = `${input.description || ""} ${input.prompt || ""}`;
@@ -146,7 +146,7 @@ const CAPABILITY = ["haiku", "sonnet", "opus", "fable"];
 // an outage costs money rather than quality; only when nothing above is left does it walk
 // down the ladder. Fable never enters the security ladder this way either.
 function pick(role, have, gone) {
-  const ladder = LADDERS[role];
+  const ladder = LADDERS.get(role);
   const planned = resolve(ladder, have);
   if (!planned || !gone.includes(planned)) return planned;
   const usable = have.filter((m) => !gone.includes(m));
@@ -165,19 +165,22 @@ let data = "";
 process.stdin.on("data", (c) => {
   data += c;
 });
-process.stdin.on("end", () => {
-  const mode = (process.env.CLAUDE_MODEL_LADDER || "on").toLowerCase();
-  if (mode === "off") process.exit(0);
-
-  let input;
-  try {
-    input = JSON.parse(data || "{}");
-  } catch {
-    process.exit(0); // never fail a tool call because the hook could not read its own input
+function ladderAdvice(input, role, best, asked, gone) {
+  const ladder = LADDERS.get(role).join(" -> ");
+  const outage = gone.length ? ` (plan limit reached: ${gone.join(", ")})` : "";
+  if (asked) {
+    return `${input.subagent_type} resolves to the ${role} ladder [${ladder}]; the best model ` +
+      `available on this install is "${best}"${outage}, not "${asked}".`;
   }
+  return `${input.subagent_type} resolves to the ${role} ladder [${ladder}]; on this install ` +
+    `that is model: "${best}"${outage}. No model was passed, so this spawn inherits the ` +
+    `session model instead of the ladder's choice.`;
+}
 
-  // ---- PreToolUse(Agent): the SELECT half, which never existed before ----
-  if (input.tool_name === "Agent" || input.tool_name === "Task") {
+function routeInput(input, mode) {
+  if (input.tool_name !== "Agent" && input.tool_name !== "Task") {
+    return;
+  }
     const ti = input.tool_input || {};
     const role = roleFor(ti);
     if (!role) process.exit(0); // an agent type with no declared ladder is not ours to route
@@ -223,14 +226,7 @@ process.stdin.on("end", () => {
 
     if (asked === best) process.exit(0); // already on the right rung
 
-    const ladderText = LADDERS[role].join(" -> ");
-    const outage = gone.length ? ` (plan limit reached: ${gone.join(", ")})` : "";
-    const line = asked
-      ? `${ti.subagent_type} resolves to the ${role} ladder [${ladderText}]; the best model ` +
-        `available on this install is "${best}"${outage}, not "${asked}".`
-      : `${ti.subagent_type} resolves to the ${role} ladder [${ladderText}]; on this install ` +
-        `that is model: "${best}"${outage}. No model was passed, so this spawn inherits the ` +
-        `session model instead of the ladder's choice.`;
+    const line = ladderAdvice(ti, role, best, asked, gone);
 
     // strict mode refuses an under-provisioned strategic spawn: that is the rung where
     // first-shot correctness is the entire reason the ladder exists.
@@ -250,8 +246,9 @@ process.stdin.on("end", () => {
         additionalContext: `[model-ladder] ${line}`,
       },
     });
-  }
+}
 
+function routeSwitch(input) {
   // ---- PreModelSwitch: the DENY half, unchanged in behaviour ----
   const target = String(input.to_model || input.model || "").toLowerCase();
   if (!target.includes("fable")) process.exit(0);
@@ -261,7 +258,6 @@ process.stdin.on("end", () => {
   const haystack = [
     input.prompt,
     input.reason,
-    input.cwd,
     input.transcript_excerpt,
   ]
     .filter(Boolean)
@@ -275,4 +271,14 @@ process.stdin.on("end", () => {
       "capability. Use opus (or mythos where provisioned).\n",
   );
   process.exit(2); // blocking: this is a policy violation, not advice
+ }
+
+process.stdin.on("end", () => {
+  const mode = (process.env.CLAUDE_MODEL_LADDER || "on").toLowerCase();
+  if (mode === "off") return;
+  let input;
+  try { input = JSON.parse(data || "{}"); }
+  catch { return; }
+  routeInput(input, mode);
+  routeSwitch(input);
 });

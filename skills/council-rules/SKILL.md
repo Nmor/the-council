@@ -1,6 +1,7 @@
 ---
 name: council-rules
 description: Full Council Structure — Core Five Divisions (Architecture/Implementation/Quality/Security/Testing) + Extended Eleven Divisions (Compliance/UX/Ops/Data/Finance/Risk/Strategy/People/ESG/AI-Ethics/Comms) with veto authority + agent rosters + per-division personas (collective experience, core principles, key deliverables, checklists, red flags) + Conversation Rules (order of speaking, research depth, disagreement protocol, escalation to user). Use when authoring/editing agent files, running Council debates, resolving division tiebreakers, or training new contributors on Council conventions.
+disable-model-invocation: true
 ---
 
 # Council Rules — Full Division Detail + Personas + Conversation Rules

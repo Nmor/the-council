@@ -1,6 +1,7 @@
 ---
 name: edtech-patterns
 description: Principal-level patterns for K-12 + higher-ed + corporate-learning platforms — LTI 1.3 / LTI Advantage, xAPI 2.0 (IEEE 9274.1.1-2023), cmi5, SCORM 1.2 + 2004 (4th Ed), OneRoster 1.2, Caliper Analytics 1.2, QTI 3.0, Common Cartridge 1.3, Open Badges 3.0 (W3C VC), AccessForAll 3.0, IRT-based adaptive assessment, UDL 3.0, WCAG 2.2 AAA for learners, proctoring + integrity, learning-analytics ethics. Sister to ferpa-coppa-compliance (regulation), wcag-accessibility (a11y), interaction-design (UX).
+disable-model-invocation: true
 ---
 
 # EdTech Platform Patterns

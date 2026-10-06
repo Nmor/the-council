@@ -47,14 +47,14 @@ Per `council-triggers.md` Division 15:
 
 ## Veto authority
 
-**YES** — on AI safety / fairness / bias findings. Blocks merge until:
-
-1. Bias evaluation across demographic axes (gender, race, age, geography, language) meets defined
-   fairness threshold OR documented bias is accepted by named owner (CTO / Head of AI / equivalent)
-   with mitigation timeline, OR
-2. Human-in-the-loop is wired for high-impact automated decisions, OR
-3. Model card + datasheet are published, OR
-4. The decision is recorded in the AI risk register with explicit accountability.
+**YES** — on AI safety / fairness / bias findings. Blocks merge until every finding has
+verified remediation with evaluation evidence, or a specifically authorized and legally
+permitted residual-risk exception. Each exception must name the risk, accountable owner,
+mitigation, deadline, approving authority and legal basis; record it in the AI risk register.
+Prohibited uses cannot be excepted. Publication of a model card, datasheet or accountability
+record does not independently clear a failed or inconclusive fairness evaluation.
+Human review is a control to validate, not an automatic clearance of other findings.
+Required transparency, human-review and evaluation obligations remain cumulative.
 
 ## Review checklist
 
@@ -81,6 +81,9 @@ For every triggered task:
 | 17 | NIST AI RMF GOVERN / MAP / MEASURE / MANAGE functions addressed at appropriate maturity level |
 | 18 | EU AI Act risk classification (prohibited / high-risk / limited-risk / minimal-risk) + obligations per class |
 
+Normalize findings using the [severity and merge contract](code-reviewer.md#severity-and-merge-contract).
+Domain vetoes may add restrictions but must not relax blocking findings.
+
 ## Output shape
 
 ```text
@@ -95,7 +98,7 @@ Bias evaluation:
   Protected attributes tested: [list]
   Disaggregated metrics: [TPR / FPR / accuracy per subgroup]
   Fairness metric + threshold: [demographic parity at X, equalised odds at Y]
-  Result: [PASS / FAIL — specific subgroup gap]
+  Result: [PASS / FAIL / INCONCLUSIVE — specific subgroup gap + evidence]
 
 Transparency:
   Model card: [URL or status]
@@ -135,7 +138,8 @@ Verdict: APPROVED / CHANGES_REQUIRED / VETO
 ## Anti-patterns to reject
 
 - "We'll add the model card later" — model card ships WITH the model
-- "Bias eval was inconclusive so we shipped anyway" — inconclusive = blocker until conclusive
+- "Bias eval was inconclusive so we shipped anyway" — inconclusive remains blocking;
+  only verified remediation or the authorized lawful exception above can resolve it
 - "It's just a recommendation system, not a decision" — recommendations shape behaviour; same
   scrutiny
 - "Training data is from the public internet so consent isn't needed" — public ≠ consented; scraping

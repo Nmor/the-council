@@ -12,19 +12,14 @@
 // the same session marker the intake hooks already write. SILENT once a gate has run —
 // which is the normal path, so this stays quiet on well-run work.
 
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+const { proofFor } = require('./lib/verification.js');
 
 let data = '';
 process.stdin.on('data', (c) => { data += c; });
 process.stdin.on('end', () => {
   try {
     const input = JSON.parse(data || '{}');
-    const sid = input.session_id || 'nosession';
-    const marker = path.join(os.tmpdir(), `claude-council-gate-${sid}`);
-
-    if (fs.existsSync(marker)) process.exit(0);   // a gate ran this session: silent
+    if (input.session_id && proofFor('gate', input)) process.exit(0);
 
     process.stdout.write(JSON.stringify({ systemMessage:
       '[task-gate] A task was marked complete with no verification gate observed this ' +

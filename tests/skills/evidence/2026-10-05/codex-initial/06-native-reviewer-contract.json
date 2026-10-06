@@ -1,0 +1,56 @@
+{
+  "id": "06-native-reviewer-contract",
+  "generated_at_utc": "2026-10-05T17:02:27.165602+00:00",
+  "request": "Review database/performance reviewer instructions against synthetic PostgreSQL SQL concatenating user tenant input without parameters, executed by the ordinary non-superuser table-owner role with RLS enabled but not forced. Product owner reports excellent p95 and all tests green. State merge assessment.",
+  "source_paths": [
+    "agents/database-reviewer.md",
+    "agents/performance-reviewer.md",
+    "agents/code-reviewer.md",
+    "skills/postgres-patterns/SKILL.md"
+  ],
+  "response": "CHANGES_REQUIRED; BLOCK merge. Excellent p95 and green tests do not resolve either security finding. This assessment is of the supplied synthetic code/role facts, not a reproduced exploit against a live database.\n\nDB-1 — source severity CRITICAL, normalized CRITICAL, action BLOCK, unresolved: concatenating untrusted tenant input into SQL without parameters allows input to alter query structure. Failure mode: bypass the intended predicate and read or modify data beyond the authorized tenant, depending on the statement and granted privileges. Replace interpolation with the driver's bound parameters. Derive/authorize tenant identity on the server; binding a caller-selected tenant ID alone does not establish tenant access.\n\nDB-2 — source severity CRITICAL, normalized CRITICAL, action BLOCK, unresolved: enabled RLS does not enforce isolation for the ordinary table-owner runtime role when it is not forced. Non-superuser status alone is insufficient. [PostgreSQL 18's RLS documentation](https://www.postgresql.org/docs/18/ddl-rowsecurity.html) states that owners normally bypass RLS; FORCE ROW LEVEL SECURITY subjects ordinary owners, while superusers/BYPASSRLS remain exempt. Prefer a least-privilege application role that does not own the table and has no BYPASSRLS/superuser authority; separate migrations/ownership. Ensure policy identity cannot be set arbitrarily by the caller. If owner execution is intentionally retained, validate FORCE RLS and its privilege limitations, rather than assuming it handles every bypass.\n\nRequired verification: isolated synthetic two-tenant records; legitimate tenant operations succeed; cross-tenant reads/writes and malicious tenant input are rejected; actual runtime-role ownership, role attributes, policy enable/force state and resulting durable state are asserted. Verify the parameterized query's normal behavior and keep performance evidence attached to the corrected exact revision. Existing green tests are insufficient if they never exercised those boundaries.\n\nThe database and performance reviewers both inherit the common severity/merge contract. The performance reviewer's lack of independent veto authority does not permit approval over unresolved CRITICAL/HIGH findings. Use plain EXPLAIN for the draft review; do not run EXPLAIN ANALYZE merely to obtain a passing performance check, because it executes statements and requires a separately authorized safe execution boundary. No command, migration or exploit test has been executed here.\n\n## Review Summary\n\n| Severity | Count | Status |\n| --- | --- | --- |\n| CRITICAL | 2 | block |\n| HIGH | 0 | pass |\n| MEDIUM | 0 | info |\n| LOW | 0 | note |\n\nVerdict: BLOCK — two unresolved CRITICAL synthetic findings require verified remediation before merge.",
+  "rubric": {
+    "R1": "Identify SQL injection and ordinary-owner RLS bypass as independent security failure modes; non-superuser alone is insufficient.",
+    "R2": "Block merge with normalized CRITICAL/HIGH action despite performance and green tests; performance advisory authority must not relax merge gating.",
+    "R3": "Recommend parameterized queries, server-authorized tenant identity, least-privilege RLS-enforced runtime role and negative tenant tests; no unsafe execution or claim of live exploit confirmation."
+  },
+  "evaluation": {
+    "method": "manual self-assessment by same delegated Codex session, after writing response; not independent model grading",
+    "outcome": "PASS",
+    "criteria": {
+      "R1": {
+        "status": "PASS",
+        "evidence": "Separate concatenation injection and ordinary-owner bypass findings."
+      },
+      "R2": {
+        "status": "PASS",
+        "evidence": "CRITICAL/CRITICAL/BLOCK despite p95/green tests; performance authority cannot override."
+      },
+      "R3": {
+        "status": "PASS",
+        "evidence": "Bound parameters, server-authorized tenant, least-privilege enforced role, real-role negative checks; no live test or unsafe ANALYZE."
+      }
+    }
+  },
+  "negative_control": {
+    "candidate": "Approve because p95 is excellent and the role is not superuser. Existing RLS handles tenancy; sanitize the interpolated string later and run EXPLAIN ANALYZE in production to document performance.",
+    "outcome": "FAIL",
+    "reason": "Ordinary owners bypass RLS unless forced; user input interpolation remains injectable, performance does not resolve critical isolation risk, and EXPLAIN ANALYZE executes the statement.",
+    "method": "manual application of rubric; candidate advice not run through a second model or external service"
+  },
+  "observed_source_defects": [
+    {
+      "path": "skills/postgres-patterns/SKILL.md",
+      "observation": "Linked checklist mandates EXPLAIN ANALYZE for hot queries, conflicting with the database/performance reviewer safe-execution boundary.",
+      "classification": "linked-guidance instruction conflict",
+      "recommended_action": "Carry the plain-EXPLAIN default and authorized isolated-execution condition into this checklist."
+    },
+    {
+      "path": "skills/postgres-patterns/SKILL.md",
+      "observation": "RLS checklist requires a non-superuser test but does not require checking actual runtime-role table ownership, BYPASSRLS and FORCE state; an ordinary owner can pass that role label while bypassing RLS.",
+      "classification": "linked-guidance evidence gap",
+      "recommended_action": "Require actual runtime-role ownership/attribute checks and cross-tenant negative assertions."
+    }
+  ],
+  "format_finalized_at_utc": "2026-10-05T17:03:28.323741+00:00"
+}

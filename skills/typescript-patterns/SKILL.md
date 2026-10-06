@@ -1,6 +1,6 @@
 ---
 name: typescript-patterns
-description: TypeScript-specific idioms, type-system patterns, narrowing techniques, generics, branded types, and strictness flags. Auto-fires for `.ts` and `.tsx` files alongside `coding-quality-rules` to add TS-specific guidance the universal skill doesn't cover.
+description: TypeScript implementation guidance for strict types, runtime validation, asynchronous errors and maintainable module boundaries.
 paths:
   - "**/*.ts"
   - "**/*.tsx"
@@ -8,6 +8,7 @@ paths:
   - "**/*.cts"
   - "tsconfig*.json"
   - "**/tsconfig*.json"
+disable-model-invocation: true
 ---
 
 # TypeScript Patterns

@@ -193,8 +193,12 @@ DELETE on the referenced row scans the referencing table.
 Before merging:
 
 ```sql
-explain analyze select ... from ...;
+explain select ... from ...;
 ```
+
+EXPLAIN ANALYZE executes the query. Use it only on an authorized isolated target
+after checking writes, volatile functions and external side effects. A rollback does
+not undo every side effect; production profiling is not implied by a review request.
 
 Watch for:
 

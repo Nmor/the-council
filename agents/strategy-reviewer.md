@@ -187,3 +187,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New auto-fire trigger when a recurring strategic-decision class surfaces
 - Tightening of vendor-scoring weights when lock-in regret patterns observed
 - New pairing entry when a sister division consistently engages on strategic work
+
+Primary reference for the relevant review: [arc42: architecture decisions and quality requirements](https://docs.arc42.org/).

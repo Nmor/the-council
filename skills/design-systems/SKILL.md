@@ -1,6 +1,7 @@
 ---
 name: design-systems
 description: Principal-level design system practice — design tokens, multi-platform theming, component API design, accessibility built-in, versioning + governance, contribution model, documentation, and the discipline that turns "one team's component library" into a load-bearing capability for every product surface — including producing high-fidelity, NON-generic ("anti-AI-slop") UIs by building on the real system + curated blocks + design-MCP tooling (shadcn / 21st.dev / Figma).
+disable-model-invocation: true
 ---
 
 # Design Systems

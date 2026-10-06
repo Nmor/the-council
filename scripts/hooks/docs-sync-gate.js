@@ -19,13 +19,8 @@
 // code changes are committed or pushed". Docs are enforced where they belong, at commit and
 // push (commit-gate.js, pre-push-gate.js); this hook owns the plan.
 //
-// SUPERSEDE PROOF (TodoWrite version -> this):
-//   trigger:   a todo marked complete -> the turn ending (a superset: every task ends in a turn)
-//   evidence:  Edit/Write markers -> git's view of the working tree, falling back to the same
-//              markers outside a git repository
-//   outcome:   stderr text after the fact -> exit 2, which makes Claude continue and fix it
-//   modes:     CLAUDE_DOCS_SYNC=block (default) | warn | off, unchanged
-//   docs: moved to the commit and push gates, where they can block
+// Git mtimes identify session work only when the transcript supplies a start time.
+// Without that baseline, or outside Git, Edit/Write markers supply the evidence.
 //
 // PER PROJECT, AND MEMORY TOO (owner, 2026-09-21: "project memory was stale"; "I am running
 // different projects"). The plan is the one this project's memory index names on an
@@ -39,9 +34,8 @@
 // means a Stop hook already forced this continuation. A project that runs without a plan says
 // so once, as `Active plan: none`.
 "use strict";
+const { markerPath, readPrivate } = require('./lib/private-state.js');
 const fs = require("fs");
-const os = require("os");
-const path = require("path");
 const gs = require("./lib/git-state.js");
 const pc = require("./lib/project-context.js");
 const { lintMemory, format } = require("./lib/memory-lint.js");
@@ -56,8 +50,8 @@ const markerTime = (sid, kind) => {
   try {
     return (
       Number(
-        fs.readFileSync(
-          path.join(os.tmpdir(), `claude-docs-sync-${kind}-${sid}`),
+        readPrivate(
+          markerPath(`docs-sync-${kind}`, sid),
           "utf8",
         ),
       ) || 0
@@ -71,11 +65,70 @@ const markerTime = (sid, kind) => {
 const sessionStart = (transcript) => {
   try {
     const st = fs.statSync(transcript);
+    if (!st.isFile()) return 0;
     return st.birthtimeMs || st.ctimeMs || 0;
   } catch {
     return 0;
   }
 };
+
+function codeEvidence(cwd, since, sid) {
+  // Dirty AND committed work, from cwd's repo or a workspace root's child repos —
+  // the session marker only backstops contexts where git offers nothing.
+  if (!since) return { changed: [], codeTime: sid ? markerTime(sid, "code") : 0 };
+  const evidence = gs.changedSince(cwd, since);
+  if (!evidence.codeTime && sid)
+    return { changed: [], codeTime: markerTime(sid, "code") };
+  return evidence;
+}
+
+function planReasons(cwd, codeTime, changed) {
+  if (!codeTime) return [];
+  const plan = pc.activePlan(cwd);
+  if (plan.state === "unset")
+    return [
+      `This project names no active plan. Plans for several projects share ~/.claude/plans, so ` +
+        `the gate never guesses: add "Active plan: <path to this work's plan>" to ${plan.index} ` +
+        `(or "Active plan: none" if this project runs without one).`,
+    ];
+  if (plan.state === "missing")
+    return [`The active plan ${plan.path} no longer exists. Point ${plan.index} at the current plan.`];
+  if (plan.state !== "set" || plan.mtime >= codeTime) return [];
+  const extra = changed.length > 5 ? `, +${changed.length - 5} more` : "";
+  const list = changed.slice(0, 5).join(", ") + extra;
+  const files = list ? ` (${list})` : "";
+  return [
+    `Code changed this session after the plan was last updated${files}. ` +
+      `Update ${plan.path}: tick the task(s) just finished with a one-line outcome (commit or ` +
+      `file, gate result), and add any work this turn discovered as new tasks. Per ` +
+      `plan-execution-progress.md rule 8 the plan is the source of truth; it survives compaction.`,
+  ];
+}
+
+function memoryTouched(memDir, since, sid, wroteNow) {
+  // Without a persisted transcript, mtimes cannot identify this session's writes.
+  if (!since) return Boolean(sid && markerTime(sid, "memory"));
+  try {
+    return fs.readdirSync(memDir).some((f) => f.endsWith(".md") && wroteNow(f));
+  } catch {
+    return false;
+  }
+}
+
+function memoryReasons(cwd, since, sid, codeTime) {
+  // Progress patterns need file attribution; proven broken references need only work evidence.
+  const memDir = pc.memoryDir(cwd);
+  const wroteNow = (f) => since > 0 && gs.newestMtime(memDir, [f]) > since;
+  if (!codeTime && !memoryTouched(memDir, since, sid, wroteNow)) return [];
+  const found = lintMemory(memDir).filter((f) => f.proven || wroteNow(f.file));
+  if (!found.length) return [];
+  const extra = found.length > 8 ? `\n  +${found.length - 8} more: node ~/.claude/scripts/memory-lint.mjs` : "";
+  return [
+    `This project's memory is stale or unloadable (${found.length}). Correct each entry, or ` +
+      `delete it if the plan now carries it:\n` +
+      found.slice(0, 8).map((f) => `  ${format(memDir, f)}`).join("\n") + extra,
+  ];
+}
 
 let data = "";
 process.stdin.on("data", (c) => (data += c));
@@ -98,63 +151,11 @@ process.stdin.on("end", () => {
   if (!input.cwd) process.exit(0);
   const cwd = input.cwd;
   const since = sessionStart(input.transcript_path || "");
-  const root = gs.repoRoot(cwd);
-
-  let changed = [];
-  let codeTime = 0;
-  if (root) {
-    changed = gs
-      .dirtyFiles(root)
-      .filter((f) => ["code", "test"].includes(gs.classify(f)))
-      .filter((f) => gs.newestMtime(root, [f]) > since);
-    codeTime = gs.newestMtime(root, changed);
-  } else if (input.session_id) {
-    codeTime = markerTime(input.session_id, "code");
-  }
-  const reasons = [];
-  if (codeTime) {
-    const plan = pc.activePlan(cwd);
-    if (plan.state === "unset")
-      reasons.push(
-        `This project names no active plan. Plans for several projects share ~/.claude/plans, so ` +
-          `the gate never guesses: add "Active plan: <path to this work's plan>" to ${plan.index} ` +
-          `(or "Active plan: none" if this project runs without one).`,
-      );
-    else if (plan.state === "missing")
-      reasons.push(`The active plan ${plan.path} no longer exists. Point ${plan.index} at the current plan.`);
-    else if (plan.state === "set" && plan.mtime < codeTime) {
-      const list = changed.slice(0, 5).join(", ") + (changed.length > 5 ? `, +${changed.length - 5} more` : "");
-      reasons.push(
-        `Code changed this session after the plan was last updated${list ? ` (${list})` : ""}. ` +
-          `Update ${plan.path}: tick the task(s) just finished with a one-line outcome (commit or ` +
-          `file, gate result), and add any work this turn discovered as new tasks. Per ` +
-          `plan-execution-progress.md rule 8 the plan is the source of truth; it survives compaction.`,
-      );
-    }
-  }
-
-  // Memory is read as fact by every later session, so a stale entry misleads the next one.
-  // Checked when this turn did work or wrote memory; progress copied into memory is a pattern,
-  // not a proof, so it counts only in files this session wrote.
-  const memDir = pc.memoryDir(cwd);
-  const wroteNow = (f) => gs.newestMtime(memDir, [f]) > since;
-  const memTouched = (() => {
-    try {
-      return fs.readdirSync(memDir).some((f) => f.endsWith(".md") && wroteNow(f));
-    } catch {
-      return false;
-    }
-  })();
-  if (codeTime || memTouched) {
-    const found = lintMemory(memDir).filter((f) => f.proven || wroteNow(f.file));
-    if (found.length)
-      reasons.push(
-        `This project's memory is stale or unloadable (${found.length}). Correct each entry, or ` +
-          `delete it if the plan now carries it:\n` +
-          found.slice(0, 8).map((f) => `  ${format(memDir, f)}`).join("\n") +
-          (found.length > 8 ? `\n  +${found.length - 8} more: node ~/.claude/scripts/memory-lint.mjs` : ""),
-      );
-  }
+  const { changed, codeTime } = codeEvidence(cwd, since, input.session_id);
+  const reasons = [
+    ...planReasons(cwd, codeTime, changed),
+    ...memoryReasons(cwd, since, input.session_id, codeTime),
+  ];
   if (!reasons.length) process.exit(0);
 
   const msg =

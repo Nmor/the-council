@@ -1,21 +1,30 @@
-# Installation Guide — The Claude Council
+# Installation Guide — The Council
+
+The Council supports **Claude Code and Codex** through separate runtime installers.
+Choose your runtime below. The shell/PowerShell installers configure Claude Code;
+the IDE section identifies shared editor templates and runtime-specific integration.
+For Codex lifecycle, updates and removal, use [the native Codex guide](docs/CODEX.md).
 
 ## Codex installation
 
 For Codex CLI or IDE environments, use the separate native installer:
 
 ```bash
+git clone https://github.com/Nmor/the-council.git
+cd the-council
 python3 bootstrap/codex.py install --dry-run
 python3 bootstrap/codex.py install
 python3 bootstrap/codex.py verify
 ```
 
-Requires Python 3.11+ and a Git checkout. See [the Codex guide](docs/CODEX.md)
+Requires Python 3.11+, Node.js 18+ and a Git checkout. See [the Codex guide](docs/CODEX.md)
 for existing-plan mappings, hook review/trust, verification and uninstall. The
 installer preserves existing Codex configuration and does not modify Claude.
 The shell and PowerShell installers below remain the Claude Code installers.
 
-This guide walks through installing **The Claude Council** on
+## Claude Code installation
+
+This section walks through installing **The Council for Claude Code** on
 **macOS**, **Linux**, or **Windows**, then integrating it with
 each supported IDE.
 
@@ -27,8 +36,8 @@ next session.
 > **TL;DR (macOS / Linux):**
 >
 > ```bash
-> git clone https://github.com/Nmor/the-claude-council.git
-> cd the-claude-council
+> git clone https://github.com/Nmor/the-council.git
+> cd the-council
 > ./bootstrap/install.sh
 > ./bootstrap/verify.sh
 > ```
@@ -36,8 +45,8 @@ next session.
 > **TL;DR (Windows / PowerShell — fully native, no WSL2 required):**
 >
 > ```powershell
-> git clone https://github.com/Nmor/the-claude-council.git
-> cd the-claude-council
+> git clone https://github.com/Nmor/the-council.git
+> cd the-council
 > .\bootstrap\install.ps1
 > .\bootstrap\verify.ps1
 > ```
@@ -66,8 +75,8 @@ Everything else (rules / skills / agents / commands / templates) ships in the re
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/Nmor/the-claude-council.git
-cd the-claude-council
+git clone https://github.com/Nmor/the-council.git
+cd the-council
 
 # 2. Run the installer
 ./bootstrap/install.sh
@@ -94,8 +103,8 @@ What the installer does:
 
 ```bash
 # Same as macOS — the script is portable.
-git clone https://github.com/Nmor/the-claude-council.git
-cd the-claude-council
+git clone https://github.com/Nmor/the-council.git
+cd the-council
 ./bootstrap/install.sh
 ./bootstrap/verify.sh
 ```
@@ -113,11 +122,13 @@ WSL2, Git Bash, or shell emulation required.
 
 ```powershell
 # Open PowerShell as your user (NOT as Administrator)
-git clone https://github.com/Nmor/the-claude-council.git
-Set-Location the-claude-council
+git clone https://github.com/Nmor/the-council.git
+Set-Location the-council
 
-# Allow script execution for this session if your policy is restricted
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+# Allow local scripts for this session if execution is restricted.
+if ((Get-ExecutionPolicy) -eq 'Restricted') {
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+}
 
 # Install
 .\bootstrap\install.ps1
@@ -168,6 +179,12 @@ Recommended settings live in `templates/ide-configs/vscode/settings.json`. Merge
 - Linux: `~/.config/Code/User/settings.json`
 - Windows: `%APPDATA%\Code\User\settings.json`
 
+The template uses the registered `claudeCode.*` and `chatgpt.*` extension settings.
+Codex model, sandbox, approval and compaction settings belong in its `config.toml`;
+VS Code settings do not grant hook trust. Review changed hooks through Codex's `/hooks`.
+The `steer` queue preference sends a follow-up into the current Codex turn; choose
+`queue` if it should wait until that turn finishes.
+
 ### Cursor
 
 Cursor uses the same extension format as VS Code. Settings live at:
@@ -194,22 +211,29 @@ cat templates/ide-configs/windsurf/settings.json
 
 ### JetBrains (IntelliJ / GoLand / PyCharm / WebStorm / PhpStorm / RubyMine / RustRover / CLion)
 
-Install Anthropic's **Claude Code [Beta]** plugin from the JetBrains Marketplace:
+For Claude Code, install Anthropic's plugin from the JetBrains Marketplace and
+ensure the separate `claude` CLI is available:
 
 1. Open **Settings → Plugins → Marketplace**
 2. Search for `Claude Code`
-3. Install and restart the IDE
-4. Open **Settings → Tools → Claude Code** and point it at the `claude` CLI binary (the plugin auto-detects in most cases)
+3. Confirm the publisher, install and restart the IDE
+4. Launch `claude` in the project's integrated terminal; configure the plugin's
+   **Claude command** setting if the CLI is not on the IDE's PATH
 
-The JetBrains template directory has a README with detailed walkthroughs:
+For Codex, use the agent in JetBrains AI Assistant after its own setup. JetBrains
+documents project instructions in `AGENTS.md`; confirm Council discovery and the
+effective configuration in that environment rather than assuming it shares your
+terminal's Codex home. Follow [JetBrains' Codex guide](https://www.jetbrains.com/help/ai-assistant/codex-agent.html).
 
-```bash
-cat templates/ide-configs/jetbrains/README.md
-```
+See [the JetBrains setup guide](templates/ide-configs/jetbrains/README.md) for
+shared code styles, optional keymaps and verification limits. JetBrains startup
+and Council hook execution have not been tested locally.
 
 ### Neovim / Emacs / other terminal-first editors
 
-No IDE integration needed — `~/.claude/` is loaded by the `claude` CLI regardless of editor. Configure your editor to launch `claude` in a terminal pane or split.
+Run your chosen CLI from the project root in a terminal pane or split. Claude uses
+its Claude installation; Codex uses its selected home and native instructions.
+An editor template does not install either CLI or prove Council discovery.
 
 ---
 
@@ -253,7 +277,7 @@ If any check fails:
 1. Read the specific failure line ("rules/common/*.md ≥ 60 — got 0")
 2. Confirm the install actually copied — `ls ~/.claude/rules/common/`
 3. If the destination is empty, re-run `./bootstrap/install.sh --force`
-4. If a specific check fails, open a [GitHub issue](https://github.com/Nmor/the-claude-council/issues) with the verbose log
+4. If a specific check fails, open a [GitHub issue](https://github.com/Nmor/the-council/issues) with the verbose log
 
 ---
 
@@ -263,7 +287,7 @@ When the upstream repo gets a new release:
 
 ```bash
 # macOS / Linux / WSL2
-cd the-claude-council
+cd the-council
 git fetch && git checkout v2.x.y
 ./bootstrap/install.sh           # idempotent: backs up + reinstalls
 ./bootstrap/verify.sh
@@ -271,7 +295,7 @@ git fetch && git checkout v2.x.y
 
 ```powershell
 # Windows-native
-Set-Location the-claude-council
+Set-Location the-council
 git fetch ; git checkout v2.x.y
 .\bootstrap\install.ps1          # idempotent: backs up + reinstalls
 .\bootstrap\verify.ps1

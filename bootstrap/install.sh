@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# install.sh — Bootstrap installer for the global Claude Code config.
+# install.sh — The Council for Claude Code configuration installer.
 #
 # Installs the rules / skills / agents / commands / hooks surface
 # into the user's ~/.claude/ directory and (optionally) integrates
@@ -585,18 +585,21 @@ post_install_message() {
   cat <<EOF
 
 ================================================================
-✓ Global Claude config installed at ${PREFIX}
+✓ The Council for Claude Code installed at ${PREFIX}
 
 Next steps:
   1. Run the self-test:        ${SCRIPT_DIR}/verify.sh
   2. Read the council protocol: ${PREFIX}/CLAUDE.md
   3. Open the docs:            ${REPO_ROOT}/docs/ARCHITECTURE.md
 
-The 24 Floor rules, 160 Library rules, 118 skills, 39 agents,
-33 commands, and 25 hooks are now active for every Claude Code
-session. Floor rules + CLAUDE.md (~260 KB / ~65,000 tokens)
-load every turn; Library rules and skill bodies load on demand
-via skill paths: triggers.
+Start a fresh Claude Code session to load the working contract
+and Floor rules. Select Library guidance and skills by task
+relevance or explicit invocation; skill paths: metadata does
+not implement automatic activation. The verifier checks files,
+not whether every hook or capability has run successfully.
+
+For Codex, use the separate native installer and compatibility
+guide at ${REPO_ROOT}/docs/CODEX.md. This installer targets Claude.
 
 Two things that keep that number honest:
   - Never place a clone of this repo on a workspace's walk-up
@@ -604,9 +607,8 @@ Two things that keep that number honest:
     walks up from cwd, so a clone there loads the WHOLE Floor a
     second time as "project instructions". Keep it a sibling of
     your projects, never an ancestor.
-  - A paths:-gated skill is deferred, not free. Keep gated
-    skills under ~25 KB; past that use progressive disclosure
-    (routing table in SKILL.md, detail in references/).
+  - Guidance read on demand still costs context. Keep entrypoints
+    concise and load only needed detail from references/.
 
 Plugins declared in settings.json are reported above. If any
 are listed as not installed, run /plugin in an interactive

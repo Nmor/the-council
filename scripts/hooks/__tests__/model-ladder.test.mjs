@@ -179,6 +179,15 @@ describe('model-ladder-gate — the PreModelSwitch half still behaves', () => {
     assert.equal(r.code, 0);
   });
 
+  test('a security-sounding directory name is not task intent', () => {
+    // The same benign request used to pass under /tmp/example and block under
+    // /tmp/auth-service because cwd fed the classifier (audit H7). Only the
+    // session's own signals may classify.
+    const r = run('model-ladder-gate.js', { to_model: 'claude-fable-5-1',
+      prompt: 'fix README spacing', cwd: '/workspaces/auth-service' }, MAX);
+    assert.equal(r.code, 0, r.stderr);
+  });
+
   test('ignores a switch to any other model', () => {
     const r = run('model-ladder-gate.js', { to_model: 'claude-opus-5', prompt: 'audit the security of auth' }, MAX);
     assert.equal(r.code, 0);

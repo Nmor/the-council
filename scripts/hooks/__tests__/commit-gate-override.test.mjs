@@ -5,20 +5,17 @@
 // works when written on the commit, and only there.
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { run, uniq, cleanup } from './helpers.mjs';
+import { run, uniq, cleanup, verificationProof } from './helpers.mjs';
 
 describe('commit-gate.js — the inline override', () => {
   // A gate from an earlier turn: the state the gate refuses.
   const stale = () => {
     const sid = uniq('sid');
-    writeFileSync(join(tmpdir(), `claude-council-coverage-${sid}`), 'x');
     run('test-coverage-gate.js', { session_id: sid, prompt_id: 't1', tool_name: 'Write',
       tool_input: { file_path: '/x/a.go', content: 'package main' } });
     run('gate-marker.js', { session_id: sid, prompt_id: 't1', tool_name: 'Bash',
-      tool_input: { command: 'go test ./...' } });
+      tool_input: { command: 'go test ./...' }, tool_response: { exit_code: 0 } });
+    verificationProof(sid, 't1', undefined, {}, true);
     return sid;
   };
   const commit = (sid, command) => run('commit-gate.js', { session_id: sid, prompt_id: 't2',

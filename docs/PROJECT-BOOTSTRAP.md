@@ -2,10 +2,15 @@
 
 > How a new project gets its own `<workspace>/.claude/` scaffold and
 > how project-specific rules / skills / agents / plans / memory
-> coexist with the global Claude Council. Grounded in
+> coexist with the global Council. Grounded in
 > [`project-scoped-artifacts.md`](../rules/common/project-scoped-artifacts.md)
 > and
 > [`rule-authoring-global-vs-project.md`](../rules/common/rule-authoring-global-vs-project.md).
+
+This scaffold is the **Claude Code** project integration. For **Codex**, use native
+project instructions and map the existing implementation plan with the
+[Codex installer](CODEX.md#reuse-one-existing-plan). Codex does not require a
+`.claude/` scaffold; both runtimes keep project facts out of global guidance.
 
 ## Why workspaces have their own `.claude/`
 

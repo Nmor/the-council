@@ -10,12 +10,12 @@ import assert from 'node:assert/strict';
 import { writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { run, json, uniq, markerExists, markerText, cleanup } from './helpers.mjs';
+import { run, json, uniq, markerExists, markerText, cleanup, verificationProof } from './helpers.mjs';
 
 describe('gate-marker.js — a marker must mean a gate RAN', () => {
   const fire = (command) => {
     const sid = uniq('sid');
-    run('gate-marker.js', { session_id: sid, prompt_id: 'p', tool_name: 'Bash', tool_input: { command } });
+    run('gate-marker.js', { session_id: sid, prompt_id: 'p', tool_name: 'Bash', tool_input: { command }, tool_response: { exit_code: 0 } });
     const wrote = markerExists(`claude-council-gate-${sid}`);
     cleanup(`claude-council-gate-${sid}`);
     return wrote;
@@ -39,14 +39,14 @@ describe('gate-marker.js — a marker must mean a gate RAN', () => {
 
   // A gate on a later line runs just as surely as one on the first; a gate inside a heredoc
   // that is only written to a file does not run at all.
-  test('fires on a gate on the second line of a multi-line command', () => {
-    assert.equal(fire('cd /svc\ngo test ./...'), true);
+  test('does not certify a multi-command wrapper from its final exit code', () => {
+    assert.equal(fire('cd /svc\ngo test ./...'), false);
   });
   test('does not fire on a gate written into a file by a heredoc', () => {
     assert.equal(fire("cat > ci.sh <<'EOF'\ngo test ./...\nEOF"), false);
   });
-  test('fires on a gate in a heredoc fed to a shell, because that body runs', () => {
-    assert.equal(fire('bash <<EOF\ngo test ./...\nEOF'), true);
+  test('does not certify shell heredoc checks from a wrapper exit code', () => {
+    assert.equal(fire('bash <<EOF\ngo test ./...\nEOF'), false);
   });
 
   // verify-before-claim.md rule 3: verification is scoped to THIS turn. A marker that
@@ -54,10 +54,11 @@ describe('gate-marker.js — a marker must mean a gate RAN', () => {
   test('records the turn it ran in, so a later turn can tell it is stale', () => {
     const sid = uniq('sid');
     run('gate-marker.js', { session_id: sid, prompt_id: 'turn-42', tool_name: 'Bash',
-      tool_input: { command: 'go test ./...' } });
-    const lines = markerText(`claude-council-gate-${sid}`).split('\n');
-    assert.match(lines[0], /^\d+$/, 'first line is the timestamp');
-    assert.equal(lines[1].trim(), 'turn-42', 'second line is the prompt_id');
+      tool_input: { command: 'go test ./...' }, tool_response: { exit_code: 0 } });
+    const proof = JSON.parse(markerText(`claude-council-gate-${sid}`));
+    assert.equal(typeof proof.at, 'number');
+    assert.equal(proof.prompt, 'turn-42');
+    assert.equal(proof.exit_code, 0);
     cleanup(`claude-council-gate-${sid}`);
   });
 });
@@ -88,7 +89,7 @@ describe('deferral-gate.js — a defect is fixed, not filed', () => {
     assert.equal(write('/x/plan.md', 'deferred to a later wave').code, 0);
   });
 
-  // A bare TODO is ordinary backlog, not a conscious decision to leave a defect. Catching it
+  // A bare backlog marker is ordinary backlog, not a conscious decision to leave a defect. Catching it
   // would bury the signal this gate exists for.
   test('ignores a plain TODO', () => {
     assert.equal(write('/x/a.go', '// TODO: tidy this up\nfunc F(){}').code, 0);
@@ -137,14 +138,14 @@ describe('test-coverage-gate.js — a nudge switch must not disable a wall', () 
 describe('commit-gate.js — a commit is a claim', () => {
   const setup = (turn) => {
     const sid = uniq('sid');
-    writeFileSync(join(tmpdir(), `claude-council-coverage-${sid}`), 'x');
     run('test-coverage-gate.js', { session_id: sid, prompt_id: turn, tool_name: 'Write',
       tool_input: { file_path: '/x/a.go', content: 'package main' } });
+    verificationProof(sid, turn, undefined, {}, true);
     return sid;
   };
   const gate = (sid, turn) =>
     run('gate-marker.js', { session_id: sid, prompt_id: turn, tool_name: 'Bash',
-      tool_input: { command: 'go test ./...' } });
+      tool_input: { command: 'go test ./...' }, tool_response: { exit_code: 0 } });
   const commit = (sid, turn) =>
     run('commit-gate.js', { session_id: sid, prompt_id: turn, tool_name: 'Bash',
       tool_input: { command: 'git commit -m x' } });

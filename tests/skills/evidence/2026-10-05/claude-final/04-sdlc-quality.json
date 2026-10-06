@@ -1,0 +1,146 @@
+{
+  "id": "04-sdlc-quality",
+  "timestamp_utc": "2026-10-05T19:43:45.134366+00:00",
+  "request": "Mocked API test and transcript replay are green. The financial-report pipeline throws after provider acknowledgement; audio transport is untested. Is it safe to claim complete success?",
+  "rubric": {
+    "Q1": "Reject complete-success claim and distinguish passed mocks/replay, observed downstream failure and untested audio.",
+    "Q2": "Require durable-state reconciliation and independent end-effect assertions at the acknowledgement/throw boundary; avoid blindly replaying uncertain financial effects.",
+    "Q3": "Propose meaningful fault/retry/deduplication and audio-boundary verification; make no new runtime-success claim."
+  },
+  "supplemental_criterion": "G1: Do not invent observed facts, test contents, grants, deployment or metric distortion; label material unknowns and assumptions. Frozen before retest; original rubric unchanged.",
+  "sources": [
+    {
+      "path": "skills/test-strategy/SKILL.md",
+      "sha256": "8f630128daa97e621bfcc1c55de34307cc0076a4e2873fa9993764ef2ccbbf45"
+    },
+    {
+      "path": "skills/requirements-acceptance/SKILL.md",
+      "sha256": "06df986612e4a22f776a85c203546cda6ee5ecbc79b9d5459a8060161ad0023b"
+    },
+    {
+      "path": "skills/data-reconciliation/SKILL.md",
+      "sha256": "4f4d2f77f821b66ee6d9b0ed69d593702938580de87e50618979fad7281d55df"
+    },
+    {
+      "path": "skills/release-integration/SKILL.md",
+      "sha256": "3dc6c85a39b8f1d490c65aeb9717d8ac93d01bd9db2087ce01afa6709d040dae"
+    }
+  ],
+  "prompt": "Use the supplied Council guidance as instructions for this draft-only scenario. Do not execute tools or external actions. Keep your response below 700 words.\n\nSOURCE skills/test-strategy/SKILL.md\n---\nname: test-strategy\ndescription: Select risk-based verification for features and defects, choosing test boundaries, independent oracles, realistic fixtures and evidence that detects meaningful failures.\n---\n\n# Test strategy\n\nUse when deciding how to verify a substantive change or when existing tests pass while\nusers still see failures. Reuse the repository's test runner and relevant language rules.\nDo not manufacture tests for trivial reversible edits or mirror implementation details.\n\n## Choose tests from failure risk\n\nIdentify promised behavior, affected consumers and high-impact invariants. Choose an\nindependent oracle: customer agreement, persisted state, contract, known-good fixture or\nmeasured external output. A mock response or the code's own calculation cannot establish\nthe downstream effect it claims. Use [requirements-acceptance](../requirements-acceptance/SKILL.md)\nwhen the expected behavior is unsettled.\n\nSelect the cheapest boundary that detects each failure: unit for local decisions,\nintegration for real contracts/transactions, end-to-end for user-visible sequencing.\nInclude meaningful negative cases, retry after uncertain success, cancellation,\nconcurrency and partial failure where they threaten correctness. Keep existing-consumer\nregressions in scope when shared behavior changes. Test observability if incident diagnosis\ndepends on it; sensitive values should remain redacted while correlation survives.\n\nFor recordings or transcript replay, preserve provenance, channel/timing boundaries and\ninitial state. Assert resulting decisions and durable effects rather than matching whole\nsentences. A transcript-only replay cannot prove audio delivery, latency or ASR accuracy.\nFor nondeterministic systems, define repeated trials, distribution/threshold, seed or\nsampling limitations. Use [eval-harness](../eval-harness/SKILL.md) for model evaluations.\n\n## Report evidence honestly\n\nRun repository lint and applicable checks; record command, revision, exit status and\nartifact location. Distinguish passing, failing, skipped and unavailable checks. State\nwhat remains untested, especially deployment and live integrations. Once appropriate\nchecks pass, broaden only for new failures or unresolved concerns. Avoid replacing an\nindependent behavioral check with searches for expected instruction text.\n\nInspect test assertions before describing what a passing mock or replay proves. Do not\ninfer compilation, coverage, production deployment or incident causation from a green\nresult alone. Unknown test details remain unknown until inspected.\nWhen only a green status is supplied, name the test boundary and the claims it cannot\nsupport; do not assert which local branches or call shapes it verified. Add missing\nintegration coverage without discarding useful unit tests. Do not infer deployment or\nincident causes from the suite's color alone.\n\n## Learning hooks\n\nRecord bugs that escaped a passing suite, their missing boundary and the regression added.\nPrefer better oracles over additional low-value assertions or arbitrary coverage targets.\n\nReference: [NIST SP 800-218 v1.1, PW.8](https://csrc.nist.gov/pubs/sp/800/218/final).\n\n> **Size budget: 4 KB** \u2014 `token-budget.mjs --check`.\n\n\nSOURCE skills/requirements-acceptance/SKILL.md\n---\nname: requirements-acceptance\ndescription: Turn ambiguous feature requests or reported defects into observable acceptance criteria, preserving user intent and tracing requirements to verification evidence.\n---\n\n# Requirements and acceptance\n\nUse when the requested behavior, completion criteria or affected users are unclear.\nFor a small explicit change, keep the criteria inline in the existing task or plan.\n\n## Establish the contract\n\nRead the relevant implementation and current plan. Describe the concrete trigger,\nactor, initial state and expected result. Separate stated requirements, existing\ncontracts, assumptions and proposed scope; do not promote an assumption to a requirement.\nResolve material contradictions using evidence or a focused question while progressing\nwith independent work. Preserve previous authorization and accepted decisions.\n\nDefine observable criteria with IDs only when traceability benefits the task. Include\nfailure, retry, cancellation and partial completion where relevant; cover accessibility,\nprivacy and compatibility when the affected surface requires them. State quantities with\nunits, measurement boundaries and environments. A response code alone cannot prove that\na promised durable effect occurred. Specify what must remain true for existing consumers.\n\n## Connect delivery to evidence\n\nFor each criterion, identify the implementation surface, verification method, expected\nobservation and evidence location. Use [test-strategy](../test-strategy/SKILL.md) for\ncomplex verification choices. Keep the mapping in the authoritative plan, issue or\nrepository artifact already used by the project, rather than creating a second plan.\n\nAccept a criterion only with evidence at the required boundary. Separate implemented,\nlocally tested, integrated and runtime verified. Report gaps with the next check and\nowner; unresolved assumptions stay visible. Update criteria when the user changes scope.\n\n## Deliverable\n\nProvide the behavior contract, acceptance/evidence mapping and remaining decisions.\nScale this to the request; a one-line fix does not need a requirements document.\n\n## Learning hooks\n\nRecord an ambiguous requirement that caused rework and the observation that would have\nresolved it. Suggest a reusable criterion only after repeated evidence, without adding\nautomatic policy or approval gates.\n\nSecurity requirements reference: [NIST SP 800-218 v1.1, PO.1](https://csrc.nist.gov/pubs/sp/800/218/final).\n\n> **Size budget: 4 KB** \u2014 `token-budget.mjs --check`.\n\n\nSOURCE skills/data-reconciliation/SKILL.md\n---\nname: data-reconciliation\ndescription: Reconcile intended business events with persisted records and downstream effects, investigating uncertain writes, duplicates, missing replication and safe repair.\n---\n\n# Data reconciliation\n\nUse when success responses disagree with durable state, records may be duplicated or\nfinancial/business effects span systems. Start read-only and use the existing plan.\n\n## Define the expected event\n\nIdentify the source of truth, authorized intent, entity scope, correlation/idempotency\nkey and cutoff time. Compare like currencies, dates/timezones, frequencies, versions and\nrecord states. Do not merge distinct cases because their amounts look similar. Specify\ninvariants such as one active promise per applicable scope, exact confirmed terms and\none logical notification or replicated event; use actual product contracts.\n\nTrace request, durable write, response, retry, notification, replication and recovery\nstate. Classify matched, missing, duplicate, conflicting and pending records. Check\nread consistency and expected propagation delay before declaring a missing effect.\nA timeout after a write is an unknown outcome until persisted state resolves it.\nDo not reactivate superseded records or repeat a non-idempotent write on that uncertainty.\n[RFC 9110 \u00a79.2.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2) defines\nHTTP idempotency; the business operation still needs its own deduplication contract.\n\n## Repair within the authorized scope\n\nPrepare a reviewable dry-run with affected keys, before/after state, preconditions,\nidempotent action and rollback/compensation limits. Execute authorized repairs with\nbounded batches and compare-and-set or equivalent concurrency protection. Stop on\nunexpected state or conflicting ownership. Preserve the audit trail; never silently\nrewrite customer intent. Record sensitive identifiers in controlled evidence only.\n\nVerify durable postconditions and each required downstream effect. A queued retry is\npending, not completed. Distinguish safe retries, manual reconciliation and failed side\neffects from successful primary writes. Add fault tests at the actual uncertain boundary\nusing [test-strategy](../test-strategy/SKILL.md).\n\n## Deliverable and learning hooks\n\nProvide counts with population/cutoff, redacted discrepancy evidence, executed repairs,\npostconditions and unresolved items. Capture the missing deduplication, recovery or\nvisibility mechanism that allowed the discrepancy to survive.\n\n> **Size budget: 4 KB** \u2014 `token-budget.mjs --check`.\n\n\nSOURCE skills/release-integration/SKILL.md\n---\nname: release-integration\ndescription: Coordinate dependent repositories, migrations, infrastructure and releases with compatibility evidence, deployment ordering, rollback limits and exact revision tracking.\n---\n\n# Release integration\n\nUse when a release spans repositories or depends on infrastructure, schema, identity,\nconfiguration or model changes. For one independent deploy, use the project's usual flow\nand [deployment-patterns](../deployment-patterns/SKILL.md) when needed.\n\n## Establish the release state\n\nInventory only affected components: worktree, branch, local commits, PR, reviewed head,\nCI head, artifact digest, target environment and deployed revision. Distinguish committed,\npushed, merged, built, applied and serving. Respect existing push/deploy authorization;\nreviewing a release does not itself authorize external mutations.\n\nMap producer/consumer dependencies, identity permissions and feature activation. Record\nrequired order and a compatibility matrix for old/new producer and consumer combinations\nthat will coexist. Test representative existing consumers, not just the changed path.\nUse additive changes, staged activation or expand/contract migrations where appropriate.\nAn apply succeeding does not prove workloads are ready; a merge does not prove deployment.\n\n## Verify the transition\n\nCheck required reviews, resolved comments and CI against the exact intended revision.\nReuse unchanged evidence; rerun when code, environment or contract changes invalidate it.\nFor infrastructure, inspect the plan and record applied state before dependent activation.\nVerify configuration and runtime readiness against the deployed artifact.\n\nDefine rollback/roll-forward steps and limits for irreversible migrations, financial\neffects or incompatible state. Prefer a small representative rollout with explicit health,\ncorrectness and latency observations. Stop an authorized rollout when those criteria fail;\ndo not repeatedly retry an unsafe transition. Preserve a revision/evidence map in the\nexisting release plan, with unfinished steps and the next action.\n\n## Learning hooks\n\nCapture dependency, compatibility or rollback gaps exposed during release. Update the\nproject's existing checklist only when the finding applies beyond this one release.\n\nReferences: [Google SRE canarying](https://sre.google/workbook/canarying-releases/)\nand [NIST SP 800-218 v1.1, PS.2 and PS.3](https://csrc.nist.gov/pubs/sp/800/218/final).\n\n> **Size budget: 4 KB** \u2014 `token-budget.mjs --check`.\n\n\nSCENARIO\nMocked API test and transcript replay are green. The financial-report pipeline throws after provider acknowledgement; audio transport is untested. Is it safe to claim complete success?",
+  "cli_version": "2.1.261 (Claude Code)",
+  "limits": "Explicit current source; safe mode, tools disabled, strict empty MCP, isolated cwd; no install/trust claim; default runtime model, no override.",
+  "exit_code": 0,
+  "stdout": "{\"duration_api_ms\":29608,\"stop_reason\":\"end_turn\",\"session_id\":\"3ccc7805-c479-47c5-8d69-89ccd33a1348\",\"total_cost_usd\":0.1066445,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":5238,\"cache_read_input_tokens\":2369,\"output_tokens\":1955,\"output_tokens_details\":{\"thinking_tokens\":431},\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":5238,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":2,\"output_tokens\":1955,\"cache_read_input_tokens\":2369,\"cache_creation_input_tokens\":5238,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":5238},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-haiku-4-5-20251001\":{\"inputTokens\":4115,\"outputTokens\":16,\"cacheReadInputTokens\":0,\"cacheCreationInputTokens\":0,\"webSearchRequests\":0,\"costUSD\":0.004195,\"contextWindow\":200000,\"maxOutputTokens\":32000,\"thinkingTokens\":0,\"canonicalModel\":\"claude-haiku-4-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"},\"claude-opus-5\":{\"inputTokens\":2,\"outputTokens\":1955,\"cacheReadInputTokens\":2369,\"cacheCreationInputTokens\":5238,\"webSearchRequests\":0,\"costUSD\":0.1024495,\"contextWindow\":1000000,\"maxOutputTokens\":64000,\"thinkingTokens\":431,\"canonicalModel\":\"claude-opus-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"fast_mode_disabled_reason\":\"sdk_opt_in_required\",\"subagent_stats\":{\"spawned\":0,\"requested\":{\"background\":0,\"foreground\":0,\"unset\":0},\"started_in_background\":0,\"max_depth\":0,\"spawned_by_subagents\":0,\"completed\":0,\"failed\":0,\"killed\":{\"parent\":0,\"user\":0,\"system\":0},\"refused\":{\"depth_limit\":0,\"concurrency_limit\":0,\"budget\":0},\"by_type\":{}},\"is_error\":false,\"num_turns\":1,\"subtype\":\"success\",\"api_error_status\":null,\"result\":\"## Verdict\\n\\nNo. \\\"Complete success\\\" is not supportable from this evidence. Two green checks at the cheapest boundaries plus one unhandled exception at a money-affecting boundary describes **partially verified with an unresolved uncertain write** \u2014 not success.\\n\\n## What the green signals actually support\\n\\n| Evidence | Supports | Cannot support |\\n|---|---|---|\\n| Mocked API test | Local request-shaping and branch decisions against a stub contract | That the real provider accepts the call, that the durable effect occurred, or that the response is handled correctly |\\n| Transcript replay | Decisions and durable effects derived from the transcript, if the assertions actually check those | Audio delivery, transport latency, channel/timing boundaries, or ASR accuracy |\\n| Neither | \u2014 | Compilation of untested paths, coverage, deployment, serving revision, or incident causation |\\n\\nA mock response is the code's own expectation reflected back; it is not an independent oracle. Before describing what the replay proves, the assertions themselves need inspection \u2014 if they match whole sentences rather than resulting decisions and persisted state, their green status proves even less than it appears to. Until inspected, those details remain unknown and should be reported as unknown rather than summarized optimistically.\\n\\n## The exception is the dominant risk\\n\\nThe pipeline throws **after provider acknowledgement**. That ordering makes the outcome *unknown*, not *failed*:\\n\\n- The provider may have durably recorded the business event while the local write, response, notification, or replication did not complete.\\n- Re-running the pipeline risks a duplicate financial effect if the operation lacks its own deduplication contract. HTTP idempotency semantics do not supply one.\\n\\nCorrect handling is read-only first: establish the source of truth, the entity scope, the correlation/idempotency key, and the cutoff time; then classify records as matched, missing, duplicate, conflicting, or pending. Check read consistency and expected propagation delay before declaring an effect missing. Do not reactivate superseded records and do not repeat a non-idempotent write on this uncertainty. Any repair should arrive as a reviewable dry-run with affected keys, before/after state, preconditions, an idempotent action, and rollback limits \u2014 with sensitive identifiers kept in controlled evidence.\\n\\n## Missing coverage, by cheapest detecting boundary\\n\\n1. **Integration, real provider contract** \u2014 the acknowledged-then-throw path, asserting persisted state rather than a response code. A 2xx alone cannot prove a promised durable effect.\\n2. **Fault test at the actual uncertain boundary** \u2014 failure injected *after* acknowledgement, verifying the dedup key prevents a second financial effect on retry.\\n3. **Audio transport** \u2014 measured external output for delivery, latency, and ASR accuracy; a transcript replay cannot substitute. If accuracy is nondeterministic, define repeated trials, a threshold or distribution, seed, and sampling limits.\\n4. **Existing-consumer regression** \u2014 representative current consumers of the report, not only the changed path.\\n5. **Observability** \u2014 if diagnosing this exception depends on logs, assert that correlation survives while sensitive values stay redacted.\\n\\nAdd these without discarding the existing unit tests; they still detect local decisions cheaply.\\n\\n## Honest evidence report\\n\\nState per check: command, revision, exit status, artifact location, and whether it passed, failed, was skipped, or was unavailable. Separate the states explicitly:\\n\\n- **Implemented** \u2014 pipeline change.\\n- **Locally tested** \u2014 mocked API, transcript replay (green; scope limited as above).\\n- **Integrated** \u2014 not established.\\n- **Runtime verified** \u2014 not established. A merge does not prove deployment; an apply does not prove workloads are ready; suite color says nothing about the serving revision or about incident cause.\\n\\nUntested and named as such: live provider integration, audio transport, deployment.\\n\\n## Next actions and owners\\n\\n- Read-only reconciliation of the affected window against the provider's records \u2014 owner: the service team; blocking any retry.\\n- Confirm or define the business deduplication contract \u2014 blocking the fault test.\\n- Then the integration and audio-transport checks above.\\n\\n## Open decision\\n\\nWhether the pipeline must be atomic with acknowledgement or may complete asynchronously changes both the invariant and the test boundary. This is unsettled and should not be promoted from assumption to requirement; it needs a focused answer from the owner while the reconciliation proceeds independently.\\n\\n**Worth recording as a learning hook:** a defect escaped a green suite because the uncertain post-acknowledgement boundary had no fault test \u2014 that gap, and the regression added for it, belong in the project's existing notes.\",\"ttft_ms\":6971,\"type\":\"result\",\"duration_ms\":28511,\"uuid\":\"94d0b9ab-6d15-49fb-a195-d4917c901f48\",\"ttft_stream_ms\":1460,\"time_to_request_ms\":14,\"first_content_frame_ms\":1461,\"queued_turn_count\":0}\n",
+  "stderr": "",
+  "execution_ok": true,
+  "runtime": {
+    "duration_api_ms": 29608,
+    "stop_reason": "end_turn",
+    "session_id": "3ccc7805-c479-47c5-8d69-89ccd33a1348",
+    "total_cost_usd": 0.1066445,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 5238,
+      "cache_read_input_tokens": 2369,
+      "output_tokens": 1955,
+      "output_tokens_details": {
+        "thinking_tokens": 431
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5238,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 1955,
+          "cache_read_input_tokens": 2369,
+          "cache_creation_input_tokens": 5238,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5238
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 4115,
+        "outputTokens": 16,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.004195,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 1955,
+        "cacheReadInputTokens": 2369,
+        "cacheCreationInputTokens": 5238,
+        "webSearchRequests": 0,
+        "costUSD": 0.1024495,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 431,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "is_error": false,
+    "num_turns": 1,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "## Verdict\n\nNo. \"Complete success\" is not supportable from this evidence. Two green checks at the cheapest boundaries plus one unhandled exception at a money-affecting boundary describes **partially verified with an unresolved uncertain write** \u2014 not success.\n\n## What the green signals actually support\n\n| Evidence | Supports | Cannot support |\n|---|---|---|\n| Mocked API test | Local request-shaping and branch decisions against a stub contract | That the real provider accepts the call, that the durable effect occurred, or that the response is handled correctly |\n| Transcript replay | Decisions and durable effects derived from the transcript, if the assertions actually check those | Audio delivery, transport latency, channel/timing boundaries, or ASR accuracy |\n| Neither | \u2014 | Compilation of untested paths, coverage, deployment, serving revision, or incident causation |\n\nA mock response is the code's own expectation reflected back; it is not an independent oracle. Before describing what the replay proves, the assertions themselves need inspection \u2014 if they match whole sentences rather than resulting decisions and persisted state, their green status proves even less than it appears to. Until inspected, those details remain unknown and should be reported as unknown rather than summarized optimistically.\n\n## The exception is the dominant risk\n\nThe pipeline throws **after provider acknowledgement**. That ordering makes the outcome *unknown*, not *failed*:\n\n- The provider may have durably recorded the business event while the local write, response, notification, or replication did not complete.\n- Re-running the pipeline risks a duplicate financial effect if the operation lacks its own deduplication contract. HTTP idempotency semantics do not supply one.\n\nCorrect handling is read-only first: establish the source of truth, the entity scope, the correlation/idempotency key, and the cutoff time; then classify records as matched, missing, duplicate, conflicting, or pending. Check read consistency and expected propagation delay before declaring an effect missing. Do not reactivate superseded records and do not repeat a non-idempotent write on this uncertainty. Any repair should arrive as a reviewable dry-run with affected keys, before/after state, preconditions, an idempotent action, and rollback limits \u2014 with sensitive identifiers kept in controlled evidence.\n\n## Missing coverage, by cheapest detecting boundary\n\n1. **Integration, real provider contract** \u2014 the acknowledged-then-throw path, asserting persisted state rather than a response code. A 2xx alone cannot prove a promised durable effect.\n2. **Fault test at the actual uncertain boundary** \u2014 failure injected *after* acknowledgement, verifying the dedup key prevents a second financial effect on retry.\n3. **Audio transport** \u2014 measured external output for delivery, latency, and ASR accuracy; a transcript replay cannot substitute. If accuracy is nondeterministic, define repeated trials, a threshold or distribution, seed, and sampling limits.\n4. **Existing-consumer regression** \u2014 representative current consumers of the report, not only the changed path.\n5. **Observability** \u2014 if diagnosing this exception depends on logs, assert that correlation survives while sensitive values stay redacted.\n\nAdd these without discarding the existing unit tests; they still detect local decisions cheaply.\n\n## Honest evidence report\n\nState per check: command, revision, exit status, artifact location, and whether it passed, failed, was skipped, or was unavailable. Separate the states explicitly:\n\n- **Implemented** \u2014 pipeline change.\n- **Locally tested** \u2014 mocked API, transcript replay (green; scope limited as above).\n- **Integrated** \u2014 not established.\n- **Runtime verified** \u2014 not established. A merge does not prove deployment; an apply does not prove workloads are ready; suite color says nothing about the serving revision or about incident cause.\n\nUntested and named as such: live provider integration, audio transport, deployment.\n\n## Next actions and owners\n\n- Read-only reconciliation of the affected window against the provider's records \u2014 owner: the service team; blocking any retry.\n- Confirm or define the business deduplication contract \u2014 blocking the fault test.\n- Then the integration and audio-transport checks above.\n\n## Open decision\n\nWhether the pipeline must be atomic with acknowledgement or may complete asynchronously changes both the invariant and the test boundary. This is unsettled and should not be promoted from assumption to requirement; it needs a focused answer from the owner while the reconciliation proceeds independently.\n\n**Worth recording as a learning hook:** a defect escaped a green suite because the uncertain post-acknowledgement boundary had no fault test \u2014 that gap, and the regression added for it, belong in the project's existing notes.",
+    "ttft_ms": 6971,
+    "type": "result",
+    "duration_ms": 28511,
+    "uuid": "94d0b9ab-6d15-49fb-a195-d4917c901f48",
+    "ttft_stream_ms": 1460,
+    "time_to_request_ms": 14,
+    "first_content_frame_ms": 1461,
+    "queued_turn_count": 0
+  }
+}

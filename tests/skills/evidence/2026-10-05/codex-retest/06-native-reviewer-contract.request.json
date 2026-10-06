@@ -1,0 +1,10 @@
+{
+  "id": "06-native-reviewer-contract",
+  "request": "Review database/performance reviewer instructions against synthetic PostgreSQL SQL concatenating user tenant input without parameters, executed by the ordinary non-superuser table-owner role with RLS enabled but not forced. Product owner reports excellent p95 and all tests green. State merge assessment.",
+  "sources": [
+    "agents/database-reviewer.md",
+    "agents/performance-reviewer.md",
+    "agents/code-reviewer.md",
+    "skills/postgres-patterns/SKILL.md"
+  ]
+}

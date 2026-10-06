@@ -1,0 +1,62 @@
+{
+  "worktree": "/Users/APPLE/claude-council",
+  "branch": "fix/council-code-quality-20260928",
+  "base_revision": "759f9286c051753c7c99f8a1c4c8ec593ccd79e7",
+  "source_changes_committed": false,
+  "files": [
+    {
+      "path": "/Users/APPLE/claude-council/templates/ide-configs/vscode/settings.json",
+      "bytes": 17441,
+      "sha256": "870ee5887aee16065213424d5475da6d12e5f2c369440d285d36b14c2d20f245"
+    },
+    {
+      "path": "/Users/APPLE/claude-council/templates/ide-configs/cursor/settings.json",
+      "bytes": 21587,
+      "sha256": "58995fd092241876374b2be633568946c9bb50c1276d397ab86ef5151cfe67b9"
+    },
+    {
+      "path": "/Users/APPLE/claude-council/templates/ide-configs/windsurf/settings.json",
+      "bytes": 11981,
+      "sha256": "60d6174c419b69660ce5ff1e0cd67a16db40009d91bf094934d32f23df426142"
+    },
+    {
+      "path": "/Users/APPLE/claude-council/INSTALL.md",
+      "bytes": 12177,
+      "sha256": "1ba77aeb4878d45e766672853e11d6faaa5f2f2a91cdf6bc2e1f5ebb40a1eeea"
+    },
+    {
+      "path": "/Users/leyanu/.vscode/extensions/anthropic.claude-code-2.1.289-darwin-arm64/package.json",
+      "bytes": 20255,
+      "sha256": "3683245f8f8cc72b31127af4a43227c300e718a8da003cacfa77c5e76fc8b4e6"
+    },
+    {
+      "path": "/Users/leyanu/.vscode/extensions/openai.chatgpt-26.5928.31416-darwin-arm64/package.json",
+      "bytes": 7511,
+      "sha256": "2e7fd98fea41e0cbd815f6ca656999e29acb4e1c3a477af0f5add3b338a8cd33"
+    },
+    {
+      "path": "/Users/leyanu/.vscode/extensions/openai.chatgpt-26.5930.51102-darwin-arm64/package.json",
+      "bytes": 7511,
+      "sha256": "6601f429a6cec3dd8a38b3fbc60af198964abe917f3e508ad2f00d1d790f4428"
+    },
+    {
+      "path": "/tmp/council-vscode-launch.py",
+      "bytes": 3115,
+      "sha256": "958c80bec7970e2ff4d38842cdff2a01725597b5c9177be454f48489dd13123c"
+    },
+    {
+      "path": "/tmp/council-vscode-runtime.cjs",
+      "bytes": 6665,
+      "sha256": "caf06722a7a7d573862abc0d074c76b7f7772c816983fac5c27920f1424ca6aa"
+    },
+    {
+      "path": "/tmp/council-ide-probe-20261005.py",
+      "bytes": 6149,
+      "sha256": "950d61c67c1538282577bb8439abcb6df9defbe433ab73b816b336e964237d92"
+    }
+  ],
+  "runtime_method": {
+    "vscode": "Direct MacOS/Code application with extensionTestsPath; completed subprocess, configuration API assertions, command inventory and app-server initialization marker.",
+    "codex": "Actual stdio app-server with --strict-config and filtered JSON-RPC responses; offline prompt rendering without a model turn."
+  }
+}

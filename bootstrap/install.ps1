@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Bootstrap installer for the global Claude Code config (Windows / PowerShell).
+    The Council for Claude Code — global configuration installer (PowerShell).
 
 .DESCRIPTION
     Installs the rules / skills / agents / commands / hooks surface into the
@@ -257,18 +257,21 @@ function Print-PostInstall {
     @"
 
 ================================================================
-✓ Global Claude config installed at $Prefix
+✓ The Council for Claude Code installed at $Prefix
 
 Next steps:
   1. Run the self-test:        $ScriptDir\verify.ps1
   2. Read the council protocol: $Prefix\CLAUDE.md
   3. Open the docs:            $RepoRoot\docs\ARCHITECTURE.md
 
-The 15 Floor rules, 160 Library rules, 121 skills, 32 agents,
-33 commands, and 14 hooks are now active for every Claude Code
-session. Floor rules + CLAUDE.md (~240 KB) load on every session;
-the Library + skill bodies load on demand via skill paths:
-triggers (lazy-load architecture, ~92% cold-load drop).
+Start a fresh Claude Code session to load the working contract
+and Floor rules. Select Library guidance and skills by task
+relevance or explicit invocation; skill paths: metadata does
+not implement automatic activation. The verifier checks files,
+not whether every hook or capability has run successfully.
+
+For Codex, use the separate native installer and compatibility
+guide at $RepoRoot\docs\CODEX.md. This installer targets Claude.
 
 If you backed up an existing $Prefix, the backup is at:
   $Prefix.bak.$Timestamp

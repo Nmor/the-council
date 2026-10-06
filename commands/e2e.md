@@ -144,7 +144,7 @@ test.describe('Market Search and View Flow', () => {
 
     // Perform search
     await marketsPage.searchMarkets('trump')
-    await page.waitForLoadState('networkidle')
+    await expect(page.getByTestId('search-status')).toHaveText('Complete')
 
     // Verify filtered results
     const filteredCount = await marketsPage.marketCards.count()
@@ -152,7 +152,7 @@ test.describe('Market Search and View Flow', () => {
 
     // Clear search
     await marketsPage.searchInput.clear()
-    await page.waitForLoadState('networkidle')
+    await expect(marketsPage.marketCards).toHaveCount(initialCount)
 
     // Verify all markets shown again
     const finalCount = await marketsPage.marketCards.count()
@@ -274,7 +274,16 @@ Configure in `playwright.config.ts` to adjust browsers.
 
 ## CI/CD Integration
 
-Add to your CI pipeline:
+Use locator actions and web-first assertions for application readiness. Cover background
+polling and delayed hydration; static HTML still needs browser tests for rendered
+layout, keyboard focus, visual and accessibility requirements. See
+[Playwright readiness](https://playwright.dev/docs/api/class-page#page-wait-for-load-state).
+
+Add to your CI pipeline on GitHub.com hosted runners. Artifact v3 is retired there;
+v4+ is unsupported on GHES. Use a server/runner-compatible SHA-pinned GHES variant
+from the [official action documentation](https://github.com/actions/upload-artifact).
+Node 24 actions require a compatible runner (v2.327.1+).
+Verify retention policy and paths before using this example:
 
 ```yaml
 # .github/workflows/e2e.yml
@@ -286,10 +295,12 @@ Add to your CI pipeline:
 
 - name: Upload artifacts
   if: always()
-  uses: actions/upload-artifact@v3
+  uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
   with:
     name: playwright-report
     path: playwright-report/
+    retention-days: 30
+    if-no-files-found: error
 ```
 
 ## PMX-Specific Critical Flows

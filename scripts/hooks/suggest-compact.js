@@ -14,11 +14,8 @@
  * - Compact after completing a milestone, before starting next
  */
 
-const fs = require('fs');
-const path = require('path');
+const { markerPath, readPrivate, writePrivate } = require('./lib/private-state.js');
 const {
-  getTempDir,
-  writeFile,
   readStdinJson
 } = require('../lib/utils');
 const { advise } = require('./lib/advise.js');
@@ -29,7 +26,7 @@ async function main() {
   // on one shared `default` counter.
   const input = await readStdinJson();
   const sessionId = input.session_id || process.env.CLAUDE_SESSION_ID || 'default';
-  const counterFile = path.join(getTempDir(), `claude-tool-count-${sessionId}`);
+  const counterFile = markerPath('tool-count', sessionId);
   const rawThreshold = parseInt(process.env.COMPACT_THRESHOLD || '50', 10);
   const threshold = Number.isFinite(rawThreshold) && rawThreshold > 0 && rawThreshold <= 10000
     ? rawThreshold
@@ -37,32 +34,14 @@ async function main() {
 
   let count = 1;
 
-  // Read existing count or start at 1
-  // Use fd-based read+write to reduce (but not eliminate) race window
-  // between concurrent hook invocations
   try {
-    const fd = fs.openSync(counterFile, 'a+');
-    try {
-      const buf = Buffer.alloc(64);
-      const bytesRead = fs.readSync(fd, buf, 0, 64, 0);
-      if (bytesRead > 0) {
-        const parsed = parseInt(buf.toString('utf8', 0, bytesRead).trim(), 10);
-        // Clamp to reasonable range — corrupted files could contain huge values
-        // that pass Number.isFinite() (e.g., parseInt('9'.repeat(30)) => 1e+29)
-        count = (Number.isFinite(parsed) && parsed > 0 && parsed <= 1000000)
-          ? parsed + 1
-          : 1;
-      }
-      // Truncate and write new value
-      fs.ftruncateSync(fd, 0);
-      fs.writeSync(fd, String(count), 0);
-    } finally {
-      fs.closeSync(fd);
-    }
-  } catch {
-    // Fallback: just use writeFile if fd operations fail
-    writeFile(counterFile, String(count));
+    const parsed = Number(readPrivate(counterFile));
+    count = Number.isSafeInteger(parsed) && parsed > 0 && parsed <= 1000000 ? parsed + 1 : 1;
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
   }
+  // Advisory count is approximate under concurrent tool invocations.
+  writePrivate(counterFile, String(count));
 
   // Suggest compact after threshold tool calls
   if (count === threshold) {
@@ -77,7 +56,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(err => {
-  console.error('[StrategicCompact] Error:', err.message);
+main().catch(() => {
+  console.error('[StrategicCompact] Private counter unavailable; no checkpoint claimed.');
   process.exit(0);
 });

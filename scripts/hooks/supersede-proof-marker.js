@@ -10,9 +10,7 @@
 // The marker is session-scoped and lives in the OS temp dir, so it
 // evaporates with the session. Always exits 0.
 'use strict';
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+const { markerPath, writePrivate } = require('./lib/private-state.js');
 
 const PROOF_RE = /SUPERSEDE\s+PROOF/i;
 
@@ -21,6 +19,12 @@ const PROOF_RE = /SUPERSEDE\s+PROOF/i;
 // this scope existed, editing the rule that DEMANDS the proof armed a session-wide bypass of
 // the hook that ENFORCES it (measured 2026-09-21). Mirrors supersede-proof.js's own skip.
 const SRC_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|cs|rb|php|swift)$/i;
+
+function editText(input) {
+  const edits = Array.isArray(input.edits) ? input.edits : [];
+  return [input.content, input.new_string, ...edits.map((edit) => edit.new_string)]
+    .filter((text) => typeof text === 'string').join('\n');
+}
 
 let data = '';
 process.stdin.on('data', (c) => (data += c));
@@ -31,17 +35,10 @@ process.stdin.on('end', () => {
     const sid = input.session_id || '';
     const file = String(ti.file_path || '').toLowerCase();
     if (sid && SRC_EXT.test(file) && !file.includes('/.claude/')) {
-      let text = '';
-      if (typeof ti.content === 'string') text += ti.content;
-      if (typeof ti.new_string === 'string') text += '\n' + ti.new_string;
-      if (Array.isArray(ti.edits)) {
-        for (const e of ti.edits) {
-          if (typeof e.new_string === 'string') text += '\n' + e.new_string;
-        }
-      }
+      const text = editText(ti);
       if (PROOF_RE.test(text)) {
-        const marker = path.join(os.tmpdir(), `claude-supersede-proof-${sid}`);
-        fs.writeFileSync(marker, String(Date.now()), 'utf8');
+        const marker = markerPath('supersede-proof', sid);
+        writePrivate(marker, String(Date.now()), 'utf8');
       }
     }
   } catch {

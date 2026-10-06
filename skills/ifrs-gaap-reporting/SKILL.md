@@ -1,6 +1,7 @@
 ---
 name: ifrs-gaap-reporting
 description: Financial statement preparation under IFRS and US GAAP — Balance Sheet, Income Statement, Cash Flow, Statement of Changes in Equity, revenue recognition (IFRS 15 / ASC 606), leases (IFRS 16 / ASC 842), the key IFRS↔GAAP differences, and the engineering-side patterns for producing audit-quality reports from the general ledger.
+disable-model-invocation: true
 ---
 
 # IFRS / GAAP Reporting

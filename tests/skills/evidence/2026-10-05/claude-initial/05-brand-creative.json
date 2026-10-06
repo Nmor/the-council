@@ -1,0 +1,133 @@
+{
+  "id": "05-brand-creative",
+  "request": "Adapt an existing accessible government identity using Arial and a light theme into a print poster and captioned portrait video. No redesign or asset budget is authorized.",
+  "rubric": {
+    "B1": "Preserve Arial/light theme and authorized identity; do not impose redesign or paid assets.",
+    "B2": "Provide format-specific print and portrait-video draft direction including hierarchy, safe areas, captions, rights and export assumptions.",
+    "B3": "Separate proposed checks from actually rendered/viewed/listened/exported assets; no publishing or unsupported accessibility certification."
+  },
+  "sources": [
+    {
+      "path": "skills/brand-creative-direction/SKILL.md",
+      "sha256": "8e2b29010251afef98db9fd919907e6a14e847fbeeea735b5829f07974ab0359"
+    }
+  ],
+  "prompt": "Use the supplied Council guidance as instructions for this draft-only scenario. Do not execute tools or external actions. Keep your response below 700 words.\n\nSOURCE skills/brand-creative-direction/SKILL.md\n---\nname: brand-creative-direction\ndescription: Develop brand identity, visual concepts and art direction for digital, campaign, presentation, print or motion assets from an audience and brand brief.\n---\n\n# Brand and creative direction\n\n> Size budget: 6 KB. Use for identity or creative direction, not ordinary copy correction.\n\n## Understand the brief and constraints\n\nRead existing brand assets, design tokens, examples and audience evidence. Identify\npurpose, desired audience response, channel, accessibility, formats, dimensions,\nlanguages, deadline and budget. Preserve established identity unless change is requested.\nIf the direction is unresolved, offer a small set of meaningfully different concepts,\neach tied to audience needs and the brief. Do not demand concepts for a routine asset edit.\nUse [marketing-strategy](../marketing-strategy/SKILL.md) for positioning and\n[content-campaigns](../content-campaigns/SKILL.md) for campaign messages.\n\n## Turn direction into usable decisions\n\nSpecify hierarchy, typography, palette, image/illustration treatment, composition,\nvoice, motion when relevant and examples of correct/incorrect use. Explain how choices\nsupport the intended response. Common fonts, conventional layouts and existing colors\ncan be appropriate. Novelty alone is not an acceptance criterion. Avoid mandatory\nlight/dark themes, animation or redesign when the brief does not need them.\n\nReuse suitable components and tokens. For a new identity, define a small coherent\nsystem before expanding it. Check font language coverage, licensing, readability and\nloading cost. Confirm rights for references and assets; use references to understand\nprinciples rather than copying a competitor's identity. Keep generated/placeholder\nassets identified. Never fabricate customer proof or business metrics to complete a layout.\n\n## Produce for the actual medium\n\nFor digital work inspect hierarchy, responsive behavior, focus/error states, contrast\nand reduced motion as relevant. For print confirm trim/bleed, safe area, resolution,\ncolor/export requirements and a proof appropriate to the printer. For presentations\ncheck viewing distance and export. For motion confirm duration, safe text areas,\ncaptions, sound rights and readability at delivery resolution. Derive channel variants\nfrom a master; do not assume a landscape composition works unchanged in portrait.\nUse available tools suited to the artifact; do not mandate a vendor, model or paid tool.\n\n## Verify and hand off\n\nDeliver the requested assets, a concise rationale, editable sources where applicable\nand usage/export notes. Inspect rendered artifacts at intended sizes and representative\ncontexts; record what was actually viewed or listened to. Review with a rubric covering\nbrief fit, clarity, consistency, accessibility, rights and technical export quality.\nState untested dimensions. Reuse the existing plan; a local creative artifact does not\nauthorize publishing or sending private materials to external services.\n\nFor digital accessibility, consult [WCAG 2.2](https://www.w3.org/TR/WCAG22/).\n\nSCENARIO\nAdapt an existing accessible government identity using Arial and a light theme into a print poster and captioned portrait video. No redesign or asset budget is authorized.",
+  "cli_version": "2.1.261 (Claude Code)",
+  "timestamp_utc": "2026-10-05T17:43:06.910666+00:00",
+  "limits": "Explicit current source prompt in isolated safe mode; tests model advice, not installed slash commands or hooks. Tools disabled; default model selected by Claude auth/runtime; no model override.",
+  "exit_code": 0,
+  "stdout": "{\"duration_api_ms\":37081,\"stop_reason\":\"end_turn\",\"session_id\":\"cb2065e0-4573-4e66-bf10-63741636c36c\",\"total_cost_usd\":0.0716315,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":1545,\"cache_read_input_tokens\":2369,\"output_tokens\":2132,\"output_tokens_details\":{\"thinking_tokens\":655},\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":1545,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":2,\"output_tokens\":2132,\"cache_read_input_tokens\":2369,\"cache_creation_input_tokens\":1545,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":1545},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-haiku-4-5-20251001\":{\"inputTokens\":1617,\"outputTokens\":14,\"cacheReadInputTokens\":0,\"cacheCreationInputTokens\":0,\"webSearchRequests\":0,\"costUSD\":0.001687,\"contextWindow\":200000,\"maxOutputTokens\":32000,\"thinkingTokens\":0,\"canonicalModel\":\"claude-haiku-4-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"},\"claude-opus-5\":{\"inputTokens\":2,\"outputTokens\":2132,\"cacheReadInputTokens\":2369,\"cacheCreationInputTokens\":1545,\"webSearchRequests\":0,\"costUSD\":0.0699445,\"contextWindow\":1000000,\"maxOutputTokens\":64000,\"thinkingTokens\":655,\"canonicalModel\":\"claude-opus-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"fast_mode_disabled_reason\":\"sdk_opt_in_required\",\"subagent_stats\":{\"spawned\":0,\"requested\":{\"background\":0,\"foreground\":0,\"unset\":0},\"started_in_background\":0,\"max_depth\":0,\"spawned_by_subagents\":0,\"completed\":0,\"failed\":0,\"killed\":{\"parent\":0,\"user\":0,\"system\":0},\"refused\":{\"depth_limit\":0,\"concurrency_limit\":0,\"budget\":0},\"by_type\":{}},\"is_error\":false,\"num_turns\":1,\"subtype\":\"success\",\"api_error_status\":null,\"result\":\"## Draft creative direction \u2014 poster + portrait video from existing identity\\n\\n**Status:** draft only. I have not opened the brand assets, token files, or any rendered artifact, so nothing below is verified against the real identity. Values marked `<\u2026>` must be pulled from the existing kit, not invented.\\n\\n### Scope read\\n\\nThis is a channel-extension job, not a creative-concept job. Arial, the light theme, the existing palette and logo lockups carry over unchanged. No new photography, illustration, type, or sound is commissioned \u2014 both deliverables are derived from a single master layout built from assets already licensed to the department.\\n\\n### Inputs required before production\\n\\n1. Token values: `<primary>`, `<text>`, `<background>`, `<accent>` as hex **and** the approved CMYK/spot equivalents.\\n2. Logo lockup files with clear-space rule and minimum reproduction size.\\n3. Printer spec sheet: trim size, bleed, safe margin, stock, total ink limit, output intent.\\n4. Video delivery spec: platform, resolution, max duration, caption format accepted.\\n5. Confirmation that Arial's licence covers PDF embedding for commercial print, and that required languages fall inside Arial's coverage (non-Latin scripts likely do not \u2014 raise before layout if any are in scope).\\n6. Any statistic, quotation, or testimonial for either piece, supplied in writing by the policy owner. I will not generate stand-in figures or fake citizen quotes to fill a space; placeholder blocks will read `[FIGURE PENDING]`.\\n\\n### Master and derivation\\n\\nBuild one portrait master at the poster's proportions, then derive the video rather than re-composing it. Shared hierarchy: single-sentence headline (Arial Bold), one supporting line (Arial Regular), one action step, then logo and mandatory legal line at the foot. One idea per asset.\\n\\n**Poster.** Headline sized for reading distance set by placement \u2014 assume ~2 m for a noticeboard unless told otherwise; that implies cap height around `<x>` mm, confirmed on a physical proof, not on screen. Text stays inside the printer's safe margin; nothing meaningful bleeds. Images from the existing library only, placed at \u2265300 ppi at final size; anything below that gets cropped smaller or dropped. Export press-ready PDF/X with bleed and crop marks, plus an RGB screen PDF for internal circulation. Request a hard proof: the light theme's contrast can degrade on uncoated stock, and accent-on-white pairings that pass on screen may not hold in ink.\\n\\n**Portrait video.** Same hierarchy, re-flowed \u2014 not the poster letterboxed. Keep all text and the logo inside the platform's safe area, away from top and bottom UI overlays. Motion limited to simple cross-fades and text holds: each text block on screen long enough to be read twice at normal pace. No parallax, no kinetic type, no music unless a cleared track already exists in the kit; a silent cut plus captions is acceptable and cheaper. Supply captions as a sidecar file (`.vtt` or `.srt`) where the platform supports it, and a burned-in open-caption version for contexts that strip sidecars. Captions styled in Arial, high contrast, bottom-safe, max two lines. Because sound may be absent, no information lives in audio alone; include a plain-text transcript at handoff. Honour reduced-motion preference wherever the player exposes it.\\n\\n### Accessibility checks\\n\\nVerify contrast of every text/background pair against WCAG 2.2 AA at final rendered size \u2014 including caption text over moving frames, which is the pair most likely to fail. Do not rely on colour alone to convey the action step. For the poster, confirm legibility on the actual stock under likely lighting.\\n\\n### Handoff\\n\\nEditable sources, press PDF, video master plus platform variants, caption and transcript files, and a short rationale tying each decision to the brief. Review against: brief fit, hierarchy clarity, consistency with the existing identity, accessibility, asset rights, export integrity.\\n\\n### Untested dimensions\\n\\nEverything. No contrast ratio measured, no proof pulled, no frame viewed at delivery resolution, no caption file validated in a player. Those checks need the real tokens and a production pass.\\n\\n**One flag:** with no asset budget, if the existing image library has nothing suitable in portrait crop, the video should run type-only on the brand background rather than stretch a landscape frame. That is a quality call worth making deliberately.\",\"ttft_ms\":11423,\"type\":\"result\",\"duration_ms\":35873,\"uuid\":\"958ec6d1-734c-47e2-b0e5-8c834293d728\",\"ttft_stream_ms\":1758,\"time_to_request_ms\":18,\"first_content_frame_ms\":1758,\"queued_turn_count\":0}\n",
+  "stderr": "",
+  "runtime": {
+    "duration_api_ms": 37081,
+    "stop_reason": "end_turn",
+    "session_id": "cb2065e0-4573-4e66-bf10-63741636c36c",
+    "total_cost_usd": 0.0716315,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 1545,
+      "cache_read_input_tokens": 2369,
+      "output_tokens": 2132,
+      "output_tokens_details": {
+        "thinking_tokens": 655
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 1545,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2132,
+          "cache_read_input_tokens": 2369,
+          "cache_creation_input_tokens": 1545,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1545
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 1617,
+        "outputTokens": 14,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.001687,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 2132,
+        "cacheReadInputTokens": 2369,
+        "cacheCreationInputTokens": 1545,
+        "webSearchRequests": 0,
+        "costUSD": 0.0699445,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 655,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "is_error": false,
+    "num_turns": 1,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "## Draft creative direction \u2014 poster + portrait video from existing identity\n\n**Status:** draft only. I have not opened the brand assets, token files, or any rendered artifact, so nothing below is verified against the real identity. Values marked `<\u2026>` must be pulled from the existing kit, not invented.\n\n### Scope read\n\nThis is a channel-extension job, not a creative-concept job. Arial, the light theme, the existing palette and logo lockups carry over unchanged. No new photography, illustration, type, or sound is commissioned \u2014 both deliverables are derived from a single master layout built from assets already licensed to the department.\n\n### Inputs required before production\n\n1. Token values: `<primary>`, `<text>`, `<background>`, `<accent>` as hex **and** the approved CMYK/spot equivalents.\n2. Logo lockup files with clear-space rule and minimum reproduction size.\n3. Printer spec sheet: trim size, bleed, safe margin, stock, total ink limit, output intent.\n4. Video delivery spec: platform, resolution, max duration, caption format accepted.\n5. Confirmation that Arial's licence covers PDF embedding for commercial print, and that required languages fall inside Arial's coverage (non-Latin scripts likely do not \u2014 raise before layout if any are in scope).\n6. Any statistic, quotation, or testimonial for either piece, supplied in writing by the policy owner. I will not generate stand-in figures or fake citizen quotes to fill a space; placeholder blocks will read `[FIGURE PENDING]`.\n\n### Master and derivation\n\nBuild one portrait master at the poster's proportions, then derive the video rather than re-composing it. Shared hierarchy: single-sentence headline (Arial Bold), one supporting line (Arial Regular), one action step, then logo and mandatory legal line at the foot. One idea per asset.\n\n**Poster.** Headline sized for reading distance set by placement \u2014 assume ~2 m for a noticeboard unless told otherwise; that implies cap height around `<x>` mm, confirmed on a physical proof, not on screen. Text stays inside the printer's safe margin; nothing meaningful bleeds. Images from the existing library only, placed at \u2265300 ppi at final size; anything below that gets cropped smaller or dropped. Export press-ready PDF/X with bleed and crop marks, plus an RGB screen PDF for internal circulation. Request a hard proof: the light theme's contrast can degrade on uncoated stock, and accent-on-white pairings that pass on screen may not hold in ink.\n\n**Portrait video.** Same hierarchy, re-flowed \u2014 not the poster letterboxed. Keep all text and the logo inside the platform's safe area, away from top and bottom UI overlays. Motion limited to simple cross-fades and text holds: each text block on screen long enough to be read twice at normal pace. No parallax, no kinetic type, no music unless a cleared track already exists in the kit; a silent cut plus captions is acceptable and cheaper. Supply captions as a sidecar file (`.vtt` or `.srt`) where the platform supports it, and a burned-in open-caption version for contexts that strip sidecars. Captions styled in Arial, high contrast, bottom-safe, max two lines. Because sound may be absent, no information lives in audio alone; include a plain-text transcript at handoff. Honour reduced-motion preference wherever the player exposes it.\n\n### Accessibility checks\n\nVerify contrast of every text/background pair against WCAG 2.2 AA at final rendered size \u2014 including caption text over moving frames, which is the pair most likely to fail. Do not rely on colour alone to convey the action step. For the poster, confirm legibility on the actual stock under likely lighting.\n\n### Handoff\n\nEditable sources, press PDF, video master plus platform variants, caption and transcript files, and a short rationale tying each decision to the brief. Review against: brief fit, hierarchy clarity, consistency with the existing identity, accessibility, asset rights, export integrity.\n\n### Untested dimensions\n\nEverything. No contrast ratio measured, no proof pulled, no frame viewed at delivery resolution, no caption file validated in a player. Those checks need the real tokens and a production pass.\n\n**One flag:** with no asset budget, if the existing image library has nothing suitable in portrait crop, the video should run type-only on the brand background rather than stretch a landscape frame. That is a quality call worth making deliberately.",
+    "ttft_ms": 11423,
+    "type": "result",
+    "duration_ms": 35873,
+    "uuid": "958ec6d1-734c-47e2-b0e5-8c834293d728",
+    "ttft_stream_ms": 1758,
+    "time_to_request_ms": 18,
+    "first_content_frame_ms": 1758,
+    "queued_turn_count": 0
+  },
+  "execution_ok": true
+}

@@ -58,11 +58,19 @@ async function createMarketWithPosition(
     position_data: positionData
   })
 
-  if (error) throw new Error('Transaction failed')
+  if (error || !data || data.success !== true) {
+    throw new Error('Transaction failed')
+  }
   return data
 }
+```
 
-// SQL function in Supabase
+The RPC must return an explicit success contract. Transport errors, null/malformed
+data and application failure payloads all reject; expose safe diagnostics to callers.
+The illustrative SQL below assumes these two JSON payload columns exist. Let database
+exceptions propagate so the transaction rolls back and the RPC reports an error.
+
+```sql
 CREATE OR REPLACE FUNCTION create_market_with_position(
   market_data jsonb,
   position_data jsonb
@@ -72,13 +80,9 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
   -- Start transaction automatically
-  INSERT INTO markets VALUES (market_data);
-  INSERT INTO positions VALUES (position_data);
+  INSERT INTO markets (payload) VALUES (market_data);
+  INSERT INTO positions (payload) VALUES (position_data);
   RETURN jsonb_build_object('success', true);
-EXCEPTION
-  WHEN OTHERS THEN
-    -- Rollback happens automatically
-    RETURN jsonb_build_object('success', false, 'error', SQLERRM);
 END;
 $$;
 ```

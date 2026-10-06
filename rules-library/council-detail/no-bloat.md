@@ -10,7 +10,7 @@
 > cause, not accretion), `plan-task-breakdown.md` (every plan ends with a
 > bloat-removal phase), `principal-level-mandate.md` (depth, not volume).
 >
-> **Size budget: 16 KB.** Check with `wc -c`; check the whole Floor with
+> **Size budget: 24 KB.** Check with `wc -c`; check the whole Floor with
 > `node ~/.claude/scripts/token-budget.mjs`. This file is always-on, so every byte is
 > paid on every turn of every task: it is a per-use cost under rule 10, and it states
 > its own budget under rule 5.
@@ -85,6 +85,72 @@ Per `plan-task-breakdown.md` (bloat-removal phase) and
 path in the SAME change — stale wrappers, now-unused exports, dead config keys,
 redundant helpers, commented-out blocks, superseded docs. "We'll clean it up
 later" is how bloat accumulates.
+
+#### 6b. CAPABILITY TRIAGE — a caller-less symbol you did not introduce
+
+**"Nothing calls it" is a finding, not a conclusion. Rule 6 governs code YOUR
+change obsoleted. A symbol that arrived caller-less — inherited, migrated, or
+left unfinished by someone else — gets triaged before any delete, and the
+default on an inconclusive triage is KEEP AND FIX, not remove.** Unfinished is
+not useless: a half-built capability still tells you what someone needed, and
+deleting it destroys that information while keeping a correct, tested version
+costs almost nothing.
+
+Run the triage in the main session for one or two symbols; delegate a repo-wide
+sweep to `refactor-cleaner` (one helper, per `council-default.md`). Answer all
+seven before deciding:
+
+1. **Did this change introduce it?** Yes → rule 6 applies, remove it. No →
+   continue; the remaining questions are the actual work.
+2. **What question does it answer?** Name the product question in one sentence
+   ("which group does this placeholder belong to", "which accounts has this
+   tenant deregistered"). A symbol whose question you cannot state is a
+   stronger delete candidate than one whose question you can.
+3. **Who else has it?** For migration/replacement work, check the service being
+   replaced AND its unmerged branches, not just the branch in front of you. A
+   capability present there — even unused there — is in the superset you owe
+   (rule 6a). Absent everywhere is evidence; absent on one branch is not.
+4. **Is it referenced outside code?** Plan tasks, ADRs, API contracts, Swagger,
+   frontend expectations, runbooks, tickets. A documented capability with no
+   implementation caller is unfinished work, not dead code.
+5. **Is it actually CORRECT?** A caller-less symbol is usually also untested,
+   and often wrong — nothing exercised it. Check it before you judge it; if you
+   keep it, fix the defects and add the test in the same change. Finding it
+   broken is an argument for fixing it, never a second argument for deleting it.
+6. **What breaks if it stays?** Compile cost and a reader's attention, usually —
+   weigh that honestly against the information a delete destroys. If it is
+   actively misleading (a security control nothing enforces, a flag nothing
+   reads) say so: that is the inert-config trap and it must be wired or removed,
+   not left to imply a guarantee it does not give.
+7. **Where is the alternative that covers the use case?** NAME it — the exact
+   symbol, endpoint, or path that now serves the question from (2) — and show it
+   covers that question, not merely that it exists nearby. No alternative means
+   no delete: the capability is either kept and fixed, or the alternative is
+   built FIRST and proved to cover it (rule 6a's superset proof, applied to a
+   single symbol). "Something else probably handles it" is not an alternative;
+   neither is a sibling that covers most of the cases and silently drops one.
+
+**The decision, and how to report it.** Two gates, both required:
+
+- **Nothing to cover** — questions 2–4 all come back empty, so there is no use
+  case to lose. Remove it, and say what you checked; never cite "no caller"
+  alone as the justification.
+- **Something to cover** — it answers a real question, so a delete is legal ONLY
+  with (7) satisfied: the covering alternative named and shown to cover it.
+  Without that, keep it and FIX it — make it correct, test it, document that it
+  has no caller yet and name the caller it is waiting for.
+
+Either way record the outcome where the work is tracked, so the next person does
+not re-litigate it.
+
+**Why this rule exists.** User correction, 2026-10-05, after a caller-less
+`GetCategoryForPlaceholder` was deleted during the comms merger for having no
+caller on either branch: *"if something was not fully built, it does not mean it
+is useless."* It answered exactly the question a template author's view and a
+placeholder validation both need, and it also carried two real defects that the
+delete would have buried rather than fixed. Replacement work generates these by
+the dozen — every capability the superseded service half-built arrives
+caller-less — so the triage, not the reflex, is the rule.
 
 #### 6a. SUPERSEDE PROOF — the replacement must be a strict superset
 
@@ -198,7 +264,10 @@ command, paste the output (per `verify-before-claim.md`).
 - **Accretion over refactor** — adding a fourth special-case branch instead of
   rethinking the shape.
 - **Inert surface** — an exported function / endpoint / method nothing calls
-  (cross-ref `wiring-and-usage-review.md`).
+  (cross-ref `wiring-and-usage-review.md`). Bloat when YOUR change introduced
+  it; when inherited, triage it per rule 6b before deleting — a caller-less
+  symbol may be unfinished capability, and the fix is usually to finish and test
+  it rather than remove it.
 - **Wrapper-for-a-wrapper** — a pass-through that adds no behaviour.
 - **Ever-growing god file** — appending to a file already past the cap because
   it's where similar code happens to live.

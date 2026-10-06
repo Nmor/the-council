@@ -1,6 +1,6 @@
 ---
 name: coding-quality-rules
-description: Universal coding-quality discipline that fires on every code file — coding-style, patterns, reuse-first (rule of three), proper-fixes-first (no symptom-only patches), no-silent-drops (no orphan TODOs / suppression directives), no-silent-failures (every failure surfaces), no-discards (every value bound), no-ambient-globals (DI everywhere), no-local-fs, error-codes (stable codes), error-handling-with-context (operation + ids), log-levels (canonical FATAL/ERROR/WARN/INFO/DEBUG/TRACE), semver (Conventional Commits + Keep a Changelog), extreme-lint-policy (cognitive complexity ≤ 10, lines ≤ 80, params ≤ 5, zero per-line suppressions), updated-frameworks, performance, testing (90% touched / 80% project), local-testability (env-setup before write), local-dev-setup. Auto-fires on any code file across all supported languages.
+description: Universal coding-quality discipline that fires on every code file — coding-style, patterns, reuse-first (rule of three), proper-fixes-first (no symptom-only patches), no-silent-drops (no orphan TODOs / suppression directives), no-silent-failures (every failure surfaces), no-discards (every value bound), no-ambient-globals (DI everywhere), no-local-fs, error-codes (stable codes), error-handling-with-context (operation + ids), log-levels (canonical FATAL/ERROR/WARN/INFO/DEBUG/TRACE), semver (Conventional Commits + Keep a Changelog), extreme-lint-policy (cognitive complexity ≤ 10, lines ≤ 80, params ≤ 5, zero per-line suppressions), updated-frameworks, performance, testing (90% touched / 80% project), local-testability (env-setup before write), local-dev-setup. Select explicitly when this guidance applies.
 paths:
   - "**/*.ts"
   - "**/*.tsx"
@@ -34,6 +34,7 @@ paths:
   - "**/*.sql"
   - "**/*.vue"
   - "**/*.svelte"
+disable-model-invocation: true
 ---
 
 # Coding Quality Rules — Universal Discipline

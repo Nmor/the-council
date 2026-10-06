@@ -1,0 +1,10 @@
+{
+  "id": "04-sdlc-quality",
+  "request": "Mocked API test and transcript replay are green. The financial-report pipeline throws after provider acknowledgement; audio transport is untested. Is it safe to claim complete success?",
+  "sources": [
+    "skills/test-strategy/SKILL.md",
+    "skills/requirements-acceptance/SKILL.md",
+    "skills/data-reconciliation/SKILL.md",
+    "skills/release-integration/SKILL.md"
+  ]
+}

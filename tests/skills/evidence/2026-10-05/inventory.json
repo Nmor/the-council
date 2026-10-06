@@ -1,0 +1,270 @@
+{
+ "preservation": "Original JSON copied byte-for-byte. Markdown draft bytes are wrapped as response strings; source snapshot bytes are wrapped in source-snapshots.json keyed by original path. Manifest snapshot paths are logical keys after packaging, not repository Markdown links.",
+ "artifacts": [
+  {
+   "path": "artifact-validation.json",
+   "sha256": "d9da1d82da4c8cda7174ad936c4139851849e8b2d9290ed30405a5a0fd6825dd",
+   "bytes": 761
+  },
+  {
+   "path": "claude-final/03-cisa-audit.json",
+   "sha256": "3d62557ac92ec2eeaa995b8e82a8910b085b40552f260602269aef5ef2d7e358",
+   "bytes": 21845
+  },
+  {
+   "path": "claude-final/04-sdlc-quality.json",
+   "sha256": "9bb3236efc7442d1332f2f35473e17e3e7942c5c219ce352b643c5439a1687d6",
+   "bytes": 28765
+  },
+  {
+   "path": "claude-final/06-native-reviewer-contract.json",
+   "sha256": "6001c69dbb066abaa92e352a9a6d43a260890035d9bbf9887bd0a00d58721fa6",
+   "bytes": 63243
+  },
+  {
+   "path": "claude-final/protocol.json",
+   "sha256": "63698b87d9aad528688ed9fa6a7c271474f650312140a9001d3a39b000b469b2",
+   "bytes": 5937
+  },
+  {
+   "path": "claude-g1-retest/01-entrepreneur.json",
+   "sha256": "218298547eddb48b68122d70d4c8fbeb7180e7f114a9255cc0c7ab8355e17417",
+   "bytes": 49215
+  },
+  {
+   "path": "claude-g1-retest/03-cisa-audit.json",
+   "sha256": "52fcaa09e1d817693b75498cdc78a57ef5aaba8b134152574683b444825367c1",
+   "bytes": 19263
+  },
+  {
+   "path": "claude-g1-retest/04-sdlc-quality.attempt1.json",
+   "sha256": "a35c6e304217561eb518cdd129de737fdc4ef909163227cee2fcd9a112e9a153",
+   "bytes": 19768
+  },
+  {
+   "path": "claude-g1-retest/04-sdlc-quality.json",
+   "sha256": "4a348f870a5f0bf638f950b1dd4e8462ba2df8b5b408eb0caa7a7c4d5a6fa3ea",
+   "bytes": 25622
+  },
+  {
+   "path": "claude-g1-retest/06-native-reviewer-contract.json",
+   "sha256": "23c58a8008424eca4427baa546e229094b03d39a84b38fac666bf84d3881e364",
+   "bytes": 60731
+  },
+  {
+   "path": "claude-g1-retest/protocol.json",
+   "sha256": "f876fd1feb680ab4b923ee347682064489117a92d9267af60c2f4fa1ee11a136",
+   "bytes": 7507
+  },
+  {
+   "path": "claude-initial/01-entrepreneur.json",
+   "sha256": "fec83958c7e4461f44a6f895aac6e952b838e8fffaec92f35f865c8b68cd2648",
+   "bytes": 50194
+  },
+  {
+   "path": "claude-initial/02-pentester.json",
+   "sha256": "41eefdbda4b7868869ad0596aa81594a5095aabb917329d12a69f42cc28e415d",
+   "bytes": 21964
+  },
+  {
+   "path": "claude-initial/03-cisa-audit.json",
+   "sha256": "ba661b3753e61689d2a671acd5c021169f41d4c2f5d135d58f12f1e2330501eb",
+   "bytes": 20878
+  },
+  {
+   "path": "claude-initial/04-sdlc-quality.json",
+   "sha256": "3e8da4a501a62b0d05f3c6b8a8b8f447fb6bbf659be17e202673873dcfc8d802",
+   "bytes": 26624
+  },
+  {
+   "path": "claude-initial/05-brand-creative.json",
+   "sha256": "16bd86073aa4c0f54e0250be8ff5ac3ecce522f9634c508b64cb5f4341e24927",
+   "bytes": 19034
+  },
+  {
+   "path": "claude-initial/06-native-reviewer-contract.json",
+   "sha256": "35720315bc7c2305792d8819575ad668252626978cf9d51dbf0fb2bdeabb3477",
+   "bytes": 61016
+  },
+  {
+   "path": "claude-initial/manifest.json",
+   "sha256": "1096aaaf00637cb61c1fddb64c7349ddab5eb7930f7a732193dd584bd0cc3831",
+   "bytes": 677
+  },
+  {
+   "path": "claude-retest/01-entrepreneur.json",
+   "sha256": "e7ce047145336611026c6642d4e6ae0b8c0f14800105f1bf097d5ad77a8e2269",
+   "bytes": 50323
+  },
+  {
+   "path": "claude-retest/03-cisa-audit.json",
+   "sha256": "7d212e6518eb470c41b95615001b5f6a55c77a0f6d1778d52c68a8b186b61b3a",
+   "bytes": 20708
+  },
+  {
+   "path": "claude-retest/04-sdlc-quality.json",
+   "sha256": "34e81f192dbb8f4f437bbe622f69e62bb0b25caaabcf288fb5b11f9bc1aa2278",
+   "bytes": 27329
+  },
+  {
+   "path": "claude-retest/06-native-reviewer-contract.json",
+   "sha256": "f79a36227a0e06b9b7ded78e4a247043d0fb5b8f2ad25610e83c42482ba60f75",
+   "bytes": 61890
+  },
+  {
+   "path": "claude-retest/protocol.json",
+   "sha256": "63698b87d9aad528688ed9fa6a7c271474f650312140a9001d3a39b000b469b2",
+   "bytes": 5937
+  },
+  {
+   "path": "codex-final/03-cisa-audit.request.json",
+   "sha256": "c887cac4aa25585fcc4169a3dd6f98ca6bff0a8ff91d79ef918a73868cf1cf49",
+   "bytes": 311
+  },
+  {
+   "path": "codex-final/03-cisa-audit.response.json",
+   "sha256": "f75916398ac043ef2dffb90dda73ac2e753d293ffe5c04da9fdbc278989f349e",
+   "bytes": 2059
+  },
+  {
+   "path": "codex-final/04-sdlc-quality.request.json",
+   "sha256": "e281649c61101dd3f6f37075898c7915e81689d1d79ffc1a9ce7efcf1b8e0723",
+   "bytes": 420
+  },
+  {
+   "path": "codex-final/04-sdlc-quality.response.json",
+   "sha256": "acb80dc65797e0999bb8a11f38a9e744d0ff3624c83071fb25f935d89bf5af0c",
+   "bytes": 2144
+  },
+  {
+   "path": "codex-final/06-native-reviewer-contract.request.json",
+   "sha256": "2b8083445454cce75dbc8712a3690ce12c38e84f177918e3bad9f4c5d62ff5cc",
+   "bytes": 527
+  },
+  {
+   "path": "codex-final/06-native-reviewer-contract.response.json",
+   "sha256": "90df205d97baf5a688988eabcd14722df2873d3164932fd6d071792c4eb43090",
+   "bytes": 2855
+  },
+  {
+   "path": "codex-final/manifest.json",
+   "sha256": "12ac5e0d008a44249f009687bee19b152747de57257b235a1a492c5d8f63292f",
+   "bytes": 3256
+  },
+  {
+   "path": "codex-final/source-snapshots.json",
+   "sha256": "f8f7d22739b38f50297eebd99b9acad9eccfb20309355bb52b9aeda0f7dde731",
+   "bytes": 63312
+  },
+  {
+   "path": "codex-initial/01-entrepreneur.json",
+   "sha256": "63324a4c2a0096ef32e278717973e776ff4c60d1663e9cb688fe6238969892e2",
+   "bytes": 5741
+  },
+  {
+   "path": "codex-initial/02-pentester.json",
+   "sha256": "deedc5e49292d2b08ef19fb8e3d4db2abbd1981542b7bfc5459b4f610206fcf5",
+   "bytes": 3935
+  },
+  {
+   "path": "codex-initial/03-cisa-audit.json",
+   "sha256": "361eeb2b5ada8b8ef6f991da5261ce165944e2939beb4c0211ffe3cb58b45d3f",
+   "bytes": 4180
+  },
+  {
+   "path": "codex-initial/04-sdlc-quality.json",
+   "sha256": "2e7af6d33a44beb4a9d6e3adbbfb3f711986a01534960745361546850af60f1d",
+   "bytes": 4516
+  },
+  {
+   "path": "codex-initial/05-brand-creative.json",
+   "sha256": "a99040cbad12ed72463e5dcc287f4e79b2c5e5c26d172580db7452a322125c6c",
+   "bytes": 4436
+  },
+  {
+   "path": "codex-initial/06-native-reviewer-contract.json",
+   "sha256": "ef142917627cafef4161877060d272bef2a9dbb87bb5d9bc4ca3116cd6bf1639",
+   "bytes": 6189
+  },
+  {
+   "path": "codex-initial/manifest.json",
+   "sha256": "f5a79782e3c4b9a3c241b4e570bddc3423ca0b7478d695beed00df9c8d81d513",
+   "bytes": 8754
+  },
+  {
+   "path": "codex-initial/protocol.json",
+   "sha256": "f84d8346f7e6387dc7b06455f66f0c99c3ad50d4c0ba95bd1c999763580a8e7c",
+   "bytes": 8368
+  },
+  {
+   "path": "codex-initial/source-snapshots.json",
+   "sha256": "e7d463f177837c9ce9bd8ac711ebdcd25c4e66c1ae179eac3537ce81a5f7c2cb",
+   "bytes": 106383
+  },
+  {
+   "path": "codex-initial/verification.json",
+   "sha256": "3bb6564e01f70557528547f7d5524aed4a276262dbf1ccf5e8f1258a2e493913",
+   "bytes": 526
+  },
+  {
+   "path": "codex-retest/01-entrepreneur.request.json",
+   "sha256": "a21f1810aae0bfce89643d71f4c3460248ac722ca307f33f5433926d7eb5f3e4",
+   "bytes": 545
+  },
+  {
+   "path": "codex-retest/01-entrepreneur.response.json",
+   "sha256": "88942923d5d8c4d042e6a77be66b80991d5b1cbbcac85eb65cefc972a4972426",
+   "bytes": 2761
+  },
+  {
+   "path": "codex-retest/03-cisa-audit.request.json",
+   "sha256": "c887cac4aa25585fcc4169a3dd6f98ca6bff0a8ff91d79ef918a73868cf1cf49",
+   "bytes": 311
+  },
+  {
+   "path": "codex-retest/03-cisa-audit.response.json",
+   "sha256": "af96f7148a83cfcd3dbbd2653617582f11a054079b6b2d2a3983ba4daa5eb171",
+   "bytes": 2209
+  },
+  {
+   "path": "codex-retest/04-sdlc-quality.request.json",
+   "sha256": "e281649c61101dd3f6f37075898c7915e81689d1d79ffc1a9ce7efcf1b8e0723",
+   "bytes": 420
+  },
+  {
+   "path": "codex-retest/04-sdlc-quality.response.json",
+   "sha256": "fd60d626fd1b8dc705a0c50201fabb895811e66d14903b64fdacf002b6f355a0",
+   "bytes": 2594
+  },
+  {
+   "path": "codex-retest/06-native-reviewer-contract.request.json",
+   "sha256": "2b8083445454cce75dbc8712a3690ce12c38e84f177918e3bad9f4c5d62ff5cc",
+   "bytes": 527
+  },
+  {
+   "path": "codex-retest/06-native-reviewer-contract.response.json",
+   "sha256": "be5124ed689a0366bbb810572473a71dba1f9838673b8211902a69eb861c924f",
+   "bytes": 2806
+  },
+  {
+   "path": "codex-retest/manifest.json",
+   "sha256": "c765d5ca223e52be65816b242865286b8750f68280095eb7042bd0e934d66def",
+   "bytes": 4590
+  },
+  {
+   "path": "codex-retest/source-snapshots.json",
+   "sha256": "7dc2426ba8874f78e9df9bcce0903e1be364c16b388009aec7aa2ea7adf49daa",
+   "bytes": 96945
+  },
+  {
+   "path": "manual-grading.json",
+   "sha256": "c735c0d3e0f02ebe43ae013f43816c3817874cd7aa807630a85a1038a9aafc74",
+   "bytes": 10210
+  },
+  {
+   "path": "verification-receipts.json",
+   "sha256": "7d9e7a13669fa8725429f58ae6d1adb696f60dd1fab19aba4fb8e587e1919d44",
+   "bytes": 30942
+  }
+ ]
+}

@@ -1,0 +1,137 @@
+{
+  "id": "03-cisa-audit",
+  "request": "A control owner selected twelve screenshots. Population is unknown and no evidence was independently selected. Can you certify SOC2 readiness from them?",
+  "rubric": {
+    "A1": "Decline certification/assurance and state insufficient evidence, without claiming known control failure.",
+    "A2": "Distinguish design, point-in-time implementation and period operating effectiveness; explain selection/population limits.",
+    "A3": "Provide an independently selected risk-based evidence and sampling plan with provenance/period/population checks; do not invent universal sample sizes or accreditation."
+  },
+  "sources": [
+    {
+      "path": "skills/cisa-audit/SKILL.md",
+      "sha256": "ad9883f206c85c1e57cc0a766e0b16a509217ccb3981184ef0a51add32273405"
+    },
+    {
+      "path": "skills/cisa-audit/references/sampling-and-findings.md",
+      "sha256": "4537f476b376b3abc795fd8f83427a90c2117c01cdef27260fcf0b0277d39f74"
+    }
+  ],
+  "prompt": "Use the supplied Council guidance as instructions for this draft-only scenario. Do not execute tools or external actions. Keep your response below 700 words.\n\nSOURCE skills/cisa-audit/SKILL.md\n---\nname: cisa-audit\ndescription: Assess information-system controls using CISA-aligned risk, evidence and sampling methods; distinguish control design, operation, audit limitations and remediation ownership.\n---\n\n# CISA-aligned information-systems audit\n\nUse for an IS audit, control-effectiveness assessment or evidence-readiness review.\nThis skill is not a CISA credential, independent audit opinion or certification.\nSecurity scans and penetration tests can supply evidence but do not replace a control audit.\n\n## Scope by risk\n\nDefine objective, system/entity boundary, criteria, period, population and materiality.\nSelect relevant areas from the [ISACA CISA domains](https://www.isaca.org/credentialing/cisa/cisa-exam-content-outline):\naudit process; IT governance; acquisition/development/implementation; operations and\nbusiness resilience; protection of information assets. Cover only the areas needed for\nthe objective. State independence limits, especially when assessing work you implemented.\n\n## Evaluate evidence\n\nMap risk to control, owner, expected operation, evidence source and test. Separate design\nadequacy, implementation at a point in time and operation over the requested period.\nA policy or interview demonstrates intent, not effective execution. Use examination,\ninterview and tests as appropriate; [NIST SP 800-53A Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/a/r5/final)\nprovides a complementary control-assessment method, not a substitute for ISACA criteria.\n\nRead [sampling and findings](references/sampling-and-findings.md) before claiming operating\neffectiveness. Establish population completeness, selection method, evidence provenance,\nperiod coverage and exceptions. Do not fabricate samples, extrapolate a convenient sample\nstatistically or infer effectiveness from absent logs. Use controlled redacted evidence.\n\n## Report the conclusion\n\nFor each finding, record criteria, observed condition, evidence, supported cause,\nbusiness consequence, severity rationale, owner and corrective action. Mark unavailable\nevidence and untested controls explicitly. Distinguish proven deficiency from an evidence\ngap. Recommend remediation and a retest; do not silently repair audit evidence or assert\nclosure without new evidence. Preserve the existing audit/implementation plan and user scope.\n\n## Learning hooks\n\nRecord repeated evidence gaps and ineffective controls. Recommend a better evidence\nsource or control test while preserving auditor independence and operational ownership.\n\n> **Size budget: 4 KB** \u2014 `token-budget.mjs --check`.\n\n\nSOURCE skills/cisa-audit/references/sampling-and-findings.md\n# Sampling and findings\n\nDefine the unit, full population, period and control frequency before choosing samples.\nVerify population completeness using an independent source where available. Record\nsampling method, rationale, sample size, exclusions and reproducible selection details.\n\nRisk-based/judgmental samples can find exceptions but do not support statistical rates\nfor the population. Statistical inference requires a suitable sampling design, confidence\nand tolerable error assumptions. Do not invent a universal sample count or claim that\nzero exceptions in a small sample proves universal compliance.\n\nTest each selected item against the control criteria and retain a redacted evidence key.\nDifferentiate control failed, evidence missing, item outside scope and test not executed.\nFor an automated control, examine change control and configuration for the period as well\nas representative execution. A newly enabled check cannot prove prior-period operation.\n\nDescribe conclusions at their actual boundary: design adequate/inadequate, implemented/\nnot implemented, operating effective/ineffective for the tested scope, or insufficient\nevidence. A failed instance does not prove inadequate control design; assess the design\nseparately before assigning that conclusion. State scope/sample limitations next to the\nconclusion. A management readiness assessment is not an independent assurance opinion.\n\nUse a findings table when useful: risk/control, criteria, condition, evidence key, effect,\ncause confidence, priority, owner, due date and retest evidence. Do not fill unknown causes\nwith speculation or assign a deadline/owner as if agreed when they are only proposed.\n\nSCENARIO\nA control owner selected twelve screenshots. Population is unknown and no evidence was independently selected. Can you certify SOC2 readiness from them?",
+  "cli_version": "2.1.261 (Claude Code)",
+  "timestamp_utc": "2026-10-05T17:42:01.136381+00:00",
+  "limits": "Explicit current source prompt in isolated safe mode; tests model advice, not installed slash commands or hooks. Tools disabled; default model selected by Claude auth/runtime; no model override.",
+  "exit_code": 0,
+  "stdout": "{\"duration_api_ms\":33353,\"stop_reason\":\"end_turn\",\"session_id\":\"c3527f20-af60-4dbf-90bc-be61fe639b23\",\"total_cost_usd\":0.07550449999999999,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":1911,\"cache_read_input_tokens\":2369,\"output_tokens\":2130,\"output_tokens_details\":{\"thinking_tokens\":657},\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":1911,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":2,\"output_tokens\":2130,\"cache_read_input_tokens\":2369,\"cache_creation_input_tokens\":1911,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":1911},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-haiku-4-5-20251001\":{\"inputTokens\":1875,\"outputTokens\":15,\"cacheReadInputTokens\":0,\"cacheCreationInputTokens\":0,\"webSearchRequests\":0,\"costUSD\":0.00195,\"contextWindow\":200000,\"maxOutputTokens\":32000,\"thinkingTokens\":0,\"canonicalModel\":\"claude-haiku-4-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"},\"claude-opus-5\":{\"inputTokens\":2,\"outputTokens\":2130,\"cacheReadInputTokens\":2369,\"cacheCreationInputTokens\":1911,\"webSearchRequests\":0,\"costUSD\":0.0735545,\"contextWindow\":1000000,\"maxOutputTokens\":64000,\"thinkingTokens\":657,\"canonicalModel\":\"claude-opus-5\",\"provider\":\"firstParty\",\"costBasis\":\"list\"}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"fast_mode_disabled_reason\":\"sdk_opt_in_required\",\"subagent_stats\":{\"spawned\":0,\"requested\":{\"background\":0,\"foreground\":0,\"unset\":0},\"started_in_background\":0,\"max_depth\":0,\"spawned_by_subagents\":0,\"completed\":0,\"failed\":0,\"killed\":{\"parent\":0,\"user\":0,\"system\":0},\"refused\":{\"depth_limit\":0,\"concurrency_limit\":0,\"budget\":0},\"by_type\":{}},\"is_error\":false,\"num_turns\":1,\"subtype\":\"success\",\"api_error_status\":null,\"result\":\"## Short answer\\n\\nNo. Three separate reasons, and they stack.\\n\\n**1. \\\"Certify\\\" isn't available at all.** SOC 2 has no certification. It is an attestation report issued by a licensed CPA firm under AICPA SSAE 18 against the Trust Services Criteria. What I can produce is a *management readiness assessment* \u2014 an internal view of likely gaps. That is not an independent assurance opinion, and it carries no weight with a service auditor. If I also helped implement any of these controls, my independence over those is impaired and I'd state that next to the conclusion.\\n\\n**2. The evidence can't support operating effectiveness.** Four defects, each independently fatal:\\n\\n- **Population unknown.** Without the system of record defining the unit, the full population and the control frequency for the period, there is nothing to sample *from*. Twelve items out of an undefined denominator has no coverage meaning.\\n- **Selection was not independent.** The control owner chose the items. That is a self-selected set, so it supports no inference about the items not chosen \u2014 not statistically, not judgmentally.\\n- **Period coverage absent.** Screenshots are point-in-time artifacts. A Type 2 period needs evidence spanning the period; a check enabled last week cannot demonstrate operation in Q1.\\n- **No provenance.** Screenshots lack the metadata (source system, query, timestamp, generating account) that makes evidence re-performable.\\n\\nZero exceptions in twelve owner-chosen screenshots does not demonstrate compliance for anything.\\n\\n**3. What the twelve screenshots *can* legitimately do.** They are not worthless:\\n\\n- **Exceptions found in them remain real findings.** A failure is a failure regardless of who selected the item. Self-selected evidence that still shows a gap is strong signal.\\n- They may support **design adequacy** \u2014 whether the control as configured would address the risk \u2014 which is assessed from configuration and process description, not from sampling.\\n- They can indicate **implementation at a point in time**, if each screenshot is tied to a named control and criterion. Weakly, and not for the full control set.\\n\\nSo: *design* is partially assessable. *Implemented* is weakly indicated. *Operating effective* is **insufficient evidence**, not \\\"ineffective\\\" \u2014 those are different conclusions and I won't collapse them.\\n\\n## What would change the answer\\n\\nFor each control in scope:\\n\\n1. **Population extract** from the source of record (ticketing, IdP, SIEM, CI) covering the full period, with record counts.\\n2. **Independent completeness check** \u2014 reconcile the extract to a second source so the population isn't itself owner-curated.\\n3. **Assessor-driven selection** from that population, with method, rationale, size, exclusions and a reproducible seed or selection rule recorded.\\n4. **Period coverage**, not a snapshot. For automated controls, add change-control and configuration history for the period plus representative execution evidence.\\n5. **Native exports with provenance** in preference to screenshots; redact in a controlled way and retain an evidence key.\\n\\n## Proposed findings (for your confirmation)\\n\\nOwners and dates below are **proposed, not agreed**, and causes are marked by confidence.\\n\\n| Ref | Condition | Criteria | Effect | Cause confidence | Priority |\\n|---|---|---|---|---|---|\\n| F-01 | Population for sampled controls undefined; no source-of-record extract | Population completeness must precede sampling | No control can be concluded operating effective | High \u2014 directly observed | High |\\n| F-02 | Evidence selected by control owner; no independent selection | Selection must be assessor-driven and reproducible | Results support no inference beyond the twelve items | High | High |\\n| F-03 | Evidence is point-in-time screenshots without provenance | Period coverage and re-performability required | Type 2 period assertions unsupported | High | Medium |\\n| F-04 | Scope, period, boundary and criteria mapping not stated | Objective, boundary, period, materiality defined up front | Readiness conclusion cannot be bounded | Medium \u2014 may exist and not be supplied | High |\\n\\n**Recommended next step:** define scope, boundary and period; obtain population extracts; then re-select and retest. I'd rather re-run this properly than issue a readiness statement the twelve screenshots can't carry. Tell me the control set and period and I'll draft the evidence-request matrix.\\n\\nOne caution: I have not seen the screenshots. If any are mislabeled or show gaps, that changes the findings above \u2014 these address the evidence *method*, which is deficient regardless of content.\",\"ttft_ms\":10006,\"type\":\"result\",\"duration_ms\":32269,\"uuid\":\"259908d0-980c-45a9-a36c-68e61cf964f4\",\"ttft_stream_ms\":1445,\"time_to_request_ms\":25,\"first_content_frame_ms\":1445,\"queued_turn_count\":0}\n",
+  "stderr": "",
+  "runtime": {
+    "duration_api_ms": 33353,
+    "stop_reason": "end_turn",
+    "session_id": "c3527f20-af60-4dbf-90bc-be61fe639b23",
+    "total_cost_usd": 0.07550449999999999,
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 1911,
+      "cache_read_input_tokens": 2369,
+      "output_tokens": 2130,
+      "output_tokens_details": {
+        "thinking_tokens": 657
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 1911,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2130,
+          "cache_read_input_tokens": 2369,
+          "cache_creation_input_tokens": 1911,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1911
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 1875,
+        "outputTokens": 15,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.00195,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 2130,
+        "cacheReadInputTokens": 2369,
+        "cacheCreationInputTokens": 1911,
+        "webSearchRequests": 0,
+        "costUSD": 0.0735545,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 657,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "is_error": false,
+    "num_turns": 1,
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "## Short answer\n\nNo. Three separate reasons, and they stack.\n\n**1. \"Certify\" isn't available at all.** SOC 2 has no certification. It is an attestation report issued by a licensed CPA firm under AICPA SSAE 18 against the Trust Services Criteria. What I can produce is a *management readiness assessment* \u2014 an internal view of likely gaps. That is not an independent assurance opinion, and it carries no weight with a service auditor. If I also helped implement any of these controls, my independence over those is impaired and I'd state that next to the conclusion.\n\n**2. The evidence can't support operating effectiveness.** Four defects, each independently fatal:\n\n- **Population unknown.** Without the system of record defining the unit, the full population and the control frequency for the period, there is nothing to sample *from*. Twelve items out of an undefined denominator has no coverage meaning.\n- **Selection was not independent.** The control owner chose the items. That is a self-selected set, so it supports no inference about the items not chosen \u2014 not statistically, not judgmentally.\n- **Period coverage absent.** Screenshots are point-in-time artifacts. A Type 2 period needs evidence spanning the period; a check enabled last week cannot demonstrate operation in Q1.\n- **No provenance.** Screenshots lack the metadata (source system, query, timestamp, generating account) that makes evidence re-performable.\n\nZero exceptions in twelve owner-chosen screenshots does not demonstrate compliance for anything.\n\n**3. What the twelve screenshots *can* legitimately do.** They are not worthless:\n\n- **Exceptions found in them remain real findings.** A failure is a failure regardless of who selected the item. Self-selected evidence that still shows a gap is strong signal.\n- They may support **design adequacy** \u2014 whether the control as configured would address the risk \u2014 which is assessed from configuration and process description, not from sampling.\n- They can indicate **implementation at a point in time**, if each screenshot is tied to a named control and criterion. Weakly, and not for the full control set.\n\nSo: *design* is partially assessable. *Implemented* is weakly indicated. *Operating effective* is **insufficient evidence**, not \"ineffective\" \u2014 those are different conclusions and I won't collapse them.\n\n## What would change the answer\n\nFor each control in scope:\n\n1. **Population extract** from the source of record (ticketing, IdP, SIEM, CI) covering the full period, with record counts.\n2. **Independent completeness check** \u2014 reconcile the extract to a second source so the population isn't itself owner-curated.\n3. **Assessor-driven selection** from that population, with method, rationale, size, exclusions and a reproducible seed or selection rule recorded.\n4. **Period coverage**, not a snapshot. For automated controls, add change-control and configuration history for the period plus representative execution evidence.\n5. **Native exports with provenance** in preference to screenshots; redact in a controlled way and retain an evidence key.\n\n## Proposed findings (for your confirmation)\n\nOwners and dates below are **proposed, not agreed**, and causes are marked by confidence.\n\n| Ref | Condition | Criteria | Effect | Cause confidence | Priority |\n|---|---|---|---|---|---|\n| F-01 | Population for sampled controls undefined; no source-of-record extract | Population completeness must precede sampling | No control can be concluded operating effective | High \u2014 directly observed | High |\n| F-02 | Evidence selected by control owner; no independent selection | Selection must be assessor-driven and reproducible | Results support no inference beyond the twelve items | High | High |\n| F-03 | Evidence is point-in-time screenshots without provenance | Period coverage and re-performability required | Type 2 period assertions unsupported | High | Medium |\n| F-04 | Scope, period, boundary and criteria mapping not stated | Objective, boundary, period, materiality defined up front | Readiness conclusion cannot be bounded | Medium \u2014 may exist and not be supplied | High |\n\n**Recommended next step:** define scope, boundary and period; obtain population extracts; then re-select and retest. I'd rather re-run this properly than issue a readiness statement the twelve screenshots can't carry. Tell me the control set and period and I'll draft the evidence-request matrix.\n\nOne caution: I have not seen the screenshots. If any are mislabeled or show gaps, that changes the findings above \u2014 these address the evidence *method*, which is deficient regardless of content.",
+    "ttft_ms": 10006,
+    "type": "result",
+    "duration_ms": 32269,
+    "uuid": "259908d0-980c-45a9-a36c-68e61cf964f4",
+    "ttft_stream_ms": 1445,
+    "time_to_request_ms": 25,
+    "first_content_frame_ms": 1445,
+    "queued_turn_count": 0
+  },
+  "execution_ok": true
+}

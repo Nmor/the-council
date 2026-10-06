@@ -1,11 +1,16 @@
 # Rules Catalog
 
-> Index of every rule shipped with The Claude Council. Rules are the
+> Index of every rule shipped with The Council. Rules are the
 > principles the Council enforces — every Council-mediated task
 > applies the rules that match its file types and scope. Per
 > [`rule-authoring-global-vs-project.md`](../rules/common/rule-authoring-global-vs-project.md),
 > these are pure guidance; project specifics live in
 > `<workspace>/.claude/rules/`.
+
+The source guidance is shared by Claude Code and Codex. The `.claude/` layering
+and model/runtime examples below describe Claude integration. Codex uses native
+project instructions and the [compatibility contract](CODEX.md#native-compatibility-contract);
+source hook references do not imply that those hooks run in Codex.
 
 ## Counts
 
@@ -33,7 +38,7 @@ language rules are listed under
 | [`council-triggers.md`](../rules/common/council-triggers.md) | Per-division engagement signals for the Extended Eleven |
 | [`model-tier-selection.md`](../rules/common/model-tier-selection.md) | Capability-aware model ladders per Council role — resolve to the best model AVAILABLE in this install (Fable→Opus→Sonnet→Haiku), graceful degradation, Fable excluded from security |
 | [`agents.md`](../rules-library/common/agents.md) | Agent orchestration + parallel-task execution |
-| [`auto-skills.md`](../rules-library/common/auto-skills.md) | File-to-skill-and-agent mapping (auto-fire on file type) |
+| [`auto-skills.md`](../rules-library/common/auto-skills.md) | File-to-skill-and-agent mapping (reference routing hints) |
 | [`hooks.md`](../rules-library/common/hooks.md) | Hook lifecycle — Session/Prompt/PreTool/PostTool/PreCompact/Stop/SessionEnd |
 | [`principal-level-mandate.md`](../rules/common/principal-level-mandate.md) | Every agent + skill + rule operates at principal level |
 | [`performance.md`](../rules-library/common/performance.md) | Performance guidance (context window, thinking/effort, build troubleshooting); defers model selection to `model-tier-selection.md` |

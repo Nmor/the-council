@@ -23,14 +23,57 @@ imports pull the detailed library back into startup context.
 
 ## Claude
 
-Fresh installs enable auto-compaction with a 100,000-token window, small workflow guidance,
-no automatic dynamic workflows, and one level of subagents. Ordinary specialists
+Fresh installs enable auto-compaction at the window tuned by Claude Code for the chosen
+model, small workflow guidance, no automatic dynamic workflows, and one level of subagents. Ordinary specialists
 remain available. These are session controls, not a global limit on all your open
 terminals or apps. Existing runs keep going; the installer does not kill them.
+
+The migration removes an exact numeric `autoCompactWindow: 100000`, including an
+explicit personal setting with that value; other explicit windows are preserved.
+The 100K target leaves little working space when static instructions, tool definitions
+and the compaction buffer are substantial. It no longer asks for manual compaction
+after a fixed number of edits. Native auto-compaction stays enabled.
+See [Claude's model and compaction configuration](https://code.claude.com/docs/en/model-config#context-window-and-auto-compaction).
+
+The Artifact publishing tool is off by default (`enableArtifact: false`); its large
+tool definition is unnecessary for ordinary repository work. Existing explicit
+Artifact choices in the migrated settings file are preserved. To use publishing,
+remove or change every applicable `enableArtifact: false` to `true`, clear any
+`disableArtifact: true` or `CLAUDE_CODE_DISABLE_ARTIFACT=1`, and start a fresh session.
+A project-level `true` cannot override a global `false`. No published artifacts,
+plugins, memory, model choice or effort setting are removed. This option is
+documented in [Claude's environment and settings reference](https://code.claude.com/docs/en/env-vars).
 
 The automatic prompt-improver hook is removed from default registration: duplicating
 every request and demanding a fresh questionnaire consumed context even on follow-ups.
 The prompt-improver skill remains available when clarification is actually needed.
+
+Automatic Council skill discovery now exposes one short `council` router. Other Council
+skills use `disable-model-invocation: true`: their full bodies and references stay on
+disk, and explicit slash invocation or a targeted file read still works. This removes
+their descriptions from automatic discovery. External plugins and personal skills
+outside the Council catalog are unchanged. The migration preserves customized Council
+skill bodies; unsupported custom flag syntax is refused before any files are changed.
+
+Lifecycle hooks return at most 2,048 UTF-8 bytes of recovery guidance. Startup never
+replays a shared session export. Compaction replaces a checkpoint scoped to the project
+and session instead of appending to the newest global session file. Resume guidance
+points to the active plan and memory index; it does not demand reading full memory or
+plan history. The PR-created hook returns only a matched PR link and review command,
+never the original Bash payload. Oversized hook input is drained and skipped with a
+short diagnostic. Required security and verification hooks remain registered.
+
+The completion gate attributes dirty files by transcript start time. When no
+transcript is persisted, it uses the session's Edit/Write markers instead of counting
+all pre-existing changes as new work. Proven broken memory references are still
+checked after an evidenced edit. Bash-only edits without a transcript or marker
+cannot be attributed at Stop; the commit and push gates still enforce their checks.
+
+An existing conversation can retain previously loaded context. After installing the
+fix, start a fresh Claude session from the existing plan's current handoff. Do not
+delete project memory or session history to recover. If thrashing continues, inspect
+`/context` and the last tool result, then use bounded searches and file chunks; project
+instructions, external plugins and ordinary tool output can still contribute context.
 
 For an existing installation, preview and apply the additive migration:
 
@@ -51,7 +94,8 @@ The documented workflow concurrency environment limit requires Claude Code 2.1.2
 it is not applied to older clients. These defaults are intended for Claude Code
 2.1.261+, the version used for this migration. The auto-compact window is a target,
 not a guarantee that one large tool result cannot temporarily exceed it.
-Check for higher-priority project, CLI or environment overrides, especially
+In an already open session, `/autocompact auto` applies the tuned window immediately;
+start a fresh session to ensure tool definitions are reloaded. Check for higher-priority project, CLI or environment overrides, especially
 `DISABLE_AUTO_COMPACT`, `DISABLE_COMPACT` and `CLAUDE_CODE_AUTO_COMPACT_WINDOW`.
 The old `env.autoCompactEnabled` entry was not a supported environment variable;
 the migration replaces it with the actual boolean settings key.
@@ -120,6 +164,8 @@ or accounts. Prefer one active substantive session and queue unrelated work.
 ## Sources
 
 - [Claude memory and rule loading](https://code.claude.com/docs/en/memory)
+- [Claude skill discovery and explicit invocation](https://code.claude.com/docs/en/skills)
+- [Claude hook events and output](https://code.claude.com/docs/en/hooks)
 - [Claude cost controls](https://code.claude.com/docs/en/costs)
 - [Dynamic workflows](https://code.claude.com/docs/en/workflows)
 - [Claude environment variables](https://code.claude.com/docs/en/env-vars)

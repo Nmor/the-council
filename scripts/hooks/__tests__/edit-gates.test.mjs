@@ -17,7 +17,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { run, uniq, marker, cleanup, advice, said } from './helpers.mjs';
 
-const touchMarker = (name) => writeFileSync(marker(name), '');
+const touchMarker = (name) => writeFileSync(marker(name), '', { mode: 0o600 });
 
 // ──────────────────────────────────────────────────────────────────────────
 // intake-gate.js — a plan precedes code mutation
@@ -198,6 +198,18 @@ describe('research-gate.js — integration code is not written from memory', () 
                       '/srv/app/auth/oauth_flow.ts', '/srv/app/clients/api_client.rb',
                       '/srv/app/graph/msgraph.cs', '/srv/app/sync/calendar_push.go']) {
     test(`asks for the provider docs before editing: ${file}`, () => {
+      const r = edit(file);
+      assert.match(advice(r), /\[research-gate\]/, file);
+    });
+  }
+
+  // Platform surfaces are external contracts too: three Windows CI rounds
+  // (CRLF, cp1252, path separators) were all documented runner behavior, and
+  // none of these paths matched the provider-shaped triggers (2026-10-06).
+  for (const file of ['/srv/app/.github/workflows/cd.yml', '/srv/app/Dockerfile',
+                      '/srv/app/deploy/docker-compose.yml', '/srv/app/k8s/predictor.yaml',
+                      '/srv/app/charts/app/templates/deployment.yaml']) {
+    test(`asks for the platform docs before editing: ${file}`, () => {
       const r = edit(file);
       assert.match(advice(r), /\[research-gate\]/, file);
     });
@@ -414,7 +426,7 @@ describe('pre-write-governance-sweep.js — a second CONTRIBUTING.md is a mistak
   });
 
   test('allows a governance file outside any git repo, where there is nothing to collide with', () => {
-    assert.equal(write('/private/tmp/no-such-repo-here/CONTRIBUTING.md').code, 0);
+    assert.equal(write(join(tmpdir(), 'council-non-git-' + process.pid, 'AGENTS.md')).code, 0);
   });
 
   test('leaves Edit alone — it only guards the creation of a new file', () => {

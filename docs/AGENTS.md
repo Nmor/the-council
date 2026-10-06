@@ -1,10 +1,16 @@
 # Agents Catalog
 
-> Index of every agent shipped with The Claude Council. Agents are
+> Index of every agent shipped with The Council. Agents are
 > delegatable specialists — the Council protocol delegates to them
 > when their expertise is needed. Total: 39 agents organised across
 > the 16 Council Divisions. Pair with [COUNCIL.md](COUNCIL.md) for
 > division detail.
+
+The source definitions support both Claude Code and Codex. Tool names, automatic
+triggers and model labels below describe Claude conventions. Codex converts these
+definitions into native roles with the inherited parent model; use the
+[native compatibility contract](CODEX.md#native-compatibility-contract) for actual
+support. Work in the main session by default, with at most one justified helper.
 
 ## Each agent follows the principal-level template
 
@@ -202,30 +208,17 @@ subagents:
 | AI / ML / model review | `ai-ethics-reviewer` | Bias; fairness; safety veto |
 | Public-facing artifact review | `comms-reviewer` | Brand consistency; crisis comms |
 
-## Auto-delegation via auto-skills.md
+## Specialist selection
 
-The
-[`auto-skills.md`](../rules-library/common/auto-skills.md) rule maps file
-types to both skills AND agents. When you touch a file, the
-matching agents auto-engage silently — no slash command, no
-explicit delegation needed.
+[`auto-skills.md`](../rules-library/common/auto-skills.md) maps file types to
+relevant skills and specialists. This is a reference catalog. File edits do not
+silently start agents. Read only needed guidance and use a bounded independent
+review when it adds evidence; perform the review locally if delegation is unavailable.
 
-For example, touching a `*.go` file auto-engages `go-reviewer`,
-`go-build-resolver`, `tdd-guide`, `security-reviewer`. Touching a
-`payments/charge.ts` file auto-engages `payments-reviewer`,
-`compliance-reviewer`, `security-reviewer`, `finance-reviewer`,
-`risk-reviewer`, `code-reviewer`.
-
-## Parallel agent execution
-
-Per the user's standing directive: agents run at most 2 in
-parallel. Heavier fan-out is sequential to keep output legible and
-keep the user's review surface tractable.
-
-When agents are dispatched in parallel, send them in a single
-message with multiple tool calls. When agents depend on each
-other's output (e.g., `code-reviewer` reviews the result of
-`build-error-resolver`'s fix), they run sequentially.
+Native Codex work stays in the main session by default, with at most one Council
+helper for a concrete independent task. Claude uses its current runtime limits.
+Do not recursively fan out, repeat intake or load the complete library. Keep the
+existing plan and distinguish implemented, tested, installed and runtime verified.
 
 ## See also
 

@@ -1,6 +1,7 @@
 ---
 name: search-first
 description: Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code. Invokes the researcher agent.
+disable-model-invocation: true
 ---
 
 # /search-first — Research Before You Code

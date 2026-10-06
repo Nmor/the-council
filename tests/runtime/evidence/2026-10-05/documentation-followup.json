@@ -1,0 +1,96 @@
+{
+  "scope": "documentation-only; runtime configuration and test harnesses unchanged",
+  "date": "2026-10-05",
+  "paths": [
+    "README.md",
+    "INSTALL.md",
+    "CHANGELOG.md",
+    "docs/ARCHITECTURE.md",
+    "templates/ide-configs/jetbrains/README.md"
+  ],
+  "original_runtime_provenance_preserved": true,
+  "committed": false,
+  "pushed": false,
+  "worktree": "/Users/APPLE/claude-council",
+  "branch": "fix/council-code-quality-20260928",
+  "base_revision": "759f9286c051753c7c99f8a1c4c8ec593ccd79e7",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 10472,
+      "sha256": "7c607c2d65cb8a8b3d4210e0023a779057e99b9cbe5784fdeda28e227b9f61ef"
+    },
+    {
+      "path": "INSTALL.md",
+      "bytes": 12830,
+      "sha256": "3768b59c28d8f2aaab2f2994b89af46bcdf848fa4a766416b3bb4fba194632c7"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 44472,
+      "sha256": "14dee2f8d5eb71fe774762a002c17bf025502f9d915e0620633f4f1649a07b9a"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 7463,
+      "sha256": "0bac87f73ee14fc684218790bff441621983bc804cc95691c4c54333404046ce"
+    },
+    {
+      "path": "templates/ide-configs/jetbrains/README.md",
+      "bytes": 4101,
+      "sha256": "52b8324ba0cc578319c2bc4f4a0a02ba422338af87ad2da4ed80214a2aecb350"
+    },
+    {
+      "path": "docs/SKILLS-HOOKS-AUDIT-2026-10-05.md",
+      "bytes": 89606,
+      "sha256": "d8cb5584e5f0a80544fec103a66985213d7075a9883f9b85c8fd8e7fa1104cc6"
+    },
+    {
+      "path": "tests/runtime/evidence/2026-10-05/README.md",
+      "bytes": 5842,
+      "sha256": "2e3eee5b4749495e37cefd2f0247ecd5eb987080ce155177ff92fc437ec4228f"
+    }
+  ],
+  "runtime_provenance_entries_unchanged": 9,
+  "historical_installer_guide_changed_only": [
+    "/Users/APPLE/claude-council/INSTALL.md"
+  ],
+  "vendor_references_checked": [
+    "https://code.claude.com/docs/en/jetbrains",
+    "https://www.jetbrains.com/help/ai-assistant/codex-agent.html",
+    "https://www.jetbrains.com/help/ai-assistant/agents.html",
+    "https://www.jetbrains.com/help/idea/install-plugins-from-the-command-line.html"
+  ],
+  "verification": [
+    {
+      "name": "markdown",
+      "command": "node /opt/homebrew/lib/node_modules/markdownlint-cli2/markdownlint-cli2-bin.mjs README.md INSTALL.md CHANGELOG.md docs/ARCHITECTURE.md templates/ide-configs/jetbrains/README.md docs/SKILLS-HOOKS-AUDIT-2026-10-05.md tests/runtime/evidence/2026-10-05/README.md",
+      "exit_code": 0,
+      "output": "Summary: 0 error(s)\n"
+    },
+    {
+      "name": "internal-links",
+      "command": "bash tests/verify-link-integrity.sh",
+      "exit_code": 0,
+      "output": "Scanned: 2158 links across 936 files\n✓ All in-repo links resolve.\n"
+    },
+    {
+      "name": "orphans",
+      "command": "bash tests/verify-no-orphans.sh",
+      "exit_code": 0,
+      "output": "✓ No orphans found across 821 candidate files.\n"
+    },
+    {
+      "name": "whitespace",
+      "command": "git diff --check",
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "limits": [
+    "Internal link validation does not validate every external URL.",
+    "No additional runtime test, JetBrains launch, live installation or hook trust change.",
+    "Original runtime source-provenance hash for INSTALL.md remains historical; nine other runtime provenance entries are unchanged.",
+    "Four supplemental Claude output failures and compaction stress validation remain open."
+  ]
+}

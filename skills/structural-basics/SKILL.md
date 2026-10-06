@@ -1,6 +1,7 @@
 ---
 name: structural-basics
 description: Structural engineering literacy — loads (dead / live / wind / seismic / snow), materials (steel / concrete / timber / masonry), structural systems (frame / shear-wall / braced / shell / cable), and code regimes (Eurocode, AISC, ACI, IBC, NBCC). Activates on AEC + civil work to identify what's negotiable, what isn't, and where a licensed Structural Engineer of Record (SEOR) must own the call.
+disable-model-invocation: true
 ---
 
 # Structural Engineering Basics

@@ -1,6 +1,6 @@
-# Testing Requirements (Always-On, Global)
+# Testing Requirements
 
-> Auto-fires on every file. Sister to `done-criteria.md`,
+> Apply when the active task requires test guidance. Sister to `done-criteria.md`,
 > `extreme-lint-policy.md`, `tdd-workflow` skill, `tdd-guide`
 > agent, `task-intake-due-diligence.md` (Q14 test strategy).
 >
@@ -8,26 +8,34 @@
 
 ## Coverage thresholds (canonical)
 
-Per `extreme-lint-policy.md` — the strictest values win across
-all global rules:
+Repository and explicit user requirements take precedence. In their absence, use
+these defaults for substantive code changes; identify the tool, metric and scope:
 
 - **Touched files**: ≥ **90%** line + branch coverage
 - **Project total**: ≥ **80%** line + branch coverage
 - **Critical paths** (auth, payments, data-mutation, multi-tenant
-  isolation): ≥ **95%**
+  isolation): ≥ **95%** line + branch coverage where supported
 
-Previous global guidance used 70% (the gradual-adoption default
-shipped with most frameworks). The strict version is now the
-canonical baseline. Workspace-specific overrides may not relax
-these — only raise them.
+Touched-file, project and critical-path denominators are separate gates; a project
+average cannot certify touched code. Unsupported branch/line metrics are
+UNAVAILABLE, not inferred from statement coverage. Go's native coverage instruments
+approximate basic blocks and reports statement coverage; it does not measure branch
+coverage or short-circuit `&&`/`||` outcomes. Use explicit behavioral cases for those
+outcomes and report the native metric honestly. See [Go coverage](https://go.dev/blog/cover).
 
-## Test types (ALL required for non-trivial work)
+Use configured coverage gates (with a below-threshold negative fixture) for supported
+metrics. Coverage is a floor, not evidence that assertions detect defects. A harmless
+prose/config edit needs proportionate verification, not manufactured coverage.
 
-Per `task-intake-due-diligence.md` Q14:
+## Test types (choose by changed risk and failure boundary)
+
+Per `task-intake-due-diligence.md` Q14, select applicable types and record why others
+are not needed. Do not demand every type for every change:
 
 1. **Unit tests** — every pure function / pure logic branch.
-2. **Integration tests** — every external boundary (DB, queue,
-   cache, third-party API mocked or recorded).
+2. **Integration tests** — changed external boundaries (DB, queue, cache); exercise
+   real isolated transactions and durable state where persistence matters. Unit mocks
+   do not prove database behavior; recorded/provider fixtures need separate contract checks.
 3. **Contract tests** — producer / consumer schema agreements
    (per the `api-design` skill's "Response-shape contracts" section).
 4. **E2E tests** — every critical user journey (Playwright,
@@ -38,13 +46,16 @@ Per `task-intake-due-diligence.md` Q14:
    services.
 7. **Chaos / fault-injection** — when the system claims
    resilience (retries, circuit breakers, failover).
-8. **Security tests** — SAST + DAST + dependency-CVE + secret-
-   scan in CI.
+8. **Security tests** — relevant SAST, DAST, dependency-CVE and secret-scan gates
+   for changed inputs, integrations and attack surfaces.
 9. **Accessibility tests** — axe-core / pa11y / equivalent for
    every UI surface.
 
-## Test-Driven Development (mandatory workflow)
+## Test-Driven Development (scale to task risk)
 
+Follow explicit user and repository requirements. Use this workflow for substantive
+behavior changes where a failing regression or acceptance test can verify the change;
+prose, configuration and reversible low-impact edits need proportionate checks.
 Per `tdd-workflow` skill:
 
 1. **RED** — write the failing test FIRST.
@@ -56,14 +67,16 @@ Per `tdd-workflow` skill:
 5. **REFACTOR** — improve the implementation; tests stay green.
 6. **VERIFY COVERAGE** — coverage meets the threshold above.
 
-Tests document intent. A passing test suite without code is a
-specification; code without tests is a black box.
+Assert observable outputs, stable errors, side effects and durable state. Inject the
+fault, invoke the operation and assert its error response; for writes, independently
+read committed state. Negative controls must fail if an error is suppressed or a
+write is lost. Unit mocks and integration/contract evidence serve different boundaries.
 
 ## Troubleshooting test failures
 
 Per `proper-fixes-first.md`:
 
-1. Delegate to `tdd-guide` agent.
+1. Use relevant TDD guidance; delegate only when authorized and useful.
 2. Check test isolation (no shared state across tests).
 3. Verify mocks are correct (they don't lie).
 4. Fix the IMPLEMENTATION, not the test — unless the test is
@@ -74,20 +87,20 @@ Per `proper-fixes-first.md`:
 ## Test files have NO exemption
 
 Per `no-discards.md`, every value bound + every error handled
-applies in test files too. Iterate by index (not range-over with
-`_`), name every variable, assert on `error_code` not `message`
+applies in test files too. Handle return values/errors; Go's `for _, value := range`
+is allowed. Assert on `error_code` rather than fragile message copy
 (per `error-handling-with-context.md` rule 10).
 
 ## Agent support
 
-- **tdd-guide** — proactively for new features; enforces
-  RED-GREEN-REFACTOR + the 90% / 80% coverage gate above
+- **tdd-guide** — guidance for applicable substantive features;
+  RED-GREEN-REFACTOR and the canonical policy above
 - **e2e-runner** — Playwright / equivalent E2E flows
 - **code-reviewer** — flags missing tests in PR review
 
 ## Cross-references
 
-- `extreme-lint-policy.md` — canonical coverage thresholds
+- `extreme-lint-policy.md` — complementary strict lint gates
 - `done-criteria.md` — every "done" claim runs the test gate
 - `tdd-workflow` skill — RED-GREEN-REFACTOR methodology
 - `task-intake-due-diligence.md` Q14 — test strategy planned

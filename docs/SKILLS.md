@@ -1,6 +1,6 @@
 # Skills Catalog
 
-> Index of Council's 119 source skills. Choose guidance by task relevance,
+> Index of Council's 134 source skills. Choose guidance by task relevance,
 > description or explicit invocation; file patterns are routing suggestions,
 > not automatic skill activation. Codex compact discovery uses one catalog router.
 > The [context policy](CONTEXT.md) keeps detailed guidance on demand.
@@ -22,6 +22,19 @@ a large fixed template:
 - **Cross-References** — sister rules, skills, agents
 - **Why This Skill Exists** — failure mode it prevents + cost of
   getting it wrong
+
+## Marketing and creative work
+
+| Skill | Purpose |
+| --- | --- |
+| [`marketing-strategy`](../skills/marketing-strategy/) | Audience, positioning, channel budgets and measurable experiments |
+| [`seo`](../skills/seo/) | Crawl/index diagnostics, search intent, useful content and search measurement |
+| [`content-campaigns`](../skills/content-campaigns/) | Channel-specific copy, calendars, claim evidence and campaign checks |
+| [`brand-creative-direction`](../skills/brand-creative-direction/) | Brief-led identity, art direction, media variants and rendered review |
+
+These are source workflows shared by Claude and Codex installers. Source availability
+is distinct from installation and runtime verification. See the
+[marketing and creative evaluation](MARKETING-CREATIVE-EVALUATION.md).
 
 ## Launch video
 

@@ -1,6 +1,6 @@
 ---
 name: bash-scripting-patterns
-description: Bash + shell scripting discipline — strict header (set -euo pipefail; IFS), naming conventions (kebab-case scripts, snake_case functions/vars, SCREAMING_SNAKE_CASE constants), always-quoted variables, defaults via ${var:-default}, getopts for arguments, structured logging to stderr, cleanup via trap, no backticks (use $(cmd)), no eval with user input, no rm -rf on unset vars, ShellCheck strict + shfmt format-check enforced. Auto-fires on shell scripts.
+description: Bash + shell scripting discipline — strict header (set -euo pipefail; IFS), naming conventions (kebab-case scripts, snake_case functions/vars, SCREAMING_SNAKE_CASE constants), always-quoted variables, defaults via ${var:-default}, getopts for arguments, structured logging to stderr, cleanup via trap, no backticks (use $(cmd)), no eval with user input, no rm -rf on unset vars, ShellCheck strict + shfmt format-check enforced. Select explicitly when this guidance applies.
 paths:
   - "**/*.sh"
   - "**/*.bash"
@@ -9,6 +9,7 @@ paths:
   - "**/.zshrc"
   - "**/.bash_profile"
   - "**/.profile"
+disable-model-invocation: true
 ---
 
 # bash-scripting-patterns

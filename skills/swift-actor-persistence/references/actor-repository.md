@@ -13,26 +13,38 @@
 The actor model guarantees serialized access — no data races, enforced by the compiler.
 
 ```swift
-public actor LocalRepository<T: Codable & Identifiable> where T.ID == String {
+public actor LocalRepository<T: Codable & Identifiable & Sendable> where T.ID == String {
+    public enum RepositoryError: Error {
+        case invalidFilename
+        case duplicateID(String)
+    }
     private var cache: [String: T] = [:]
     private let fileURL: URL
 
-    public init(directory: URL = .documentsDirectory, filename: String = "data.json") {
+    public init(directory: URL, filename: String = "data.json") throws {
+        guard !filename.isEmpty, filename != ".", filename != "..",
+              !filename.contains("/"), !filename.contains("\\") else {
+            throw RepositoryError.invalidFilename
+        }
         self.fileURL = directory.appendingPathComponent(filename)
         // Synchronous load during init (actor isolation not yet active)
-        self.cache = Self.loadSynchronously(from: fileURL)
+        self.cache = try Self.loadSynchronously(from: fileURL)
     }
 
     // MARK: - Public API
 
     public func save(_ item: T) throws {
-        cache[item.id] = item
-        try persistToFile()
+        var candidate = cache
+        candidate[item.id] = item
+        try persistToFile(candidate)
+        cache = candidate
     }
 
     public func delete(_ id: String) throws {
-        cache[id] = nil
-        try persistToFile()
+        var candidate = cache
+        candidate[id] = nil
+        try persistToFile(candidate)
+        cache = candidate
     }
 
     public func find(by id: String) -> T? {
@@ -45,17 +57,27 @@ public actor LocalRepository<T: Codable & Identifiable> where T.ID == String {
 
     // MARK: - Private
 
-    private func persistToFile() throws {
-        let data = try JSONEncoder().encode(Array(cache.values))
+    private func persistToFile(_ candidate: [String: T]) throws {
+        let data = try JSONEncoder().encode(Array(candidate.values))
         try data.write(to: fileURL, options: .atomic)
     }
 
-    private static func loadSynchronously(from url: URL) -> [String: T] {
-        guard let data = try? Data(contentsOf: url),
-              let items = try? JSONDecoder().decode([T].self, from: data) else {
+    private static func loadSynchronously(from url: URL) throws -> [String: T] {
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch CocoaError.fileReadNoSuchFile {
             return [:]
         }
-        return Dictionary(uniqueKeysWithValues: items.map { ($0.id, $0) })
+        let items = try JSONDecoder().decode([T].self, from: data)
+        var result: [String: T] = [:]
+        for item in items {
+            guard result[item.id] == nil else {
+                throw RepositoryError.duplicateID(item.id)
+            }
+            result[item.id] = item
+        }
+        return result
     }
 }
 ```
@@ -65,7 +87,7 @@ public actor LocalRepository<T: Codable & Identifiable> where T.ID == String {
 All calls are automatically async due to actor isolation:
 
 ```swift
-let repository = LocalRepository<Question>()
+let repository = try LocalRepository<Question>(directory: .documentsDirectory)
 
 // Read — fast O(1) lookup from in-memory cache
 let question = await repository.find(by: "q-001")
@@ -84,7 +106,7 @@ final class QuestionListViewModel {
     private(set) var questions: [Question] = []
     private let repository: LocalRepository<Question>
 
-    init(repository: LocalRepository<Question> = LocalRepository()) {
+    init(repository: LocalRepository<Question>) {
         self.repository = repository
     }
 
@@ -107,7 +129,7 @@ final class QuestionListViewModel {
 | In-memory cache + file persistence | Fast reads from cache, durable writes to disk |
 | Synchronous init loading | Avoids async initialization complexity |
 | Dictionary keyed by ID | O(1) lookups by identifier |
-| Generic over `Codable & Identifiable` | Reusable across any model type |
+| Generic over `Codable & Identifiable & Sendable` | Values can safely cross actor boundaries |
 | Atomic file writes (`.atomic`) | Prevents partial writes on crash |
 
 ## Best Practices
@@ -115,6 +137,10 @@ final class QuestionListViewModel {
 - **Use `Sendable` types** for all data crossing actor boundaries
 - **Keep the actor's public API minimal** — only expose domain operations, not persistence details
 - **Use `.atomic` writes** to prevent data corruption if the app crashes mid-write
+- **Persist candidate state before publishing cache**; a failed write leaves reads unchanged.
+- **Propagate read/decode failures**; only a missing file means an empty repository.
+  Preserve unreadable/corrupt bytes for explicit recovery; duplicate IDs are errors.
+  Atomic replacement is not a cross-process transaction or an fsync durability guarantee.
 - **Load synchronously in `init`** — async initializers add complexity with minimal benefit for
   local files
 - **Combine with `@Observable`** ViewModels for reactive UI updates

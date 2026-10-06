@@ -1,6 +1,7 @@
 ---
 name: mcp-builder
 description: Build production-grade Model Context Protocol (MCP) servers — stdio + streamable HTTP transports, tool / resource / prompt primitives, capability negotiation, auth model, idempotency, observability, testing via MCP Inspector, 10-question evaluation framework. Use when designing a new MCP server to expose an internal API / data source / workflow as a Claude (or any MCP client) tool. Sister to install-allowlist.md (publisher gates for downstream consumers), secrets-management.md (no secrets in MCP code), api-design.md (tool surface design), idempotency.md (safe retries on tool calls).
+disable-model-invocation: true
 ---
 
 # mcp-builder — Building Production-Grade MCP Servers

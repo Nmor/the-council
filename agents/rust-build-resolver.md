@@ -92,3 +92,5 @@ Per `continuous-learning-mandate.md`:
 `architect`); `#[allow]`/`unsafe` attempts (violation); `.clone()` reintroduced
 after a borrow fix; feature-gate errors recurring. **Refinements**: new common-fix
 row on a recurring `E0xxx`; new anti-pattern on a recurring shortcut.
+
+Primary reference for the relevant review: [Rust documentation: compiler and type system](https://doc.rust-lang.org/book/).

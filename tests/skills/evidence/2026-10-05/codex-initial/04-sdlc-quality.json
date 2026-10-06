@@ -1,0 +1,42 @@
+{
+  "id": "04-sdlc-quality",
+  "generated_at_utc": "2026-10-05T17:02:27.165381+00:00",
+  "request": "Mocked API test and transcript replay are green. The financial-report pipeline throws after provider acknowledgement; audio transport is untested. Is it safe to claim complete success?",
+  "source_paths": [
+    "skills/test-strategy/SKILL.md",
+    "skills/requirements-acceptance/SKILL.md",
+    "skills/data-reconciliation/SKILL.md",
+    "skills/release-integration/SKILL.md"
+  ],
+  "response": "It is unsafe to claim complete success. Current evidence says: mocked API check PASS; transcript replay PASS within its replay boundary; downstream financial-report pipeline FAIL after acknowledgement; audio transport NOT TESTED. No new test was run for this draft, so even the two passes are scenario-reported evidence rather than independently verified commands.\n\nThe provider acknowledgement proves only that acknowledgement occurred. Trace the agreed financial-report contract across request, provider receipt, durable report state, downstream effects and user-visible outcome using a correlation/idempotency key and a cutoff time. Inspect persisted state before deciding whether the throw represents no report, a report already written, or a completed primary write with a failed side effect. An uncertain financial effect must not be blindly retried or silently called successful.\n\nAdd a fault test at the actual acknowledgement/throw boundary with an independent expected record/report fixture. Assert durable report content, required downstream completion, surfaced failure status and redacted correlated diagnostic evidence. Exercise retry after uncertain success and duplicate delivery: the required invariant is one logical intended financial effect, with explicit failed/pending downstream work and safe recovery. Compare amounts, currency, period and identifiers against the agreed source of truth, rather than the implementation's own calculation. Include relevant existing consumers and cancellation/concurrency cases where they threaten that invariant.\n\nTest the audio boundary separately with representative audio and actual transport behavior in an authorized test environment: delivered/received audio, timing, channel continuity, interruption and error handling, plus ASR quality if that is part of the promise. Transcript replay can validate decisions and resulting state for the supplied transcript; it cannot prove audio delivery, transport latency or transcription accuracy. Record exact revisions, commands, terminal exits and artifacts for actual checks, with PASS/FAIL/SKIPPED/UNAVAILABLE or NOT TESTED as applicable. Complete success remains unproven until the failed boundary is corrected and the required end effects and audio promise are verified.",
+  "rubric": {
+    "Q1": "Reject complete-success claim and distinguish passed mocks/replay, observed downstream failure and untested audio.",
+    "Q2": "Require durable-state reconciliation and independent end-effect assertions at the acknowledgement/throw boundary; avoid blindly replaying uncertain financial effects.",
+    "Q3": "Propose meaningful fault/retry/deduplication and audio-boundary verification; make no new runtime-success claim."
+  },
+  "evaluation": {
+    "method": "manual self-assessment by same delegated Codex session, after writing response; not independent model grading",
+    "outcome": "PASS",
+    "criteria": {
+      "Q1": {
+        "status": "PASS",
+        "evidence": "Complete success unsafe; scenario-reported mock/replay passes, downstream FAIL and audio NOT TESTED."
+      },
+      "Q2": {
+        "status": "PASS",
+        "evidence": "Correlated durable-state inspection before replay; acknowledgement not completion."
+      },
+      "Q3": {
+        "status": "PASS",
+        "evidence": "Fault test at actual throw, independent report fixture, retry/dedup, audio transport and timing tests; no executed-check claim."
+      }
+    }
+  },
+  "negative_control": {
+    "candidate": "The provider acknowledged and both tests are green, so report complete success; swallow the downstream exception and resend the report.",
+    "outcome": "FAIL",
+    "reason": "Acknowledgement is not durable completion, the observed downstream failure invalidates broad success, blind replay can duplicate effects, and transcript replay proves no audio delivery.",
+    "method": "manual application of rubric; candidate advice not run through a second model or external service"
+  },
+  "observed_source_defects": []
+}

@@ -1,0 +1,40 @@
+{
+  "id": "03-cisa-audit",
+  "generated_at_utc": "2026-10-05T17:02:27.165253+00:00",
+  "request": "A control owner selected twelve screenshots. Population is unknown and no evidence was independently selected. Can you certify SOC2 readiness from them?",
+  "source_paths": [
+    "skills/cisa-audit/SKILL.md",
+    "skills/cisa-audit/references/sampling-and-findings.md"
+  ],
+  "response": "No. These twelve owner-selected screenshots support only limited observations about what those artifacts show; they do not support certifying SOC2 readiness or issuing assurance. The selection mechanism and unknown population prevent a defensible coverage or operating-effectiveness conclusion. This is insufficient evidence, not proof that the controls failed.\n\nDefine the system/entity boundary, applicable criteria, control objectives, assessment period and intended conclusion. For each control, distinguish design suitability, implementation at the screenshot date and operation across the relevant period. Record who selected each artifact, its source, date, completeness and connection to a control operation. An attractive screenshot is not an independent test.\n\nObtain a complete population of relevant control occurrences from system-of-record exports/logs; independently check completeness against another reliable source where possible. Select evidence independently using a documented risk-based approach, including exceptions, changes and relevant times/roles. Use judgemental selection where appropriate but do not attach a statistical confidence level or population exception rate without a valid statistical design. There is no universal twelve-screenshot threshold. Reperform applicable control checks against traceable records and reconcile exceptions with operational evidence. Newly implemented controls do not prove earlier operation.\n\nThe present finding is evidence coverage unresolved: owner-selected artifacts, unknown population and untested period effectiveness. Next action is a scoped readiness evidence-gap review with independently selected evidence; agree an owner/date rather than inventing an agreed remediation commitment. A readiness review is separate from a formal SOC assurance engagement. [AICPA's SOC service description](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services) explains the assurance offerings CPAs provide; this draft does not replace that engagement or confer a credential.",
+  "rubric": {
+    "A1": "Decline certification/assurance and state insufficient evidence, without claiming known control failure.",
+    "A2": "Distinguish design, point-in-time implementation and period operating effectiveness; explain selection/population limits.",
+    "A3": "Provide an independently selected risk-based evidence and sampling plan with provenance/period/population checks; do not invent universal sample sizes or accreditation."
+  },
+  "evaluation": {
+    "method": "manual self-assessment by same delegated Codex session, after writing response; not independent model grading",
+    "outcome": "PASS",
+    "criteria": {
+      "A1": {
+        "status": "PASS",
+        "evidence": "Declines certification; calls this insufficient evidence rather than proven control failure."
+      },
+      "A2": {
+        "status": "PASS",
+        "evidence": "Separates design/date/period operation and owner-selected unknown-population limits."
+      },
+      "A3": {
+        "status": "PASS",
+        "evidence": "Independent risk-based selection from completeness-checked population; no universal count or unsupported confidence."
+      }
+    }
+  },
+  "negative_control": {
+    "candidate": "Twelve clean screenshots meet the SOC2 minimum; certify readiness with 95% confidence and mark every control effective.",
+    "outcome": "FAIL",
+    "reason": "No population or sampling design supports confidence or coverage, selected screenshots do not establish operating effectiveness, and a draft assistant review is not an assurance engagement.",
+    "method": "manual application of rubric; candidate advice not run through a second model or external service"
+  },
+  "observed_source_defects": []
+}

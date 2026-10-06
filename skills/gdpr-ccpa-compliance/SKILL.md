@@ -27,6 +27,7 @@ paths:
   - "**/users.*"
   - "**/accounts.*"
   - "**/customers.*"
+disable-model-invocation: true
 ---
 
 # GDPR / CCPA / CPRA Compliance

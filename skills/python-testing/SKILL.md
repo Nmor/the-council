@@ -1,6 +1,7 @@
 ---
 name: python-testing
 description: Python testing strategies using pytest, TDD methodology, fixtures, mocking, parametrization, and coverage requirements.
+disable-model-invocation: true
 ---
 
 # Python Testing Patterns

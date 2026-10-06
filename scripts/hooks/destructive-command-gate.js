@@ -22,103 +22,63 @@
 // CLAUDE_DESTRUCTIVE_GATE=warn to downgrade, =off to disable. Neither is recommended.
 "use strict";
 
-const { executablePart } = require("./lib/command-scan.js");
+const { commandInvocations, gitOperation } = require("./lib/command-scan.js");
 
-// Each rule: what it catches, and the plain-language reason shown when it fires.
-const RULES = [
-  {
-    // Quotes are NOT in the boundary set, and that is a deliberate reversal.
-    //
-    // They were added briefly so that `echo "rm -rf /" | bash` would be caught. Within the
-    // hour the gate blocked an ordinary `for c in 'rm -rf ~' ...` loop — a shell construct
-    // listing commands as DATA. Chasing an obfuscation case cost a false positive on everyday
-    // shell, and a gate that fires on real work gets switched off, which protects nothing.
-    //
-    // So the limit is stated rather than chased: this is a floor against accidents and
-    // obvious mistakes, not an adversarial sandbox. Deliberate obfuscation — quoting, base64,
-    // variable indirection, a downloaded script — gets past it by design, because every
-    // pattern broad enough to catch those is broad enough to block legitimate work.
-    //
-    // The target alternation covers `~` and `~/` separately: `~/` alone slipped through when
-    // only `~` and `~/*` were listed, which is a real target rather than an obfuscation.
-    re: /(?:^|[\s;&|`(])rm\s+(?:-[a-zA-Z]*\s+)*-?[a-zA-Z]*[rR][a-zA-Z]*f?[a-zA-Z]*\s+(?:-{1,2}\S+\s+)*(?:\/|\/\*|~|~\/|~\/\*|\$HOME\/?|\$\{HOME\}\/?)(?:\s|$)/,
-    why: "recursive delete of the filesystem root or home directory",
-  },
-  {
-    re: /(?:^|[\s;&|`(])rm\s+(?:-[a-zA-Z]*\s+)*-[a-zA-Z]*[rR][a-zA-Z]*f/i,
-    why: "recursive force-delete",
-    soft: true,
-  },
-  {
-    re: /\bDROP\s+(?:DATABASE|SCHEMA)\b/i,
-    why: "dropping a database or schema",
-  },
-  { re: /\bTRUNCATE\s+TABLE\b/i, why: "truncating a table" },
-  {
-    re: /\bDELETE\s+FROM\s+\w+\s*(?:;|$)/i,
-    why: "DELETE with no WHERE clause — every row",
-  },
-  {
-    re: /\bUPDATE\s+\w+\s+SET\b(?![\s\S]*\bWHERE\b)/i,
-    why: "UPDATE with no WHERE clause — every row",
-  },
-  {
-    re: /(?:^|[\s;&|`(])chmod\s+(?:-R\s+)?777\b/,
-    why: "chmod 777 — world-writable",
-  },
-  {
-    re: /(?:^|[\s;&|`(])(?:mkfs|fdisk|parted)\b/,
-    why: "formatting or repartitioning a disk",
-  },
-  {
-    re: /(?:^|[\s;&|`(])dd\s+[^\n]*of=\/dev\//,
-    why: "dd writing directly to a device",
-  },
-  { re: /:\(\)\s*\{\s*:\s*\|\s*:&\s*\}\s*;\s*:/, why: "fork bomb" },
-  {
-    re: /git\s+push\s+(?:[^\n]*\s)?(?:--force|-f)(?:\s|$)(?![^\n]*--force-with-lease)/,
-    why: "force-push — it overwrites history others may have pulled",
-  },
-  {
-    re: /git\s+reset\s+--hard\s+(?:origin\/)?(?:main|master|develop)\b/,
-    why: "hard reset onto a shared branch — local work is discarded",
-  },
-  { re: /(?:^|[\s;&|`(])shred\b/, why: "shred — unrecoverable overwrite" },
-  {
-    re: /\baws\s+s3\s+rb\b[^\n]*--force/,
-    why: "deleting a populated S3 bucket",
-  },
-  {
-    re: /\bkubectl\s+delete\s+(?:ns|namespace)\b/,
-    why: "deleting a Kubernetes namespace",
-  },
-  { re: /\bDROP\s+TABLE\b/i, why: "dropping a table" },
+const ROOT_TARGETS = new Set(["/", "/*", "~", "~/", "~/*", "$HOME", "$HOME/", "${HOME}", "${HOME}/"]);
+const SYSTEM_TARGETS = new Set(["*", "/etc", "/usr", "/var", "/bin", "/sbin", "/lib", "/boot", "/sys", "/proc", "/dev", "/opt", "/home", "/Users"]);
+const SQL_RULES = [
+  [/\bDROP\s+(?:DATABASE|SCHEMA)\b/i, "dropping a database or schema"],
+  [/\bDROP\s+TABLE\b/i, "dropping a table"],
+  [/\bTRUNCATE\s+TABLE\b/i, "truncating a table"],
+];
+const COMMAND_RULES = [
+  [(name, args) => name === "chmod" && args.includes("777"), "chmod 777 — world-writable"],
+  [(name) => name === "mkfs" || name.startsWith("mkfs.") || name === "fdisk" || name === "parted", "formatting or repartitioning a disk"],
+  [(name, args) => name === "dd" && args.some((arg) => arg.startsWith("of=/dev/")), "dd writing directly to a device"],
+  [(name) => name === "shred", "shred — unrecoverable overwrite"],
+  [(name, args) => name === "aws" && args[0] === "s3" && args[1] === "rb" && args.includes("--force"), "deleting a populated S3 bucket"],
+  [(name, args) => name === "kubectl" && args[0] === "delete" && /^(?:ns|namespace)$/.test(args[1]), "deleting a Kubernetes namespace"],
 ];
 
-// A soft rule needs a dangerous-looking target to fire; `rm -rf ./build` is ordinary work.
-const SOFT_TARGET =
-  // Each alternative must be the WHOLE target, not a prefix of one. `$HOME\b` was wrong:
-  // \b matches before the slash, so `rm -rf $HOME/.cache/tmp-build` — ordinary cleanup —
-  // tripped the soft rule. A home variable counts only when nothing follows it but the end
-  // of the argument.
-  /(?:^|\s)(?:\/(?:\s|$)|\/(?:etc|usr|var|bin|sbin|lib|boot|sys|proc|dev|opt|home|Users)(?:\s|$)|~(?:\/)?(?:\s|$)|\$\{?HOME\}?(?:\/)?(?:\s|$)|\*(?:\s|$))/;
+function removalReason(args) {
+  const flags = args.filter((arg) => arg.startsWith("-"));
+  const recursive = flags.includes("--recursive") || flags.some((flag) => !flag.startsWith("--") && /[rR]/.test(flag));
+  if (!recursive) return "";
+  if (args.some((arg) => ROOT_TARGETS.has(arg))) return "recursive delete of the filesystem root or home directory";
+  const force = flags.includes("--force") || flags.some((flag) => !flag.startsWith("--") && flag.includes("f"));
+  return force && args.some((arg) => SYSTEM_TARGETS.has(arg)) ? "recursive force-delete" : "";
+}
 
-// Searching FOR a destructive command is not running one.
-//
-// Caught by this hook's own test on first run: `grep -rn "DROP DATABASE" ./migrations` was
-// blocked, because the SQL pattern matched text the command merely carries. That is the third
-// time this session a detector confused carrying with doing — so the check is explicit here
-// rather than left to the pattern.
-//
-// The exemption is withdrawn the moment the output could be executed: `grep ... | bash` is not
-// a search, it is a pipeline, so an interpreter anywhere downstream disqualifies it.
-const READ_ONLY_HEAD =
-  /^\s*(?:grep|rg|ag|ack|cat|bat|less|more|head|tail|find|ls|echo|printf|wc|sort|uniq|diff|jq|awk|sed)\b/;
-const DOWNSTREAM_EXEC =
-  /\|\s*(?:bash|sh|zsh|python3?|perl|ruby|node|psql|mysql|sqlite3|xargs|sudo)\b/;
+function gitReason(args) {
+  if (args[0] === "push" && args.some((arg) => arg === "--force" || arg === "-f"))
+    return "force-push — it overwrites history others may have pulled";
+  if (args[0] === "reset" && args.includes("--hard") && args.some((arg) => /^(?:origin\/)?(?:main|master|develop)$/.test(arg)))
+    return "hard reset onto a shared branch — local work is discarded";
+  return "";
+}
 
-function isReadOnlySearch(cmd) {
-  return READ_ONLY_HEAD.test(cmd) && !DOWNSTREAM_EXEC.test(cmd);
+function sqlReasons(call) {
+  const sql = /^(?:psql|mysql|sqlite3)$/.test(call.argv[0]) ? call.argv.slice(1).join(" ") : call.text;
+  if (!/^(?:psql|mysql|sqlite3|DROP|TRUNCATE|DELETE|UPDATE)$/i.test(call.argv[0])) return [];
+  const statements = sql.split(";").map((part) => part.trim());
+  return statements.flatMap((statement) => {
+    const hits = SQL_RULES.filter(([pattern]) => pattern.test(statement)).map((rule) => rule[1]);
+    if (/\bDELETE\s+FROM\s+\w+\b/i.test(statement) && !/\bWHERE\b/i.test(statement)) hits.push("DELETE with no WHERE clause — every row");
+    if (/\bUPDATE\s+\w+\s+SET\b/i.test(statement) && !/\bWHERE\b/i.test(statement)) hits.push("UPDATE with no WHERE clause — every row");
+    return hits;
+  });
+}
+
+function commandReasons(call) {
+  const [name, ...args] = call.argv;
+  let reason = "";
+  if (name === "rm") reason = removalReason(args);
+  if (name === "git") {
+    const git = gitOperation(call.argv);
+    reason = gitReason([git.operation, ...git.args]);
+  }
+  const hits = COMMAND_RULES.filter(([matches]) => matches(name, args)).map((rule) => rule[1]);
+  return [...(reason ? [reason] : []), ...hits, ...sqlReasons(call)];
 }
 
 let data = "";
@@ -138,15 +98,10 @@ process.stdin.on("end", () => {
 
   const raw = String(input.tool_input?.command || "");
   if (!raw) process.exit(0);
-  const cmd = executablePart(raw);
-  if (isReadOnlySearch(cmd)) process.exit(0);
-
-  const hits = [];
-  for (const rule of RULES) {
-    if (!rule.re.test(cmd)) continue;
-    if (rule.soft && !SOFT_TARGET.test(cmd)) continue;
-    hits.push(rule.why);
-  }
+  const calls = commandInvocations(raw);
+  const hits = calls.flatMap(commandReasons);
+  if (calls.some((call) => call.argv[0] === ":") && /:\(\)\s*\{\s*:\s*\|\s*:&\s*\}\s*;\s*:/.test(raw))
+    hits.push("fork bomb");
   if (!hits.length) process.exit(0);
 
   const msg = [

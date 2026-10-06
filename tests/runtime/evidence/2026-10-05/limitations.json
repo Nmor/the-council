@@ -1,0 +1,93 @@
+{
+  "failed_attempts": [
+    {
+      "attempt": "Initial VS Code CLI wrapper",
+      "result": "No completed test receipt after asynchronous launch",
+      "correction": "Run direct application process and wait for completion; require exit 0 and a JSON receipt"
+    },
+    {
+      "attempt": "Long private user-data or Codex-home paths",
+      "result": "macOS Unix socket path length produced EINVAL or IPC-router startup error",
+      "correction": "Use short private paths and assert actual app-server initialization"
+    },
+    {
+      "attempt": "Initial private extension inventory",
+      "result": "Missing extensions in probe; Restricted Mode also hides extensions",
+      "correction": "Use private copies and a correct registry; explicitly test trusted and restricted windows"
+    },
+    {
+      "attempt": "Prompt rendering with --strict-config",
+      "result": "Unsupported argument rejected",
+      "correction": "Strict configuration checked separately using app-server; offline render rerun without this flag"
+    },
+    {
+      "attempt": "Initial Markdown lint path",
+      "result": "Guessed CLI module path missing; command exit 1",
+      "correction": "Run installed /opt/homebrew markdownlint-cli2 module for final checks"
+    },
+    {
+      "attempt": "Computer Use app access",
+      "result": "GUI access permission unavailable",
+      "correction": "Use actual VS Code extension-host API; no claim of GUI test coverage"
+    },
+    {
+      "attempt": "Markdown lint library invoked instead of executable entrypoint",
+      "result": "Exit 0 without lint output; not accepted as a verification result",
+      "correction": "Use markdownlint-cli2-bin.mjs and require lint summary for all three files"
+    }
+  ],
+  "remaining_boundaries": [
+    "No new conversational model turn in these runtime checks",
+    "No repeated-turn compaction stress test",
+    "Candidate hooks discovered but not trusted or executed",
+    "Cursor and Windsurf checked against schemas, not launched",
+    "Four earlier Claude supplemental factual-discipline failures remain open",
+    "Built-in VS Code warnings not certified as fixed",
+    "Exact origin of GitHub OAuth callback not established"
+  ],
+  "auth_callback": {
+    "port": 59036,
+    "listener_after_tests": "none listed by lsof",
+    "owned_test_instances_after_tests": "none observed",
+    "github_sign_in_required": false,
+    "sensitive_query_values_packaged": false
+  },
+  "live_configuration": {
+    "personal_settings_written_by_harness": false,
+    "live_council_resources_installed": false,
+    "live_hook_trust_changed": false,
+    "private_empty_window_overlay_used_for_diagnostic": true
+  },
+  "temporary_log_hashes": [
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/vscode-candidate-empty-default-trust-final.log",
+      "bytes": 16423,
+      "sha256": "987dae110d8a379973db92e8b83044bbe72b5bc67ed6ef30f035670ec5a48f43"
+    },
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/vscode-candidate-empty-final.log",
+      "bytes": 8480,
+      "sha256": "272fdf4c74bf5ec8c0b95433d7d6cddc2c8343ef21e4ad4334ac20968746f643"
+    },
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/vscode-candidate-folder-final.log",
+      "bytes": 16604,
+      "sha256": "f631890e93e74e3fa5054e3ea925dd6bdf4e56438f7ac334793eeffdea6d697b"
+    },
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/vscode-current-empty-final.log",
+      "bytes": 9702,
+      "sha256": "92ff3e33e9bb52e1baccbe7ea4c3055bf0431e48985bc8521c736bb20a72513c"
+    },
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/vscode-current-final.log",
+      "bytes": 7648,
+      "sha256": "d4ef88ffc2f3198c31a0f0d3efb6f96dbdffe9f8ce29e4529fbd3290221886fc"
+    },
+    {
+      "path": "/var/folders/ys/szdnrxpx38j3z34_9qpvphmr0000gn/T/council-ide-runtime-20261005-f6vo7j1g/vscode-current-folder-final.log",
+      "bytes": 11281,
+      "sha256": "d782fe8777b3592b19e728debd380b7f1cc4bef83a8844efbefc802020f2b6dd"
+    }
+  ]
+}

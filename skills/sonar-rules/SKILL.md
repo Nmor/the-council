@@ -33,6 +33,7 @@ paths:
   - "**/eslint.config.*"
   - "**/.sonarcloud.properties"
   - "**/sonar-project.properties"
+disable-model-invocation: true
 ---
 
 # SonarLint / SonarQube Checks (Global Default)

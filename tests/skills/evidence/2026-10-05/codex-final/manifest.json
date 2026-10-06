@@ -1,0 +1,73 @@
+{
+  "written_at_utc": "2026-10-05T20:04:19.815355+00:00",
+  "runtime": "Native Codex delegated conversation; inherited parent model",
+  "actual_model_id": "unavailable through accessible runtime; not inferred",
+  "head": "759f9286c051753c7c99f8a1c4c8ec593ccd79e7",
+  "worktree": "/Users/APPLE/claude-council",
+  "protocol_sha256": "f84d8346f7e6387dc7b06455f66f0c99c3ad50d4c0ba95bd1c999763580a8e7c",
+  "sources": {
+    "skills/cisa-audit/SKILL.md": {
+      "sha256": "44293507c0d22cb332bd0a648a977961322977ac46a8dd1871bd9c4d878d6cc1",
+      "bytes": 3185,
+      "snapshot": "source-snapshots/skills/cisa-audit/SKILL.md"
+    },
+    "skills/cisa-audit/references/sampling-and-findings.md": {
+      "sha256": "4537f476b376b3abc795fd8f83427a90c2117c01cdef27260fcf0b0277d39f74",
+      "bytes": 1678,
+      "snapshot": "source-snapshots/skills/cisa-audit/references/sampling-and-findings.md"
+    },
+    "skills/test-strategy/SKILL.md": {
+      "sha256": "8f630128daa97e621bfcc1c55de34307cc0076a4e2873fa9993764ef2ccbbf45",
+      "bytes": 3224,
+      "snapshot": "source-snapshots/skills/test-strategy/SKILL.md"
+    },
+    "skills/requirements-acceptance/SKILL.md": {
+      "sha256": "06df986612e4a22f776a85c203546cda6ee5ecbc79b9d5459a8060161ad0023b",
+      "bytes": 2518,
+      "snapshot": "source-snapshots/skills/requirements-acceptance/SKILL.md"
+    },
+    "skills/data-reconciliation/SKILL.md": {
+      "sha256": "4f4d2f77f821b66ee6d9b0ed69d593702938580de87e50618979fad7281d55df",
+      "bytes": 2553,
+      "snapshot": "source-snapshots/skills/data-reconciliation/SKILL.md"
+    },
+    "skills/release-integration/SKILL.md": {
+      "sha256": "3dc6c85a39b8f1d490c65aeb9717d8ac93d01bd9db2087ce01afa6709d040dae",
+      "bytes": 2506,
+      "snapshot": "source-snapshots/skills/release-integration/SKILL.md"
+    },
+    "agents/database-reviewer.md": {
+      "sha256": "ca29e372b2d62ad80584cd77e7c6677e71987a94638a42bf377e77b4ef095ac0",
+      "bytes": 10030,
+      "snapshot": "source-snapshots/agents/database-reviewer.md"
+    },
+    "agents/performance-reviewer.md": {
+      "sha256": "3831afc9f19c197e219afb1c9fca40ae9f9e22e02acf012add4e6858b84e1b08",
+      "bytes": 7688,
+      "snapshot": "source-snapshots/agents/performance-reviewer.md"
+    },
+    "agents/code-reviewer.md": {
+      "sha256": "feeb4ca7682d33723aa5af622a52966a14d238ff12c807fea69aa666d42e737f",
+      "bytes": 15878,
+      "snapshot": "source-snapshots/agents/code-reviewer.md"
+    },
+    "skills/postgres-patterns/SKILL.md": {
+      "sha256": "a05c6fc6c55045d81f22824d6518f640e2d08fcd6b8ec06e22d002bab60fb6f4",
+      "bytes": 10650,
+      "snapshot": "source-snapshots/skills/postgres-patterns/SKILL.md"
+    }
+  },
+  "source_scope_digest": "b97173797bd5bc4d717dccfe14ec2ff7a4ca644dbd626fa452d50b86b59e2ef3",
+  "case_ids": [
+    "03-cisa-audit",
+    "04-sdlc-quality",
+    "06-native-reviewer-contract"
+  ],
+  "prior_attempt_directory": "..",
+  "rubric_awareness": true,
+  "limits": [
+    "Authorized single final retest after prior drafts and frozen rubric were read; not blinded or independent.",
+    "No external services, SQL execution, live installations or actual production tests.",
+    "Current source snapshots preserve exact bytes; source hashes checked again after drafts."
+  ]
+}

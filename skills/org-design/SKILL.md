@@ -1,6 +1,7 @@
 ---
 name: org-design
 description: Principal-level organisational design — team topologies, span of control, reporting structures, decision rights (DACI / RACI), Conway's Law, coordination cost, scaling from 10 to 1000, the difference between functional / divisional / matrix / network structures, and the discipline that aligns the org chart to the product strategy.
+disable-model-invocation: true
 ---
 
 # Organisational Design

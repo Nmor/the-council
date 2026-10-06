@@ -2,14 +2,14 @@
 
 The native Codex installer adds Council guidance, skills, specialist agents and a
 small set of native hooks alongside your existing Codex setup. It does not replace
-Codex configuration or modify your Claude installation. Python 3.11+ and Git are
+Codex configuration or modify your Claude installation. Python 3.11+, Git and Node.js 18+ are
 required; run it from a complete clone of this repository.
 
 ## Install
 
 ```bash
-git clone https://github.com/Nmor/the-claude-council.git
-cd the-claude-council
+git clone https://github.com/Nmor/the-council.git
+cd the-council
 python3 bootstrap/codex.py install --dry-run
 python3 bootstrap/codex.py install
 python3 bootstrap/codex.py verify
@@ -79,13 +79,13 @@ Resolve the current authoritative plan from user context and the project mapping
 | Source capability | Codex adaptation |
 | --- | --- |
 | Council workflow and Floor | Concise managed `AGENTS.md` block; complete rules available on demand |
-| 119 tracked skills | Full source/reference trees in the catalog; `council-*` entrypoints in full profile |
+| 134 source skills | Full source/reference trees in the catalog; `council-*` entrypoints in full profile |
 | 33 command workflows | Catalog routes; full profile adds `council-command-*` entrypoints |
 | 39 specialist agents | Native TOML roles with embedded guidance and inherited parent model |
 | Claude `paths:` activation | Explicit skill/catalog selection; no claim of automatic file-trigger loading |
 | Model ladder/exhaustion | No Claude model overrides or exhaustion hook emulation |
 | PreToolUse | Native command advisories and supported patch checks for an existing plan |
-| PostToolUse | Completion-aware command feedback; invocation is never passing-test evidence |
+| PostToolUse | Completion-aware command feedback plus incremental Go blank-assignment checks; invocation is never passing-test evidence |
 | SessionStart, PreCompact, Stop | Project-scoped plan and handoff reminders; no Claude transcript parsing |
 | Formatting, typechecking, research/intake/coverage markers | Manual task checks; Claude hook scripts are not registered |
 | TaskCompleted, PreModelSwitch, PermissionDenied, failure hooks | Not registered; no unsupported-event parity claim |
@@ -95,6 +95,35 @@ Hooks are supplemental checks, not a security boundary or a shell parser. Hosted
 web tools and some specialized tool paths may not emit these events. Arbitrary shell
 or script writes cannot be completely policed by patch hooks. Do not substitute hook
 feedback for the actual tests, review, permissions or single-plan working agreement.
+
+## Go no-discard enforcement
+
+The native Python dispatcher runs the installed `council/go-discard-mutations.js`
+asset. Claude registers the same self-contained source for Bash, Edit, Write and
+MultiEdit. Codex keeps five hook definitions, adding `write_stdin` to its existing
+pre/post matchers. Changed definitions require normal hook trust review.
+
+Paired pre/post events compare lexical violation signatures in tracked and
+untracked Go files, including tests. Existing unchanged debt stays silent; newly
+introduced blank assignments produce blocking PostToolUse feedback. The edit has
+already happened: feedback requires correction and cannot undo it. The allowed
+`for _, value := range` form, comments, literals and interface assertions are
+excluded. Bare discarded calls and type assertions require local `errcheck` and
+repository lint; this is not whole-rule or multi-language parity.
+
+The scanner includes explicit tool workdirs and absolute apply_patch/Edit targets
+outside the session repo. Nested code-mode tools must emit their normal native
+inner events; the JavaScript orchestration wrapper itself is not parsed. Arbitrary
+scripts writing unrelated repositories without explicit targets remain outside
+this check. Async output scans currently visible writes and retains the baseline;
+terminal original-tool events or correlated `write_stdin` events inspect later
+writes. Clients omitting those events cannot provide final coverage.
+
+Missing paired IDs/baselines, corrupt state, missing Node, timeouts or the 20 MiB
+per-repository scan limit emit limitation feedback, never a passing claim. Temporary
+signature snapshots are client-local and expire after 24 hours on the next pre-event.
+Concurrent tools in one checkout can expose each other's new violations; the guard
+reports locations, not authorship. No snapshots or runtime state are shared with Claude.
 
 ## Installed layout
 
@@ -108,12 +137,13 @@ feedback for the actual tests, review, permissions or single-plan working agreem
     catalog.md              # searchable routing when discovery is truncated
     resources/              # allowlisted tracked guidance and full references
     hooks.py                # native dispatcher
+    go-discard-mutations.js  # native shared scanner, integrity managed
     projects.json           # existing-plan pointers, not another plan
     manifest.json           # private hashes and original shared-file backups
 ```
 
 Compact discovery is the default: one `council` skill, the complete source catalog,
-and all 39 specialist roles. To expose all 153 skill entrypoints, pass
+and all 39 specialist roles. To expose every source skill and command as a namespaced entrypoint, pass
 `install --skill-profile full`. Later installs retain the selected profile; older
 installations without profile metadata migrate to compact unless full is explicit.
 Read only relevant reference sections. See [context and session controls](CONTEXT.md)

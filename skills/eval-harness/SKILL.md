@@ -2,6 +2,7 @@
 name: eval-harness
 description: Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles
 tools: Read, Write, Edit, Bash, Grep, Glob
+disable-model-invocation: true
 ---
 
 # Eval Harness Skill
@@ -65,15 +66,28 @@ Result: X/Y passed (previously Y/Y)
 Deterministic checks using code:
 
 ```bash
-# Check if file contains expected pattern
-grep -q "export function handleAuth" src/auth.ts && echo "PASS" || echo "FAIL"
+# Reuse verification-loop/references/run-check.sh; resolve its installed path.
+check="/path/to/verification-loop/references/run-check.sh"
+logs="$(mktemp -d)"
+
+# Pattern existence is only a structural check, not behavior certification.
+bash "$check" -l "$logs/structure.log" -- grep -q "export function handleAuth" src/auth.ts
 
 # Check if tests pass
-npm test -- --testPathPattern="auth" && echo "PASS" || echo "FAIL"
+bash "$check" -l "$logs/tests.log" -- npm test -- --testPathPattern="auth"
 
 # Check if build succeeds
-npm run build && echo "PASS" || echo "FAIL"
+bash "$check" -l "$logs/build.log" -- npm run build
 ```
+
+The [shared wrapper](../verification-loop/references/run-check.sh) returns the
+producer's nonzero exit on failure; never convert it to successful `echo "FAIL"`.
+Follow [verification evidence](../../rules/common/verify-before-claim.md) and report
+PASS, FAIL, SKIPPED, UNAVAILABLE, INTERRUPTED or RUNNING with command, revision,
+completed exit status and acceptance boundary. Required incomplete checks cannot
+PASS. Assert observable behavior and failure/state effects in code graders, using
+negative controls that suppress an error or lose a write. Retain private logs only
+as needed and redact before sharing.
 
 ### 2. Model-Based Grader
 

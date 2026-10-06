@@ -16,7 +16,7 @@
   Function length / parameter count / cyclomatic complexity
   enforced by Checkstyle / PMD / SonarLint, not here.
 -->
-<code_scheme name="Claude Council — Java" version="173">
+<code_scheme name="The Council — Java" version="173">
   <option name="RIGHT_MARGIN" value="120"/>
   <option name="LINE_SEPARATOR" value="&#10;"/>
 

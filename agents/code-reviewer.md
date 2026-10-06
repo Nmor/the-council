@@ -36,6 +36,13 @@ When invoked:
   findings)
 - **Prioritize** issues that could cause bugs, security vulnerabilities, or data loss
 
+Separate observed facts, conditional risks and unknowns. A passing test does not reveal
+its assertions, role or coverage; a synthetic statement does not reveal granted writes,
+execution plans or a deployed exploit. Never invent evidence or add a finding solely to
+fill a review category. Keep a compound consequence under its causal findings rather
+than counting it as another defect. Missing optional evidence is a limitation, not an
+automatic HIGH finding; explain why any unavailable check is required for this change.
+
 ## Review Checklist
 
 ### Security (CRITICAL)
@@ -214,18 +221,44 @@ End every review with:
 | Severity | Count | Status |
 |----------|-------|--------|
 | CRITICAL | 0     | pass   |
-| HIGH     | 2     | warn   |
+| HIGH     | 2     | block  |
 | MEDIUM   | 3     | info   |
 | LOW      | 1     | note   |
 
-Verdict: WARNING — 2 HIGH issues should be resolved before merge.
+Verdict: CHANGES_REQUIRED — 2 unresolved HIGH issues block merge.
 ```
+
+## Severity and merge contract
+
+Normalize findings before deciding merge or deployment. Preserve the source label
+alongside normalized severity and action so normalization never discards information.
+This contract governs code, language, security and domain reviewers; domain vetoes may
+add restrictions but must not weaken it. Severity describes impact and likelihood,
+not which reviewer found the issue; the same unresolved exploit has the same action.
+
+| Source severity | Normalized severity | Unresolved action |
+| --- | --- | --- |
+| BLOCKER | CRITICAL | BLOCK |
+| CRITICAL | CRITICAL | BLOCK |
+| HIGH | HIGH | BLOCK |
+| MAJOR | HIGH | BLOCK |
+| MEDIUM | MEDIUM | WARN |
+| MINOR | MEDIUM | WARN |
+| LOW | LOW | NOTE |
+| SUGGESTION | LOW | NOTE |
+
+Unknown severity or unavailable required verification yields CHANGES_REQUIRED until
+classified or verified; neither is approval. Report finding ID, source severity,
+normalized severity, action, failure mode, evidence and remediation status.
 
 ## Approval Criteria
 
-- **Approve**: No CRITICAL or HIGH issues
-- **Warning**: HIGH issues only (can merge with caution)
-- **Block**: CRITICAL issues found — must fix before merge
+- **Approve / APPROVED**: Required verification passed; no unresolved CRITICAL/HIGH
+  findings or domain vetoes. LOW findings may be noted.
+- **Warning / WARNING**: Only unresolved MEDIUM findings; required verification passed
+  and no domain veto. May merge with explicit follow-up.
+- **Block / CHANGES_REQUIRED / VETO**: Any unresolved CRITICAL/HIGH finding, including
+  BLOCKER/MAJOR aliases, domain veto or unavailable required verification. Fix before merge.
 
 ## Global rule cross-checks (mandatory)
 
@@ -284,8 +317,8 @@ codebase does.
 
 ## Decision authority
 
-**Advisory + severity gating**: BLOCKER + CRITICAL block merge. MAJOR should fix before merge. Pairs
-with language-specific reviewers (`go-reviewer`, `python-reviewer`, `java-reviewer`,
+Apply the severity and merge contract above: unresolved CRITICAL/HIGH findings and
+BLOCKER/MAJOR aliases block merge. Pairs with language-specific reviewers (`go-reviewer`, `python-reviewer`, `java-reviewer`,
 `mobile-reviewer`) who own deeper language-specific findings.
 
 ## Anti-patterns to reject
@@ -337,3 +370,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Tightening of severity classification when chronic disputes observed
 - New pairing entry when a language-specific reviewer consistently catches what cross-cutting review
   misses
+
+Primary reference for the relevant review: [OWASP ASVS 5.0.0: security verification requirements](https://owasp.org/projects/asvs).

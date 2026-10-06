@@ -44,11 +44,20 @@ This agent operates within the global rule set under `~/.claude/rules/common/`. 
 ## Analysis Commands
 
 ```bash
-npm audit --audit-level=high
+npm audit --audit-level=moderate
 npx eslint . --plugin security
 ```
 
 ## Review Workflow
+
+### Dependency audit outcomes
+
+Use the canonical MODERATE+ threshold above, per [npm audit exit-status policy](https://docs.npmjs.com/cli/v11/commands/npm-audit/).
+Moderate-only, high and critical reports block merge; a clean completed audit passes
+this dependency gate. Missing tool, missing lockfile, registry/network failure or an
+unparseable report means verification unavailable and blocks the gate, not a clean audit.
+Capture the terminal exit status and report; distinguish findings from execution failure.
+Test moderate-only, high, critical, clean and unavailable-tool outcomes without a live registry.
 
 ### 1. Initial Scan
 
@@ -83,7 +92,7 @@ Flag these patterns immediately:
 | No auth check on route | CRITICAL | Add authentication middleware |
 | Balance check without lock | CRITICAL | Use `FOR UPDATE` in transaction |
 | No rate limiting | HIGH | Add `express-rate-limit` |
-| Logging passwords/secrets | MEDIUM | Sanitize log output |
+| Logging passwords/secrets | CRITICAL | Remove secret output and assess exposure/rotation |
 
 ## Key Principles
 
@@ -164,8 +173,9 @@ gates
 
 ## Decision authority
 
-**VETO on unresolved BLOCKER-class technical exploit findings** per `council-default.md` tiebreaker
-matrix. Pairs with `compliance-reviewer` (Division 6) on regulatory boundary cases.
+**VETO on unresolved CRITICAL or HIGH technical exploit findings**, including normalized
+BLOCKER or MAJOR findings. Follow the [severity and merge contract](code-reviewer.md#severity-and-merge-contract)
+before deciding the verdict. Pairs with `compliance-reviewer` (Division 6) on regulatory boundaries.
 
 ## Anti-patterns to reject
 

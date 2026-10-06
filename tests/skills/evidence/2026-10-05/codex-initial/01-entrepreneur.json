@@ -1,0 +1,54 @@
+{
+  "id": "01-entrepreneur",
+  "generated_at_utc": "2026-10-05T17:02:27.164609+00:00",
+  "request": "Lagos SaaS: 14-day pilot, eight interviews, two verbally interested, zero paying users. Budget NGN300000, subscription NGN15000/month, stated variable costs NGN3000/active account/month, acquisition cost unknown. Does no purchase establish no demand? Recommend launch decision, timeline and economics.",
+  "source_paths": [
+    "skills/entrepreneur/SKILL.md",
+    "skills/entrepreneur/references/economics.md",
+    "skills/lean-startup/SKILL.md",
+    "skills/lean-startup/references/core-patterns.md"
+  ],
+  "response": "Zero paying users does not establish no demand. We do not know whether qualified buyers received a usable offer at NGN15000/month, could pay, or had enough time to decide. Eight interviews and two verbal expressions of interest are weak evidence; they establish neither willingness to pay nor its absence across the market.\n\nHold a broad launch and run a small paid-demand experiment. First verify the NGN300000 available cash and existing commitments. Proposed incremental cap: NGN50000, including delivery and acquisition spending; retain the rest while uncertainty is high. Before results, define one reachable Lagos customer segment and a feasible target of 12 qualified buyers receiving the same concrete NGN15000/month offer. This is a decision heuristic, not statistical proof. Days 1–2: confirm the problem, alternative and service promise; days 3–10: offer the current price with clear service/refund terms; days 11–14: onboard a small cohort and inspect payment and delivered value. Charge only for a service you can fulfil. The 14-day pilot must not silently change the monthly subscription terms.\n\nProposed decision: at least three actual paying accounts with feasible delivery supports continuing the small cohort; one or two warrants changing the offer/channel and another bounded test; zero after the qualified offers warrants pausing that offer and diagnosing objections. Failure to reach 12 qualified buyers tests reach, not necessarily demand. Do not count verbal interest or refundable deposits as equivalent to durable paid subscription demand. No outreach or spending has been performed here.\n\nStated contribution is NGN15000 − NGN3000 = NGN12000 per active account per month, or 80% of the stated price before other variable fees/support, acquisition, tax and fixed costs. Three accounts give NGN45000 monthly revenue and NGN36000 stated monthly contribution, not profit. Monthly break-even needs monthly fixed costs divided by the complete positive monthly contribution; the NGN300000 cash budget is not monthly fixed cost. With zero new paying customers, CAC is undefined rather than zero; runway needs actual cash burn and LTV needs retention evidence. Downside: zero receipts and up to the proposed NGN50000 incremental spend. Monthly renewal must be checked after a full renewal interval; a 14-day pilot cannot validate it.\n\nFormula reference: [SBA break-even analysis](https://legacy.sba.gov/business-guide/plan-your-business/calculate-your-startup-costs/break-even-point).",
+  "rubric": {
+    "E1": "Do not infer no market demand or confirmed demand from this small interview/purchase evidence; assess actual priced exposure.",
+    "E2": "Give a bounded 14-day priced behavioral experiment with cost cap and predeclared decision thresholds, rather than unlimited launch.",
+    "E3": "Compute NGN12000/account/month contribution from stated inputs, distinguish cash budget from period fixed costs, and leave unknown CAC/runway/LTV unknown.",
+    "E4": "Separate initial payment from later retention/renewal; do not contact customers, spend or launch."
+  },
+  "evaluation": {
+    "method": "manual self-assessment by same delegated Codex session, after writing response; not independent model grading",
+    "outcome": "PASS",
+    "criteria": {
+      "E1": {
+        "status": "PASS",
+        "evidence": "No inference from zero payers without priced exposure; two verbal expressions remain weak evidence."
+      },
+      "E2": {
+        "status": "PASS",
+        "evidence": "NGN50000 proposed cap, 12 qualified offers, days 1–14 and explicit three/one-two/zero decisions."
+      },
+      "E3": {
+        "status": "PASS",
+        "evidence": "12000/account/month and 80%, monthly fixed-cost input missing, CAC undefined and runway/LTV unknown."
+      },
+      "E4": {
+        "status": "PASS",
+        "evidence": "Monthly renewal checked after full interval; no outreach/spend performed."
+      }
+    }
+  },
+  "negative_control": {
+    "candidate": "Zero purchases proves no demand. Otherwise launch to everyone now; 25 customers is monthly break-even because 300000/12000=25, CAC is zero and the 14-day pilot proves monthly retention.",
+    "outcome": "FAIL",
+    "reason": "Small unqualified evidence cannot establish market-wide absence, cash stock is not monthly fixed cost, no paying customers does not imply zero CAC, and 14 days does not observe monthly renewal.",
+    "method": "manual application of rubric; candidate advice not run through a second model or external service"
+  },
+  "observed_source_defects": [
+    {
+      "path": "skills/lean-startup/references/core-patterns.md",
+      "observation": "Linked Customer Discovery section prescribes 100+ unstructured interviews without qualifying this threshold for budget/risk. It could expand the 14-day low-budget experiment unnecessarily. The entrepreneur response did not follow that numeric recipe.",
+      "classification": "linked-guidance applicability risk",
+      "recommended_action": "Make interview count a context-dependent experiment choice and prioritize observed priced behavior."
+    }
+  ]
+}

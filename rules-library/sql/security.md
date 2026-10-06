@@ -24,16 +24,27 @@ shared between humans and services.**
 ```sql
 -- Postgres Row-Level Security (RLS) — strong tenant isolation
 alter table orders enable row level security;
+alter table orders force row level security;
 
 create policy orders_tenant_isolation
   on orders
   for all
-  using (tenant_id = current_setting('app.tenant_id', true)::bigint);
+  using (tenant_id = nullif(current_setting('app.tenant_id', true), '')::bigint)
+  with check (tenant_id = nullif(current_setting('app.tenant_id', true), '')::bigint);
 
--- Application sets the tenant on connection
-set app.tenant_id = 42;
-select * from orders;  -- only tenant 42's orders
+-- Validated tenant identity comes from the authenticated server context.
+begin;
+set local app.tenant_id = '42';
+select id, tenant_id from orders;
+commit;
 ```
+
+Use a non-owner application role without SUPERUSER/BYPASSRLS. Set context in every
+transaction, including pooled reuse; missing context must return no rows and reject
+writes. Never use session-wide SET for request identity. FORCE RLS does not constrain
+superusers/BYPASSRLS. A custom setting is not authentication: arbitrary SQL access
+could change it, so do not expose this role to untrusted clients or accept tenant IDs
+directly from a request without authorization.
 
 ### A02 — Cryptographic Failures
 
@@ -162,23 +173,23 @@ encryption-at-rest theatre.
 ## Privilege escalation defence
 
 ```sql
--- WRONG — function runs with caller's permissions; if user can write to it, they can escalate
+-- Default to invoker privileges; do not grant callers unnecessary elevation.
 create function notify_admin(message text) returns void as $$
 begin
     -- runs as caller
     perform pg_notify('admin', message);
 end $$ language plpgsql;
 
--- CORRECT — SECURITY DEFINER means the function runs as the OWNER
--- Use sparingly; review every SECURITY DEFINER function for injection paths
-create function notify_admin(message text) returns void as $$
-begin
-    perform pg_notify('admin', message);
-end $$ language plpgsql security definer set search_path = pg_catalog;
+-- Restrict execution even for an invoker function when access is sensitive.
+revoke all on function notify_admin(text) from public;
+grant execute on function notify_admin(text) to app_notifier;
 ```
 
-Always `set search_path` on SECURITY DEFINER functions to prevent
-attackers from creating shadow tables in the public schema.
+Use SECURITY DEFINER only for a reviewed operation requiring owner privileges, with
+a minimally privileged owner, fixed trusted `search_path`, schema-qualified objects,
+and PUBLIC EXECUTE revoked in the same creation transaction before specific grants.
+Invoker functions do not inherently escalate privilege; `pg_notify` alone is not
+evidence of a privilege escalation. Test unauthorized execution and search-path attacks.
 
 ## Required tooling
 

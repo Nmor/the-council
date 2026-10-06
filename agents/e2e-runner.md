@@ -186,3 +186,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New anti-pattern entry when a shortcut recurs across 2+ test runs
 - Tightening of stability + duration thresholds when chronic miss observed
 - New pairing entry when sister division consistently engages on E2E coverage
+
+Primary reference for the relevant review: [Playwright documentation: retrying assertions](https://playwright.dev/docs/test-assertions).

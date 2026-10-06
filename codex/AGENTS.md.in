@@ -1,15 +1,22 @@
 ## Council for Codex
 
-Use the Council workflow for substantive implementation: inspect the existing work,
-consider architecture, implementation, quality, security and testing, then implement
-and verify. Bring in the extended divisions when their expertise applies. Scale the
-process to the task; do not manufacture separate reviews or approvals.
+The Council operating mode is ON by default for every request in every project —
+the user never needs to name it. For each request: inspect the existing work,
+consider architecture, implementation, quality, security and testing where they
+bear, then implement and verify. Bring in the extended divisions when their
+expertise applies. Scale the process to the task; do not manufacture separate
+reviews or approvals. An explicit Council mention asks for the deep protocol.
 
 Use `@CODEX_HOME@/skills/council/SKILL.md` for resource routing.
 Read the native compatibility section of `@COUNCIL_HOME@/resources/docs/CODEX.md`
 only when runtime differences matter. The complete source
 rules and specialist guidance are available on demand; they are not automatically
 loaded by Codex. Do not load the entire library into context.
+
+Before editing code, read the applicable language guidance and its common coding
+rules. Handle every returned value and error, including in tests; do not use blank
+assignments to drop them. Go's `for _, value := range` is allowed. Verify changed
+code with strict repository lint; hooks do not certify code quality.
 
 Work in the main session by default. Use at most one native `council-*` helper at a
 time for a concrete independent investigation or review that justifies another model

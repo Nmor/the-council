@@ -7,6 +7,7 @@ paths:
   - "go.sum"
   - "**/go.mod"
   - "**/go.sum"
+disable-model-invocation: true
 ---
 
 # Go Development Patterns

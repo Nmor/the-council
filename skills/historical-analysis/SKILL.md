@@ -1,6 +1,7 @@
 ---
 name: historical-analysis
 description: Principal-level historical analysis — primary-source critique, archival methodology, periodisation, oral history, cliometrics, historiography, and the fallacies (presentism, Whig history, anachronism, hindsight bias) that turn the past into a mirror of present preoccupations rather than a foreign country worth understanding on its own terms.
+disable-model-invocation: true
 ---
 
 # Historical Analysis

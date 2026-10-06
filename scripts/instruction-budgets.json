@@ -1,0 +1,134 @@
+{
+  "skills/cisa-audit/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/cisa-audit/references/sampling-and-findings.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/continuous-learning-v2/config.json": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/continuous-learning-v2/scripts/instinct-cli.py": {
+    "bytes": 28672,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/continuous-learning-v2/scripts/test_parse_instinct.py": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/council-workflow/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/data-reconciliation/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/entrepreneur/references/economics.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/incident-investigation/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/pentester/references/rules-of-engagement.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/release-integration/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/requirements-acceptance/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/resilience-drills/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "skills/test-strategy/SKILL.md": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "scripts/hooks/go-discard-mutations.js": {
+    "bytes": 16384,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "hooks/improve-prompt.py": {
+    "bytes": 12288,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "codex/AGENTS.md.in": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "codex/SKILL.md.in": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/codex.py": {
+    "bytes": 28672,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/context.py": {
+    "bytes": 24576,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/install.ps1": {
+    "bytes": 16384,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/install.sh": {
+    "bytes": 32768,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/uninstall.ps1": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/uninstall.sh": {
+    "bytes": 8192,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/verify.ps1": {
+    "bytes": 20480,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "bootstrap/verify.sh": {
+    "bytes": 16384,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "settings.json": {
+    "bytes": 20480,
+    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+  },
+  "scripts/instruction-budgets.json": {
+    "bytes": 8192,
+    "reason": "Explicit budget for the budget registry; growth requires review."
+  },
+  "plugins/installed_plugins.json": {
+    "bytes": 8192,
+    "reason": "Plugin configuration is measured explicitly; not executable instructions."
+  },
+  "plugins/blocklist.json": {
+    "bytes": 8192,
+    "reason": "Explicit budget for plugin exclusions; growth requires review."
+  },
+  "plugins/config.json": {
+    "bytes": 8192,
+    "reason": "Explicit budget for plugin configuration; growth requires review."
+  },
+  "plugins/plugin-directory-cache-v2.json": {
+    "bytes": 4194304,
+    "reason": "Runtime plugin-directory cache written by Claude Code; never loaded as context."
+  },
+  "plugins/known_marketplaces.json": {
+    "bytes": 65536,
+    "reason": "Runtime marketplace registry written by Claude Code; never loaded as context."
+  }
+}
