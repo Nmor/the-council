@@ -183,3 +183,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New anti-pattern entry when a cost-shortcut recurs across 2+ projects
 - Threshold tightening on RI / SP coverage targets when chronic miss observed
 - New pairing entry when a sister division consistently engages on cost work
+
+## One pass (owner rule, 2026-11-07)
+
+A commit gets one review round. Report every finding you can find now, CRITICAL, HIGH, MEDIUM and LOW
+alike, with nothing held back as a nit or note: a finding left for a later round costs the owner a
+whole round. When asked to confirm a fix, check only
+the changed lines against the findings they answer; raise nothing new outside them unless it is
+CRITICAL or HIGH.

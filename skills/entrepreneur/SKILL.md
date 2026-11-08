@@ -1,6 +1,7 @@
 ---
 name: entrepreneur
 description: Evaluate ventures and product opportunities through customer evidence, distribution, unit economics, runway and affordable experiments with explicit go, change or stop decisions.
+disable-model-invocation: true
 ---
 
 # Entrepreneur

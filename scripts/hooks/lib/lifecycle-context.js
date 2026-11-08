@@ -109,4 +109,46 @@ function pointers(state) {
   return targets;
 }
 
-module.exports = { adviceJSON, bounded, context, pointers, readInput, writeBrief, MAX_CONTEXT_BYTES };
+// The brief (names the repository) and the final report (none = not a review) from a subagent's
+// own transcript. Keyed on top-level `type`: `api-request-blob` entries replay the system prompt.
+function agentReport(transcriptPath) {
+  const said = content => (Array.isArray(content)
+    ? content.filter(block => block && block.type === 'text')
+        .map(block => String(block.text || '')).join('\n')
+    : typeof content === 'string' ? content : '');
+  let text = '';
+  try {
+    text = fs.readFileSync(String(transcriptPath || ''), 'utf8');
+  } catch {
+    return { brief: '', report: '' };
+  }
+  // A report sent only through the hand-back tool is still the report.
+  const handedBack = content => (Array.isArray(content)
+    ? content.filter(block => block && block.type === 'tool_use' && block.name === 'SubagentHandback'
+        && block.input && typeof block.input.message === 'string')
+        .map(block => block.input.message).join('\n')
+    : '');
+  let brief = '';
+  let report = '';
+  for (const line of text.split('\n')) {
+    let entry;
+    try {
+      entry = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (!entry || (entry.type !== 'user' && entry.type !== 'assistant')) continue;
+    const content = entry.message && entry.message.content;
+    const spoken = said(content);
+    if (entry.type === 'user') {
+      if (!brief && spoken.trim()) brief = spoken;
+      continue;
+    }
+    const reported = spoken.trim() ? spoken : handedBack(content);
+    if (reported.trim()) report = reported;
+  }
+  return { brief, report };
+}
+
+module.exports = {
+  agentReport, adviceJSON, bounded, context, pointers, readInput, writeBrief, MAX_CONTEXT_BYTES };

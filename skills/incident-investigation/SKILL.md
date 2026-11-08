@@ -1,6 +1,7 @@
 ---
 name: incident-investigation
 description: Investigate service incidents and recurring customer failures by correlating logs, traces, recordings and durable state; distinguish mitigation from demonstrated root-cause fixes.
+disable-model-invocation: true
 ---
 
 # Incident investigation

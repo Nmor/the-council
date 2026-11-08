@@ -1,6 +1,7 @@
 ---
 name: brand-creative-direction
 description: Develop brand identity, visual concepts and art direction for digital, campaign, presentation, print or motion assets from an audience and brand brief.
+disable-model-invocation: true
 ---
 
 # Brand and creative direction

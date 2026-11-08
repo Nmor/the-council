@@ -1,6 +1,7 @@
 ---
 name: resilience-drills
 description: Design and run bounded backup-restore, failover and recovery exercises with measured recovery objectives, data correctness, abort conditions and cleanup evidence.
+disable-model-invocation: true
 ---
 
 # Resilience drills

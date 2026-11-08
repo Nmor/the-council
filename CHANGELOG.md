@@ -7,6 +7,49 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+**A finite machine, and the installed copy synced back (2026-11-08).**
+New standing rule `rules/common/resource-discipline.md`, with its reference in
+`rules-library/council-detail/resource-discipline.md` and a matching paragraph in
+Codex's `AGENTS.md`. For every agent in every IDE, when starting projects, running tests and running reviews:
+- check load, memory, swap and disk first;
+- reuse running stacks;
+- run one heavy job at a time, with workers bounded and at lower priority;
+- let reviewers reuse the author's evidence for the same tree;
+- run containers with `--rm`, as one reused compose project torn down with `down -v` on every exit;
+- build Go with `-trimpath`, so worktrees share one cache;
+- clean up at the end of each task.
+
+It follows a measured incident: 86 running containers, 330 GB of orphaned anonymous volumes, and a 670 GB
+Go build cache from 61 worktrees. `CLAUDE.md` drops three paragraphs that repeated
+`council-default.md`, `model-tier-selection.md` and `plan-execution-progress.md`,
+so the eager Floor fits (24,401 / 24,576 B). Also synced from the installed copy:
+- the reviewers for TypeScript, PHP, Ruby, Rust and .NET;
+- `review-dimensions.md`, `review-proof-protocol.md` and `targeted-test-runs.md`;
+- `pre-commit-deep-review.md`;
+- the pre-commit proof scripts and the review-marker hook;
+- 5 weeks of edits to the existing agents, skills and scripts.
+
+The IDE templates (VS Code, Cursor, Windsurf):
+- share one gopls daemon across windows;
+- build and test Go with `-trimpath`;
+- keep gopls, search, the file watcher and terraform-ls out of `.claude`, `.council` and `.codex`;
+- cap SonarLint's JVM;
+- stop forcing `-race` on editor test runs.
+
+`INSTALL.md` gains *Resources*, and the JetBrains guide covers excluding agent folders.
+`templates/container-reaper/` is an optional daily clean-up:
+- dry run by default;
+- never touches a service, a paused container, a named or mounted volume, or an allowlisted project;
+- one failure doesn't end a run;
+- ages come from the runtime's clock;
+- 44 cases.
+
+The commit gate's independent-review rule gains a refusal test for each of its four reasons.
+Its existing tests now record the review proof the gate requires.
+
+`agents/refactor-cleaner.md` is raised to a 9 KB budget, to hold its capability-triage section and its
+restored OWASP ASVS citation.
+
 **Default-on Council, gate evidence and behavioral closure (2026-10-05/06).**
 Per-request Council activation restored on both runtimes: a slim UserPromptSubmit
 injector (bounded activation on real prompts; silent on prefixes, acknowledgements

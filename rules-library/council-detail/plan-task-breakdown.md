@@ -1,363 +1,209 @@
-> Detailed reference. Apply the current adaptive workflow in `CLAUDE.md` and
-> `rules/common/` first. Historical demands for fixed speeches, repeated full audits,
-> automatic fan-out, fresh plans or mandatory model tiers are superseded. Retain the
-> substantive correctness, security and verification checks relevant to the task.
+# Actionable task contract
 
-# Plan-Task-Breakdown Rule (Always-On, Global)
-
-> Auto-fires on every file. Sister to `plan-execution-progress.md`
-> (this rule governs PLAN AUTHORING; that rule governs PLAN
-> EXECUTION). Companion to `done-criteria.md`,
-> `plan-completion-before-push.md`, and `no-overclaim.md`.
->
 > **Size budget: 17 KB** — `token-budget.mjs --check`.
 
-## Core Principle
+This is the shared planning contract for Claude Code, Codex, specialists and
+project plans. Keep project facts in the existing authoritative plan. Load this
+reference when authoring, reviewing or resuming substantial planned work; it is
+not an instruction to load the entire plan or launch more agents.
 
-**Every plan — internal, Council-approved, or user-facing —
-decomposes the work into a long list of small, atomic, verifiable
-tasks. Each task is the smallest unit of work that produces a
-useful, verifiable outcome. Big goals appear as the sum of many
-small tasks, never as a single coarse "do everything in this
-area" line.**
+## Decompose by outcome
 
-The pattern this rule prevents: a plan whose phases say "build the
-marketplace feature" with no further breakdown. The reader can't
-estimate the work, can't spot missing steps, can't reorder
-priorities, can't interrupt before a wrong direction lands, can't
-track progress mid-phase, and can't verify completeness when the
-phase reports done.
+For substantive plans, use the [principal quality contract](principal-level-mandate.md)
+to connect requirements, invariants, design/tool decisions and meaningful evidence.
+Every required outcome must survive decomposition, including difficult failure and
+consumer checks. A task is not ready while a decisive capability/design assumption
+remains unverified; make that unknown a bounded prerequisite investigation.
 
-## Hard rules
+A task produces one useful outcome that one owner can implement and verify with
+a bounded set of inputs. Name the outcome with a verb and object: "Reject a
+duplicate event before charging" rather than "Work on payments".
 
-### 1. Atomic granularity
+Split a task when it has independently verifiable outcomes, different owners or
+authorization boundaries, unresolved decisions that change its implementation,
+or more relevant context than a focused work session can retain. Turn an unknown
+into an investigation with a decision or evidence deliverable; do not invent
+file paths, timings or implementation details to make the plan look complete.
 
-Each task is the smallest unit that:
+Keep a change and the tests needed to prove that change together when separating
+them would leave an unsafe or unusable intermediate state. A separate verification
+task is useful for a cross-service seam, independent review or release exercise.
+Include affected wiring, compatibility, documentation, UX/accessibility and cleanup
+in the relevant outcome or in explicit dependent tasks. Cleanup requires evidence
+that consumers have migrated; an unfinished capability is not automatically bloat.
 
-- Produces a single verifiable outcome (one file written, one
-  function refactored, one config gate added, one commit boundary)
-- Can be completed in roughly 15 minutes to 4 hours by a single
-  agent
-- Has a clear "done" predicate (test passes, file exists, grep
-  returns the expected count, gate emits green)
-- Doesn't require a sub-plan to execute
+Phases group outcomes and may have sub-steps when useful. Neither a fixed hierarchy,
+minimum task count nor a duration quota determines correctness. Routine fixes may
+need only a short checklist. Large work should expose its dependencies and small
+deliverable slices without creating hundreds of speculative tasks.
 
-A task that says "rewrite the auth module" is too coarse. An
-atomic task names a file path, the change shape, and a verifiable
-outcome.
+## Stable labels
 
-### 2. Long lists are the norm, not the exception
+Use the same IDs in the plan, tracker, review, evidence index and agent handoff.
+Preserve existing IDs and issue keys; record an alias once if normalization is
+needed. Never renumber completed or referenced tasks. Moving a task between phases
+does not change its ID. Plan IDs and task priorities are separate fields.
 
-A real-world plan typically produces:
+For a new Council plan, choose an unused `P<n>` identifier in that plan's namespace.
+Use `P<n>.TASK.<sequence>` for new task IDs, for example `P12.TASK.3`. The sequence is
+monotonic within the plan, not a priority or execution order. Existing typed IDs
+such as `P9.C.8` remain valid. Grouping and artifact labels may use:
 
-- **Small fix**: 3–8 tasks
-- **Medium feature**: 15–40 tasks
-- **Large migration / refactor**: 50–200 tasks
-- **Multi-phase rebuild**: 200–500+ tasks across phases
-
-If the plan has < 10 tasks for non-trivial work, the breakdown is
-wrong — go finer.
-
-### 3. Hierarchy: Phase → Sub-step → Task
-
-Every plan uses a three-level structure. The canonical shape —
-not the specifics — is universal across plans:
-
-```text
-Phase N — <one-line goal>
-├── N.A — <one-line sub-step goal>
-│   ├── Task N.A.1 — <atomic action with path + outcome> · verify: <predicate>
-│   ├── Task N.A.2 — <atomic action with path + outcome> · verify: <predicate>
-│   ├── ...
-│   └── Task N.A.k — <commit + verification gate>      · verify: <predicate>
-└── N.B — <next sub-step>
-    ├── Task N.B.1 — ...
-    └── ...
-```
-
-Each Task line is ≤ 1 sentence, names a verifiable outcome, and
-fits the granularity rule above. Specific task content lives in
-the project's plan file under `~/.claude/plans/<slug>.md` or
-`<project>/.claude/plans/<slug>.md` — never in this rule.
-
-### 4. Every task has explicit verification
-
-Each task in the plan names HOW it will be verified done — a
-green/red predicate (e.g., a grep that returns 0, a `du` size
-delta, a test that passes, a `git log` line that exists). No "I
-think this worked."
-
-### 5. Tasks list THE OUTCOME, not the activity
-
-Wrong shape: "Investigate the orphan dirs."
-Right shape: "Identify orphan dirs not paired with any active
-session. Report count + total size."
-
-The activity is implicit; the outcome is what the next agent /
-user can act on. Outcome-shaped tasks are also easier to mark
-done.
-
-### 6. Tasks include their preconditions
-
-When a task has prerequisites (another task complete, a file
-exists, a gate is green), the plan names them as a `Precondition:`
-field. Precondition blocks form the dependency graph; the agent
-can parallelize tasks that don't share a precondition.
-
-### 7. Tasks include their commit boundary
-
-Each task names whether it lands in its own commit or batches
-with sibling tasks under a single commit boundary. Atomicity
-matters when sibling tasks must land together (e.g., a config
-change and the code that depends on it).
-
-### 8. TodoWrite mirrors the granular task list
-
-`TodoWrite` is the live execution surface — it must reflect the
-plan's task IDs, not just phase names. As tasks complete, they
-move to `completed` IMMEDIATELY (per `plan-execution-progress.md`).
-
-A `TodoWrite` list with N phase-level entries for a 10×N-task plan
-is wrong. Either:
-
-- Use phase-level entries that LINK into the plan file's task
-  list (acceptable for very long plans), AND tick the plan file's
-  tasks as they finish, OR
-- Mirror every task in TodoWrite (preferred for plans under 100
-  tasks)
-
-### 9. Plans grow during execution
-
-When mid-execution a task reveals new sub-work (a missed gate, a
-discovered orphan, a hidden dependency), the agent:
-
-1. Pauses the current task
-2. Adds the new tasks to the plan + TodoWrite with explicit IDs
-3. Resumes execution
-
-The plan is a living artifact. NEVER smuggle un-listed work into a
-phase. NEVER drop discovered work because "the plan didn't list
-it." Either it gets added to the plan and tracked, OR it's
-explicitly deferred with the user's awareness.
-
-### 10. Every plan ends with a bloat-removal phase
-
-The final phase of every multi-phase plan (BEFORE the
-plan-completion verification + commit) is a **bloat-removal
-phase**. It fires only when every prior phase reports 100%
-verified done, and it removes everything the plan made obsolete:
-
-| Class | Examples |
-| --- | --- |
-| Stub redirects | Files left as 1-line redirects after consolidation; once references are migrated, delete the stubs |
-| Deprecated wrappers | Backward-compat shims kept "just in case" through the migration |
-| Now-unused dependencies | Packages whose last consumer the plan removed |
-| Now-unused exports | Functions/types only the deprecated path used |
-| Empty directories | Source / test / docs dirs whose last file the plan moved out |
-| Dead config keys | Env vars / feature flags / TF locals the plan no longer reads |
-| Old migrations / fixtures | Stale seed data, dev-only mocks that drifted from prod |
-| Workaround comments | TODO / FIXME / XXX placeholders the plan's proper fix made redundant |
-| Outdated docs | Wiki pages / README sections that describe the old architecture |
-| Sanitized intermediate artifacts | Temp files, snapshot dumps, `.tmp` / `.bak` left by previous phases |
-
-The bloat-removal phase MUST run AFTER:
-
-- Every prior phase's verification block is green this turn
-- Every consumer of the about-to-be-removed surface has migrated
-- A link-integrity grep shows zero inbound references to each
-  target of removal
-
-The bloat-removal phase MUST run BEFORE:
-
-- The plan-completion commit (per `plan-completion-before-push.md`)
-- Any tag, release, or PR merge
-
-Skipping or deferring the bloat-removal phase is a silent drop
-(per `no-silent-drops.md`) — the plan finished WITH the bloat
-still present, which is a different outcome than the user
-expected. If genuine reason exists to defer (e.g. consumer not
-yet migrated, observability needs a cooldown window), document
-the defer in the plan with an explicit re-run date.
-
-### 11. Tasks are written so an interruption resumes cleanly
-
-After each task completes, a fresh agent (or fresh session) should
-be able to read the plan + TodoWrite + git log and resume from
-the next pending task without re-deriving context.
-
-This means tasks include:
-
-- The file paths they touch (absolute or repo-rooted)
-- The commands they run (verbatim)
-- The expected outcome (verifiable predicate)
-- The reason they exist (one line — what bug / risk this closes)
-
-A task that says "fix the thing" is unrecoverable on resume.
-
-### 12. User-facing work ships its UI/UX + accessibility in the SAME plan
-
-Every task that changes user-visible behaviour (a new endpoint's screen, a new
-state/status, copy, an error surface, a money/format change, a flow) carries its
-UI/UX in the SAME plan — never bolted on later:
-
-- The plan enumerates the UI/UX additions / improvements / changes as their own
-  atomic tasks (screen, component, copy, empty/error/loading states, a11y pass),
-  cross-referenced to the backend task they serve.
-- A feature is NOT "done" until its UI/UX ships AND its accessibility pass
-  (WCAG 2.2 AA — keyboard, screen-reader, contrast, focus, targets) is verified.
-- New UI/UX additions/changes discovered mid-execution are ADDED to the plan
-  (per rule 9), never carried only in someone's head.
-- For any project with a UI, the plan has a dedicated UI/UX lane/phase, and every
-  user-facing backend task links to its entry there.
-
-The pattern this prevents: backend features shipping "done" with no screen,
-inconsistent money/format rendering, or an inaccessible flow — UX debt that only
-surfaces at launch. UI/UX is planned WITH the feature, not after it.
-
-## Canonical plan-marker naming convention (mandatory)
-
-EVERY plan artifact — plan, wave, phase, task, gap, review, finding —
-uses ONE typed grammar, always rooted at `P<plan-number>` with
-dot-segments. One grammar ⇒ one hook family catches every stray.
-
-```text
-P<plan>.<segment>[.<segment>…]    root form (P + digits, dot-segments)
-```
-
-| Artifact | Canonical form | Example |
+| Artifact | Label | Example |
 | --- | --- | --- |
-| Plan | `P<n>` | `P11` |
-| Wave | `P<n>.W<k>` | `P11.W2` |
-| Phase | `P<n>.<PHASE>` (letter or `PH<k>`) | `P9.C`, `P11.PH3` |
-| Task / item | `P<n>.<wave\|phase>.<item>` | `P11.W2.G2`, `P9.C.8` |
-| Gap | `P<n>.GAP<k>` | `P11.GAP8` |
-| Review | `P<n>.RV<k>` (or `P<n>.W<k>.RV`) | `P11.RV1`, `P11.W2.RV` |
-| Finding | `P<n>.F<k>` | `P11.F3` |
+| Plan | `P<n>` | `P12` |
+| Phase or wave | `P<n>.PH<k>` or `P<n>.W<k>` | `P12.PH2` |
+| Task | `P<n>.TASK.<sequence>` | `P12.TASK.3` |
+| Gap, finding, review | `P<n>.GAP<k>`, `P<n>.F<k>`, `P<n>.RV<k>` | `P12.F1` |
 
-- ALWAYS prefix with `P<digits>` and use dot-segments. NEVER invent a
-  bare ad-hoc scheme — `C6`, `R-W2`, `G1`, AND standalone `GAP8` /
-  `GAP-9` are all DEPRECATED: a gap is `P<n>.GAP<k>`, a review is
-  `P<n>.RV<k>`. The typed `P<n>.…` form is the ONE allowed shape, so a
-  single hook family covers every artifact type.
-- This is not cosmetic: the global `no-discards` hook (`task-pointer`
-  rule) catches the `P<n>.<seg>.<seg>` form in any committed
-  source/test/IaC with ZERO false positives (cell `C6`, hex
-  `#C6C6C6`, note `G1`, version `1.2.3` are all correctly ignored).
-  Conform and a stray marker is auto-blocked at edit time; deviate and
-  it ships silently. The hook ALSO catches the deprecated standalone
-  forms — `R-W<n>` and `GAP<n>`/`GAP-<n>` — as belt-and-braces, so a
-  leaked gap pointer (`GAP8`) is blocked even though new plans must use
-  the `P<n>.GAP<k>` form.
-- Plan-marker IDs live in the gitignored plan + the commit/PR body
-  ONLY — never in a source/test comment (per
-  `feedback-no-plan-markers-in-code`). The convention exists so that
-  IF one leaks, the hook catches it.
+When only a plan excerpt is loaded, search its label metadata to find unused IDs;
+do not read the entire history just to allocate a sequence. The main plan owner
+reserves IDs in the authoritative plan before handing tasks to workers and
+coordinates concurrent additions. Draft IDs remain provisional until checked.
 
-## Canonical task-row shape
+When splitting a referenced task, retain its ID and original outcome as the
+parent record. Assign new child IDs and record their parent and coverage of that
+outcome; do not silently narrow or rename the original task. Mark the parent
+`done` only when required children and its original acceptance are verified.
+This lineage is useful for an existing oversized task, not a mandatory hierarchy
+for every new task.
+Only outcomes required by the original approved scope are required children.
+Keep optional future operations separate: a readiness-only parent must not depend
+on an unrequested deployment or acquire it as a completion requirement.
 
-```text
-Task <id> — <verb> <object> [in <file/dir>] · verify: <predicate>
+Use repository issue keys as the primary IDs where that is already the convention;
+map any Council alias in the authoritative plan instead of creating a second list.
+Do not embed project plan markers in production source or test comments. Commit/PR
+bodies and the project's plan/evidence records may reference them.
+
+## Types, priorities and statuses
+
+Use lowercase machine-readable values. Type describes the deliverable, priority
+describes urgency, status describes progress, and optional tags describe the
+domain (`frontend`, `backend`, `security`, language, repository). A domain, agent
+name or severity is not a task type. Use one primary type per task:
+
+| Type | Deliverable |
+| --- | --- |
+| `investigation` | Evidence, root cause or a bounded recommendation resolving an unknown |
+| `design` | A decision or contract needed before implementation |
+| `implementation` | Working code, configuration, wiring, bug fix or refactor with its checks |
+| `verification` | Independent review, test result, simulation or integration evidence |
+| `documentation` | Accurate guidance or another requested written artifact |
+| `operations` | An authorized installation, migration, deployment or operational action |
+
+Choose the type from the task's immediate deliverable, not a future activity it
+discusses. Assessing deployment readiness is `verification`; writing a rollout
+runbook is `documentation`. Neither becomes `operations` merely by mentioning
+deployment, and neither implies authorization to deploy.
+
+Use the repository's priority definitions. If absent, use `P0` for an immediate
+critical incident, `P1` for a serious correctness/security or delivery blocker,
+`P2` for normal planned work, and `P3` for lower urgency improvements. Risk and
+dependency order remain separate: a low priority prerequisite can run first.
+
+Canonical statuses are `pending`, `in_progress`, `blocked`, `done`, `deferred`
+and `cancelled`. `blocked` names the unavailable prerequisite and recovery action;
+it does not mean merely difficult. `deferred` records the reason and agreed
+scope decision or follow-up trigger. `cancelled` records why the outcome is no
+longer needed. Neither counts as delivered. Required work cannot be silently
+deferred or cancelled to make the plan look complete.
+
+Map existing tracker values explicitly rather than rewriting its native schema:
+`todo`/`open` → `pending`, `doing` → `in_progress`, `completed`/`closed` → `done`
+only when closure means verified delivery. Claude/Codex trackers offering only
+`pending`, `in_progress`, `completed` use `completed` for verified `done`; keep
+blocked/deferred/cancelled reasons in the plan and tracker description. If no
+native tracker is available, update the plan directly and say so accurately.
+
+## Minimum task record
+
+Use a short row plus a context capsule for substantive tasks. Omit empty optional
+fields; do not repeat global rules or shared context in every record.
+
+```markdown
+- [ ] P12.TASK.3 — Reject a duplicate event before charging
+  - Type: implementation; Priority: P1; Status: pending; Owner: main session
+  - Scope: API repository, src/webhooks.ts and tests/webhooks.test.ts;
+    preserve the event-v1 response contract used by the worker.
+  - Context: retry can arrive after a successful charge; use the unique event key.
+    Inputs: plan decision "Event identity" and the sanitized retry fixture.
+  - Depends on: P12.TASK.2. Preconditions: event key contract resolved.
+  - Acceptance: retry produces one charge and the same outcome; a failed first
+    attempt can recover; existing v1 callers still pass compatibility checks.
+  - Verify: run the repository webhook regression command from the API worktree;
+    expect exit 0 and the duplicate/failure/v1 cases to pass. Record exact command
+    once confirmed, result and evidence path before marking done.
+  - Delivery: batch with the worker contract change; no push authorized.
 ```
 
-Examples of correctly-shaped rows (generic, substitute your
-domain):
+The record must locate the relevant repository/worktree, own a bounded surface,
+explain the invariant or reason, name required inputs and dependency IDs, and
+define observable acceptance and verification. Give exact commands when known;
+otherwise name how to discover the repository check rather than fabricate it.
+Investigation tasks specify a bounded search and decision/evidence output. An
+operations task names the target environment, existing authorization, readiness
+and rollback conditions. Shared commit policy belongs in plan context; repeat a
+delivery boundary only when a task needs a special atomic batch or permission.
 
-```text
-Task M.N.1 — Read primary-source spec / RFC / regulation §<section>
-             · verify: docs/provider-research/<name>.md cites the URL
-Task M.N.2 — Draft <artifact> at <path> per the template
-             · verify: file exists, structural checks pass,
-               code-graph: outbound refs in <artifact> resolve
-Task M.N.3 — Wire <artifact> into the index / auto-discovery layer
-             · verify: grep across consumers returns the new entry,
-               code-graph: inbound edges to <artifact> present
-Task M.N.4 — Commit atomically: <artifact> + index update together
-             · verify: `git log -1` shows the commit; `git status`
-               clean; code-graph pre-commit sweep green
-```
+## Ready, execute, verified
 
-Per `code-graph-validation.md` rule 7, every atomic task that
-touches code, config, or wiring carries a code-graph predicate
-in its verification field. The predicate is mechanical (the
-incremental check exits clean on the touched surface + its
-immediate neighbors).
+A task is ready when its required inputs are located, decisions and dependencies
+are resolved, permissions cover its effects, and its acceptance check is concrete.
+If its worktree, owner or required contract is unknown, the next action is a
+bounded lookup or assignment, not an implementation command. A proposed command
+does not establish that its working directory or prerequisites exist.
+For a planning-only draft, retain recorded statuses and label proposed IDs, checks
+and dependencies as proposals. Decomposing a pending task does not start it.
+The current handoff delivers the draft; describe implementation commands as future
+steps within the user's authorization, not actions to execute under a plan-only request.
+Choose a ready task by priority and dependency order. Keep the live tracker to the
+active task and a few ready next tasks, linked by ID to the complete plan. Do not
+copy a hundred-task backlog into every turn or replace task tracking with phase
+names. Tasks that modify shared files or dependent contracts need coordination;
+different dependency IDs alone do not make them safe to execute in parallel.
 
-## How this rule shapes the plan file
+Before editing, inspect current files and other agents' work. Execute within the
+task's scope, preserve their changes, and add newly discovered work to the same
+plan with new IDs. Resolve necessary in-scope work; surface a material scope
+change for the user's decision without dropping it or expanding permissions.
 
-Every plan file under `~/.claude/plans/` or `<project>/.claude/
-plans/` MUST follow this structure:
+Mark `done` only after acceptance checks finish successfully and evidence is
+recorded. A command starting, a file existing or a search match does not prove
+behavior. Record failures, skipped checks and what they leave unverified. Link
+valid evidence for unchanged inputs instead of rerunning checks after every
+compaction. Track implementation, local testing, integration, installation and
+deployment separately; a completed local fix does not imply deployment.
 
-```text
-# <Plan slug>
+## Resume without losing the thread
 
-## Context
-<the WHY — what problem, what outcome>
+Keep one compact current-handoff section in the existing plan. Update it at a
+meaningful milestone or before yielding/compaction, replacing stale current state.
+It contains the goal and accepted constraints; active task ID/status; repository,
+worktree/branch and commit or uncommitted changes; key decision/input links;
+completed verification evidence and remaining checks; blockers; and the next
+specific action. If a task is partially done, name the exact remaining step.
 
-## Critical files
-<paths>
+Give a delegated agent only this relevant capsule, its owned paths and permitted
+effects, dependency/contract excerpts, required evidence and output bound. Refer
+to task IDs in its result; keep long logs in linked artifacts. The main owner
+integrates the result into the same plan. Do not create a helper plan or assume a
+summary proves a test passed. On resume read the handoff and active task first,
+then only inputs needed for the next action; confirm worktree changes before edits.
 
-## Execution plan
+## Plan quality check
 
-### Phase N — <one-line goal>
-**Sub-steps**:
-- N.A — <one-line goal>
-**Tasks**:
-- [ ] N.A.1 — <atomic task> · verify: <predicate>
-- [ ] N.A.2 — <atomic task> · verify: <predicate>
-...
-```
+- Every requested outcome maps to a task and acceptance check, including integration.
+- Titles describe outcomes; oversized or decision-dependent tasks are split.
+- IDs are unique and stable; types, priorities, statuses and domain tags are distinct.
+- Dependencies exist, form no cycles, and allow at least one executable next step
+  or clearly explain an external blocker.
+- Owned paths, inputs and verification are sufficient for an agent without the chat.
+- Partial work, unverified claims and external effects are visible in the handoff.
+- Required children preserve the approved parent scope; optional future operations
+  do not create new completion requirements or authorization.
 
-The plan length is intentional. A long plan for a non-trivial
-rebuild is correct; a two-page plan for the same work is wrong.
-
-## Anti-pattern: what NOT to write
-
-```text
-Phase N: Add domain skills
-  - Security
-  - Finance
-  - Design
-  - AI/ML
-```
-
-This violates rules 1, 3, 4, 5, 6, 7 simultaneously. The reader
-can't estimate, can't reorder, can't track, and the agent can't
-resume after interruption.
-
-## Cross-references
-
-- `plan-execution-progress.md` — how the agent reports progress
-  through this task list during execution
-- `plan-completion-before-push.md` — push gate runs only after
-  every task in the plan is ticked + verified
-- `done-criteria.md` — every task's "done" runs the gate
-- `code-graph-validation.md` — every atomic task's verification
-  predicate includes a code-graph check when the task touches
-  code, config, or wiring
-- `no-overclaim.md` — never claim a phase done with un-ticked
-  tasks
-- `no-silent-drops.md` — never silently drop a task from the list
-- `verify-before-claim.md` — task done = verified done
-
-## Why this rule exists
-
-Multi-phase plans approved without per-phase task breakdowns
-produce predictable failures: the user cannot tell what sub-step
-the agent is currently on; the agent skips small mandatory items
-because they weren't named in the plan; resuming a session
-requires re-deriving the entire phase shape; completion claims
-arrive without anyone able to audit them. The cost of writing
-many small tasks at plan time is some extra planning hours. The
-cost of executing fuzzy phases is repeated re-verification,
-mistrust, and lost work when a sub-step is silently skipped.
-
-User directive (verbatim): "plans should always have proper
-breakdown of tasks so that you always have a long list of small
-items that lead to big goals."
-
-## Learning hooks
-
-Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill. Invoke it when refining this rule: it does not load
-by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
-the task at hand, so they are not carried on every turn.
+Related guidance: [execution progress](plan-execution-progress.md),
+[one plan](../../rules/common/one-plan-per-workspace.md),
+[completion](../../rules/common/done-criteria.md) and
+[agent handoffs](../../skills/council-rules/references/agent-delegation.md).

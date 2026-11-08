@@ -74,7 +74,7 @@ Before writing a utility or adding functionality, mentally run through:
 For non-trivial functionality, launch the researcher agent:
 
 ```text
-Task(subagent_type="general-purpose", prompt="
+Task(subagent_type="general-purpose", model="haiku", prompt="
   Research existing tools for: [DESCRIPTION]
   Language/framework: [LANG]
   Constraints: [ANY]

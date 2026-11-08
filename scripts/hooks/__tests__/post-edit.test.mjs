@@ -82,9 +82,14 @@ describe('every per-edit hook — a broken payload must not break the turn', () 
 // ---------------------------------------------------------------------------
 
 // Positive checks use explicitly supplied local packages; absence is always tested.
+// They run everywhere: a missing fixture fails here, by name, instead of skipping them.
+test('the pinned prettier and TypeScript fixtures are present', () => {
+  assert.ok(prettierAvailable && typescriptAvailable,
+    'run `npm ci` in tests/test-tools and set COUNCIL_TEST_NODE_MODULES (run.sh does)');
+});
 
 describe('post-edit-format.js — it formats what prettier owns and nothing else', () => {
-  test('rewrites a JavaScript file that was saved badly spaced', { skip: !prettierAvailable && 'prettier is not installed here' }, () => {
+  test('rewrites a JavaScript file that was saved badly spaced', () => {
     const f = fixture('a.js', 'const  a=1;;\nfunction  f( ){return    a}\n');
     const r = edit('post-edit-format.js', f);
     assert.equal(r.code, 0);
@@ -155,7 +160,7 @@ describe('post-edit-format.js — it formats what prettier owns and nothing else
     );
   });
 
-  test('says nothing on stderr when it formats — a reformat is not a finding', { skip: !prettierAvailable && 'prettier is not installed here' }, () => {
+  test('says nothing on stderr when it formats — a reformat is not a finding', () => {
     const f = fixture('b.js', 'const  a=1\n');
     assert.equal(said(edit('post-edit-format.js', f)), '');
   });
@@ -180,7 +185,7 @@ const BAD_TS = 'export const y: number = "not a number";\n';
 const GOOD_TS = 'export const x: number = 1;\n';
 
 describe('post-edit-typecheck.js — it reports the edited file, and only when tsc can run', () => {
-  test('reports the type error the edit just introduced', { skip: !typescriptAvailable && 'explicit local TypeScript package absent' }, () => {
+  test('reports the type error the edit just introduced', () => {
     const d = tsProject({ 'main.ts': BAD_TS });
     const r = edit('post-edit-typecheck.js', join(d, 'main.ts'));
     assert.equal(r.code, 0, 'PostToolUse cannot block — the edit has already landed');
@@ -188,14 +193,14 @@ describe('post-edit-typecheck.js — it reports the edited file, and only when t
     assert.match(advice(r), /TS2322/, 'it must quote tsc, not just announce that tsc ran');
   });
 
-  test('reports a project failure without pinning another file error on the edit', { skip: !typescriptAvailable && 'explicit local TypeScript package absent' }, () => {
+  test('reports a project failure without pinning another file error on the edit', () => {
     const d = tsProject({ 'other.ts': GOOD_TS, 'main.ts': BAD_TS });
     const r = edit('post-edit-typecheck.js', join(d, 'other.ts'));
     assert.match(advice(r), /project check did not pass/);
     assert.doesNotMatch(advice(r), /TypeScript errors in other/);
   });
 
-  test('stays silent when the edited TypeScript file type-checks clean', { skip: !typescriptAvailable && 'explicit local TypeScript package absent' }, () => {
+  test('stays silent when the edited TypeScript file type-checks clean', () => {
     const d = tsProject({ 'main.ts': GOOD_TS });
     assert.equal(said(edit('post-edit-typecheck.js', join(d, 'main.ts'))), '');
   });

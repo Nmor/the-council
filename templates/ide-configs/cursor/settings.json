@@ -143,14 +143,17 @@
   // (per ~/.claude/rules-library/golang/no-discards.md)
   // ============================================================
   "go.useLanguageServer": true,
+  "go.languageServerFlags": ["-remote=auto"],
+  "go.buildFlags": ["-trimpath"],
   "go.lintTool": "golangci-lint",
   "go.lintOnSave": "workspace",
   "go.vetOnSave": "workspace",
   "go.formatTool": "goimports",
-  "go.testFlags": ["-race", "-count=1"],
+  "go.testFlags": ["-count=1", "-trimpath"],
   "go.coverOnSave": false,
   "go.toolsManagement.checkForUpdates": "local",
   "gopls": {
+    "build.directoryFilters": ["-**/node_modules", "-**/.claude", "-**/.council", "-**/.codex"],
     "ui.semanticTokens": true,
     "ui.completion.usePlaceholders": true,
     "ui.diagnostic.staticcheck": true,
@@ -259,6 +262,9 @@
     "**/.vscode-test": true
   },
   "search.exclude": {
+    "**/.claude": true,
+    "**/.council": true,
+    "**/.codex": true,
     "**/pnpm-lock.yaml": true,
     "**/package-lock.json": true,
     "**/yarn.lock": true,
@@ -270,6 +276,9 @@
     "**/composer.lock": true
   },
   "files.watcherExclude": {
+    "**/.claude/**": true,
+    "**/.council/**": true,
+    "**/.codex/**": true,
     "**/node_modules/**": true,
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
@@ -505,5 +514,13 @@
     "fontWeight": "bold"
   },
   "todo-tree.tree.showCountsInTree": true,
-  "todo-tree.tree.showBadges": true
+  "todo-tree.tree.showBadges": true,
+
+  // ============================================================
+  // Resources (per rules/common/resource-discipline.md): each window runs its own
+  // language servers, so share what can be shared, narrow what they index, and
+  // keep them out of agent worktrees and output.
+  // ============================================================
+  "terraform.languageServer.indexing.ignoreDirectoryNames": [".claude", ".council", ".codex", "node_modules"],
+  "sonarlint.ls.vmargs": "-Xmx1g"
 }

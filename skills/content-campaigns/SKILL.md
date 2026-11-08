@@ -1,6 +1,7 @@
 ---
 name: content-campaigns
 description: Create evidence-based campaign briefs, channel-specific marketing copy, content calendars and reusable launch assets with measurement and editorial checks.
+disable-model-invocation: true
 ---
 
 # Content and campaigns

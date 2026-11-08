@@ -12,4 +12,10 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 # Every *.test.mjs, not a hand-listed subset. This line used to name one file while the
 # usage above said "all hook tests", so three of four suites never ran and the count
 # looked healthy — the same defect the gates here exist to catch, in the runner itself.
+# The post-edit tests drive the formatter and compiler pinned in tests/test-tools, as CI does.
+export COUNCIL_TEST_NODE_MODULES="${COUNCIL_TEST_NODE_MODULES:-$(cd ../.. && pwd)/tests/test-tools/node_modules}"
+if [[ ! -d "$COUNCIL_TEST_NODE_MODULES" ]]; then
+  echo "missing $COUNCIL_TEST_NODE_MODULES: run 'npm ci --ignore-scripts' in tests/test-tools" >&2
+  exit 1
+fi
 exec node --test "$@" __tests__/*.test.mjs

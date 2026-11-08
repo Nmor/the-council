@@ -1,6 +1,7 @@
 ---
 name: requirements-acceptance
 description: Turn ambiguous feature requests or reported defects into observable acceptance criteria, preserving user intent and tracing requirements to verification evidence.
+disable-model-invocation: true
 ---
 
 # Requirements and acceptance

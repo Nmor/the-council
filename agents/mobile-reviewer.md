@@ -61,6 +61,11 @@ Swift / SwiftUI, Dart / Flutter, Kotlin / Jetpack Compose / Android, and React N
 - `typescript/coding-style.md` — discriminated unions, branded types
 - Reanimated 3 for animations; FlashList / FlatList with `getItemLayout`
 
+- `wiring-and-usage-review.md` — every new capability traced from its real entrypoint
+  to observable behaviour; no inert symbol, flag, config key or route
+- `idempotency.md` — every side effect safe to apply twice; the key claimed before the
+  effect, not recorded after it
+
 ## Auto-fire triggers
 
 - File globs: `**/*.swift`, `**/*.xib`, `**/*.storyboard`, `**/*.xcconfig`, `**/Package.swift`,
@@ -76,6 +81,15 @@ normalize to CRITICAL; MAJOR/HIGH to HIGH; MINOR/MEDIUM to MEDIUM; SUGGESTION/LO
 Unresolved CRITICAL/HIGH block merge; MEDIUM warns; LOW is a note. Unknown severity or
 unavailable required verification is CHANGES_REQUIRED. Classify by impact/likelihood,
 not by platform; use the same action for the same unresolved exploit.
+
+## Mandatory review dimensions
+
+Apply every dimension in
+[review-dimensions.md](../rules-library/common/review-dimensions.md): dependencies and usages
+(name the live consumer of each new or changed symbol, and trace one path end to end),
+idempotency and retry safety (assume every operation runs twice), partial failure and what it
+leaves behind, failure visibility, and tests that would actually fail. Report each as a finding
+with file:line or as an explicit "checked, clean" — these classes are invisible in the diff.
 
 ## Review checklist
 

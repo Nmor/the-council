@@ -1,6 +1,7 @@
 ---
 name: council-workflow
 description: Diagnose Council context overload or stalled workflows and tune task routing, bounded evidence and handoffs while preserving required checks and active user sessions.
+disable-model-invocation: true
 ---
 
 # Council workflow efficiency
@@ -30,10 +31,18 @@ limit; do not recursively delegate or load the whole library. Reuse valid eviden
 unchanged code and avoid repeating intake after compaction.
 
 Maintain one authoritative project plan. Its compact handoff records objective, accepted
-constraints, worktree, commits, evidence, remaining work and next action. Update that
-section in place rather than appending the full conversation or a second plan. Keep
+constraints, active task ID/status, worktree, commits, evidence, remaining work and
+the exact next action. Use the [shared task contract](../../rules-library/council-detail/plan-task-breakdown.md)
+to split oversized work and give each task only its necessary context and acceptance.
+Keep only active work and a few ready tasks in the live tracker. Update the handoff
+in place rather than appending the full conversation or a second plan. Keep
 unrelated history on disk. Resume from this handoff without treating a summary as proof
 of execution. A started command is not a passed check.
+
+For sustained work, apply the shared [execution discipline](../../rules-library/council-detail/plan-execution-progress.md#bound-sustained-work):
+hourly checkpoints, evidence-based retries, bounded external waits and explicit
+completion. Distinguish instruction targets from runtime-enforced limits; no hook
+in this skill automatically clears a session or enforces an account-wide budget.
 
 ## Verification and learning hooks
 
@@ -42,6 +51,7 @@ compact cycle separately from a real runtime event. Preserve user configuration 
 authorization. Record the specific repeated read/output that caused overload and the
 smallest confirmed correction; stop tuning when the task succeeds.
 
-Runtime reference: [Claude Code context and compaction](https://code.claude.com/docs/en/how-claude-code-works).
+Runtime references: [Claude Code costs and long sessions](https://code.claude.com/docs/en/costs)
+and [context and compaction](https://code.claude.com/docs/en/how-claude-code-works).
 
 > **Size budget: 4 KB** — `token-budget.mjs --check`.

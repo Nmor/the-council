@@ -203,3 +203,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New pairing entry when sister division consistently engages on DB reviews
 
 Primary reference for the relevant review: [PostgreSQL documentation: row security policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html).
+
+## One pass (owner rule, 2026-11-07)
+
+A commit gets one review round. Report every finding you can find now, CRITICAL, HIGH, MEDIUM and LOW
+alike, with nothing held back as a nit or note: a finding left for a later round costs the owner a
+whole round. When asked to confirm a fix, check only
+the changed lines against the findings they answer; raise nothing new outside them unless it is
+CRITICAL or HIGH.

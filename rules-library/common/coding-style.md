@@ -2,9 +2,9 @@
 
 > **Size budget: 13 KB** — `token-budget.mjs --check`.
 
-## Immutability (CRITICAL)
+## Immutability and state ownership
 
-ALWAYS create new objects, NEVER mutate existing ones:
+Prefer immutable shared data and return new values when updating caller-owned data:
 
 ```text
 // Pseudocode
@@ -15,22 +15,29 @@ CORRECT: update(original, field, value) → returns new copy with change
 Rationale: Immutable data prevents hidden side effects, makes debugging easier, and enables safe
 concurrency.
 
+Local accumulators and deliberately stateful components can mutate owned state when
+ownership, synchronization and lifetime are explicit. Review the actual aliasing,
+concurrency and contract risk; mutation alone does not establish a CRITICAL defect.
+
 ## File Organization
 
-MANY SMALL FILES > FEW LARGE FILES:
+Prefer cohesive files and small, focused functions:
 
 - High cohesion, low coupling
-- 200-400 lines typical, 800 max
+- 200-400 lines is a useful file-size signal; investigate larger modules
 - Extract utilities from large modules
 - Organize by feature/domain, not by type
+
+Repository-enforced limits remain required. Otherwise, size is a review signal,
+not proof of a defect or a reason to fragment a cohesive operation mechanically.
 
 ## Error Handling
 
 ALWAYS handle errors comprehensively:
 
-- Handle errors explicitly at every level
+- Handle or propagate errors deliberately at each boundary
 - Provide user-friendly error messages in UI-facing code
-- Log detailed error context on the server side
+- Retain useful error context and log at the responsible server boundary
 - Never silently swallow errors
 
 ## Input Validation
@@ -47,18 +54,23 @@ ALWAYS validate at system boundaries:
 Before marking work complete:
 
 - [ ] Code is readable and well-named
-- [ ] Functions are small (<50 lines)
-- [ ] Files are focused (<800 lines)
+- [ ] Functions and files are cohesive; unusually large units have been assessed
 - [ ] No deep nesting (>4 levels)
 - [ ] Proper error handling
-- [ ] No hardcoded values (use constants or config)
-- [ ] No mutation (immutable patterns used)
+- [ ] Configurable values and meaningful shared invariants use config or constants
+- [ ] Shared data and mutable state have clear ownership and synchronization
 
 ## Comments — what they DO and DO NOT contain
 
 Comments document the WHY when it isn't obvious from the code: hidden
 constraints, subtle invariants, surprising shape choices, workarounds for
 specific bugs.
+
+For public APIs, document meaningful inputs, outputs, units, error semantics and
+side effects. Explain non-obvious ownership/lifetime, cancellation, retry and
+concurrency constraints where they matter. Keep comments accurate as behavior
+changes; a comment that merely restates code is not evidence of quality. Use names
+and structure for obvious behavior, and docs for the contract a consumer must know.
 
 Comments DO NOT contain:
 
@@ -125,12 +137,14 @@ Comments DO NOT contain:
   func (c *Controller) creditInstantBalance(...) error { ... }
   ```
 
-## Mechanically Banned Patterns (zero tolerance, hook-enforced)
+## Mechanically Banned Patterns
 
-The PostToolUse hook at `~/.claude/scripts/hooks/post-edit-no-discards.js`
-rejects edits that introduce any of the following. Enforcement is
-unconditional — see `~/.claude/docs/no-discards.md` for the full
-manifest and the layered enforcement strategy.
+These requirements apply regardless of hook availability. Claude's PostToolUse
+implementation is `~/.claude/scripts/hooks/post-edit-no-discards.js`; native Codex
+uses its own runtime integration. Actual enforcement depends on installation,
+enablement and trust. Verify relevant diagnostics explicitly; never infer a passing
+lint check or hook execution from this reference. See the installed runtime docs
+for the enforcement manifest and verification procedure.
 
 DO NOT WRITE:
 
@@ -193,14 +207,15 @@ DO NOT WRITE:
   Use `t.Run("sub test name", …)` subtests.
 - Leftover merge-conflict markers.
 
-The hook also warns (non-blocking) on:
+The Claude no-discards hook, when installed and enabled, also warns on:
 
 - `!important` in CSS / Tailwind class strings — let the design system win.
 - Files past 800 LOC.
 
-When the hook fires, the edit is rejected with exit status 2. Fix every
-violation in the file (Rule 5: "Fix all issues in touched files"), not
-just the one introduced — pre-existing violations are now in scope too.
+An executed hook rejection must be diagnosed; it is not evidence that other
+checks ran. Resolve changed or exposed defects and required repository diagnostics.
+Keep unrelated debt separate under the review baseline; do not weaken strict gates.
+Do not run archived Claude hooks as native Codex hooks.
 
 Operator override (humans only, never the agent):
 `export CLAUDE_NO_DISCARDS_HOOK=off`.

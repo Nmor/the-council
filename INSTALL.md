@@ -237,6 +237,44 @@ An editor template does not install either CLI or prove Council discovery.
 
 ---
 
+## Resources: a shared, finite machine
+
+Both installers add the same rule. Claude Code loads it from
+`rules/common/resource-discipline.md`, and Codex from its `AGENTS.md` block. The
+reference is `rules-library/council-detail/resource-discipline.md`. For starting
+projects, running tests and running reviews, the rule says:
+- check load, memory, swap and disk before heavy work;
+- reuse running stacks;
+- run one heavy job at a time, with workers bounded and at lower priority;
+- let reviewers reuse the author's evidence for the same tree;
+- end containers with `--rm`, and tear compose projects down with `down -v` on every exit;
+- clean up when the task ends.
+
+The machine also needs setting up for it:
+
+- **Editors.** The VS Code, Cursor and Windsurf templates above:
+  - share one gopls daemon across windows (`go.languageServerFlags: ["-remote=auto"]`);
+  - keep gopls, search, the file watcher and terraform-ls out of `.claude`,
+    `.council` and `.codex`;
+  - build and test Go with `-trimpath`;
+  - cap SonarLint's JVM (`sonarlint.ls.vmargs`).
+
+  Each window runs its own language servers, so close the windows you aren't using.
+  In JetBrains, mark agent folders **Excluded** (Project tool window → right-click →
+  *Mark Directory As → Excluded*), so code completion, navigation and inspection
+  skip them.
+- **Go.** Build with `-trimpath` (or `GOFLAGS=-trimpath`). Without it, Go hashes
+  each package's directory into its cache key, and every worktree caches its own
+  copy. Go trims entries unused for 5 days by itself. Clearing a shared cache
+  (`go clean -cache`) is the owner's call, made when nothing is building.
+- **Container VM** (Kiri, Docker Desktop, OrbStack, Colima): give it only the CPUs
+  and memory your long-lived stacks need. After a large clean-up, restart it to get
+  its memory back, and trim its disk to get the space back.
+- **Leftovers** (optional): [`templates/container-reaper/`](templates/container-reaper/container-reaper.md)
+  is a daily clean-up that starts in dry-run mode and logs every action.
+
+---
+
 ## Verifying the install
 
 ```bash
