@@ -1,6 +1,7 @@
 ---
 name: release-integration
 description: Coordinate dependent repositories, migrations, infrastructure and releases with compatibility evidence, deployment ordering, rollback limits and exact revision tracking.
+disable-model-invocation: true
 ---
 
 # Release integration

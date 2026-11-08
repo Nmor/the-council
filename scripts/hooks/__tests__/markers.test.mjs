@@ -515,3 +515,58 @@ describe('settings.json — a marker is only honest if its matcher is right', ()
     });
   }
 });
+
+// ---------------------------------------------------------------------------
+// The Bash result Claude Code actually sends: no exit code, long output saved to a file. Every
+// fixture above carries exit_code: 0, which it never sends, so this suite stayed green while
+// no real check could leave a proof and every commit was refused as unverified.
+// ---------------------------------------------------------------------------
+
+describe("gate-marker.js and test-coverage-marker.js — Claude Code's own Bash result", () => {
+  const result = (extra = {}) => ({ stdout: '', stderr: '', interrupted: false, isImage: false,
+    noOutputExpected: false, ...extra });
+  const prove = (hook, kind, command, response, event) => {
+    const sid = uniq('sid');
+    run(hook, { session_id: sid, ...(event ? { hook_event_name: event } : {}), tool_name: 'Bash',
+      tool_input: { command }, tool_response: response });
+    const name = `claude-council-${kind}-${sid}`;
+    const out = markerExists(name) ? markerText(name) : null;
+    cleanup(name);
+    return out;
+  };
+
+  test('a check that succeeded leaves proof', () => {
+    assert.ok(prove('gate-marker.js', 'gate', 'npx tsc --noEmit', result(), 'PostToolUse'));
+  });
+
+  for (const [why, response, event] of [
+    ['it was moved to the background', result({ backgroundTaskId: 'b1' }), 'PostToolUse'],
+    ['it timed out', result({ timedOutAfterMs: 600000, backgroundTaskId: 'b2' }), 'PostToolUse'],
+    ['its non-zero exit was read as success', result({ returnCodeInterpretation: 'No matches found' }), 'PostToolUse'],
+    ['nothing says it succeeded', result(), undefined],
+  ]) {
+    test(`a check leaves no proof when ${why}`, () => {
+      assert.equal(prove('gate-marker.js', 'gate', 'npx tsc --noEmit', response, event), null);
+    });
+  }
+
+  test("a project's own coverage script is measured, as its gate already counts it", () => {
+    const proof = prove('test-coverage-marker.js', 'coverage', 'pnpm run test:coverage',
+      result({ stdout: 'All files          |   41.82 |    33.33 |' }), 'PostToolUse');
+    assert.equal(JSON.parse(proof).measured, 41.82);
+  });
+
+  test('coverage printed after a long output is read from the saved file', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'persisted-'));
+    const saved = join(dir, 'b1.txt');
+    const head = '{"log":"line"}\n'.repeat(4000);
+    writeFileSync(saved, `${head}Statements   : 70.57% ( 24058/34087 )\n`);
+    try {
+      const proof = prove('test-coverage-marker.js', 'coverage', 'npx jest --coverage',
+        result({ stdout: head.slice(0, 30000), persistedOutputPath: saved }), 'PostToolUse');
+      assert.equal(JSON.parse(proof).measured, 70.57);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

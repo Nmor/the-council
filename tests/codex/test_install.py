@@ -183,7 +183,7 @@ class InstallTests(unittest.TestCase):
             return list((self.home / 'skills').glob('council*/SKILL.md'))
         self.assertEqual(len(wrappers()), 1)
         self.assertLess(sum(p.stat().st_size for p in wrappers()), 2500)
-        self.assertEqual(len(list((self.home / 'agents').glob('council-*.toml'))), 39)
+        self.assertEqual(len(list((self.home / 'agents').glob('council-*.toml'))), len(list((ROOT / 'agents').glob('*.md'))))
         compact = snapshot(self.home / 'council/resources')
         self.install(skill_profile='full')
         self.assertGreater(len(wrappers()), 100)

@@ -1,0 +1,80 @@
+# File extensions the Council treats as product code, one per line, without the dot.
+#
+# Size budget: 2 KB. Check: token-budget.mjs --check.
+#
+# ONE list, read by both enforcement paths — scripts/hooks/lib/git-state.js (the Claude Code
+# gate) and scripts/council-pre-commit.sh (the git hook every other agent goes through). They
+# had drifted: the first did not know dart, elixir, scala or shell, so a Flutter or Elixir change
+# needed no review there, while the second did not know mjs, cjs or svelte. Two lists meant two
+# different answers to "is this code", and the gap was silent in both directions.
+#
+# Adding a language here is the whole change: no code edit in either consumer.
+
+# Go
+go
+
+# TypeScript / JavaScript and its component formats
+ts
+tsx
+js
+jsx
+mjs
+cjs
+vue
+svelte
+
+# Python
+py
+pyi
+
+# Ruby
+rb
+rake
+
+# PHP
+php
+
+# Rust
+rs
+
+# .NET
+cs
+fs
+fsx
+vb
+
+# JVM
+java
+kt
+kts
+scala
+groovy
+
+# Apple and mobile
+swift
+m
+mm
+dart
+
+# Erlang / Elixir
+ex
+exs
+erl
+
+# C and C++ — this workspace's call-centre product is C++/Lua
+c
+cc
+cpp
+cxx
+h
+hh
+hpp
+lua
+
+# Shell: deployment and gate scripts are code, and a defect in one is not cheaper
+sh
+bash
+
+# Data and infrastructure that changes behaviour when edited
+sql
+tf

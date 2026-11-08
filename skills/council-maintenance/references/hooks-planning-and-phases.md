@@ -67,29 +67,19 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Phase-header announcement missing before first tool call of that phase (rule 1 weakening)
-- Bulk change (5+ files, directory delete, large data move) reported without before/after counts
-  (rule 2 violation)
-- Verification block missing from a phase end (rule 3 violation)
-- Phase progress update ends without an explicit next-step line (rule 4 weakening)
-- Commit boundary reached without SHA + subject + branch + file count in the progress update (rule 5
-  weakening)
-- Blocker hit and surfaced as "something went wrong" without root cause + recovery direction (rule 6
-  violation)
-- Per-tool-call narration omits phase tag in long multi-phase sessions (rule 7 weakening)
-- Plan file not updated after a phase completes (rule 8 weakening — frozen contract anti-pattern)
-- Phase skipped or reordered without explicit user-visible justification (rule 10 violation)
+- Current handoff omits active task ID/status, remaining partial work or next exact action
+- A started/failed/skipped check is recorded as successful evidence
+- A resume reloads the entire history rather than the handoff, active task and needed inputs
+- A native tracker state is treated as delivered without acceptance evidence
+- A blocker lacks the unavailable prerequisite and recovery action
+- Required work disappears when tasks are reordered, deferred or cancelled
+- Installed/deployed claims are inferred from local implementation or unit tests
 
 **Refinement candidates**:
 
-- New row in the canonical progress-update shape when a new artifact class (commit / tag / push /
-  migration) needs reporting
-- Tightening of the "bulk change" threshold (currently 5 files) when small-batch silent edits prove
-  load-bearing
-- New cross-reference when a sister rule (verify-before-claim, no-silent-drops) provides a per-phase
-  gate
-- New blocker-shape template when a recurring blocker class (auth-expired, dep-not-installed,
-  env-not-set) emerges
+- Refine the shared handoff only for context repeatedly missing in actual resumes
+- Improve tracker mappings when a runtime has different supported states
+- Link existing evidence instead of adding repeated status narratives
 
 ## `plan-task-breakdown.md`
 
@@ -97,24 +87,20 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Phase header lacks a sub-step or task list (granularity rule violation)
-- A "task" in the plan spans > 4 hours of work (atomic-task threshold breached)
-- Plan has < 10 tasks for non-trivial work (rule 2 weakening)
-- Tasks describe activity ("investigate X") instead of outcome ("identify Y; report count")
-- Verification predicate missing from a task row (rule 4 weakening)
-- Plan completes without a bloat-removal phase (rule 10 violation)
-- Mid-execution work added without updating the plan + TodoWrite (rule 9 weakening)
-- TodoWrite list has phase-level entries for a 50+-task plan with no task-level mirror
+- Phase-level tasks combine independent outcomes or unresolved design decisions
+- Task IDs change across handoffs, trackers or phase moves
+- Types are confused with priorities, domains or specialist names
+- Owned paths, input decisions, dependencies or acceptance evidence are missing
+- Dependency links are missing/cyclic or owners overlap without coordination
+- A change is separated from tests needed for a safe deliverable
+- Full backlog duplication causes context growth, or new work is absent from the plan
+- Speculative task counts, duration quotas or compulsory cleanup inflate a simple plan
 
 **Refinement candidates**:
 
-- New row in the task-row shape table when a new artifact kind recurs (e.g., new IaC type, new
-  schema migration template)
-- Tightening of the atomic-task time threshold when 4h tasks consistently overrun
-- New cross-reference when a sister rule (verify-before-claim, no-silent-drops, proper-fixes-first)
-  provides a gate the task list must verify
-- New bloat-class row in the rule 10 table when a recurring leftover class emerges from rebuilds
-  (stub redirects, dead config keys, etc.)
+- Refine outcome boundaries using actual stalled or incomplete task evidence
+- Keep schema changes in the canonical task contract and route consumers to it
+- Exercise cross-repository dependencies, legacy IDs and partial-work resumes
 
 ## `post-phase-retrospective-review.md`
 

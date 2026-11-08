@@ -1,6 +1,7 @@
 ---
 name: marketing-strategy
 description: Develop positioning, audience research, go-to-market strategy, channel budgets and measurable marketing experiments for a product or business.
+disable-model-invocation: true
 ---
 
 # Marketing strategy

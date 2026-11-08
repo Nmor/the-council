@@ -38,6 +38,11 @@ correctly.
 - Common: `no-discards.md`, `error-handling-with-context.md`, `no-silent-failures.md`,
   `extreme-lint-policy.md`, `secrets-management.md`
 
+- `wiring-and-usage-review.md` — every new capability traced from its real entrypoint
+  to observable behaviour; no inert symbol, flag, config key or route
+- `idempotency.md` — every side effect safe to apply twice; the key claimed before the
+  effect, not recorded after it
+
 ## Auto-fire triggers
 
 - File globs: `**/*.java`, `**/*.kt`, `**/*.kts`, `**/pom.xml`, `**/build.gradle`,
@@ -53,7 +58,22 @@ Unresolved CRITICAL/HIGH block merge; MEDIUM warns; LOW is a note. Unknown sever
 unavailable required verification is CHANGES_REQUIRED. Classify by impact/likelihood,
 not by language; use the same action for the same unresolved exploit.
 
+## Mandatory review dimensions
+
+Apply every dimension in
+[review-dimensions.md](../rules-library/common/review-dimensions.md): dependencies and usages
+(name the live consumer of each new or changed symbol, and trace one path end to end),
+idempotency and retry safety (assume every operation runs twice), partial failure and what it
+leaves behind, failure visibility, and tests that would actually fail. Report each as a finding
+with file:line or as an explicit "checked, clean" — these classes are invisible in the diff.
+
 ## Review checklist
+
+Establish the [review baseline](../rules-library/common/git-workflow.md#review-baseline)
+including staged/unstaged/relevant untracked work or actual PR/commit patches.
+Use the [principal quality contract](../rules-library/council-detail/principal-level-mandate.md)
+to inspect changed consumer contracts, executable wiring and relevant failure/state
+assertions. Categories guide investigation; severity follows actual impact/likelihood.
 
 ### Modern Java (21 LTS) idioms
 
@@ -122,7 +142,13 @@ Verdict: APPROVED / CHANGES_REQUIRED
 - Field-injection (`@Autowired` on field)
 - Empty catch / `e.printStackTrace()`
 - `catch (Throwable)` / `catch (Exception)` broad catch
-- `throw ex` (loses stack) — should be `throw` or `throw new X(..., ex)`
+- Lost exception causes when constructing a replacement exception; in Java and Kotlin,
+  `throw ex` rethrows the same instance with its captured stack. There is no bare
+  `throw` syntax. When translating an exception, retain its cause, for example Java
+  `throw new ServiceException("operation failed", ex)`; review Kotlin's actual constructor
+  ([Java throw syntax](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html#jls-14.18),
+  [Throwable stack/cause contract](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html),
+  [Kotlin exceptions](https://kotlinlang.org/docs/exceptions.html))
 - `!!` force-unwrap in Kotlin outside test setup
 - `runCatching { ... }` discarded
 - `GlobalScope.launch`

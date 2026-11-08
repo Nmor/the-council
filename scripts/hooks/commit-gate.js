@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Size budget: 12 KB. Check: wc -c; gate: token-budget.mjs --check.
+// Size budget: 13 KB. Check: wc -c; gate: token-budget.mjs --check. Raised from 12 KB when
+// this learned to accept the agent-neutral proof, after two prose trims.
 // commit-gate.js
 //
 // PreToolUse Bash hook. BLOCKS `git commit` (exit 2) when the rules that make a
@@ -12,35 +13,42 @@
 //   (a) verify-before-claim.md + done-criteria.md — a verification gate must have
 //       RUN, and must have run AFTER the most recent source edit. A gate that ran
 //       before the edit proves nothing about what is being committed.
-//   (b) functional-test-coverage.md rule 1 — source changed in this session and
-//       coverage was never measured once. Coverage is a measurement, never an
-//       estimate, and a commit is a claim.
+//   (b) functional-test-coverage.md rule 1 — source changed and coverage was never measured.
+//       Coverage is a measurement, never an estimate, and a commit is a claim.
 //   (c) plan-execution-progress.md rule 8 — the plan was brought up to date AFTER the
 //       code being committed last changed. A task is not complete until the plan says so.
 //   (d) docs-sync-with-code.md — a commit carrying code carries docs too, or states in a
 //       `Docs:` line why none are needed. Silence is how docs go stale one commit at a time.
+//   (e) done-criteria.md — an INDEPENDENT, DEEP review read the code before it landed, recorded
+//       by review-marker.js or as .council/proofs/review.json (the agent-neutral form, bound to
+//       the tree, which is also the only one another coding agent can write). Owner directive
+//       2026-10-28, after a commit that passed every gate still shipped a Super Admin grant.
 //
-// (c), (d), and the "source changed" test behind (a) and (b), read what git says is being
-// committed. The session edit-stamp alone only ever saw Edit/Write, so a change made through
-// Bash was committed with no verification at all. Owner directive (2026-09-21): "plan update
-// as tasks are completed and doc updates before code changes are committed or pushed".
+// (c), (d) and the "source changed" test behind (a) and (b) read what git says is being
+// committed: the session edit-stamp only ever saw Edit/Write, so a change made through Bash was
+// committed with no verification at all.
 //
 // Passes through untouched: every non-commit Bash call, and commits that touched
 // no source (docs, plans, memory, config-only).
 //
-// Bypass, deliberately explicit and per-process so it cannot leak across shells:
+// Bypass, explicit and per-process so it cannot leak across shells:
 //   CLAUDE_COMMIT_GATE=off git commit -m "..."
-// Use it when a gate is genuinely unavailable, and say so in the commit body.
+// For a gate that is genuinely UNAVAILABLE — not for one whose evidence you did not record.
+// Say which, in the commit body.
 "use strict";
 const { markerPath, readPrivate } = require('./lib/private-state.js');
 const fs = require("fs");
 const path = require("path");
 const gs = require("./lib/git-state.js");
 const pc = require("./lib/project-context.js");
-const { proofFor, stagedMatches } = require("./lib/verification.js");
+const { proofFor, councilProofFor, stagedMatches } = require("./lib/verification.js");
+const { candidateTree } = require('./lib/source-state.js');
 
 const { commandInvocations, gitOperation } = require('./lib/command-scan.js');
 const PREFIX = '[commit-gate] ';
+// Two, because a reviewer looking for correctness and one looking for exposure do not see the
+// same code; neither real defect in this family was found by a single reading.
+const DEEP_REVIEW_PERSPECTIVES = 2;
 
 function commitCalls(command, cwd) {
   let directory = cwd;
@@ -130,11 +138,16 @@ function reasonsFor(call, payload) {
     sourceMtime,
   );
   const proofInput = { session_id: sid, cwd: dir };
-  const verification = proofFor('gate', proofInput);
+  // Either recorder, for every proof: the session marker this tool writes, or the file proof
+  // bound to the tree being committed. The file form is the only one another coding agent or a
+  // runtime without hooks can write, and being tree-bound it is the stronger of the two.
+  const candidate = candidateTree(root);
+  const verification = councilProofFor(root, 'gate', candidate) || proofFor('gate', proofInput);
   const lastGate = verification?.at || 0;
-  const gateIsThisTurn = Boolean(pid) && verification?.prompt === pid;
-  const coverageProof = proofFor('coverage', proofInput);
-  const coverage = coverageProof && coverageProof.at >= lastEdit;
+  const gateIsThisTurn = Boolean(verification?.by_file) ||
+    (Boolean(pid) && verification?.prompt === pid);
+  const coverageProof = councilProofFor(root, 'coverage', candidate) || proofFor('coverage', proofInput);
+  const coverage = coverageProof && (coverageProof.by_file || coverageProof.at >= lastEdit);
 
   // No source touched this session and none being committed: nothing to assert.
   if (!lastEdit) return [];
@@ -154,7 +167,7 @@ function reasonsFor(call, payload) {
         "rule 3 verification is scoped to THIS turn, not the session — files have changed " +
         "since. Re-run the gate.",
     );
-  } else if (lastGate < lastEdit) {
+  } else if (!verification.by_file && lastGate < lastEdit) {
     const mins = Math.round((lastEdit - lastGate) / 60000);
     reasons.push(
       `source changed AFTER the last verification gate ran (${mins} min later). ` +
@@ -167,6 +180,40 @@ function reasonsFor(call, payload) {
         "functional-test-coverage.md rule 1 coverage is a measurement and never an " +
         "estimate; run the project coverage command before committing.",
     );
+  }
+  // (e) No gate READS code. Docs- and test-only commits are exempt, as for the docs rule.
+  if (code.length) {
+    // Either recorder satisfies this. The file proof is bound to the tree being committed, so
+    // it is the stronger of the two and it is the only one another coding agent can write.
+    const filed = councilProofFor(root, 'review', candidate);
+    const review = filed || proofFor('review', proofInput);
+    const reviewers = Array.isArray(review?.reviewers) ? review.reviewers : [];
+    if (!review) {
+      reasons.push(
+        'no independent code review ran against this source. Per done-criteria.md dispatch ' +
+          'reviewers for what changed (language reviewer, security-reviewer for credentials/' +
+          'authorization/tenancy/money/user data, code-reviewer for correctness), give them ' +
+          'the DIFF and the acceptance rather than your conclusion, resolve every finding.',
+      );
+    } else if (!review.by_file && pid && review.prompt !== pid) {
+      reasons.push(
+        'the last code review ran in an EARLIER TURN. The source has changed since, so that ' +
+          'review does not describe what is being committed. Re-review.',
+      );
+    } else if (!review.by_file && review.at < lastEdit) {
+      const mins = Math.round((lastEdit - review.at) / 60000);
+      reasons.push(
+        `source changed AFTER the code review ran (${mins} min later). A review of an ` +
+          'earlier diff certifies nothing about this one — re-review.',
+      );
+    } else if (reviewers.length < DEEP_REVIEW_PERSPECTIVES) {
+      reasons.push(
+        `only ${reviewers.length} perspective(s) reviewed this (${reviewers.join(', ')}). A ` +
+          `deep review needs ${DEEP_REVIEW_PERSPECTIVES}+ independent reviewers matched to ` +
+          'the surface, each reading the implementation and its consumers rather than the ' +
+          'diff alone, and tracing one path end to end.',
+      );
+    }
   }
 
   reasons.push(...planReasons(root, code.length + tests.length, sourceMtime));

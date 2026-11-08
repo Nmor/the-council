@@ -191,3 +191,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New auto-fire trigger when a recurring sustainability decision pattern surfaces
 - Tightening of carbon-intensity delta thresholds when low-carbon alternatives consistently rejected
 - New pairing entry when a sister division consistently engages on ESG work
+
+## One pass (owner rule, 2026-11-07)
+
+A commit gets one review round. Report every finding you can find now, CRITICAL, HIGH, MEDIUM and LOW
+alike, with nothing held back as a nit or note: a finding left for a later round costs the owner a
+whole round. When asked to confirm a fix, check only
+the changed lines against the findings they answer; raise nothing new outside them unless it is
+CRITICAL or HIGH.

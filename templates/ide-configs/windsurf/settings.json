@@ -262,6 +262,11 @@
   "go.vetOnSave": "workspace",
   "go.formatTool": "goimports",
   "go.useLanguageServer": true,
+  "go.languageServerFlags": ["-remote=auto"],
+  "go.buildFlags": ["-trimpath"],
+  "gopls": {
+    "build.directoryFilters": ["-**/node_modules", "-**/.claude", "-**/.council", "-**/.codex"]
+  },
 
   // ============================================================
   // SonarLint (per sonarlint-checks.md + extreme-lint-policy.md)
@@ -298,7 +303,16 @@
     "**/.terraform": true,
     "**/.serverless": true
   },
+  "files.watcherExclude": {
+    "**/.claude/**": true,
+    "**/.council/**": true,
+    "**/.codex/**": true,
+    "**/coverage/**": true
+  },
   "search.exclude": {
+    "**/.claude": true,
+    "**/.council": true,
+    "**/.codex": true,
     "**/node_modules": true,
     "**/dist": true,
     "**/build": true,
@@ -334,5 +348,13 @@
   // Claude Code extension (anthropic.claude-code)
   // ============================================================
   "claudeCode.initialPermissionMode": "default",
-  "claudeCode.allowDangerouslySkipPermissions": false
+  "claudeCode.allowDangerouslySkipPermissions": false,
+
+  // ============================================================
+  // Resources (per rules/common/resource-discipline.md): each window runs its own
+  // language servers, so share what can be shared, narrow what they index, and
+  // keep them out of agent worktrees and output.
+  // ============================================================
+  "terraform.languageServer.indexing.ignoreDirectoryNames": [".claude", ".council", ".codex", "node_modules"],
+  "sonarlint.ls.vmargs": "-Xmx1g"
 }

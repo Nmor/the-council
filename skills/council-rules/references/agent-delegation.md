@@ -41,6 +41,13 @@ require separate model sessions. Avoid recursive delegation and overlapping revi
 Give a helper the objective, exact paths, relevant excerpts, acceptance criterion and
 a concise output bound. Reuse a suitable existing helper and finish it when done.
 
+Use the [shared task contract](../../../rules-library/council-detail/plan-task-breakdown.md)
+for the task ID, type, priority/status, owned scope, dependencies and input/decision
+links. Include permitted effects, worktree state and the exact remaining action for
+partial work. Results name the same task ID, actual evidence and remaining checks;
+the main owner integrates them into the authoritative plan. Do not create a helper
+plan, renumber tasks or equate disjoint dependencies with safe shared-file writes.
+
 Read only the active handoff and relevant plan sections. Do not copy the full history
 or load every rule. Scale specialist depth to risk and preserve required security and
 verification checks. Explicit user requests for a larger team can override this default.

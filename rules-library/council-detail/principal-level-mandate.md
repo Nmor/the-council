@@ -1,338 +1,146 @@
-> Detailed reference. Apply the current adaptive workflow in `CLAUDE.md` and
-> `rules/common/` first. Historical demands for fixed speeches, repeated full audits,
-> automatic fan-out, fresh plans or mandatory model tiers are superseded. Retain the
-> substantive correctness, security and verification checks relevant to the task.
+# Principal engineering quality contract
 
-# Principal-Level Mandate (Always-On, Global)
-
-> Auto-fires on every file. Sister to `extreme-lint-policy.md`,
-> `task-intake-due-diligence.md`, `council-default.md`,
-> `documentation-requirements.md`, `verify-before-claim.md`. Every
-> skill, every agent, every rule, every plan, every Council
-> contribution operates at PRINCIPAL ENGINEER level — never below.
->
 > **Size budget: 17 KB** — `token-budget.mjs --check`.
 
-## Core Principle
-
-**Every agent, skill, rule, and Council division speaks with the
-authority, breadth, and judgement of a principal engineer (15+ years
-across multiple domains, decisive on trade-offs, citing authoritative
-sources, anticipating failure modes + regulatory exposure + business
-impact, owning outcomes end-to-end). Shallow stubs, vague advice,
-non-cited claims, single-domain thinking, and tactical-only
-contributions are rejected.**
-
-Principal level is not a vibe; it is a measurable shape. Every
-artifact passes the bar below or it doesn't ship.
-
-## What "principal level" means (the bar)
-
-A principal-level contributor:
-
-| Dimension | Expectation |
-| --- | --- |
-| **Breadth** | Reasons across architecture + security + ops + data + product + business + compliance simultaneously |
-| **Depth** | Knows the specific standard, version, section, RFC number — never "best practices say" |
-| **Sources** | Cites primary sources (RFC / ISO / NIST / OWASP / W3C / vendor docs / canonical books) with version + section |
-| **Trade-offs** | Names what is being given up + the inflection point at which the choice flips |
-| **Failure modes** | Enumerates concrete failure modes (FMEA) + blast radius + detection signal + mitigation |
-| **Time horizon** | 10-year decisions, not 10-minute fixes. Anticipates deprecation, migration, scale inflection. |
-| **Risk** | Anticipates regulatory exposure (GDPR / HIPAA / SOC2 / PCI / SOX), security blast (CVE class), operational risk (SLO impact), financial risk (cost amplification) |
-| **Decision authority** | Speaks decisively. Has named veto / casting-vote authority where applicable. |
-| **Mentorship** | Output is structured, teachable, repeatable. Other engineers can apply the reasoning. |
-| **Outcome ownership** | Names the verification signal that confirms the decision was right. Closes the loop. |
-| **Reuse-first** | Sweeps existing solutions before proposing new. Per `reuse-first.md`. |
-| **Honesty** | "I don't know" is preferred over "best practices recommend". No bluffing. |
-| **Modern stack literacy** | Aware of current major versions, current best-in-class libraries, recent breaking changes. |
-
-## Hard requirements per artifact class
-
-### Every agent file (`~/.claude/agents/*.md`)
-
-**Required frontmatter**:
-
-```yaml
----
-name: <kebab-case>
-description: <one-line — what the agent does + when to use PROACTIVELY + domain ownership>
-tools: [<list>]
-model: opus | sonnet | haiku
----
-```
-
-`model: opus` is the default for coding / reviewing / planning agents per global model policy.
-Reserve `sonnet` for narrow-scope agents where opus is genuinely overkill. `haiku` only for
-pure-mechanical agents (doc generation, codemap updates).
-
-**Required body sections** (every agent MUST contain these, exact section names flexible):
-
-1. **Identity + mission** — one paragraph naming the principal-level mandate
-2. **Global rules enforced** — explicit cross-references to global rules the agent applies
-3. **Auto-fire triggers** OR equivalent "When to engage" section — file globs / keywords / scope
-   conditions
-4. **Decision authority** — veto / casting vote / advisory + the rationale (for Division leads); for
-   support agents, role within the Division
-5. **Review checklist OR workflow** — explicit checks with severity classification
-6. **Standards cited** — version + section numbers, not vague references
-7. **Output shape OR severity / report template** — structured findings, not narrative
-8. **Anti-patterns to reject** — concrete patterns with named alternatives
-9. **Pairing model** — which other agents this agent works with on cross-cutting concerns
-10. **When to escalate to user** — explicit triggers
-
-The names of these sections may be project-conventional ("Workflow" / "Review Process" / "Diagnostic
-Commands" all count toward checklist+workflow); the CONTENT must be present.
-
-**Banned in agent files**:
-
-- Vague advice ("be careful with X", "consider Y")
-- Non-cited claims ("studies show", "best practices say")
-- Single-domain thinking (e.g., security agent that ignores compliance overlap)
-- Tactical-only contributions (no trade-off analysis)
-- "Optional" rigor (every finding gets a severity)
-- Project-specific names, paths, vendor identifiers (per `rule-authoring-global-vs-project.md`)
-- `model: sonnet` for a domain that warrants opus depth — escalate
-
-### Every skill file (`~/.claude/skills/<name>/SKILL.md`)
-
-**Required structure** (the principal-level skill template):
-
-```markdown
-# <Skill Name>
-
-> Brief one-line mission statement.
-
-## Purpose
-
-Why this skill exists. What problem class it solves. What it does
-NOT solve (negative scope is as important as positive scope).
-
-## Standards Cited
-
-Authoritative references with version + section:
-- WCAG 2.2 §1.4.11 (W3C Recommendation, Oct 2023)
-- OWASP ASVS 4.0.3 §2.2.1
-- ISO/IEC 27001:2022 Annex A.8.7
-- RFC 9110 §9.3.1
-- IFRS 15 §31
-- ITIL 4 §4.5.1
-
-## When to Fire
-
-Triggers: file globs, keywords, scope conditions, plan-tier impact.
-
-## Core Patterns
-
-The principal-level patterns, with concrete examples, named
-trade-offs, inflection points.
-
-## Anti-Patterns
-
-What to reject + why + the named alternative.
-
-## Verification Checklist
-
-Concrete checks (not aspirational). Each check has a green/red
-predicate.
-
-## Cross-References
-
-Sister rules, sister skills, agents that pair with this skill.
-
-## Why This Skill Exists
-
-The failure mode this skill prevents. The cost of getting it
-wrong vs the cost of the rigor.
-```
-
-**Quality floor**:
-
-- ≥ 500 words of substantive content (target: 1500-3000 for complex domains)
-- ≥ 3 authoritative standards citations with version + section
-- ≥ 5 anti-patterns with named alternatives
-- ≥ 1 verification checklist with concrete checks
-- ≥ 3 cross-references to sister rules / skills / agents
-- Zero project-specific names / paths / vendor identifiers
-- Zero "shallow stub" language ("see X for details" without details)
-
-**Banned in skill files**:
-
-- Stub-only files (< 500 words)
-- "Coming soon" / "TBD" markers
-- Vague phrases ("best practices", "common patterns", "be careful")
-- Claims without sources
-- Single-language examples for cross-language patterns
-- Outdated framework versions (e.g., still recommending Express 4 in 2026)
-
-### Every rule file (`~/.claude/rules/common/*.md`, `~/.claude/rules/<lang>/*.md`)
-
-Already governed by `rule-authoring-global-vs-project.md`. Adds:
-
-- Every rule's "Why this rule exists" section names the SPECIFIC failure mode it prevents (no vague
-  "improves quality")
-- Every rule cites the standards it implements (where applicable)
-- Every rule cross-references sister rules + the agents that enforce it
-- Every banned pattern has a named correct alternative
-
-### Every Council division output
-
-Per `council-default.md` + `council-triggers.md`:
-
-- Each division ENGAGES and records a verdict; depth is signal-gated per `council-default.md` — deep
-  (multi-sentence, carrying trade-off + failure-mode + verification signal) on a material finding or
-  cross-division conflict, and a one-line gated verdict with a one-clause reason when nothing
-  material was found (never bare boilerplate)
-- Extended divisions auto-fire on triggers
-- Output is structured (`severity · file:line · claim · owner`, deduped across divisions), not
-  narrative
-- Cites the global rules / standards / RFCs informing the position
-- Names verification signals that confirm the decision
-
-## Audit protocol (mandatory before any "rebuild done" claim)
-
-### Sweep #1: every agent file
-
-```bash
-for f in ~/.claude/agents/*.md; do
-  # Check required frontmatter
-  head -10 "$f" | grep -qE "^name:" || echo "MISSING name: $f"
-  head -10 "$f" | grep -qE "^description:" || echo "MISSING description: $f"
-  head -10 "$f" | grep -qE "^model: (opus|sonnet|haiku)" || echo "MISSING model: $f"
-  head -10 "$f" | grep -qE "^tools:" || echo "MISSING tools: $f"
-
-  # Check required body sections
-  for section in "Global rules" "Auto-fire" "checklist" "Output" "Anti-patterns"; do
-    grep -q "$section" "$f" || echo "MISSING section '$section': $f"
-  done
-
-  # Check no project-specific contamination — token list is per-user
-  # and lives at ~/.claude/.local/project-tokens (gitignored, one
-  # regex per line). The list contains the user's own workspace /
-  # repo / vendor names. Global rules + skills + agents must NEVER
-  # mention any of them; this audit catches leaks mechanically.
-  tokens="${HOME}/.claude/.local/project-tokens"
-  if [ -s "$tokens" ] && grep -iEf "$tokens" "$f" >/dev/null 2>&1; then
-    echo "PROJECT CONTAMINATION: $f"
-  fi
-
-  # Check depth
-  lines=$(wc -l < "$f")
-  if [ "$lines" -lt 60 ]; then echo "SHALLOW (<60 lines): $f"; fi
-done
-```
-
-### Sweep #2: every skill file
-
-```bash
-for d in ~/.claude/skills/*/; do
-  f="${d}SKILL.md"
-  [ -f "$f" ] || { echo "MISSING SKILL.md: $d"; continue; }
-
-  # Word count floor
-  wc=$(wc -w < "$f")
-  if [ "$wc" -lt 500 ]; then echo "SHALLOW (<500 words): $f"; fi
-
-  # Required sections — accept legacy naming variants
-  has_purpose_or_when=$(grep -cE "^## (Purpose|When to (Activate|Fire|Use|Engage)|Overview|Goals|Mission)" "$f")
-  has_anti=$(grep -cE "^## (Anti-Patterns|Anti.Pattern|Banned|Avoid)" "$f")
-  has_xref=$(grep -cE "^## (Cross.References|See Also|Related)" "$f")
-  [ "$has_purpose_or_when" -eq 0 ] && echo "MISSING purpose/when section: $f"
-  [ "$has_anti" -eq 0 ] && echo "MISSING anti-patterns section: $f"
-  [ "$has_xref" -eq 0 ] && echo "MISSING cross-references: $f"
-
-  # Standards citations
-  cited=$(grep -cE "(RFC [0-9]+|ISO/IEC|NIST|OWASP|WCAG|W3C|§|PEP [0-9]+)" "$f")
-  if [ "$cited" -lt 3 ]; then echo "INSUFFICIENT CITATIONS (<3): $f"; fi
-
-  # Stub markers (the file ITSELF is a stub — exclude content references like "no TODO comments in code")
-  head -50 "$f" | grep -qiE "(coming soon|to be written|placeholder|stub)" \
-    && echo "STUB MARKER (in header): $f"
-done
-```
-
-Failures from either sweep block the "rebuild done" claim. Each
-failure gets a remediation PR before the v1.0.0 tag.
-
-## When the bar is intentionally relaxed
-
-NEVER for substantive content. The only acceptable "shallow" cases:
-
-- **Redirect stubs** — one-line "Consolidated into X.md" markers during a deprecation window (per
-  `deprecation-lifecycle.md`). These are explicit short-lived stubs, not principal-level content.
-- **Index / catalog files** — `README.md` of a skill directory listing examples, where the depth
-  lives in the linked files.
-
-Both cases must be DOCUMENTED as such in the file (or in the
-parent's README). Implicit shallowness is rejected.
-
-## Pairing with the verification loop
-
-Per `verify-before-claim.md`: every claim of "principal-level"
-is preceded by the actual audit running THIS turn — never
-inferred from "we wrote it carefully." The verification block
-for any rebuild / consolidation claim shows the sweep counts:
-
-```text
-Principal-level audit (this turn):
-  - Agents with all required sections: 22/22
-  - Agents with project contamination: 0
-  - Agents below depth floor: 0
-  - Skills with ≥ 500 words: 50/57
-  - Skills missing standards citations: 7
-  - Skills with stub markers: 0
-  - Remediation queue: <list of 7 shallow skills>
-```
-
-## Relationship to simplicity tooling
-
-`ponytail` enforces the laziest IMPLEMENTATION that works (per `no-bloat.md`). That is
-not a licence to lower THIS bar. Simplicity governs the shape of the solution; this rule
-governs the depth of the analysis, verification and review behind it — a one-line fix
-still needs its root cause proven and its gate run. Where the two appear to conflict,
-principal-level wins, and the authority map in `~/.claude/CLAUDE.md` records that.
-
-## Cross-references
-
-- `extreme-lint-policy.md` — strict thresholds across languages
-  (same principle, code-side)
-- `task-intake-due-diligence.md` — every task starts with 29-Q
-  intake; principal-level due diligence
-- `council-default.md` — Council convenes by default; principal
-  voices speak
-- `documentation-requirements.md` — Diátaxis + standards-cited docs
-- `verify-before-claim.md` — every claim preceded by verification
-- `rule-authoring-global-vs-project.md` — pure guidance in global;
-  no project specifics
-- `reuse-first.md` — principal-level engineers sweep before writing
-- `proper-fixes-first.md` — root cause, not symptom
-- `no-overclaim.md` — never claim done without verification
-
-## Why this rule exists
-
-The cost of shallow / non-principal contributions:
-
-1. **Defects** — surface-level rules / agents miss cross-cutting
-   concerns (security overlap with compliance, ops overlap with
-   data, etc.)
-2. **Mistrust** — a vague "best practices say" output erodes the
-   user's trust in every other output
-3. **Stale advice** — non-cited claims rot; standards advance;
-   the rule still says what was true in 2018
-4. **Misaligned authority** — agents without explicit veto /
-   advisory authority produce wishy-washy Council outputs
-5. **Duplicate work** — engineers reading shallow skills re-derive
-   the missing depth themselves, defeating the purpose
-
-The cost of the principal-level bar: more time per artifact. The
-benefit: every artifact does the multiplier work it was meant to
-do.
-
-User directive (verbatim): **"Ensure all skills and agents are
-principal level"**.
-
-## Learning hooks
-
-Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill. Invoke it when refining this rule: it does not load
-by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
-the task at hand, so they are not carried on every turn.
+This contract applies to substantive planning, implementation and review in both
+Claude Code and Codex. It sets observable acceptance, not a claim about a model's
+seniority or a guarantee of flawless output. Read relevant sections on demand.
+Project requirements, user scope, authorization and runtime capabilities govern.
+
+## Outcome and design
+
+Start from the requested behavior, affected consumers and current implementation.
+Name invariants that must survive the change: authorization, money/data integrity,
+ordering, latency, resource limits or compatibility as applicable. Distinguish
+observed facts, assumptions and unresolved decisions. Investigate a material unknown
+before making a dependent task ready; record what evidence will settle it.
+
+For a material design or dependency choice, compare the existing solution and viable
+alternatives against these requirements. Explain the decision, rejected alternatives,
+costs, failure modes and conditions that would change it. Keep the decision in the
+existing plan or repository's decision record; do not force a new ADR for routine work.
+Use a useful service lifetime and plausible growth horizon, not an arbitrary decade.
+
+Read the [task contract](plan-task-breakdown.md) when decomposing work. Map every
+requested outcome to an owned task and a check that can fail. Cover producer/consumer
+seams, required docs, failure behavior and authorized delivery. Small tasks must
+retain complete acceptance; splitting is not permission to drop difficult parts.
+
+## Implementation and complete functionality
+
+Trace relevant behavior from public entry point through registration/configuration,
+implementation, dependencies and consumers to the observable result. A helper,
+flag or mocked function is not evidence that the live path uses it. Confirm replaced
+paths stop influencing behavior and cleanup follows demonstrated consumer migration.
+
+Read common and language guidance before coding. Prefer cohesive existing primitives
+and explicit ownership. Preserve applicable strict lint, types, coverage and security
+checks. Diagnose analyzer findings against actual semantics; do not weaken gates,
+exclude changed files, add suppressions or discard errors to obtain a green result.
+
+For relevant stateful or external effects, consider partial success, ambiguous writes,
+retries, duplicate/reordered delivery, cancellation, timeouts, concurrency and restart.
+Verify durable state and downstream effects, not just a returned status. Specify who
+reconciles an uncertain outcome; never blindly retry a possibly completed effect or
+report success while required effects failed. Handle return values and errors in
+tests too. Go's `for _, value := range` is valid value iteration.
+
+Check changed contracts, defaults, serialization, permissions, schemas and flags
+against affected consumers and rollout order. A locally passing implementation can
+still break another service. Use typed boundaries and stable, meaningful errors;
+retain enough trace context to diagnose failures without exposing sensitive data.
+
+Root-cause fixes must remove the cause and include an appropriate regression check.
+Do not hide symptoms, disable a required feature, bypass authorization, mock away an
+integration or leave requested functionality incomplete because it is harder. An
+explicitly necessary containment measure is separate from the completed fix, with
+remaining work, risk and recovery recorded. Do not declare acceptance passed for it.
+
+## Evidence-based tools and dependencies
+
+"Best grade" means demonstrably fit for the required correctness, security,
+performance, operability and maintainability. A brand, newest release, premium model
+or large number of tools is not evidence. Do not choose a weaker verification path
+because the appropriate check is inconvenient. Record a required unavailable check
+and its next action; do not relabel a mock or smoke check as equivalent evidence.
+
+1. Inspect repository tooling, versions, supported environments and existing verified
+   primitives. Use the strongest relevant configured diagnostics and tests.
+2. For a material new choice, verify official documentation for the applicable version,
+   support/security status, capabilities and constraints. Include licensing, privacy,
+   portability, operating cost and lock-in when they affect the decision. Use current
+   provider research when relevant; do not preload unrelated provider dossiers.
+3. Compare viable choices against explicit requirements. A known supported tool may
+   be the best choice; prefer an upgrade or new tool when evidence justifies it.
+   Never invent benchmark results, automatic activation or installed capabilities.
+4. Resolve decisive uncertainty with a bounded representative experiment: functional
+   conformance, fault behavior, workload benchmark or integration check. Record the
+   versions, inputs, result and practical limits. Separate vendor claims from observed
+   behavior. Time or cost constraints do not turn an untested claim into proof.
+   Measure a user-facing latency or throughput requirement at its complete boundary,
+   including relevant queueing, persistence and downstream effects. Component timings
+   help locate a bottleneck; they do not establish end-to-end acceptance.
+5. Document the chosen tool, why it satisfies the requirements, any material gap and
+   fallback/migration trigger. Respect the user's model choice and available native
+   tools; Claude aliases and hook conventions do not control Codex. See
+   [model/runtime guidance](../../skills/coding-quality-rules/references/performance-model-selection.md).
+
+## Tests, comments and documentation
+
+Use [testing guidance](../common/testing.md) for required gates and coverage metrics.
+Inspect assertions: a green command or high coverage does not prove the intended
+behavior. For substantive fixes, demonstrate the regression fails for the right
+reason before the fix and passes afterwards when practical. Exercise relevant
+negative/failure and compatibility cases with realistic dependency semantics.
+Validate wiring or durable effects at the appropriate integration boundary rather
+than relying solely on mocks. Reuse valid evidence for unchanged inputs.
+
+Comments explain non-obvious intent, invariants, units, ownership/lifetime, retry or
+concurrency constraints and contract behavior. Public API docs describe inputs,
+outputs, errors and side effects where needed. Do not restate code or narrate the
+current task. Follow [comment rules](../common/coding-style.md#comments--what-they-do-and-do-not-contain).
+Update only the relevant maintained README/API/runbook/configuration surfaces so
+their examples and claims match executable behavior.
+
+## Review and PR acceptance
+
+Use an explicit [review baseline](../common/git-workflow.md#review-baseline).
+Include staged, unstaged and relevant untracked work for a workspace review, or
+the actual divergence diff for a PR. Trace affected unchanged consumers as needed;
+separate unrelated debt. Categories suggest investigations; severity follows
+demonstrated impact, likelihood and repository requirements, not a checklist label.
+Give a reproducible trigger, location, consequence and remediation for each finding.
+An evidence-backed no-findings review is valid. Never invent findings to fill a quota.
+Follow the actual control flow and documented dependency contract, including caught
+exception types. An unknown is a question or verification gap until a supported
+failure trace establishes a defect. Do not invent a retry, lost effect or exposure.
+Distinguish data integrity from demonstrated monetary loss, and explain any CRITICAL
+rating with its actual blast radius. Do not count one causal defect twice.
+
+Resolve in-scope defects and required verification before declaring this work done.
+Preserve the shared [severity and merge contract](../../agents/code-reviewer.md#severity-and-merge-contract).
+A general WARN policy is not permission to defer a required correctness fix merely
+because it is MEDIUM. Broader follow-up must have an explicit scope decision.
+
+PRs explain the final problem and resulting behavior, reasons for material choices,
+compatibility/rollout implications and actual verification. Refresh the title/body
+after scope changes. Tie evidence to the reviewed revision and input/configuration;
+separate passed, failed, skipped and unavailable checks. Follow the
+[PR workflow](../common/git-workflow.md#pull-request-workflow); do not claim deployed,
+installed or runtime verified based on local tests.
+
+## Guidance maintenance and runtime limits
+
+Skills and agents need accurate routing, valid examples and relevant acceptance
+checks. Audit changed guidance and its consumers; remove contradictory duplicate
+contracts or route to the canonical source. Test meaningful behavioral changes with
+bounded realistic scenarios and retain failed attempts. Metadata/lint checks certify
+structure only; synthetic model tests do not certify every future plan or live system.
+For contamination checks, keep project/customer-specific facts in project instructions;
+global guidance uses generic examples. Hook availability, trust and execution are
+separate facts. Do not claim automatic enforcement from a Markdown file.
+
+Keep context bounded, use one authoritative plan and preserve concurrent edits.
+Delegation must serve a concrete independent question, within the active runtime's
+limits. Principal quality comes from sound decisions and verified outcomes; repeated
+full audits, forced committees and elaborate templates do not substitute for either.

@@ -1,6 +1,7 @@
 ---
 name: test-strategy
 description: Select risk-based verification for features and defects, choosing test boundaries, independent oracles, realistic fixtures and evidence that detects meaningful failures.
+disable-model-invocation: true
 ---
 
 # Test strategy

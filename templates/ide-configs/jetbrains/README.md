@@ -67,6 +67,15 @@ Review updates and configure certificate handling, data sharing and Git protecti
 according to your organization's policy. Editor templates do not grant permission
 to push, deploy, send messages or trust hooks.
 
+## Resources
+
+Each open project runs its own indexer and language support, and agents keep
+worktrees and evidence in `.claude`, `.council` and `.codex`. Mark those folders
+Excluded (Project tool window → right-click → *Mark Directory As → Excluded*), so
+that code completion, navigation and inspection ignore them. Close the projects you
+aren't using. The rule behind this is
+[`rules/common/resource-discipline.md`](../../../rules/common/resource-discipline.md).
+
 ## Verification limits
 
 Local runtime evidence covers Codex discovery and VS Code extension startup/settings;

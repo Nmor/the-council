@@ -1,203 +1,111 @@
-> Detailed reference. Apply the current adaptive workflow in `CLAUDE.md` and
-> `rules/common/` first. Historical demands for fixed speeches, repeated full audits,
-> automatic fan-out, fresh plans or mandatory model tiers are superseded. Retain the
-> substantive correctness, security and verification checks relevant to the task.
+# Task execution and progress
 
-# Plan-Execution-Progress Rule (Always-On, Global)
-
-> Auto-fires on every file. Companion to `done-criteria.md`,
-> `no-overclaim.md`, `verify-before-claim.md`, `plan-task-breakdown.md`,
-> and any active plan file under `~/.claude/plans/` or
-> `<project>/.claude/plans/`.
->
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
-## Core Principle
+Use the [shared task contract](plan-task-breakdown.md) for IDs, task types,
+priorities, statuses and context capsules. The existing plan is authoritative;
+trackers and agent results refer to its IDs. This reference applies to substantive
+plan execution, not every clarification or routine single-step edit.
 
-**When executing a multi-phase plan (anything with explicit phase
-boundaries, a TodoWrite list of 3+ items, or a Council-approved
-implementation), the agent produces detailed, structured progress
-updates that let the user understand at a glance: what just
-happened, what changed numerically, what's pending, what was
-verified, and what comes next — without having to dig through
-tool output.**
+## Execute a bounded window
 
-The pattern this rule prevents: silent batches of edits where the
-user only sees an end-of-run summary, can't intervene mid-stream
-because they don't know the agent's current direction, and can't
-trust completion claims because they can't audit the trajectory.
+Read the current handoff and active task first. Confirm worktree changes, inputs,
+dependencies and authorization; then choose the next ready task. Keep only active
+work and a few ready next tasks in the live tracker. The full backlog stays in the
+plan. Do not reload the complete history or reproduce the backlog after compaction.
 
-## Hard rules
+When a task reveals new work, add it to the same plan with a new stable ID and
+explicit dependencies. Preserve its original outcome and other agents' changes.
+Explain a material scope or ordering change. Do not silently drop acceptance,
+integration, compatibility, documentation or required security checks.
 
-### 1. Phase-header announcements
+## Bound sustained work
 
-Every phase begins with a one-line announcement BEFORE the first
-tool call of that phase. The header names:
+Give each substantive work block one observable outcome and a stopping condition:
+verified delivery, a useful checkpoint, or an evidenced external blocker. Reuse
+the active task's acceptance; do not create a separate plan or budget questionnaire.
+During sustained work, review progress and reported context about every 60 minutes
+and at milestones. This is a checkpoint default, not a forced timeout or a claim
+that a hook measures elapsed time. Continue authorized work that is making progress.
 
-- The phase id (matches the plan file)
-- A short summary of the phase's goal
-- The first concrete action
+- Keep normal working context below 150K when the client exposes token usage;
+  consider a checkpoint around 100K before the next large investigation. These
+  are operating targets, not vendor limits or guaranteed caps. Use the runtime's
+  supported compaction; do not reduce its window blindly or confuse a tool-call
+  counter or bytes/4 estimate with measured context. If context refills immediately
+  after compacting, find and bound the repeated input rather than compacting in a loop.
+- After two unsuccessful attempts at the same approach, review the failure and
+  name a changed hypothesis, input or method before another attempt. Do not repeat
+  the same failing command or re-audit unchanged work without new evidence. Pursue
+  viable alternatives; an attempt limit does not waive required acceptance. When
+  an external prerequisite prevents progress, record the evidence and recovery
+  action, then yield instead of generating repeated blocked turns.
+- For CI, deployments or other external waits, use one bounded tool-side watch
+  with a deadline appropriate to the job; default to a 10-minute observation
+  budget when none is known. Preserve the job ID, state and resume command if it
+  expires. Handle timeout separately from failure or success. Do other ready work
+  or return the handoff; do not poll unchanged status with repeated model turns.
+  Follow the runtime's per-call wait limits and keep user updates timely.
+- Do not create recurring model-driven monitoring by default. A requested loop
+  needs a purpose, interval, deadline, owner and completion/cancellation condition;
+  use deterministic CI/events where suitable. End task-owned helpers and watchers
+  on completion. Do not terminate other user sessions or unrelated processes.
+- Search before reading; return relevant excerpts and check summaries, with full
+  logs in files. Aim for at most 2K returned tokens per routine tool result when
+  supported. Narrow or chunk larger required evidence before the next read rather
+  than relying on silent truncation. Inspect every result of batched checks;
+  record actual terminal status. Reuse evidence only for unchanged relevant inputs.
 
-### 2. Numbered before/after on bulk changes
+At a boundary, replace the current handoff with the compact record below. Aim for
+300–600 words or less; required acceptance, uncertainties and exact next actions
+take precedence over that target. Link logs and historical evidence, not full tool
+output. Resume related work from this record. Start a fresh session for unrelated
+work or stale context after a long break. Use actual client controls; never claim
+to run `/compact`, `/clear` or a new session when they are unavailable. Do not
+abandon a required fix just to meet a time/context target. Finish when acceptance
+passes; keep a partial task and its remaining work explicit across sessions.
 
-Any operation that touches 5+ files, deletes a directory, or moves
-significant data MUST report the count + size, before and after.
-Not "cleaned up the cache" — the exact bytes moved.
+## Update evidence and state
 
-### 3. Verification-block per phase
+After verification finishes, update the task's status and checkbox with its actual
+result and evidence link. An implemented task with tests pending remains
+`in_progress`; a running command is not evidence of success. Record failed/skipped
+checks and what remains uncertain. Valid checks for unchanged inputs can be reused
+by reference; compaction alone does not invalidate them.
 
-Each phase ends with a verification block listing the gates that
-passed THIS turn (per `verify-before-claim.md`):
+A native tracker may use `completed` for canonical `done`. Keep unsupported states
+and their reasons in the plan as described in the task contract. Deferred/cancelled
+items are visible scope decisions, not delivered outcomes. Task blockers name the
+unavailable prerequisite and next recovery action. Distinguish local tests from
+integration, installation, deployment and runtime verification.
 
-```text
-Phase <id> verification:
-- <gate 1>: <result this turn>
-- <gate 2>: <result this turn>
-- <gate 3>: skipped (<reason>)
-```
+## Meaningful progress communication
 
-If a gate was skipped, name it explicitly. No silent skips.
+Tell the user the concrete finding/change, why it matters, checks completed and the
+next action. Name task IDs when they clarify a longer plan. Report material blockers
+promptly with their evidence and recovery direction; label suspected causes as
+hypotheses. Do not narrate every tool call or repeat all division introductions.
+For a commit milestone, record the branch and SHA; for a deployment, record the
+actual target/revision and verification. A proposal or started operation is not a
+completed effect. Do not introduce another approval gate when authorization exists.
 
-### 4. Explicit next-step line
+## Compact handoff
 
-Every progress update ends with a single line stating the next
-concrete action, so the user can redirect before it lands.
-
-NOT: "moving on" / "continuing" / "next step." Always: the exact
-next file / command / decision.
-
-### 5. Commit boundaries are progress milestones
-
-When a phase produces a commit, the progress update includes:
-
-- The commit SHA + subject (so the user can `git show <sha>`)
-- The branch name (so multi-phase workflows stay traceable)
-- The count of files in the commit
-
-### 6. Blockers surface immediately with recovery direction
-
-When a phase hits a blocker, the update names:
-
-- The blocker (specific error, not "something went wrong")
-- The root cause (not the symptom — per `proper-fixes-first.md`)
-- The recovery direction (what to try next, OR what user input is
-  needed)
-- The fallback (if the recovery fails)
-
-NEVER silent retry. NEVER "I'll work around it" without surfacing.
-
-### 7. Per-tool-call narration: phase tag minimum
-
-The "before each tool call" narration described in the assistant
-guidelines is the floor. For plan execution, the narration MUST
-include WHICH phase + WHICH gate the call belongs to. NOT just
-"Checking now." The phase tag is what makes a long multi-phase
-session navigable.
-
-### 8. Plan-file is the source of truth — and it stays current
-
-When a TASK completes — not only a phase — the agent updates the plan file: tick it, add a
-one-line outcome (commit, gate result), and add any work the task discovered as new tasks.
-The plan is a living artifact, not a frozen contract, and it is what survives compaction.
-
-**Enforced, not remembered.** `docs-sync-gate.js` (Stop) will not let a turn end while code
-changed this session after the plan was last updated; `commit-gate.js` refuses a commit whose
-code is newer than the plan. Both read git, so a change made through Bash counts the same as
-an Edit. Docs are enforced at commit and push (`plan-completion-before-push.md`).
-
-### 9. The task list reflects real state
-
-Where the harness offers a task tool (TodoWrite), it mirrors the plan's task boundaries and
-tasks move to `completed` IMMEDIATELY — never batched. Where it does not, the plan file IS the
-task list and rule 8 is the whole obligation. Never assume a task tool exists: a gate keyed
-only to TodoWrite never fired in a harness without it, which is how plans went stale unseen.
-
-### 10. No silent skip-and-continue
-
-If the agent decides to skip a phase, defer it, or reorder phases,
-the progress update names:
-
-- Which phase is being skipped/deferred/reordered
-- Why (the constraint that drove the change)
-- When the deferred phase will resume
-- Whether the user needs to approve the re-ordering
-
-Re-ordering without telling the user is a silent-drop variant
-(per `no-silent-drops.md`).
-
-## Canonical progress-update shape
+Replace the current handoff at meaningful milestones and before yielding or
+compaction. Keep it short enough to read with the active task in one focused turn:
 
 ```text
-<phase id> complete.
-
-Changes:
-- <bullet — file touched, count, size>
-- <bullet — file touched, count, size>
-- <bullet — file touched, count, size>
-
-Verification:
-- <gate 1>: <result this turn>
-- <gate 2>: <result this turn>
-- <gate 3>: <result this turn or "skipped: <reason>">
-- code-graph (touched files + phase-boundary sweep, per
-  `code-graph-validation.md` rule 8): outbound N/N resolve;
-  inbound: 0 orphans; cross-artifact integrity: green
-
-Next: <one-line concrete action>.
+Goal and accepted constraints: ...
+Active task: <ID>, <status>; exact partial work remaining: ...
+Worktree/branch/commit: ...; uncommitted changes and other owners: ...
+Key inputs/decisions: <links to relevant sections/artifacts>
+Verified: <completed outcomes, checks, revision/input and evidence paths>
+Remaining checks/blockers: ...
+Next action: <ID, exact file/command/decision and expected outcome>
 ```
 
-## Anti-pattern: what NOT to write
-
-```text
-Done with <phase>. Moving on.
-```
-
-This violates rules 2, 3, 4, 5 simultaneously. The user has no
-visibility into what happened, what passed, what's next, or where
-to look in git.
-
-## When this rule fires
-
-- Any session containing a TodoWrite list with 3+ pending items
-- Any session reading a plan file with explicit phase headings
-- Any session that says "executing the plan" / "implementing the
-  refactor" / "shipping the migration"
-- The Council Protocol's Implementation phase — every Council-
-  mediated task is plan execution by definition
-
-## Cross-references
-
-- `plan-task-breakdown.md` — granular task structure these updates
-  report against
-- `plan-completion-before-push.md` — push gate that runs after the
-  plan is fully verified
-- `done-criteria.md` — every phase end runs the checklist
-- `code-graph-validation.md` — phase-boundary code-graph sweep
-  is part of every verification block
-- `no-overclaim.md` — never claim phase-done without verification
-- `verify-before-claim.md` — verification paired with claim, same
-  turn
-- `no-silent-drops.md` — silently skipping a phase is a silent drop
-- `no-silent-failures.md` — silently retrying a failed gate is a
-  silent failure of the gate itself
-
-## Why this rule exists
-
-Without explicit progress structure during multi-phase execution,
-the user can't tell whether a phase finished cleanly or partially,
-which side-effects actually happened vs were only attempted,
-whether safety gates were verified or guessed, and what the next
-concrete action is. The cost of the structured update is one tool
-call's worth of prose. The cost of leaving the user blind through
-a multi-phase session is interrupt fatigue, mistrust of completion
-claims, and re-verification work later.
-
-User directive (verbatim): "Rule should exist for detailed plan
-execution and progress updates."
-
-## Learning hooks
-
-Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill. Invoke it when refining this rule: it does not load
-by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
-the task at hand, so they are not carried on every turn.
+Avoid copying this narrative into multiple plans and memories. Keep long logs and
+historical decisions in linked artifacts. A delegated helper receives only its
+relevant task capsule, permitted effects and output bound; its findings return to
+the main owner for integration into the same plan. On resume, verify current files
+before relying on a summary; read additional detail only for the next action.

@@ -1,121 +1,34 @@
 ---
 name: plan
-description: Restate requirements, assess risks, and create step-by-step implementation plan. WAIT for user CONFIRM before touching any code.
+description: Restate the outcome, inspect existing work and refine the authoritative plan into small verifiable tasks with stable labels and bounded handoffs.
 ---
 
-# Plan Command
+# Plan command
 
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
-This command invokes the **planner** agent to create a comprehensive implementation plan before
-writing any code.
+Use the [planner guidance](../agents/planner.md) and
+[shared task contract](../rules-library/council-detail/plan-task-breakdown.md).
+The same contract applies to Claude Code and Codex; tool availability differs.
 
-## What This Command Does
+1. Locate the authoritative plan and read its current handoff and relevant tasks.
+   Inspect affected paths/contracts and use existing accepted decisions.
+2. State the concrete outcome and material constraints. Ask only missing questions
+   that block a useful next step.
+3. Break the work into small outcome-based tasks with stable IDs, canonical types,
+   separate priorities/statuses, owned scope, context, dependency IDs, acceptance
+   and verification. Preserve existing task IDs and explicit commit/delivery policy.
+4. Check coverage, cycles, ownership conflicts and integration outcomes. Keep
+   required tests with the change they prove; split genuinely separate outcomes.
+5. Update the same plan in place with a compact handoff and next executable task.
+   Summarize the breakdown, material decisions and blockers for the user.
 
-1. **Restate Requirements** - Clarify what needs to be built
-2. **Identify Risks** - Surface potential issues and blockers
-3. **Create Step Plan** - Break down implementation into phases
-4. **Wait for Confirmation** - MUST receive user approval before proceeding
+A request only to plan produces a plan, without implementation. When the user has
+already authorized implementation, planning does not impose a new confirmation
+gate. Follow the user's scope and existing authorization; never infer push,
+deployment or external-service access from this command.
 
-## When to Use
-
-Use `/plan` when:
-
-- Starting a new feature
-- Making significant architectural changes
-- Working on complex refactoring
-- Multiple files/components will be affected
-- Requirements are unclear or ambiguous
-
-## How It Works
-
-The planner agent will:
-
-1. **Analyze the request** and restate requirements in clear terms
-2. **Break down into phases** with specific, actionable steps
-3. **Identify dependencies** between components
-4. **Assess risks** and potential blockers
-5. **Estimate complexity** (High/Medium/Low)
-6. **Present the plan** and WAIT for your explicit confirmation
-
-## Example Usage
-
-```text
-User: /plan I need to add real-time notifications when markets resolve
-
-Agent (planner):
-# Implementation Plan: Real-Time Market Resolution Notifications
-
-## Requirements Restatement
-- Send notifications to users when markets they're watching resolve
-- Support multiple notification channels (in-app, email, webhook)
-- Ensure notifications are delivered reliably
-- Include market outcome and user's position result
-
-## Implementation Phases
-
-### Phase 1: Database Schema
-- Add notifications table with columns: id, user_id, market_id, type, status, created_at
-- Add user_notification_preferences table for channel preferences
-- Create indexes on user_id and market_id for performance
-
-### Phase 2: Notification Service
-- Create notification service in lib/notifications.ts
-- Implement notification queue using BullMQ/Redis
-- Add retry logic for failed deliveries
-- Create notification templates
-
-### Phase 3: Integration Points
-- Hook into market resolution logic (when status changes to "resolved")
-- Query all users with positions in market
-- Enqueue notifications for each user
-
-### Phase 4: Frontend Components
-- Create NotificationBell component in header
-- Add NotificationList modal
-- Implement real-time updates via Supabase subscriptions
-- Add notification preferences page
-
-## Dependencies
-- Redis (for queue)
-- Email service (SendGrid/Resend)
-- Supabase real-time subscriptions
-
-## Risks
-- HIGH: Email deliverability (SPF/DKIM required)
-- MEDIUM: Performance with 1000+ users per market
-- MEDIUM: Notification spam if markets resolve frequently
-- LOW: Real-time subscription overhead
-
-## Estimated Complexity: MEDIUM
-- Backend: 4-6 hours
-- Frontend: 3-4 hours
-- Testing: 2-3 hours
-- Total: 9-13 hours
-
-**WAITING FOR CONFIRMATION**: Proceed with this plan? (yes/no/modify)
-```
-
-## Important Notes
-
-**CRITICAL**: The planner agent will **NOT** write any code until you explicitly confirm the plan
-with "yes" or "proceed" or similar affirmative response.
-
-If you want changes, respond with:
-
-- "modify: [your changes]"
-- "different approach: [alternative]"
-- "skip phase 2 and do phase 3 first"
-
-## Integration with Other Commands
-
-After planning:
-
-- Use `/tdd` to implement with test-driven development
-- Use `/build-fix` if build errors occur
-- Use `/code-review` to review completed implementation
-
-## Related Agents
-
-This command invokes the `planner` agent located at:
-`~/.claude/agents/planner.md`
+Keep only the active task and a few ready tasks in an available live tracker,
+using the plan IDs. Do not mirror the full backlog into each turn, create versioned
+helper plans or require an exhaustive intake for a routine fix. Exact verification
+commands must come from repository evidence; a planning draft is not a passing test.

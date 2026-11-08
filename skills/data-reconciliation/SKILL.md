@@ -1,6 +1,7 @@
 ---
 name: data-reconciliation
 description: Reconcile intended business events with persisted records and downstream effects, investigating uncertain writes, duplicates, missing replication and safe repair.
+disable-model-invocation: true
 ---
 
 # Data reconciliation

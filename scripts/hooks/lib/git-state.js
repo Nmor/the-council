@@ -14,7 +14,17 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const SRC_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|cs|rb|php|swift|sql|vue|svelte)$/i;
+// From scripts/council-source-extensions, the ONE list both enforcement paths read. Two
+// hand-kept lists drifted: a Dart or Elixir change needed no review here while the git hook
+// demanded one. The literal below is a fallback for a broken install, not the source of truth.
+const SRC_EXT = (() => {
+  try {
+    const list = fs.readFileSync(path.join(__dirname, '..', '..', 'council-source-extensions'), 'utf8')
+      .split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+    if (list.length) return new RegExp(`\\.(${list.join('|')})$`, 'i');
+  } catch { /* fall through */ }
+  return /\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|kt|kts|cs|rb|php|swift|sql|vue|svelte)$/i;
+})();
 const TEST_DIR = /(^|\/)(__tests__|tests?|spec)\//i;
 const TEST_FILE = /[._-](test|spec)\.[a-z]+$|_test\.go$|(^|\/)test_[^/]+\.py$/i;
 const isTest = (s) => TEST_DIR.test(s) || TEST_FILE.test(s);

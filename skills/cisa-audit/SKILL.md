@@ -1,6 +1,7 @@
 ---
 name: cisa-audit
 description: Assess information-system controls using CISA-aligned risk, evidence and sampling methods; distinguish control design, operation, audit limitations and remediation ownership.
+disable-model-invocation: true
 ---
 
 # CISA-aligned information-systems audit

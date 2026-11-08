@@ -28,25 +28,18 @@ retained in detailed references.
 Default to no subagents for work the main session can finish efficiently. When a
 specialist adds independent evidence or owns a separable deliverable, give it the
 objective, exact paths, relevant excerpts, acceptance check and a concise output limit.
-Use at most one helper at a time by default. Do not recursively delegate or start
-large dynamic workflows unless the user asks for a larger team or the task justifies
-an explicit bounded exception. Queue additional useful work instead of launching
-several overlapping reviews. Reuse an existing helper; stop it when its task ends.
-Keep tool I/O parallel where useful without inventing more model sessions.
-
-Respect the user's main model. Use suitable cheaper helpers for bounded mechanical
-work when available; difficult design/security review needs adequate reasoning.
-Do not copy the whole conversation, historical plan or Council library into a helper.
+Queue additional useful work instead of launching several overlapping reviews. Reuse
+an existing helper; stop it when its task ends. Keep tool I/O parallel where useful
+without inventing more model sessions. Do not copy the whole conversation, historical
+plan or Council library into a helper.
 
 ## Keep context useful
 
 Read the current handoff and relevant sections of the single authoritative plan.
 Search before opening large files; read only the needed reference sections. Keep
 verbose test/log output in files and return results, failure details and evidence paths.
-After a meaningful milestone, update the existing plan with worktree/commit, decisions,
-verified results, pending checks and next action. Use that checkpoint for compaction.
-Compact before a long-running task accumulates a large history; when switching to
-unrelated work, start a fresh session from its own handoff. Do not claim to have
+Checkpoint in the plan as `plan-execution-progress.md` says; compact at useful
+boundaries and start fresh for unrelated work. Do not claim to have
 compacted or cleared a session without the runtime actually doing it. Never discard
 uncommitted work or kill the user's other sessions to reduce usage.
 

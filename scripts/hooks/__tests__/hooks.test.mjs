@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 import { writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { run, json, uniq, markerExists, markerText, cleanup, verificationProof } from './helpers.mjs';
+import { run, json, uniq, markerExists, markerText, cleanup, verificationProof, reviewProof } from './helpers.mjs';
 
 describe('gate-marker.js — a marker must mean a gate RAN', () => {
   const fire = (command) => {
@@ -141,6 +141,8 @@ describe('commit-gate.js — a commit is a claim', () => {
     run('test-coverage-gate.js', { session_id: sid, prompt_id: turn, tool_name: 'Write',
       tool_input: { file_path: '/x/a.go', content: 'package main' } });
     verificationProof(sid, turn, undefined, {}, true);
+    // A commit also needs an independent review of the same source (done-criteria.md).
+    reviewProof(sid, turn);
     return sid;
   };
   const gate = (sid, turn) =>
@@ -150,7 +152,7 @@ describe('commit-gate.js — a commit is a claim', () => {
     run('commit-gate.js', { session_id: sid, prompt_id: turn, tool_name: 'Bash',
       tool_input: { command: 'git commit -m x' } });
   const clean = (sid) => cleanup(`claude-council-coverage-${sid}`, `claude-council-lastedit-${sid}`,
-    `claude-council-gate-${sid}`, `claude-council-srcedits-${sid}`);
+    `claude-council-gate-${sid}`, `claude-council-srcedits-${sid}`, `claude-council-review-${sid}`);
 
   test('allows a commit when the gate ran in this turn', () => {
     const sid = setup('t1'); gate(sid, 't1');
@@ -180,7 +182,9 @@ describe('commit-gate.js — a commit is a claim', () => {
   test('allows it again once the gate is re-run in the current turn', () => {
     const sid = setup('t1'); gate(sid, 't1');
     assert.equal(commit(sid, 't2').code, 2);
+    // A new turn needs both again: the verification gate and the independent review.
     gate(sid, 't2');
+    reviewProof(sid, 't2');
     assert.equal(commit(sid, 't2').code, 0);
     clean(sid);
   });
@@ -201,6 +205,7 @@ describe('commit-gate.js — a commit is a claim', () => {
     clean(sid);
   });
 });
+
 
 describe('check-console-log.js — an unverified claim does not end the turn', () => {
   const transcript = (text) => {

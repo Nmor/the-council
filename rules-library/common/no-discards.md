@@ -1,9 +1,9 @@
 # No-Discards Rule (Strict, Always-On, Global)
 
-> Auto-fires on every file. Sister to `no-silent-failures.md` (don't swallow errors),
-> `no-silent-drops.md` (don't bury work), and `sonarlint-checks.md` (linter rule reference). This
-> rule is **hook-enforced** by `~/.claude/scripts/hooks/lib/no-discards-rules.js` — edits that
-> introduce a discard pattern are rejected with exit status 2.
+> Sister to `no-silent-failures.md`, `no-silent-drops.md` and `sonarlint-checks.md`.
+> Guidance applies in both runtimes; enforcement depends on the actual configured
+> diagnostics and installed, enabled and trusted hooks. Claude's no-discards hook
+> is not a native Codex capability. A hook result does not certify other checks.
 >
 > **Size budget: 40 KB** — `token-budget.mjs --check`.
 
@@ -22,13 +22,15 @@ A *silent failure* is worse: an error is caught, the user sees a "success" state
 state only surfaces hours later when a downstream consumer notices. The cost of one extra logged
 warning is zero; the cost of an undebuggable failure is hours of incident response.
 
-The rule applies to: production source, tests, scripts, generated code wrappers, anything Claude or
-any agent writes. Test files have **no exemption** — bind the index, name the subtest, use the
-position.
+The rule applies to production source, tests, scripts and generated code wrappers.
+Tests must handle returned values and errors too. Go's `for _, value := range` is
+valid value iteration in production and tests; it is not a discarded function result.
 
 ## Error-message contract (server + client)
 
-For every failure path the codebase must produce **all three** of:
+For a client-originated failure, produce these three signals at the appropriate
+boundaries. Background work requires actionable server telemetry and durable failure
+state where applicable; do not invent a frontend consumer:
 
 1. **Server log entry** — structured (slog/zerolog/etc.), includes the operation name, the relevant
    ids (user_id, event_id, request_id), and the wrapped error chain. Never just `log.Error(err)`.
@@ -242,12 +244,12 @@ if !ok {
 ### Test files — NO EXEMPTION
 
 ```go
-// FORBIDDEN — even in _test.go
+// ALLOWED — the omitted index is not a function result
 for _, tc := range cases {
     t.Run(tc.name, func(t *testing.T) { ... })
 }
 
-// CORRECT
+// ALSO CORRECT — use an index when the test needs its position
 for i := range cases {
     tc := cases[i]
     t.Run(tc.name, func(t *testing.T) { ... })
@@ -468,143 +470,37 @@ canonical patterns.
 
 ## Sweep procedure (when this rule fires)
 
-After every edit:
+Use the [principal quality contract](../council-detail/principal-level-mandate.md)
+and [review baseline](git-workflow.md#review-baseline). Inspect the actual changed
+code, affected consumers and applicable strict diagnostics. Fix real dropped values,
+errors and failure effects; classify regex matches by semantics rather than shape.
 
-1. Run the project's lint command. Fix every reported issue.
-2. Grep for `_,` / `_ =` / `// eslint-disable` / `// @ts-ignore` / `//nolint` / `# noqa` in the
-   touched file and any referenced file. Fix every hit.
-3. Check IDE diagnostics for any of the SonarLint codes listed above. Address each one.
-4. Run the no-discards hook locally if it exists; verify the edit passes.
+## Touched-file audit workflow
 
-## Touched-file audit workflow (MANDATORY — read this before editing any file)
+Audit changed or exposed behavior before completion; reuse valid evidence for
+unchanged inputs. Reading a file does not require repeatedly auditing the entire
+file or loading every language's rules. Required repository checks retain their scope.
 
-The most common way agents reintroduce a previously-fixed issue is by
-focusing narrowly on the requested change and skipping the broader sweep
-the file already deserves. This workflow makes the sweep explicit so
-the failure mode can't slip past.
-
-### When this applies
-
-Every time you `Read` or `Edit` a file, before you mark the task
-involving that file as complete, run **all five** steps below for
-that file. There is no exception for "small" edits — the same hooks
-that catch new violations don't catch pre-existing ones, so the audit
-is the only safety net.
-
-### The five steps
-
-1. **Inventory duplicated literals (S1192).** For Go / TS / Python:
-
-   ```bash
-   grep -oE '"[^"]{8,}"' <file> | sort | uniq -c | sort -rn | awk '$1 >= 3'
-   ```
-
-   Every line in the output is a violation. If you decide to extract,
-   do **declare + replace in the SAME edit** — never declare a
-   const and stop, that produces the unused-const warning state the
-   hook flags. If a duplicate is genuinely inside a doc comment
-   (e.g., swagger `// @Param ...`), note it as a known Sonar
-   false-positive in the response but do not extract.
-
-2. **Inventory discards.** Run the relevant grep set for the file's
-   language from the "Pre-delivery self-audit checklist" section
-   below. Fix every hit. Common offenders in Go:
-
-   ```bash
-   grep -nE '\bfor [_, ]+_[, ]* := range\b' <file>
-   grep -nE '_, err :=|, _ :=|^\s*_ =' <file>
-   grep -nE 'defer [a-zA-Z_.]+\.Close\(\)$' <file>
-   ```
-
-3. **Inventory silent failures.** Look for any of the SonarLint
-   shape patterns from `no-silent-failures.md`: empty catch blocks,
-   fire-and-forget `.catch(() => null)`, `c.Data()` /
-   `response.end()` inside a per-row loop (this terminates the
-   response stream — every later iteration silently fails). One
-   `c.Data` inside a loop has happened twice in this codebase
-   already; treat it as a known-bad pattern.
-
-4. **Run the project's lint + static-analysis chain on the file.**
-   Go: `go build`, `go vet`, `staticcheck`, `golangci-lint run`
-   (all must be zero). TS: `tsc --noEmit`, `eslint --max-warnings 0`.
-   If any tool reports anything, fix it before marking done.
-
-5. **Re-check IDE diagnostics for the file** (the PostToolUse hook
-   reports them — read every entry). The IDE is the source of truth
-   for SonarLint warnings the linters above don't catch (e.g.,
-   `go:S1192`, `go:S3776`, `go:S107`). Address each one or, if the
-   warning is a genuine false-positive (swagger comment etc.),
-   document why in the response and do NOT introduce a per-line
-   suppression.
-
-6. **Commented-out code audit (no-silent-drops.md Rule 0).** Grep the
-   file for commented-out source:
-
-   ```bash
-   grep -nE '^\s*//\s*(if|for|switch|return|err|var|const|func|import|package|[a-zA-Z_]+[ \t]*[:=]|c\.|i\.|a\.|h\.|k\.)' <file>
-   ```
-
-   Every match is one of three things:
-   - **A genuine TODO marker** — leave it OR open a real ticket and
-     remove it. Either way, surface it to the user.
-   - **A verbatim duplicate of live code adjacent to it** (typo'd
-     older copy that wasn't cleaned up) — name it explicitly in the
-     response and ASK before deleting. Never silently delete.
-   - **An unwired feature** (the path was started, stubbed, or
-     disabled) — mark with `BUG(unwired-<short-name>)` and a
-     reader-facing question: "is this still wanted? if yes, here's
-     the implementation gap." Restore the block verbatim; do not
-     delete to make the linter pass.
-
-   The gocritic `commentedOutCode` warning is NOT permission to
-   delete. It's permission to ASK. Deleting a commented block to
-   silence the linter is a no-silent-drops violation regardless of
-   what the linter says.
-
-### Declare-and-stop is forbidden
-
-If you decide to extract a constant or a helper:
-
-- The same edit MUST replace every usage.
-- Or revert the declaration before reporting done.
-
-The half-finished "I declared the const, replacement is next turn"
-state is itself a no-discards violation: it leaves the file with
-unused-symbol warnings that block any reasonable "is this done?"
-check.
-
-### Same-pattern reintroduction is forbidden
-
-If the codebase has ever extracted a constant for `"Content-Type"`,
-`"text/csv"`, etc., and you write new code that hardcodes the same
-literal, that is the violation the user has named multiple times.
-Before adding a new string literal to a file, grep the file for
-existing `const`s and use them. If the const doesn't exist yet but
-the literal will repeat, add the const in the SAME edit and use it.
-
-### Why this workflow exists
-
-This section was added after a session where the agent fixed an S107
-finding by extracting a constant, then immediately wrote new code
-nearby that introduced four MORE duplicate-literal violations of the
-same shape — visible to the IDE Sonar plugin but invisible to the
-PostToolUse hook because the hook only checks the diff, not the file
-as a whole. The user's correct critique:
-
-> you fix an issue and when you write some more code you introduce
-> the same issue even though these entire avoidance flow should be
-> in the project and global rules. Is there a reason why you can't
-> follow them or update them when you find a need issue
-
-The rules were there. The agent wasn't running them. This section
-exists so the workflow is explicit and the failure cannot recur as
-"I forgot to audit."
+1. Check relevant duplicate behavior/literals, discards, silent failures and consumers.
+   A repeated literal is not automatically shared policy; valid Go value iteration
+   is not a dropped return. Search with `rg` and inspect candidate matches.
+2. Run configured strict lint, types, static analysis and appropriate tests for the
+   changed language and behavior. Do not claim unavailable IDE diagnostics ran.
+   Do not add suppressions, exclude changed files or disable hooks to bypass a gate.
+3. Remove genuinely obsolete commented source after confirming consumers and scope.
+   Complete required unwired features; do not replace them with TODOs or delete them
+   to obtain a green check. Record unrelated debt outside source and acceptance.
+4. Verify extraction replaces applicable usages and leaves no unused declarations.
+   Confirm shared meaning before consolidating coincidental strings or helpers.
+5. Record actual command results, reviewed inputs and unavailable required checks.
+   A configured hook supplements diagnostics; never run archived Claude hooks as
+   native Codex hooks or treat an unevaluated grep match as a proven violation.
 
 ## Pre-delivery self-audit checklist (MANDATORY)
 
-**Before reporting any code change as complete, run this checklist against every file you touched.**
-This rule exists because the user has repeatedly observed agents reintroducing lint violations that
-the codebase already fixed. *Never* deliver code that contains a pattern from this list.
+Use relevant rows as discovery prompts before completing changed code. Verify actual
+semantics with applicable diagnostics; the table is not proof that a match is a bug.
+Preserve required checks and do not reintroduce confirmed defects.
 
 | # | Pattern to scan for | How to find it | What to do |
 | - | ------------------- | -------------- | ---------- |
@@ -652,9 +548,10 @@ the codebase already fixed. *Never* deliver code that contains a pattern from th
 
 ### How to run the audit
 
-For every file you touched in this turn, run **every** grep in the table above. If even one returns
-a match (other than the documented rune-iteration exception), the change is **not done** — fix the
-violation and re-run.
+Search applicable patterns in changed code and affected consumers; inspect every
+result. A match alone is not a violation. Valid Go value iteration, including tests,
+is allowed. Resolve confirmed defects and required diagnostics, then verify again.
+Do not repeatedly run unrelated scans for unchanged inputs.
 
 For Go: also run `go vet ./...`, `staticcheck ./...`, and `golangci-lint run ./...` and require all
 three to pass with zero output.

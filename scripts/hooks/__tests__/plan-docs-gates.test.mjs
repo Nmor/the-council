@@ -17,7 +17,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { run, uniq, cleanup, verificationProof } from './helpers.mjs';
+import { run, uniq, cleanup, verificationProof, reviewProof } from './helpers.mjs';
 import { ISOLATED, git, setMtime, world, edit } from './plan-world.mjs';
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -29,13 +29,15 @@ describe('commit-gate.js — a commit carries a current plan, and docs or a Docs
     const pid = uniq('pid');
     verificationProof(sid, pid, w.repo, w.env);
     verificationProof(sid, pid, w.repo, w.env, true);
+    reviewProof(sid, pid, w.repo, w.env);
     try {
       return run('commit-gate.js', {
         session_id: sid, prompt_id: pid, cwd: w.repo,
         tool_name: 'Bash', tool_input: { command: `git commit -m "${message}"` },
       }, w.env);
     } finally {
-      cleanup(`claude-council-gate-${sid}`, `claude-council-coverage-${sid}`);
+      cleanup(`claude-council-gate-${sid}`, `claude-council-coverage-${sid}`,
+        `claude-council-review-${sid}`);
     }
   };
 

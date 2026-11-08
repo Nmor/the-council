@@ -343,3 +343,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   (information-blocking exceptions, ONC certification updates, FDA SaMD guidance revisions, etc.)
 - New row when state law tightens (e.g., Washington My Health My Data Act, Connecticut Data Privacy
   Act health provisions, Colorado AI Act when applied to health)
+
+## One pass (owner rule, 2026-11-07)
+
+A commit gets one review round. Report every finding you can find now, CRITICAL, HIGH, MEDIUM and LOW
+alike, with nothing held back as a nit or note: a finding left for a later round costs the owner a
+whole round. When asked to confirm a fix, check only
+the changed lines against the findings they answer; raise nothing new outside them unless it is
+CRITICAL or HIGH.

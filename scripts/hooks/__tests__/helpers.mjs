@@ -50,7 +50,7 @@ let n = 0;
 export const uniq = (p = 'id') => `${p}-${process.pid}-${Date.now()}-${n++}`;
 
 export const marker = (name) => {
-  const match = /^claude-council-(gate|coverage|intake-nudged|intake|research|payload|parity|lastedit|srcedits|covnudge|claimwall|format-missing|format-failed)-(.+)$/.exec(name)
+  const match = /^claude-council-(gate|coverage|review|intake-nudged|intake|research|payload|parity|lastedit|srcedits|covnudge|claimwall|format-missing|format-failed)-(.+)$/.exec(name)
     || /^claude-(supersede-proof)-(.+)$/.exec(name)
     || /^claude-docs-sync-(code|docs|plan|memory)-(.+)$/.exec(name)?.map((value, index) => index === 1 ? `docs-sync-${value}` : value);
   if (!match) return join(tmpdir(), name);
@@ -78,6 +78,21 @@ export function verificationProof(sid, prompt = '', cwd, env = {}, coverage = fa
   }, env);
   if (result.code !== 0 || result.stderr) throw new Error(`Proof fixture failed: ${result.stderr}`);
   return result;
+}
+
+// Two recorded reviewer perspectives, the way a real session gets them: through the marker, by
+// dispatching reviewers. This fixture is only obtainable because terminalSuccess recognises an
+// agent's STATUS — while it read only the Bash shape, no review was ever recorded and every
+// commit-gate test that needed one had to be written as though the rule did not exist.
+export function reviewProof(sid, prompt = '', cwd, env = {}, types = ['go-reviewer', 'code-reviewer']) {
+  for (const type of types) {
+    const result = run('review-marker.js', {
+      hook_event_name: 'PostToolUse', session_id: sid, prompt_id: prompt, cwd,
+      tool_name: 'Agent', tool_input: { subagent_type: type, prompt: `Review ${cwd}` },
+      tool_response: { status: 'completed', agentType: type, content: [] },
+    }, env);
+    if (result.code !== 0) throw new Error(`Review fixture failed: ${result.stderr}`);
+  }
 }
 
 // What a NON-blocking hook told Claude. Stderr on exit 0 goes to the debug log only and is

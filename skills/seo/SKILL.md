@@ -1,6 +1,7 @@
 ---
 name: seo
 description: Audit and improve technical SEO, search intent, site architecture, content, metadata and search measurement using crawl and search evidence.
+disable-model-invocation: true
 ---
 
 # SEO

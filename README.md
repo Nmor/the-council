@@ -105,6 +105,13 @@ rather than replacing customized configuration without review.
 5. Record evidence, remaining work and the next action in the same existing plan.
 
 Routine tasks do not require a series of division speeches or extra model sessions.
+Substantive plans, implementation and reviews follow the
+[principal quality contract](rules-library/council-detail/principal-level-mandate.md):
+explicit invariants, justified tool/design choices, complete wiring and consumer
+compatibility, meaningful failure tests, useful comments and PR evidence tied to
+the actual change. Strict checks remain required; shortcuts that hide failures or
+drop acceptance are prohibited. These instructions support quality; they do not
+guarantee every model output or certify a live system from synthetic tests.
 Detailed review templates remain available for high-risk or explicitly deep reviews.
 Imported guidance and hooks supplement native permissions; they cannot authorize
 messages, pushes, deployment or other actions outside the user's request.
@@ -139,6 +146,12 @@ Learning procedures can record candidates and propose improvements. Automatic
 Claude audit events are not automatically ported to Codex; keep Codex evidence in
 the existing plan. Candidate promotion remains subject to review and authorization.
 See [context controls](docs/CONTEXT.md) and [runtime compatibility](docs/CODEX.md).
+
+Claude Code and Codex share an [actionable task contract](rules-library/council-detail/plan-task-breakdown.md):
+small verifiable outcomes, stable IDs, separate types/priorities/statuses, explicit
+dependencies and bounded context. The planner, planning commands and agent handoffs
+use this contract. The full backlog stays in one plan; a compact handoff and a small
+active task window support interruption and resume.
 
 ## What's included
 

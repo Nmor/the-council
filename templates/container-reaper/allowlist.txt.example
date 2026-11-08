@@ -1,0 +1,6 @@
+# Compose projects and container names the reaper never touches, one per line.
+# `*` patterns allowed. List each long-lived local stack (a project's own services).
+# Everything else is treated as test residue.
+my-project
+my-project-db
+buildx_buildkit_*
