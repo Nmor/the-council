@@ -60,7 +60,7 @@ class SyncTests(unittest.TestCase):
             self.assertEqual(after, before)
             self.assertEqual(installer.verify(native)['integrity'], 'passed')
             for harness in ('.agents', '.copilot'):
-                self.assertEqual((home / harness / 'skills/team-skill').resolve(), skill)
+                self.assertEqual((home / harness / 'skills/team-skill').resolve(), skill.resolve())
             self.assertFalse((native / 'skills/team-skill').exists())
             broken = home / '.agents/skills/broken'
             broken.symlink_to(home / 'does-not-exist')
