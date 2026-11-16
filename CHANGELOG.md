@@ -1,12 +1,10 @@
 # Changelog
-
-- Windows shell fixtures use Git Bash, isolate the native home, and select the
-  running Python explicitly; dispatcher fixtures use platform-specific quoting.
-
-
 All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
+
+- Windows shell fixtures use Git Bash, isolate the native home, and select the
+  running Python explicitly; dispatcher fixtures use platform-specific quoting.
 
 - Concurrent audit writers wait up to two seconds for the private-file lock,
   using a monotonic deadline, before reporting an unavailable record.
