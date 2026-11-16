@@ -1,6 +1,6 @@
 ---
 name: database-migrations
-description: Database migration best practices for schema changes, data migrations, rollbacks, and zero-downtime deployments across PostgreSQL, MySQL, and common ORMs (Prisma, Drizzle, Django, TypeORM, golang-migrate).
+description: "Database migration best practices for schema changes, data migrations, rollbacks, and zero- downtime deployments across PostgreSQL, MySQL, and common ORMs (Prisma, Drizzle, Django, TypeORM, golang-migrate)."
 disable-model-invocation: true
 ---
 
@@ -207,7 +207,7 @@ npx drizzle-kit push
 import { pgTable, text, timestamp, uuid, boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id").primaryKey() /* UUIDv7 via app or pg uuidv7(); random v4 PKs fragment indexes (database-reviewer) */,
   email: text("email").notNull().unique(),
   name: text("name"),
   isActive: boolean("is_active").notNull().default(true),

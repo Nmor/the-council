@@ -1,7 +1,7 @@
 # Python — No-Discards Extension
 
 > Auto-fires on every `*.py`, `*.pyi` file. Extends
-> `~/.claude/rules/common/no-discards.md` with Python-specific
+> `~/.claude/rules-library/common/no-discards.md` with Python-specific
 > patterns. Sister to `extreme-lint-policy.md`,
 > `no-silent-failures.md`, `error-handling-with-context.md`.
 > Tooling: `ruff` (select=ALL), `mypy --strict`,
@@ -440,14 +440,14 @@ Python lint sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md` — umbrella rule
+- `~/.claude/rules-library/common/no-discards.md` — umbrella rule
 - `~/.claude/rules/common/no-silent-failures.md` — silent failure
   patterns
-- `~/.claude/rules/common/error-handling-with-context.md` —
+- `~/.claude/rules-library/common/error-handling-with-context.md` —
   wrapping with operation + ids
-- `~/.claude/rules/common/extreme-lint-policy.md` — strict lint
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strict lint
   config
-- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns;
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI patterns;
   pydantic-settings for config
 - `~/.claude/rules/common/done-criteria.md` — verification block
 

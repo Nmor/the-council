@@ -1,7 +1,7 @@
 # SQL Security
 
 > Auto-fires on every `*.sql`, `migrations/**`, `db/**` file.
-> Sister to `~/.claude/rules/common/security.md`. Standards:
+> Sister to `~/.claude/rules-library/common/security.md`. Standards:
 > **OWASP SQL Injection Cheat Sheet**, **OWASP Database Security
 > Cheat Sheet**, **CIS PostgreSQL / MySQL Benchmarks**,
 > **PostgreSQL Row-Level Security**, **PCI-DSS** (cardholder
@@ -141,7 +141,7 @@ create trigger users_audit
   for each row execute function audit_user_changes();
 ```
 
-Per `~/.claude/rules/common/audit-logging.md`.
+Per `~/.claude/rules-library/common/audit-logging.md`.
 
 ## Multi-tenant isolation patterns
 
@@ -210,13 +210,13 @@ psql -c "select schemaname, tablename, rowsecurity from pg_tables where rowsecur
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/common/audit-logging.md`
-- `~/.claude/rules/common/gdpr-ccpa.md`
-- `~/.claude/rules/common/data-retention.md`
-- `~/.claude/rules/sql/no-discards.md`
-- `~/.claude/rules/sql/coding-style.md`
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/audit-logging.md`
+- `~/.claude/rules-library/common/gdpr-ccpa.md`
+- `~/.claude/rules-library/common/data-retention.md`
+- `~/.claude/rules-library/sql/no-discards.md`
+- `~/.claude/rules-library/sql/coding-style.md`
 - OWASP SQL Injection Cheat Sheet
 - OWASP Database Security Cheat Sheet
 - CIS PostgreSQL Benchmark

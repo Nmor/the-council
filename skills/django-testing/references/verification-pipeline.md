@@ -372,7 +372,8 @@ NEXT STEPS:
 ## Pre-Deployment Checklist
 
 - [ ] All tests passing
-- [ ] Coverage meets canonical 90% touched / 80% project / 95% critical-path defaults for supported line/branch metrics
+- [ ] Coverage meets canonical 90% touched / 80% project / 95% critical-path defaults for
+  supported line/branch metrics
 - [ ] No security vulnerabilities
 - [ ] No unapplied migrations
 - [ ] DEBUG = False in production settings

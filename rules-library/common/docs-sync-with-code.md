@@ -1,3 +1,8 @@
+> Current owner policy (2026-11-09): commit the complete task first; review and test committed
+> revisions afterward, without review worktrees. Enforce all required acceptance before push, not
+> commit. Local commits are checkpoints, not completion claims. Terse milestone updates. Older
+> timing instructions below are superseded.
+
 # Docs-Sync-With-Code Rule (Always-On, Global)
 
 > Auto-fires on every file. Sister to `done-criteria.md`,

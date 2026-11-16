@@ -60,8 +60,8 @@ scripts) lives at:
     └── security-templates/            # consumer-repo templates
 ```
 
-**Never put security allowlists in consumer repos.** A `docs/security-
-exceptions.json` (or similar) in a consumer is a write-access bypass:
+**Never put security allowlists in consumer repos.** A `docs/security-exceptions.json` (or similar)
+in a consumer is a write-access bypass:
 any contributor with push to that consumer can grant themselves
 arbitrary exceptions. Allowlists + exceptions live in the org repo,
 under CODEOWNERS approval by the security team.

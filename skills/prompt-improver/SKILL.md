@@ -1,6 +1,6 @@
 ---
 name: prompt-improver
-description: Transforms vague or under-specified prompts into actionable, research-grounded requests through systematic codebase + workspace + open-source + online research. Wires the user's directive flow into the Council Protocol Phase 0 and the global task-intake-due-diligence.md questionnaire. Invoked by the UserPromptSubmit hook when a prompt lacks specificity OR when a clear-but-significant prompt needs the full intake before execution.
+description: "Transforms vague or under-specified prompts into actionable, research-grounded requests through systematic codebase + workspace + open-source + online research. Wires the user's directive flow into the Council Protocol Phase 0 and the global task-intake-due-diligence.md questionnaire. Invoked by the UserPromptSubmit hook when a prompt lacks specificity OR when a clear-but-significant prompt needs the full intake before execution."
 disable-model-invocation: true
 ---
 
@@ -48,7 +48,7 @@ evaluates every incoming prompt and routes it:
 | `#` prefix (memorize) | Passes through unchanged |
 | Vague (no target, no action, no success criteria) | THIS SKILL: Clarification mode (research → 1-6 questions) |
 | Clear + trivial (typo, single-line edit, config tweak) | Hook passes through; abbreviated intake (Q1 + Q2 + Q27 only) |
-| Clear + non-trivial (feature, refactor, integration, plan) | THIS SKILL: Intake mode (full 29-question questionnaire) |
+| Clear + non-trivial (feature, refactor, integration, plan) | THIS SKILL: Intake mode — proportionate: only the questions that bear on THIS task (task-intake-due-diligence forbids printing all 29 per feature) |
 
 The hook trusts user intent by default. When in doubt, it
 errs toward "let the skill ask" rather than "guess."
@@ -216,99 +216,6 @@ After the intake:
   plan file and route through ExitPlanMode for user approval
   before any code.
 
-## Anti-patterns (what NOT to do)
-
-### Anti-pattern 1: Generic options
-
-Wrong:
-
-```text
-Q: Which approach do you want?
-- Approach A
-- Approach B
-- Other
-```
-
-Right:
-
-```text
-Q: How should `getUserById` handle missing users?
-- Return `null` (matches existing `getOrgById` shape at lib/org.ts:42)
-- Throw `NotFoundError` (matches new error policy in PR #142)
-- Return `Result<User, UserNotFoundError>` (matches `lib/auth.ts` pattern)
-```
-
-### Anti-pattern 2: Asking for information the codebase already has
-
-Wrong: "What test framework should I use?" when `package.json`
-already declares `vitest`.
-
-Right: research first; only ask when the codebase is silent or
-when multiple options coexist.
-
-### Anti-pattern 3: Re-asking what the user already said
-
-Wrong: re-prompting for context the user already provided in
-the same prompt or in conversation history.
-
-Right: check conversation history BEFORE generating questions;
-treat what the user already wrote as definitive.
-
-### Anti-pattern 4: Skipping the intake on "clear" prompts
-
-Wrong: "the prompt is clear, no need for intake" → start coding
-a new feature without checking prior art / OSS / scalability.
-
-Right: clarity ≠ non-trivial. Clear + non-trivial still
-requires the full intake (Mode 2).
-
-### Anti-pattern 5: Too many questions
-
-Wrong: 8 questions for a small ambiguity → user fatigue.
-
-Right: cap at 6; if more decisions are needed, ship the
-clarification in stages OR convert to ExitPlanMode for
-structured plan review.
-
-### Anti-pattern 6: Options the research doesn't support
-
-Wrong: inventing options to fill out the AskUserQuestion's
-2-4 option requirement.
-
-Right: when research surfaces only one or two real options,
-ask with 2-3 options + "Other" rather than fabricate. If
-research surfaces zero options, the question is wrong —
-re-research.
-
-### Anti-pattern 7: Bypassing the intake because the user seems impatient
-
-Wrong: user says "just do it" → skip intake → ship something
-that duplicates an existing primitive / misses scalability.
-
-Right: even under time pressure, run the abbreviated intake
-(Q1 + Q2 + Q27) and surface findings in the response. The
-user can override; the agent never silently skips.
-
-## Cross-references
-
-- `~/.claude/rules/common/task-intake-due-diligence.md` — the
-  29-question questionnaire this skill drives
-- `~/.claude/rules-library/common/reuse-first.md` — Q1 sweep
-- `~/.claude/rules/common/official-docs-first.md` — Q3 + Q29
-  primary-source citations
-- `~/.claude/rules/common/plan-task-breakdown.md` — Q27 action
-  plan format
-- `~/.claude/rules/common/plan-execution-progress.md` — the
-  intake is the first progress update
-- `~/.claude/rules/common/no-overclaim.md` — never claim the
-  prompt is "clear" without verification
-- `~/.claude/CLAUDE.md` Council Protocol Phase 0 — the
-  canonical home for the intake output
-- `references/research-strategies.md` — deeper research
-  patterns
-- `references/question-patterns.md` — question templates
-- `references/examples.md` — comprehensive examples
-
 ## Output expectation
 
 After this skill runs (in either mode), the assistant's response
@@ -327,71 +234,6 @@ to the user includes:
 The intake block is durable — it lives in the plan file (or
 the Council Phase 0 output) and is not redone for the same
 task across sessions.
-
-## Why this skill exists
-
-Without the intake step, every non-trivial task defaults to
-"start coding based on the user's description." This reliably:
-
-- Misses existing primitives → produces duplicates
-- Misses OSS / vendor options → reinvents wheels
-- Misses scalability concerns → hits walls at customer scale
-- Misses compliance / accessibility / observability → ships
-  with technical debt
-- Misses the integration map → breaks contracts downstream
-- Misses the documentation footprint → ships work the next
-  contributor can't understand
-
-The intake's cost is 15-60 minutes per task. The cost of
-discovering any of the above misses AFTER shipping is days of
-rework plus reviewer trust loss.
-
-This skill enforces the intake mechanically — when the hook
-detects a vague or non-trivial prompt, the skill runs; the
-agent's first response is the intake output, not the start of
-implementation.
-
-User directive flow (verbatim):
-
-- *"every task or plan must start with a has it been done
-  before? who did it? who built it? can it be done better?
-  is it scalable? is there a safe and maintained commercially
-  free to use opensource to use? how does it tie and integrate
-  to everything else? what to do and all other things in that
-  plan or request and you are always free to look online."*
-- *"add more due deligence questions to ask to attain extreme
-  quality"*
-- *"there is a rule/agent that helps improve requests/question
-  can that be reviewed and improved as well?"*
-
-The skill's depth matches the rule's depth — every non-trivial
-prompt gets the full 29-question intake.
-
-## Standards Cited
-
-- **NIST AI RMF 1.0** — AI risk management framework (Govern / Map /
-  Measure / Manage functions; MEASURE 2 covers model evaluation)
-- **NIST SP 800-218A SSDF for AI** — Secure Software Development
-  Framework profile for AI models (§PW.4, §PW.6, §PW.8)
-- **NIST SP 800-53 Rev 5 §SI-4, §SI-7** — Information system
-  monitoring + software integrity (applies to model + dataset
-  artifacts)
-- **ISO/IEC 23053:2022 §7** — Framework for AI systems using ML
-- **ISO/IEC 23894:2023** — AI risk management
-- **ISO/IEC 42001:2023** — AI management system requirements
-- **OWASP Top 10 for LLM Applications (2025)** — LLM01 Prompt
-  Injection, LLM02 Sensitive Information Disclosure, LLM06
-  Excessive Agency, LLM09 Misinformation, LLM10 Unbounded
-  Consumption
-- **OWASP ML Top 10 (2023)** — ML01-ML10 (adversarial inputs,
-  data poisoning, model inversion, etc.)
-- **CWE-1039** — Automated recognition mechanism with inadequate
-  detection or handling of adversarial input perturbations
-- **CWE-1426** — Improper validation of generative AI output
-- **EU AI Act (Regulation 2024/1689)** — risk-based obligations
-  for general-purpose AI models + high-risk systems
-- **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
-  fairness, dataset provenance, human-in-the-loop gates
 
 ## Anti-Patterns
 
@@ -447,3 +289,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   docs, internal RFC archive) becomes load-bearing
 - Promotion of an inline citation pattern to a dedicated "Standards Cited" subsection when a
   regulatory / RFC anchor recurs across intakes
+
+## Supporting references
+
+Use [research strategies](references/research-strategies.md) to choose evidence
+and [question patterns](references/question-patterns.md) for missing constraints.
+
+The [OpenAI prompt-engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering)
+supports clear instructions and relevant context. Council intake and escalation
+steps remain local workflow choices.

@@ -2,8 +2,9 @@
 #
 # Size budget: 2 KB. Check: token-budget.mjs --check.
 #
-# ONE list, read by both enforcement paths — scripts/hooks/lib/git-state.js (the Claude Code
-# gate) and scripts/council-pre-commit.sh (the git hook every other agent goes through). They
+# ONE list, read by the enforcement paths — scripts/hooks/lib/git-state.js (the Claude Code
+# gate) and the native pre-push hook's committed-push-gate.js (council-pre-commit.sh was
+# retired with the 2026-11-09 commit-then-review policy). They
 # had drifted: the first did not know dart, elixir, scala or shell, so a Flutter or Elixir change
 # needed no review there, while the second did not know mjs, cjs or svelte. Two lists meant two
 # different answers to "is this code", and the gap was silent in both directions.

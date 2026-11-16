@@ -1,6 +1,6 @@
 ---
 name: performance-reviewer
-description: Performance + profiling + load-test specialist. Use PROACTIVELY for hot-path changes, new services, performance budgets, capacity reviews. Council Division 5 expansion.
+description: Performance + profiling + load-test specialist. Use for hot-path changes, new services, performance budgets, capacity reviews. Council Division 5 expansion.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

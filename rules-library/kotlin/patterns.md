@@ -199,14 +199,14 @@ fun charge(amount: Cents, user: UserId) { ... }
 - Logging: KotlinLogging (over SLF4J)
 - Tests: JUnit 5 + MockK + Kotest
 
-Per `~/.claude/rules/common/reuse-first.md`.
+Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/kotlin/coding-style.md`
-- `~/.claude/rules/common/no-ambient-globals.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/kotlin/coding-style.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md`
 - Effective Kotlin (Moskała)
 - Spring Boot Reference (when Spring)
 - Jetpack Compose docs (when Android)

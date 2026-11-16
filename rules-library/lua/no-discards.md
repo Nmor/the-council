@@ -1,7 +1,7 @@
 # Lua — No-Discards Extension
 
 > Auto-fires on every `*.lua`, `*.rockspec`, `*.luacheckrc` file.
-> Extends `~/.claude/rules/common/no-discards.md`. Tooling: `luacheck`,
+> Extends `~/.claude/rules-library/common/no-discards.md`. Tooling: `luacheck`,
 > `stylua`, `busted`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
@@ -163,7 +163,7 @@ Lua sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
 - Lua 5.4 reference manual
 - Olivine Labs' Lua style guide

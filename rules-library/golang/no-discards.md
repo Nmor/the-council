@@ -1,6 +1,6 @@
 # Go — No-Discards Extension
 
-> Auto-fires on every `*.go` file. Extends `~/.claude/rules/common/no-discards.md`
+> Auto-fires on every `*.go` file. Extends `~/.claude/rules-library/common/no-discards.md`
 > with Go-specific patterns. Sister to `extreme-lint-policy.md`,
 > `no-silent-failures.md`, `error-handling-with-context.md`.
 > Tooling: `errcheck`, `errorlint`, `nilerr`, `staticcheck`,
@@ -372,14 +372,14 @@ it's an aspiration.
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md` — the umbrella rule
+- `~/.claude/rules-library/common/no-discards.md` — the umbrella rule
 - `~/.claude/rules/common/no-silent-failures.md` — silent failure
   patterns
-- `~/.claude/rules/common/error-handling-with-context.md` —
+- `~/.claude/rules-library/common/error-handling-with-context.md` —
   wrapping with operation + ids
-- `~/.claude/rules/common/extreme-lint-policy.md` — strict lint
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strict lint
   config
-- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI patterns
 - `~/.claude/rules/common/done-criteria.md` — verification block
 
 ## Why this rule exists

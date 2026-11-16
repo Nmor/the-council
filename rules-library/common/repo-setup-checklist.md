@@ -181,7 +181,7 @@ The full script + per-language adaptations live at
 Claude (or any agent) presented with a new repo MUST:
 
 1. State explicitly: "Running repo-setup checklist on `<repo>` per
-   `~/.claude/rules/common/repo-setup-checklist.md`."
+   `~/.claude/rules-library/common/repo-setup-checklist.md`."
 2. Run each of the 20 checks (or the subset that applies to the
    repo's stack).
 3. Report findings grouped by section.

@@ -1,6 +1,6 @@
 ---
 name: yaml-patterns
-description: YAML 1.2.2 discipline — 2-space indent (never tabs), quote every coerce-prone scalar (version strings, country codes, booleans-as-strings), block style by default (flow only for short collections), document start --- when multi-document, schema reference via # yaml-language-server: $schema=...; ecosystem-aware key casing (camelCase for K8s, snake_case for Compose/GitHub Actions, kebab-case for action inputs); the Norway problem (NO parsing as boolean) requires explicit quoting; yamllint at strict baseline (document-start present, line-length 120, octal-values forbid-implicit). Auto-fires on YAML sources.
+description: "YAML 1.2.2 discipline — 2-space indent (never tabs), quote every coerce-prone scalar (version strings, country codes, booleans-as-strings), block style by default (flow only for short collections), document-start marker (three dashes) when multi-document, schema reference via # yaml-language-server: $schema=...; ecosystem-aware key casing (camelCase for K8s, snake_case for Compose/GitHub Actions, kebab-case for action inputs); the Norway problem (NO parsing as boolean) requires explicit quoting; yamllint at strict baseline (document-start present, line-length 120, octal-values forbid-implicit). Auto-fires on YAML sources."
 paths:
   - "**/*.yml"
   - "**/*.yaml"

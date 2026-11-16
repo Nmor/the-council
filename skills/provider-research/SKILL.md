@@ -6,6 +6,9 @@ disable-model-invocation: true
 
 # Provider Research
 
+> Sister skill: `search-first` owns discovering existing tools/libraries; this skill owns reading
+> the chosen provider’s primary docs before integration code.
+>
 > **Size budget: 15 KB** — `token-budget.mjs --check`.
 
 Companion skill to the global rule `~/.claude/rules/common/official-docs-first.md`.

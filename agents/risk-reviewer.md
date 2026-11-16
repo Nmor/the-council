@@ -1,6 +1,6 @@
 ---
 name: risk-reviewer
-description: Risk management specialist — blast radius, scenario planning, BCP / DR, change-risk assessment, destructive-operation gatekeeping. Use PROACTIVELY when changes touch backups, multi-region setup, deploys >10% of services, destructive SQL/file ops, or anything with broad blast radius. Owns Council Division 11.
+description: Risk management specialist — blast radius, scenario planning, BCP / DR, change-risk assessment, destructive-operation gatekeeping. Use when changes touch backups, multi-region setup, deploys >10% of services, destructive SQL/file ops, or anything with broad blast radius. Owns Council Division 11.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

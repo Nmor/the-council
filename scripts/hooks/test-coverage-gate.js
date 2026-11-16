@@ -98,7 +98,7 @@ process.stdin.on('end', () => {
     // The lastedit stamp is written BEFORE the off-switch, deliberately.
     //
     // It is not part of this hook's advisory nudge -- it is shared infrastructure that
-    // commit-gate.js (a BLOCKING hook) reads to decide whether the verification gate ran
+    // committed-push-gate.js (push-time) (a BLOCKING hook) reads to decide whether the verification gate ran
     // before or after the source changed. Writing it after the off-switch meant
     // CLAUDE_TEST_COVERAGE_HOOK=off, documented as silencing a nudge, also silently
     // disabled the commit block. Measured 2026-09-21: with that one variable set, a commit
@@ -139,8 +139,9 @@ process.stdin.on('end', () => {
       warn =
         `[test-coverage] ${edits} source files edited this session and coverage has not ` +
         `been measured once. Per functional-test-coverage.md rule 1, coverage is a ` +
-        `measurement and never an estimate: run the project's coverage command and ` +
-        `report the real number per surface before any claim about test state.`;
+        `measurement and never an estimate: commit the complete implementation first, then ` +
+        `run the project's coverage command on that revision and report the real number ` +
+        `per surface before any claim about acceptance.`;
     }
   } catch (err) {
     warn = `[test-coverage] skipped: ${err.message}`;

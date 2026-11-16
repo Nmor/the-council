@@ -1,7 +1,7 @@
 # Ruby / Rails Security
 
 > Auto-fires on every `*.rb`, `Gemfile`, `config/*.rb` file. Sister
-> to `~/.claude/rules/common/security.md`. Tooling: **Brakeman**,
+> to `~/.claude/rules-library/common/security.md`. Tooling: **Brakeman**,
 > **bundler-audit**, **rubocop-rspec**, **dawnscanner**.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
@@ -108,7 +108,7 @@ bundle audit check --update
 brakeman --no-pager --quiet --confidence-level 2
 ```
 
-Per `~/.claude/rules/common/dependency-vulnerabilities.md`.
+Per `~/.claude/rules-library/common/dependency-vulnerabilities.md`.
 
 ### A07 — Identification + Auth
 
@@ -168,7 +168,7 @@ end
 - `RAILS_MASTER_KEY` in environment OR per-env credentials
 - NEVER commit unencrypted secrets
 
-Per `~/.claude/rules/common/secrets-management.md`.
+Per `~/.claude/rules-library/common/secrets-management.md`.
 
 ## Required tooling
 
@@ -181,10 +181,10 @@ rspec --fail-fast
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/ruby/no-discards.md`
-- `~/.claude/rules/ruby/coding-style.md`
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/ruby/no-discards.md`
+- `~/.claude/rules-library/ruby/coding-style.md`
 - OWASP Ruby on Rails Cheat Sheet
 - Rails Security Guide

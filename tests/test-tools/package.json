@@ -1,10 +1,9 @@
 {
-  "name": "council-offline-edit-tool-fixtures",
-  "version": "1.0.0",
+  "name": "council-test-tools",
   "private": true,
-  "description": "Pinned formatter/compiler fixtures for isolated Council hook tests",
+  "description": "Pinned tool fixtures for the hook test suite (COUNCIL_TEST_NODE_MODULES).",
   "devDependencies": {
-    "prettier": "3.6.2",
-    "typescript": "5.9.3"
+    "prettier": "3.10.1",
+    "typescript": "7.0.2"
   }
 }

@@ -72,7 +72,8 @@ data-structure design (Go's stdlib + generics cover almost all real needs).
 - **The Go Programming Language Specification** (current)
 - **Effective Go (golang.org/doc/effective_go)** — idioms + naming
 - **Go Code Review Comments (github.com/golang/go/wiki/CodeReviewComments)**
-- **Go 1.24 release notes** — current language features (range-over-func, generic type aliases)
+- **Go 1.27 (support window: 1.26-1.27) release notes** — current language features
+  (range-over-func, generic type aliases)
 - **Uber Go Style Guide (github.com/uber-go/guide)** — production patterns
 - **staticcheck.io** rule documentation — SA1xxx, SA4xxx series
 - **golangci-lint v1.62+** — composite linter
@@ -88,7 +89,7 @@ data-structure design (Go's stdlib + generics cover almost all real needs).
 | `init()` with side effects (DB connect, ENV read) | Order is implicit; untestable; runs in test imports | Explicit `New(...) (*T, error)` constructors |
 | Stringly-typed enums (`status string`) | No exhaustiveness check; typos compile fine | `type Status int` + `const ( Pending Status = iota; Paid; Shipped )` |
 | Naked `return` in a function > 5 lines | Reader has to scan back for variable names; review friction | Explicit `return foo, bar, nil` |
-| `for _, v := range slice` value discard outside rune iteration | Loses index; defeats sister `no-discards.md` rule 2 | `for i := range slice { v := slice[i] }` |
+| `for _, v := range` | ALLOWED (owner decision 2026-09-06, no-silent-failures.md) — the one blank-identifier form Go style keeps | — |
 | Goroutine without explicit termination signal | Leaks; eventual OOM | Pass `context.Context`; check `ctx.Done()` |
 | `time.Sleep` in production retry loop | Wastes goroutines; not cancellable | Use `time.After` + `select` over `ctx.Done()` |
 

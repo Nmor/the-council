@@ -10,7 +10,7 @@
 ### Dockerfile Hardening
 
 ```dockerfile
-# 1. Use specific tags (never :latest)
+# 1. Pin tag AND sha256 digest (tag alone drifts) (never :latest)
 FROM node:22.12-alpine3.20
 
 # 2. Run as non-root

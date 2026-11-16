@@ -348,7 +348,7 @@ so adoption itself stays safe.
 - **ISO/IEC 27001:2022 Annex A.8.8 + A.8.29** — Management of
   technical vulnerabilities + security testing
 - **ISO/IEC 27034:2011** — Application security
-- **PCI-DSS v4.0 §6.3 + §11.3** — Software vulnerability + secure
+- **PCI-DSS v4.0.1 §6.3 + §11.3** — Software vulnerability + secure
   coding + penetration testing
 - **CIS Critical Security Controls v8** — Control 7 (continuous
   vulnerability management) + Control 16 (application software

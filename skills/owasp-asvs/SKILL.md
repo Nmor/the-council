@@ -1,6 +1,6 @@
 ---
 name: owasp-asvs
-description: OWASP Application Security Verification Standard 4.0.3 — the canonical control catalogue for application security, mapped per L1 / L2 / L3 with implementation patterns and verification commands.
+description: "OWASP Application Security Verification Standard 5.0.0 (GA 30 May 2025) — the canonical control catalogue for application security: 345 requirements across 17 chapters with per-level (L1/L2/L3) applicability. Official 5.0 text bundled in references/asvs-5.0-requirements.md; legacy 4.0.3 implementation patterns retained with an official ID mapping. Select explicitly when this guidance applies."
 disable-model-invocation: true
 ---
 
@@ -27,9 +27,15 @@ answer "are we ASVS L2?" with evidence, not opinion.
 
 ## Standards Cited
 
-- **OWASP ASVS 4.0.3** (October 2021) — current GA; the 286 numbered requirements
-- **OWASP ASVS 5.0** (in draft as of 2025) — major restructure; check `github.com/OWASP/ASVS` for
-  current state
+- **OWASP ASVS 5.0.0** (30 May 2025, current GA) — 345 requirements, 17 chapters;
+  the complete official text is bundled at
+  [references/asvs-5.0-requirements.md](references/asvs-5.0-requirements.md).
+- **Legacy 4.0.3 materials** — this skill's hand-written implementation patterns
+  below remain keyed to 4.0.3 IDs; translate with
+  [references/mapping-4.0.3-to-5.0.0.yml](references/mapping-4.0.3-to-5.0.0.yml)
+  (official OWASP mapping: 156 moved, 122 dropped/split). When a pattern's 4.0.3
+  requirement was dropped in 5.0, treat the pattern as good practice, not a
+  standard citation.
 - **OWASP Top 10 2021** — the risk classes ASVS controls map to
 - **NIST SP 800-53 Rev 5** — federal control catalogue (ASVS controls map to NIST SC, AC, AU, IA
   families)
@@ -252,10 +258,10 @@ grep -rn "Content-Security-Policy" src/middleware/  # CSP set
 
 ```bash
 # Tools
-zap-baseline.py -t https://staging.example.com   # OWASP ZAP automated
+zap-baseline.py -t https://staging.example.com  # ONLY with recorded rules of engagement (pentester skill); repo access never authorizes live scans   # OWASP ZAP automated
 nuclei -u https://staging.example.com            # template-based
 nikto -h https://staging.example.com             # legacy but useful
-trivy fs --severity HIGH,CRITICAL .              # dep CVE
+trivy fs --severity MEDIUM,HIGH,CRITICAL .              # dep CVE
 gitleaks detect                                  # secret scan
 ```
 

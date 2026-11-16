@@ -141,7 +141,7 @@ images out of the danger zone.
 - [ ] `HEALTHCHECK` defined OR explicit reason documented
 - [ ] `.dockerignore` excludes `.git`, `node_modules`, `.env*`, secrets
 - [ ] No secrets in ENV / ARG / image layers (`docker history` clean)
-- [ ] Trivy / Grype scan returns 0 HIGH+CRITICAL CVEs
+- [ ] Trivy / Grype scan returns 0 MEDIUM+HIGH+CRITICAL CVEs (vulnerability-gate blocks MODERATE too)
 - [ ] SBOM emitted (`syft`) + signed (`cosign attest`)
 - [ ] Image signed with Cosign keyless / KMS-backed
 - [ ] Compose ports loopback-bound on dev machines
@@ -151,6 +151,9 @@ images out of the danger zone.
 
 ## Cross-References
 
+- `~/.claude/skills/dockerfile-patterns/SKILL.md` — image authoring and hardening
+  (multi-stage builds, pinning, non-root, Hadolint). This skill owns Compose,
+  multi-container runtime, networking and volumes; route Dockerfile review there.
 - `~/.claude/skills/deployment-patterns/SKILL.md` — orchestration
 - `~/.claude/skills/aws-serverless-patterns/SKILL.md` — Lambda
   container image runtime

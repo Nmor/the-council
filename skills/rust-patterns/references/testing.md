@@ -200,7 +200,7 @@ fn negative_money_panics() {
 }
 ```
 
-### 3. No `unwrap()` in tests — use `?` or `expect`
+### 3. `unwrap()`/`expect()` are fine in tests (the panic IS the failure report) — use `?` or `expect`
 
 ```rust
 // WRONG — unwrap with no context on failure

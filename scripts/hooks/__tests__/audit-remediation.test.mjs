@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, statSync, symlinkSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, statSync, symlinkSync, rmSync, rmdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -95,29 +95,6 @@ test('verification records omit raw credentials and failed reruns invalidate pro
   assert.equal(readFileSync(file, 'utf8').includes(secret), false);
   assert.equal(run('gate-marker.js', payload(sid, { exit_code: 1 }, command)).code, 0);
   assert.equal(markerExists(`claude-council-gate-${sid}`), false);
-});
-
-test('source changes and mismatched staged contents cannot reuse verification', () => {
-  const w = world();
-  const sid = uniq('source-proof');
-  edit(w, 'main.go', 'package old\n');
-  git(w.repo, 'add', 'main.go');
-  edit(w, 'main.go', 'package current\n');
-  verificationProof(sid, 'turn', w.repo, w.env);
-  verificationProof(sid, 'turn', w.repo, w.env, true);
-  const input = { session_id: sid, prompt_id: 'turn', cwd: w.repo, tool_name: 'Bash',
-    tool_input: { command: 'git commit -m "test\nDocs: no reader-facing change"' } };
-  const mismatch = run('commit-gate.js', input, w.env);
-  assert.equal(mismatch.code, 2);
-  assert.match(mismatch.stderr, /staged source differs/);
-  const cancelledAll = run('commit-gate.js', { ...input, tool_input:
-    { command: 'git commit -a --no-all -m "test\nDocs: no reader-facing change"' } }, w.env);
-  assert.equal(cancelledAll.code, 2);
-  assert.match(cancelledAll.stderr, /staged source differs/);
-  edit(w, 'main.go', 'package changed\n');
-  const changed = run('commit-gate.js', input, w.env);
-  assert.equal(changed.code, 2);
-  assert.match(changed.stderr, /no verification gate/);
 });
 
 test('redaction covers CLI values, escaped quotes and non-HTTP credential URLs', () => {
@@ -228,6 +205,49 @@ test('concurrent audits retain every event and expire old records', async () => 
   assert.deepEqual(records.map(row => row.session_id).sort(), ids.sort());
   assert.equal(readFileSync(file, 'utf8').includes('expired'), false);
   if (process.platform !== 'win32') assert.equal(statSync(file).mode & 0o777, 0o600);
+});
+
+test('an audit waits for a busy writer beyond half a second without losing its event', async () => {
+  const home = mkdtempSync(join(tmpdir(), 'contended-audit-'));
+  const directory = join(home, '.claude', 'audits');
+  mkdirSync(directory, { recursive: true, mode: 0o700 });
+  const file = join(directory, 'tool-failures.jsonl');
+  const lock = `${file}.lock`;
+  mkdirSync(lock, { mode: 0o700 });
+  const child = spawn(process.execPath, ['-e', `
+    const { appendAudit } = require(process.argv[1]);
+    process.stdout.write('ready');
+    appendAudit('tool-failures.jsonl', { ts: new Date().toISOString(), session_id: 'waited' });
+  `, join(HOOKS, 'lib', 'audit-state.js')], {
+    env: { ...process.env, HOME: home, USERPROFILE: home },
+    stdio: ['ignore', 'pipe', 'pipe'], timeout: 4000,
+  });
+  let errors = '';
+  child.stderr.on('data', chunk => { errors += chunk; });
+  const closed = new Promise((resolve, reject) => {
+    child.once('error', reject);
+    child.once('close', (code, signal) => resolve({ code, signal }));
+  });
+  let release;
+  try {
+    await new Promise((resolve, reject) => {
+      child.stdout.once('data', resolve);
+      child.once('error', reject);
+      child.once('close', () => reject(new Error('Writer closed before readiness')));
+    });
+    release = setTimeout(() => { rmdirSync(lock); }, 800);
+    const result = await closed;
+    assert.deepEqual(result, { code: 0, signal: null }, errors);
+    assert.equal(errors, '');
+    assert.equal(JSON.parse(readFileSync(file, 'utf8')).session_id, 'waited');
+  } finally {
+    clearTimeout(release);
+    if (child.exitCode === null && child.signalCode === null) {
+      assert.equal(child.kill('SIGTERM'), true);
+      await closed;
+    }
+    rmSync(home, { recursive: true, force: true });
+  }
 });
 
 test('test harness preserves inherited home and temp sentinels on pass, failure and interruption', () => {

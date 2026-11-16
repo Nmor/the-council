@@ -53,7 +53,7 @@ rather than papered-over per-line:
 | `sonarjs/no-nested-functions` | composables nest by design |
 | `sonarjs/use-type-alias` | alias-vs-inline is a style call |
 | `sonarjs/function-return-type` | discriminated unions trip this |
-| `sonarjs/void-use` | `void promise` IS the explicit-fire-and-forget idiom |
+| `sonarjs/void-use` | `void promise` is FORBIDDEN (typescript-no-discards rule 4: it discards the rejection); fire-and-forget must route through a handler that logs failures |
 | `sonarjs/no-selector-parameter` | boolean params are sometimes the right shape |
 | `sonarjs/no-redundant-optional` | false-positives on `T \| undefined \| null` |
 | `sonarjs/deprecation` | duplicates `@typescript-eslint/no-deprecated` |

@@ -1,6 +1,6 @@
 ---
 name: accessibility-reviewer
-description: WCAG 2.2 + ARIA + EAA + ADA accessibility specialist. Use PROACTIVELY for every UI surface, every user-facing copy change, every form, every error state. Owns part of Council Division 7.
+description: WCAG 2.2 + ARIA + EAA + ADA accessibility specialist. Use when reviewing a UI surface, every user-facing copy change, every form, every error state. Owns part of Council Division 7.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---
@@ -129,7 +129,7 @@ Standards-cited references in every finding. Vague advice ("improve accessibilit
 - **compliance-reviewer** — escalation path for EAA / ADA / AODA findings
 - **mobile-reviewer** — platform-specific accessibility (VoiceOver, TalkBack, Switch Control)
 - **doc-updater** — accessible documentation (alt text, semantic markdown)
-- **i18n-aware reviewers** — RTL + locale-aware accessibility
+- **i18n**: `~/.claude/skills/i18n-rules/SKILL.md` — RTL + locale-aware accessibility
 
 ## Learning hooks
 

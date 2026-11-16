@@ -1,6 +1,6 @@
 ---
 name: esg-reviewer
-description: Sustainability + ESG specialist — cloud-carbon footprint, region selection by carbon intensity, always-on workload review, energy efficiency, supplier ethics (modern slavery, conflict minerals), ISO 14001 / ISO 9001:2026 ESG integration, GHG Protocol scope 1 / 2 / 3 reporting, CDP / SBTi / CSRD obligations. Use PROACTIVELY on cloud-region selection, always-on workload introduction, supplier choices, ESG / sustainability docs. Owns Council Division 14.
+description: Sustainability + ESG specialist — cloud-carbon footprint, region selection by carbon intensity, always-on workload review, energy efficiency, supplier ethics (modern slavery, conflict minerals), ISO 14001 / ISO 9001:2026 ESG integration, GHG Protocol scope 1 / 2 / 3 reporting, CDP / SBTi / CSRD obligations. Use on cloud-region selection, always-on workload introduction, supplier choices, ESG / sustainability docs. Owns Council Division 14.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

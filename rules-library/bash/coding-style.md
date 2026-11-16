@@ -169,7 +169,7 @@ trap 'cleanup; log_error "interrupted"; exit 130' INT TERM
 
 ## File length
 
-Per `~/.claude/rules/common/extreme-lint-policy.md` — shell
+Per `~/.claude/rules-library/common/extreme-lint-policy.md` — shell
 files capped at 500 lines. Beyond that, the right answer is a
 different language.
 
@@ -206,11 +206,11 @@ EOF
 
 ## Cross-references
 
-- `~/.claude/rules/common/coding-style.md`
-- `~/.claude/rules/bash/no-discards.md`
-- `~/.claude/rules/bash/security.md`
-- `~/.claude/rules/bash/testing.md`
-- `~/.claude/rules/bash/patterns.md`
+- `~/.claude/rules-library/common/coding-style.md`
+- `~/.claude/rules-library/bash/no-discards.md`
+- `~/.claude/rules-library/bash/security.md`
+- `~/.claude/rules-library/bash/testing.md`
+- `~/.claude/rules-library/bash/patterns.md`
 - Bash Reference Manual (gnu.org/software/bash/manual)
 - Google Shell Style Guide
 - ShellCheck wiki (github.com/koalaman/shellcheck/wiki)

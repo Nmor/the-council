@@ -218,10 +218,10 @@ bats --shuffle tests/
 
 ## Cross-references
 
-- `~/.claude/rules/common/testing.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/bash/coding-style.md`
-- `~/.claude/rules/bash/no-discards.md`
+- `~/.claude/rules-library/common/testing.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/bash/coding-style.md`
+- `~/.claude/rules-library/bash/no-discards.md`
 - bats-core docs (bats-core.readthedocs.io)
 - shunit2 docs (github.com/kward/shunit2)
 - kcov docs (github.com/SimonKagstrom/kcov)

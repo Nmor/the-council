@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Transactional, additive Council installer for Codex (Python 3.11+, Node.js 18+, Git checkout)."""
+"""Native Codex installer."""
 from __future__ import annotations
 
 import argparse
 import base64
+import copy
 import hashlib
 import json
 import os
@@ -75,6 +76,8 @@ def load_manifest(home: Path) -> dict:
         safe_target(home, name)
         if not isinstance(entry, dict) or name == MANIFEST or not isinstance(entry.get('sha256'), str):
             raise ValueError('Invalid Council manifest entry')
+        if 'local' in entry and not isinstance(entry['local'], bool):
+            raise ValueError('Invalid retained-local manifest flag')
         if entry.get('original') is not None:
             base64.b64decode(entry['original'], validate=True)
     return value
@@ -111,21 +114,52 @@ def tracked_resources(source: Path) -> list[str]:
 
 
 def metadata(text: str) -> tuple[str, str, str]:
-    """Read the scalar name/description fields used by source, without a YAML dependency."""
+    """Parse source name/description scalars without YAML."""
     match = re.match(r'^---\r?\n(.*?)\r?\n---\r?\n(.*)', text, re.S)
     if not match:
         return '', '', text
     front, body = match.groups()
     fields = {}
+    lines = front.splitlines()
     for key in ('name', 'description'):
-        m = re.search(r'^' + key + r':\s*(.+)$', front, re.M)
-        if m:
-            value = m.group(1).strip()
-            if value[:1] in ('"', "'") and value[-1:] == value[:1]:
-                value = value[1:-1]
-            if value in ('>', '|', '>-', '|-'):
-                raise ValueError(f'Unsupported multiline {key}; add explicit metadata support')
-            fields[key] = value
+        matches = [(i, line.partition(':')[2].strip()) for i, line in enumerate(lines)
+                   if line.startswith(key + ':')]
+        if len(matches) > 1:
+            raise ValueError(f'Duplicate metadata field: {key}')
+        if not matches:
+            continue
+        index, value = matches[0]
+        if value in ('>', '|', '>-', '|-'):
+            if key != 'description':
+                raise ValueError('Only description supports block metadata')
+            block = []
+            for line in lines[index + 1:]:
+                if line and not line.startswith(' '):
+                    break
+                block.append(line)
+            indent = min((len(line) - len(line.lstrip(' ')) for line in block if line.strip()), default=0)
+            if not indent:
+                raise ValueError('Empty block description')
+            rows = [line[indent:] if line.strip() else '' for line in block]
+            if any(row.startswith((' ', '\t')) for row in rows):
+                raise ValueError('Nested indentation is not supported in description metadata')
+            if value.startswith('>'):
+                description = rows[0] if rows else ''
+                for previous, row in zip(rows, rows[1:]):
+                    separator = (' ' if previous and row else '\n' if not previous else '')
+                    description += separator + row
+            else:
+                description = '\n'.join(rows)
+            value = description.rstrip('\n') + ('' if value.endswith('-') else '\n')
+        elif value.startswith('"'):
+            value = json.loads(value)
+        elif value.startswith("'"):
+            if not value.endswith("'") or len(value) < 2:
+                raise ValueError(f'Unclosed quoted metadata: {key}')
+            value = value[1:-1].replace("''", "'")
+        elif not value or value.startswith(('>', '|', '[', '{', '&', '*', '!')):
+            raise ValueError(f'Unsupported scalar metadata: {key}')
+        fields[key] = value
     return fields.get('name', ''), fields.get('description', ''), body
 
 
@@ -135,7 +169,7 @@ def render(text: str, home: Path) -> str:
 
 
 def adapt_reference(text: str, home: Path) -> str:
-    # Rewrite available guidance, not Claude runtime paths or example plan locations.
+    # Adapt guidance paths; preserve runtime/example paths.
     def replace(match):
         name = match.group(1)
         if name.startswith('rules/') and not (SOURCE / name).exists():
@@ -149,7 +183,7 @@ def adapt_reference(text: str, home: Path) -> str:
 
 
 def entrypoint(name: str, description: str, reference: Path, home: Path) -> bytes:
-    # Original long discovery descriptions remain in the linked source.
+    # Full descriptions remain in linked sources.
     description = re.sub(r'\s+', ' ', description).strip() or name.replace('-', ' ')
     if len(description) > 220:
         description = description[:217].rsplit(' ', 1)[0] + '...'
@@ -197,6 +231,149 @@ def original_bytes(manifest: dict, home: Path, name: str) -> bytes | None:
     return read_optional(safe_target(home, name))
 
 
+def local_record(content: bytes) -> dict:
+    """Keep owner files hash-checked and restorable."""
+    return {'sha256': digest(content), 'original': base64.b64encode(content).decode(), 'local': True}
+
+
+def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
+    """Adopt guidance; reject changed executables."""
+    if not manifest['files']:
+        raise ValueError('--reconcile requires an existing Council manifest')
+    manifest = copy.deepcopy(manifest)
+    records = manifest['files']
+    agents_changed = False
+    for name, entry in list(records.items()):
+        content = read_optional(safe_target(home, name))
+        if content is None:
+            raise ValueError(f'Managed file missing; restore it before reconciliation: {name}')
+        if name.startswith('council/resources/'):
+            relative = name[len('council/resources/'):]
+            upstream = source / relative
+            if upstream.is_file() and content == upstream.read_bytes():
+                entry['sha256'] = digest(content)  # identical to source: stays managed
+            elif digest(content) != entry['sha256'] or not upstream.is_file():
+                records[name] = local_record(content)
+        elif name in ('council/catalog.md', 'AGENTS.md', 'hooks.json', 'council/projects.json'):
+            # Shared files are reconciled below.
+            if name == 'AGENTS.md' and digest(content) != entry['sha256']:
+                if BEGIN.encode() not in content:
+                    raise ValueError('Council AGENTS block missing; restore it before reconciliation')
+                agents_changed = True
+            entry['sha256'] = digest(content)
+        elif digest(content) != entry['sha256']:
+            raise ValueError(f'Changed native asset cannot be reconciled: {name}')
+    resources = home / 'council/resources'
+    if resources.exists():
+        for path in resources.rglob('*'):
+            name = path.relative_to(home).as_posix()
+            if path.is_symlink():
+                raise ValueError(f'Refusing symlink resource: {name}')
+            if path.is_file() and name not in records:
+                content = safe_target(home, name).read_bytes()
+                upstream = source / name[len('council/resources/'):]
+                if upstream.is_file() and content == upstream.read_bytes():
+                    records[name] = {'sha256': digest(content), 'original': None}
+                else:
+                    records[name] = local_record(content)
+    agents = read_optional(safe_target(home, 'AGENTS.md'))
+    if agents is not None and (BEGIN.encode() in agents or END.encode() in agents):
+        if agents.count(BEGIN.encode()) != 1 or agents.count(END.encode()) != 1:
+            raise ValueError('Ambiguous Council AGENTS markers')
+        begin = agents.index(BEGIN.encode())
+        end = agents.index(END.encode())
+        if begin > end:
+            raise ValueError('Reversed Council AGENTS markers')
+        entry = records.get('AGENTS.md')
+        if entry is None or entry.get('local') or agents_changed:
+            # Restore outside instructions on uninstall; keep the block managed
+            # so upgrades and reinstall remain possible.
+            head = agents[:begin].strip(b'\n')
+            tail = agents[end + len(END.encode()):].strip(b'\n')
+            pieces = [piece for piece in (head, tail) if piece]
+            owner = b'\n\n'.join(pieces) + (b'\n' if pieces else b'')
+            records['AGENTS.md'] = {
+                'sha256': digest(agents),
+                'original': base64.b64encode(owner).decode() if owner else None}
+    hooks_raw = read_optional(safe_target(home, 'hooks.json'))
+    if hooks_raw is not None:
+        hooks = json.loads(hooks_raw)
+        if not isinstance(hooks, dict) or not isinstance(hooks.get('hooks', {}), dict):
+            raise ValueError('Existing hooks.json must contain an object of hook events')
+        known = hook_groups(home)
+        for event, groups in hooks.get('hooks', {}).items():
+            if not isinstance(groups, list):
+                raise ValueError('Existing hook event groups must be arrays')
+            personal = []
+            for group in groups:
+                if group in known.get(event, []):
+                    continue
+                if not isinstance(group, dict) or not isinstance(group.get('hooks'), list):
+                    raise ValueError('Existing hook groups must contain arrays of handlers')
+                if any(not isinstance(handler, dict) for handler in group['hooks']):
+                    raise ValueError('Existing hook handlers must be objects')
+                commands = [handler.get(field, '') for handler in group['hooks']
+                            for field in ('command', 'commandWindows')]
+                if any(not isinstance(command, str) for command in commands):
+                    raise ValueError('Existing hook commands must be strings')
+                if any('council/hooks.py' in command.replace('\\', '/').lower() for command in commands):
+                    raise ValueError('Unrecognized Council hook; reconcile its definition manually')
+                personal.append(group)
+            hooks['hooks'][event] = personal
+        records['hooks.json'] = {'sha256': digest(hooks_raw),
+                                 'original': base64.b64encode(json_bytes(hooks)).decode()}
+    return manifest
+
+
+def adopt_native(home: Path, source: Path, name: str, content: bytes, expected: bytes) -> dict:
+    """Adopt only known generated roles and router."""
+    if name == 'council/projects.json':
+        return {'sha256': digest(content), 'original': base64.b64encode(content).decode()}
+    if name.startswith('agents/'):
+        slug = Path(name).stem.removeprefix('council-')
+        reference = safe_target(home, f'council/resources/agents/{slug}.md')
+        if not reference.exists():
+            raise ValueError(f'No source for legacy agent: {name}')
+        metadata_name, description, body = metadata(reference.read_text(encoding='utf-8'))
+        parsed = tomllib.loads(content.decode('utf-8'))
+        expected_role = tomllib.loads(agent_toml('council-' + slug, description, body, home).decode('utf-8'))
+        prior_description = parsed.get('description')
+        if (not metadata_name or set(parsed) != set(expected_role)
+                or parsed.get('name') != expected_role['name']
+                or parsed.get('developer_instructions') != expected_role['developer_instructions']
+                or not isinstance(prior_description, str) or not prior_description.strip()
+                or len(prior_description) > 180):
+            raise ValueError(f'Unrecognized legacy agent: {name}')
+    elif name == 'skills/council/SKILL.md':
+        legacy = (source / 'codex/SKILL.md.in').read_text(encoding='utf-8').replace(
+            '@CODEX_HOME@', '~/.codex').replace('@COUNCIL_HOME@', '~/.codex/council').encode()
+        if content not in (expected, legacy):
+            raise ValueError('Unrecognized legacy Council router')
+    elif content != expected:
+        raise ValueError(f'Unmanaged file collision: {name}')
+    # Generated entrypoints cannot survive removal of their archived sources.
+    return {'sha256': digest(content), 'original': None}
+
+
+def reconciliation_backup(home: Path, changes: dict[str, bytes | None]) -> Path:
+    """Back up exact bytes and modes outside home."""
+    backup = Path(tempfile.mkdtemp(prefix='council-reconcile-', dir=home.parent))
+    records = {}
+    for name in sorted(set(changes) | {'config.toml'}):
+        path = home / name if name == 'config.toml' else safe_target(home, name)
+        if path.is_symlink():
+            raise ValueError(f'Refusing symlink backup: {name}')
+        content = read_optional(path)
+        records[name] = None
+        if content is not None:
+            target = backup / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            atomic_write(target, content, 0o600)
+            records[name] = {'sha256': digest(content), 'mode': path.stat().st_mode & 0o777}
+    atomic_write(backup / 'restore.json', json_bytes({'home': str(home), 'files': records}), 0o600)
+    return backup
+
+
 def build_payload(source: Path, home: Path, manifest: dict,
                   projects: list[str], plan: str | None, skill_profile: str) -> dict[str, bytes]:
     payload = {}
@@ -236,10 +413,12 @@ def build_payload(source: Path, home: Path, manifest: dict,
         payload = {name: value for name, value in payload.items() if not name.startswith('skills/')}
     payload['skills/council/SKILL.md'] = render((source / 'codex/SKILL.md.in').read_text(encoding="utf-8"), home).encode()
     original = original_bytes(manifest, home, 'AGENTS.md') or b''
-    if BEGIN.encode() in original or END.encode() in original:
+    local_agents = manifest['files'].get('AGENTS.md', {}).get('local', False)
+    if not local_agents and (BEGIN.encode() in original or END.encode() in original):
         raise ValueError('Unmanaged Council AGENTS marker already exists; reconcile it first')
     block = render((source / 'codex/AGENTS.md.in').read_text(encoding="utf-8"), home)
-    payload['AGENTS.md'] = original + (b'\n' if original else b'') + f'{BEGIN}\n{block}\n{END}\n'.encode()
+    payload['AGENTS.md'] = (read_optional(safe_target(home, 'AGENTS.md')) if local_agents else
+                           original + (b'\n' if original else b'') + f'{BEGIN}\n{block}\n{END}\n'.encode())
     hooks_raw = original_bytes(manifest, home, 'hooks.json')
     hooks = json.loads(hooks_raw) if hooks_raw else {}
     if not isinstance(hooks, dict) or not isinstance(hooks.get('hooks', {}), dict):
@@ -265,6 +444,25 @@ def build_payload(source: Path, home: Path, manifest: dict,
             mapping['projects'] = [p for p in mapping['projects'] if p['root'] != str(root)]
             mapping['projects'].append({'root': str(root), 'plan': str(active)})
     payload['council/projects.json'] = json_bytes(mapping)
+    retained = []
+    for name, entry in manifest['files'].items():
+        if entry.get('local') and name != 'AGENTS.md':
+            if not name.startswith('council/resources/'):
+                raise ValueError(f'Unsupported retained local file: {name}')
+            payload[name] = safe_target(home, name).read_bytes()
+            relative = name.removeprefix('council/')
+            retained.append(f'- Local [{relative}]({relative})')
+            parts = PurePosixPath(name.removeprefix('council/resources/')).parts
+            if skill_profile == 'full' and len(parts) == 3 and parts[0] == 'skills' and parts[2] == 'SKILL.md':
+                native = 'council-' + parts[1]
+                if not re.fullmatch('[a-z0-9-]{1,64}', native):
+                    raise ValueError(f'Invalid retained skill name: {name}')
+                skill_name, description, body = metadata(payload[name].decode('utf-8'))
+                if not skill_name or not description or not body.strip():
+                    raise ValueError(f'Invalid retained skill metadata: {name}')
+                payload[f'skills/{native}/SKILL.md'] = entrypoint(native, description, home / name, home)
+    if retained:
+        payload['council/catalog.md'] += ('\n## Retained local guidance\n\n' + '\n'.join(sorted(retained)) + '\n').encode()
     return payload
 
 
@@ -281,7 +479,7 @@ def atomic_write(path: Path, content: bytes, mode: int = 0o644) -> None:
 
 
 def transact(home: Path, changes: dict[str, bytes | None]) -> None:
-    """Rollback handled failures; every replacement is atomic. No crash-recovery claim."""
+    """Use atomic replacements; roll back handled failures."""
     snapshots = {}
     created_dirs = []
     try:
@@ -312,7 +510,8 @@ def transact(home: Path, changes: dict[str, bytes | None]) -> None:
         raise
 
 
-def install(home: Path, source: Path, projects=(), plan=None, dry_run=False, skill_profile=None) -> dict:
+def install(home: Path, source: Path, projects=(), plan=None, dry_run=False, skill_profile=None,
+            reconcile=False) -> dict:
     node = shutil.which('node')
     if node is None:
         raise ValueError('Node.js 18+ is required for the native Go mutation guard; install Node before installing Council')
@@ -320,6 +519,8 @@ def install(home: Path, source: Path, projects=(), plan=None, dry_run=False, ski
     if not re.fullmatch(r'v\d+\.\d+\.\d+', version) or int(version[1:].split('.')[0]) < 18:
         raise ValueError('Node.js 18+ is required for the native Go mutation guard')
     manifest = load_manifest(home)
+    if reconcile:
+        manifest = reconcile_manifest(home, manifest, source)
     check_installed(home, manifest)
     if (home / 'AGENTS.override.md').exists():
         raise ValueError('AGENTS.override.md shadows AGENTS.md; reconcile the override before installation')
@@ -331,19 +532,27 @@ def install(home: Path, source: Path, projects=(), plan=None, dry_run=False, ski
     for name, content in payload.items():
         existing = read_optional(safe_target(home, name))
         if existing is not None and name not in manifest['files'] and name not in ('AGENTS.md', 'hooks.json'):
-            raise ValueError(f'Unmanaged file collision: {name}')
+            if not reconcile:
+                raise ValueError(f'Unmanaged file collision: {name}')
+            manifest['files'][name] = adopt_native(home, source, name, existing, content)
         original = original_bytes(manifest, home, name)
         records[name] = {'sha256': digest(content), 'original':
                          base64.b64encode(original).decode() if original is not None else None}
+        if manifest['files'].get(name, {}).get('local'):
+            records[name]['local'] = True
     changes = dict(payload)
     for name in manifest['files'].keys() - records.keys():
         changes[name] = original_bytes(manifest, home, name)
     revision = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
     result = {'version': 1, 'source_revision': revision, 'skill_profile': skill_profile, 'files': records}
     changes[MANIFEST] = json_bytes(result)
+    backup = None
     if not dry_run:
+        if reconcile:
+            backup = str(reconciliation_backup(home, changes))
         transact(home, changes)
-    return {'files': len(records), 'source_revision': revision, 'skill_profile': skill_profile, 'dry_run': dry_run}
+    return {'files': len(records), 'source_revision': revision, 'skill_profile': skill_profile, 'dry_run': dry_run,
+            'backup': backup, 'retained_local': sorted(name for name, entry in records.items() if entry.get('local'))}
 
 
 def uninstall(home: Path, dry_run=False) -> dict:
@@ -384,6 +593,7 @@ def main() -> int:
     parser.add_argument('--project', action='append', default=[])
     parser.add_argument('--plan')
     parser.add_argument('--skill-profile', choices=('compact', 'full'))
+    parser.add_argument('--reconcile', action='store_true', help='Back up and retain legacy/local guidance during install')
     args = parser.parse_args()
     home = args.home.expanduser().absolute()
     lock = home / '.council-install.lock'
@@ -391,12 +601,14 @@ def main() -> int:
     try:
         if home.is_symlink():
             raise ValueError(f'Refusing symlink home: {home}')
+        if args.reconcile and args.action != 'install':
+            raise ValueError('--reconcile is only valid with install')
         if not args.dry_run and args.action != 'verify':
             home.mkdir(parents=True, exist_ok=True)
             lock.mkdir()
             locked = True
         if args.action == 'install':
-            result = install(home, SOURCE, args.project, args.plan, args.dry_run, args.skill_profile)
+            result = install(home, SOURCE, args.project, args.plan, args.dry_run, args.skill_profile, args.reconcile)
         elif args.action == 'uninstall':
             result = uninstall(home, args.dry_run)
         else:

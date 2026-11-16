@@ -118,7 +118,7 @@ Defaults:
   user
 - 100 attempts in 1 hour per IP → block IP for 24 h
 
-Per `security.md` A07 + OWASP ASVS V2.2.1 — auth rate-limiting
+Per `security.md` A07 + OWASP ASVS V6.3.1 (ASVS 5.0; was 4.0.3 V2.2.1) — auth rate-limiting
 is mandatory.
 
 ### 7. Account for distributed deployments

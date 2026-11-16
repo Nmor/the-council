@@ -410,8 +410,7 @@ inputs should produce byte-identical images:
 - Pin every package version (rule 5)
 - Pin Git submodule SHAs in COPY contexts
 - Pin Node / Python / Ruby / Go / Rust versions via `.nvmrc` /
-  `.python-version` / `.ruby-version` / `go.mod` / `rust-
-  toolchain.toml`
+  `.python-version` / `.ruby-version` / `go.mod` / `rust-toolchain.toml`
 - Avoid `RUN date >> /etc/build-date` (non-deterministic
   timestamp) — use the build-arg pattern
 

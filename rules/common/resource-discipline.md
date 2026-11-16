@@ -10,4 +10,7 @@ you start are yours to end: `--rm`, ports on 127.0.0.1, one reused compose proje
 torn down with `down -v --remove-orphans` on every exit. Never tear down a stack you
 reused or a long-lived one. At the task's end remove what you started, confirm none
 remains, and list others' leftovers for the owner.
+Dispatch: when resource-gate says saturated: sequential, ONE heavy child
+(browser/build) at a time. Mechanical fan-out passes the ladder's cheaper
+model explicitly; session model = judgment work.
 [Reference](../../rules-library/council-detail/resource-discipline.md).

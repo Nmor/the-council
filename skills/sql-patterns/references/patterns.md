@@ -50,7 +50,7 @@ create table orders (
 | Choice | When |
 | --- | --- |
 | `bigint identity` | Single-region; clustered insert friendly; ~9 quintillion |
-| `uuid` v4 | Multi-region / client-side generation; B-tree fragmentation cost |
+| `uuid` v7 (time-ordered; v4 fragments indexes) | Multi-region / client-side generation; B-tree fragmentation cost |
 | `uuid` v7 (time-ordered) | Multi-region + index locality (best of both, Postgres 17+) |
 | `text` (slug) | Public-facing IDs; not the primary key |
 
@@ -62,7 +62,7 @@ alter table orders add column deleted_at timestamptz;
 create index idx_orders_active on orders(id) where deleted_at is null;
 
 -- Queries use the partial index
-select * from orders where id = $1 and deleted_at is null;
+select id, status, total_cents, created_at from orders where id = $1 and deleted_at is null;
 ```
 
 For GDPR-driven hard delete (per `data-retention.md`):

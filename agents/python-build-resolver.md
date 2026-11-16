@@ -1,6 +1,6 @@
 ---
 name: python-build-resolver
-description: Python build, import, packaging, and type-check error resolution specialist. Use PROACTIVELY when a Python build/install fails, imports break, or mypy/pyright/ruff errors occur. Fixes with minimal diffs — no refactoring. Covers CPython, venv/poetry/uv, C-extension builds, and static typing.
+description: Python build, import, packaging, and type-check error resolution specialist. Use when a Python build/install fails, imports break, or mypy/pyright/ruff errors occur. Fixes with minimal diffs — no refactoring. Covers CPython, venv/poetry/uv, C-extension builds, and static typing.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

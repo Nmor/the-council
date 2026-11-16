@@ -1,7 +1,7 @@
 # Rust Security
 
 > Auto-fires on every `*.rs`, `Cargo.toml` file. Sister to
-> `~/.claude/rules/common/security.md`. Tooling: `cargo audit`,
+> `~/.claude/rules-library/common/security.md`. Tooling: `cargo audit`,
 > `cargo deny`, `cargo geiger` (unsafe usage detector), `cargo
 > outdated`.
 >
@@ -156,7 +156,7 @@ unsafe fn deref_ptr<'a, T>(ptr: *const T) -> &'a T {
 - `dotenvy` for dev; env vars for prod
 - `secrecy` crate — wraps secrets in `Secret<T>` that won't print
   via Debug
-- Per `~/.claude/rules/common/secrets-management.md`
+- Per `~/.claude/rules-library/common/secrets-management.md`
 
 ## Required tooling
 
@@ -171,10 +171,10 @@ cargo test
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/rust/no-discards.md`
-- `~/.claude/rules/rust/coding-style.md`
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/rust/no-discards.md`
+- `~/.claude/rules-library/rust/coding-style.md`
 - RustSec Advisory Database
 - Secure Rust Guidelines (ANSSI)

@@ -2,7 +2,7 @@
 
 > Auto-fires on every `*.dart`, `pubspec.yaml`, `pubspec.lock`,
 > `analysis_options.yaml` file. Extends
-> `~/.claude/rules/common/no-discards.md`. Tooling: `dart analyze`,
+> `~/.claude/rules-library/common/no-discards.md`. Tooling: `dart analyze`,
 > `dart format`, `flutter analyze`, `dart_code_metrics`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
@@ -199,9 +199,9 @@ Dart analyze (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
 - Effective Dart guide (dart.dev/effective-dart)
 - Flutter best practices
 

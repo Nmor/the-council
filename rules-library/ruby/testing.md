@@ -142,7 +142,7 @@ travel_to Time.zone.local(2026, 5, 26, 14, 30) do
 end
 ```
 
-Per `~/.claude/rules/common/no-ambient-globals.md`.
+Per `~/.claude/rules-library/common/no-ambient-globals.md`.
 
 ### 3. Randomised order
 
@@ -200,7 +200,7 @@ A skipped test is broken software pretending to be fine.
 
 ### 8. Test naming as behaviour
 
-Per `~/.claude/rules/java/testing.md` § 9 — same rule:
+Per `~/.claude/rules-library/java/testing.md` § 9 — same rule:
 
 ```ruby
 # WRONG
@@ -241,9 +241,9 @@ hard.
 
 ## Cross-references
 
-- `~/.claude/rules/common/testing.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/ruby/coding-style.md`
-- `~/.claude/rules/common/no-ambient-globals.md`
+- `~/.claude/rules-library/common/testing.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/ruby/coding-style.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md`
 - RSpec docs
 - Better Specs (betterspecs.org)

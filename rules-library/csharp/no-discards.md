@@ -1,7 +1,7 @@
 # C# / .NET — No-Discards Extension
 
 > Auto-fires on every `*.cs`, `*.csx`, `*.cshtml`, `*.razor`,
-> `*.csproj`, `*.sln` file. Extends `~/.claude/rules/common/no-discards.md`.
+> `*.csproj`, `*.sln` file. Extends `~/.claude/rules-library/common/no-discards.md`.
 > Sister to `extreme-lint-policy.md`. Tooling: Roslyn analyzers,
 > StyleCop, SonarAnalyzer.CSharp, `dotnet format`.
 >
@@ -223,9 +223,9 @@ dotnet_diagnostic.CA2016.severity = error    # forward CancellationToken
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
 - Microsoft Framework Design Guidelines
 - .NET Coding Conventions
 

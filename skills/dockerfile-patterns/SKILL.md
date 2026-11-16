@@ -68,6 +68,10 @@ The container standards the references apply; detail and mappings live in them.
 
 ## Cross-references
 
+Sister skill: `~/.claude/skills/docker-patterns/SKILL.md` owns Compose,
+multi-container runtime, networking and volumes; this skill owns image
+authoring and hardening.
+
 Each reference file carries its own `Standards cited`, `Cross-references`, `Why this
 rule exists` and `Learning hooks` sections — they were not merged here, so the citation
 travels with the guidance it supports.

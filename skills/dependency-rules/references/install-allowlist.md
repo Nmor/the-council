@@ -41,8 +41,8 @@ ever reaches the developer's machine.
    without an explicit user approval.** All such commands are in the `ask`
    block of `~/.claude/settings.local.json`.
 
-2. **No `npx -y <pkg>`, `pnpm dlx <pkg>`, `bunx -y <pkg>`, `pipx run --
-   spec <pkg>`** — these auto-download and execute remote code. They are
+2. **No `npx -y <pkg>`, `pnpm dlx <pkg>`, `bunx -y <pkg>`, `pipx run --spec <pkg>`** — these
+   auto-download and execute remote code. They are
    in the `deny` block of `~/.claude/settings.local.json`.
 
 3. **No `curl … | sh` or `wget … | bash` installer pipes.** These are

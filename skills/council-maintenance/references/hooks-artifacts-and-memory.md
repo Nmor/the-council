@@ -49,6 +49,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - A plan the gates cannot tie to its project: no `Active plan:` line naming it (rule 9)
 - Universal preferences kept in a memory directory, which only one project loads, instead of
   user-level instructions (rule 10)
+- Consumed `.audit/` output left behind after its result is recorded and no active consumer remains
+  (rule 12)
 - Tech-stack auto-detection skipped on first scaffold (heuristic-table gap)
 
 **Refinement candidates**:
@@ -61,6 +63,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   continuous-learning-mandate) provides the classification or promotion pipeline
 - New entry in the canonical scaffold structure when a recurring per-project artifact class (e.g.,
   per-project ADR archive, per-project incident log) emerges
+- A safe scoped cleanup command after repeated manual audits establish a stable manifest/status;
+  never replace reference checks with age-only deletion
 
 ## `rule-authoring-global-vs-project.md`
 

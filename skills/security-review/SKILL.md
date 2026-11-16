@@ -95,7 +95,8 @@ checks every reviewer applies before approving a merge.
 
 **Negative scope** (NOT what this skill covers):
 
-- Penetration testing methodology (engage external pentesters)
+- Penetration testing methodology (`pentester` skill, or engage external pentesters)
+- Full codebase audits / pen-test reports (`security-audit` skill)
 - Red-team / offensive security (different discipline)
 - Cryptographic protocol design (use vetted primitives; don't
   invent)
@@ -121,7 +122,7 @@ checks every reviewer applies before approving a merge.
 - **CVSS v3.1 / v4.0** — vulnerability scoring
 - **SLSA Framework v1.0** — supply-chain integrity levels
 - **CIS Benchmarks** — hardening references per platform
-- **PCI-DSS v4.0** — cardholder-data security
+- **PCI-DSS v4.0.1** — cardholder-data security
 - **GDPR Articles 5, 25, 32, 33, 34** — security + breach notification
 - **RFC 6749 (OAuth 2.0)**, **RFC 7636 (PKCE)**, **RFC 8725 (JWT BCP)**
 

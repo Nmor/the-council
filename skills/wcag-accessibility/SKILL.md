@@ -1,6 +1,6 @@
 ---
 name: wcag-accessibility
-description: WCAG 2.2 AA + AAA accessibility patterns for every user-facing surface — semantic HTML, ARIA 1.2, keyboard navigation, screen reader support, color contrast, motion preferences, and the 9 new SCs introduced in WCAG 2.2. Also lazy-loads a11y.md content migrated from rules/common/ on 2026-06-02.
+description: "WCAG 2.2 AA + AAA accessibility patterns for every user-facing surface — semantic HTML, ARIA 1.2, keyboard navigation, screen reader support, color contrast, motion preferences, and the 9 new SCs introduced in WCAG 2.2. Also lazy-loads a11y.md content migrated from rules/common/ on 2026-06-02."
 paths:
   - "**/*.vue"
   - "**/*.svelte"
@@ -140,7 +140,8 @@ Before declaring any UI surface complete:
 - [ ] Test with VoiceOver (macOS): Cmd+F5 to toggle, navigate with VO+arrow
 - [ ] Test with NVDA (Windows): start NVDA, navigate with Tab + arrows
 - [ ] Test at 200% browser zoom — no horizontal scroll, no clipped content (WCAG 1.4.10)
-- [ ] Test with `prefers-reduced-motion: reduce` enabled in OS — animations disabled
+- [ ] Test with `prefers-reduced-motion: reduce` enabled in OS — movement/parallax/scale disabled;
+  non-motion feedback (color, opacity) may remain (WCAG 2.3.3 targets vestibular motion)
 - [ ] Color-blind simulator pass (Sim Daltonism on macOS, browser DevTools elsewhere)
 - [ ] axe DevTools scan: 0 violations
 - [ ] Lighthouse Accessibility audit: ≥ 95
@@ -154,6 +155,8 @@ Before declaring any UI surface complete:
 
 - `~/.claude/rules-library/common/a11y.md` — the always-on rule (this skill is the implementation)
 - `~/.claude/skills/accessible-forms/SKILL.md` — sister skill for form-specific patterns
+- `modern-web-guidance` plugin — current HTML/CSS/DOM implementation guidance;
+  this skill stays the WCAG audit authority
 - `~/.claude/skills/frontend-patterns/SKILL.md` — broader frontend architecture + visual design
   quality
 - `~/.claude/rules-library/common/i18n.md` — accessibility overlaps with i18n (RTL, text expansion,

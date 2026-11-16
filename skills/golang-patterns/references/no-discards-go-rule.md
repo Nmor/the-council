@@ -91,7 +91,8 @@ for _, r := range "héllo" {  // r is rune
 }
 ```
 
-The rune-iteration exception is the only place `_` survives.
+`for _, value := range` is allowed (owner decision 2026-09-06); rune iteration likewise. No other
+`_` survives.
 Every other range-discard is a violation.
 
 ### 3. Defer Close without error handling
@@ -175,7 +176,7 @@ operation + ids so the caller sees the chain.
 func (_ *Repository) helper() { ... }
 func handler(_ http.ResponseWriter, r *http.Request) { ... }
 
-// CORRECT — every receiver / parameter named, even when unused
+// CORRECT — parameters you control are removed when unused; `_` is allowed where an interface or framework dictates the signature (matches revive unused-parameter remediation)
 func (r *Repository) helper() { ... }
 func handler(w http.ResponseWriter, r *http.Request) {
     // w unused in THIS handler; interface contract requires it

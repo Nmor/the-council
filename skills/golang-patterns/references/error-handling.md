@@ -82,6 +82,8 @@ if err != nil {
     return err
 }
 
-// Acceptable: When error truly doesn't matter (rare)
-_ = writer.Close() // Best-effort cleanup, error logged elsewhere
+// FORBIDDEN (no-silent-failures.md bans `_ =`): log it instead
+if err := writer.Close(); err != nil {
+ slog.Warn("close failed", "err", err)
+}
 ```

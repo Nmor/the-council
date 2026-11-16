@@ -179,7 +179,7 @@ while let Some(res) = set.join_next().await {
 }
 ```
 
-## Reuse-first (per `~/.claude/rules/common/reuse-first.md`)
+## Reuse-first (per `~/.claude/rules-library/common/reuse-first.md`)
 
 | Use case | Canonical crate |
 | --- | --- |
@@ -229,10 +229,10 @@ use anyhow at the top of the call stack only.
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/rust/coding-style.md`
-- `~/.claude/rules/rust/no-discards.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/rust/coding-style.md`
+- `~/.claude/rules-library/rust/no-discards.md`
 - Rust Design Patterns book (rust-unofficial.github.io)
 - Tokio Tutorial
 - Effective Rust (Drysdale)

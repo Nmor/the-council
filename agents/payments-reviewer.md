@@ -1,6 +1,6 @@
 ---
 name: payments-reviewer
-description: Payments + PCI-DSS + open-banking + escrow specialist. Use PROACTIVELY when code touches card / bank / wallet / instant-rail payments, refunds, chargebacks, subscriptions, payouts, escrow, trust-account segregation, or ledger reconciliation. Reviews 3DS2 + SCA, network tokenization, webhook signature verification, idempotency, FAPI 2.0, MTL + AML obligations. Operates within Council Division 4 (Security) + Division 6 (Compliance) overlap; coordinates with finance-reviewer for unit economics.
+description: Payments + PCI-DSS + open-banking + escrow specialist. Use when code touches card / bank / wallet / instant-rail payments, refunds, chargebacks, subscriptions, payouts, escrow, trust-account segregation, or ledger reconciliation. Reviews 3DS2 + SCA, network tokenization, webhook signature verification, idempotency, FAPI 2.0, MTL + AML obligations. Operates within Council Division 4 (Security) + Division 6 (Compliance) overlap; coordinates with finance-reviewer for unit economics.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

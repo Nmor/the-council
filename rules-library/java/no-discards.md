@@ -1,7 +1,7 @@
 # Java — No-Discards Extension
 
 > Auto-fires on every `*.java` file. Extends
-> `~/.claude/rules/common/no-discards.md`. Tooling: ErrorProne,
+> `~/.claude/rules-library/common/no-discards.md`. Tooling: ErrorProne,
 > SpotBugs, PMD, Checkstyle, NullAway, SonarJava.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
@@ -114,7 +114,7 @@ public class UserCache {
 }
 ```
 
-Per `~/.claude/rules/common/no-ambient-globals.md`.
+Per `~/.claude/rules-library/common/no-ambient-globals.md`.
 
 ### 8. `==` for object comparison
 
@@ -147,7 +147,7 @@ return findUser(id)
 
 ### 10. `String.format` for SQL
 
-Per `~/.claude/rules/java/security.md` § A03.
+Per `~/.claude/rules-library/java/security.md` § A03.
 
 ### 11. `Date` / `Calendar` (legacy)
 
@@ -276,9 +276,9 @@ Java build (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/error-handling-with-context.md`
-- `~/.claude/rules/java/coding-style.md`
-- `~/.claude/rules/java/security.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/error-handling-with-context.md`
+- `~/.claude/rules-library/java/coding-style.md`
+- `~/.claude/rules-library/java/security.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`

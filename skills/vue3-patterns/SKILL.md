@@ -271,7 +271,7 @@ reactivity), `ref` vs `reactive` semantics, computed vs watchers,
 provide / inject scoping, async setup + `<Suspense>`, Teleport
 for portals, dynamic + async components for code-splitting,
 defineModel for v-model, TypeScript + Volar for type safety, and
-the SSR + hydration discipline (Nuxt 3 / Vite SSR).
+the SSR + hydration discipline (Nuxt 4 / Vite SSR).
 
 **Negative scope** (NOT what this skill covers):
 
@@ -297,7 +297,7 @@ the SSR + hydration discipline (Nuxt 3 / Vite SSR).
 - **Vue Style Guide — Priority A/B/C/D** (vuejs.org/style-guide)
 - **Pinia Documentation** (pinia.vuejs.org) — official state mgmt
 - **Vue Router 4 Documentation** — routing
-- **Nuxt 3 Documentation** (nuxt.com) — SSR + meta-framework
+- **Nuxt 4 Documentation** (nuxt.com) — SSR + meta-framework
 - **Volar / vue-tsc** — type checking
 - **WHATWG HTML Living Standard** — base
 - **WAI-ARIA 1.2** — accessibility primitives for custom components

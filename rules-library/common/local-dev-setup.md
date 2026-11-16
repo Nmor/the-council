@@ -2,8 +2,7 @@
 
 > Auto-fires on every file. Sister to `local-testability.md`
 > (every change must be locally testable BEFORE writing code),
-> `secrets-management.md` (vault-based secrets), `docker-localhost-
-> binding.md` (port binding), `documentation-requirements.md`
+> `secrets-management.md` (vault-based secrets), `docker-localhost-binding.md` (port binding), `documentation-requirements.md`
 > (README + setup docs), `dependency-pinning.md` (reproducible
 > versions), `task-intake-due-diligence.md` Q14.
 >

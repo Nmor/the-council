@@ -73,7 +73,7 @@ select setval('users_id_seq', (select max(id) from users));
 ```
 
 Or use factories at the application layer (FactoryBot for
-Ruby, factory-boy for Python). Per `~/.claude/rules/common/reuse-first.md`.
+Ruby, factory-boy for Python). Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Testcontainers (cross-language)
 
@@ -236,11 +236,11 @@ end $$;
 
 ## Cross-references
 
-- `~/.claude/rules/common/testing.md`
-- `~/.claude/rules/common/schema-evolution.md`
-- `~/.claude/rules/sql/coding-style.md`
-- `~/.claude/rules/sql/security.md`
-- `~/.claude/rules/sql/no-discards.md`
+- `~/.claude/rules-library/common/testing.md`
+- `~/.claude/rules-library/common/schema-evolution.md`
+- `~/.claude/rules-library/sql/coding-style.md`
+- `~/.claude/rules-library/sql/security.md`
+- `~/.claude/rules-library/sql/no-discards.md`
 - pgTAP documentation (pgtap.org)
 - Testcontainers (testcontainers.com)
 - squawk migration safety

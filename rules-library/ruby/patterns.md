@@ -194,13 +194,13 @@ end
   in many setups
 - ActiveJob abstraction over the queue backend
 
-Per `~/.claude/rules/common/reuse-first.md`.
+Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/ruby/coding-style.md`
-- `~/.claude/rules/common/no-ambient-globals.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/ruby/coding-style.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md`
 - POODR / 99 Bottles (Sandi Metz)
 - Sustainable Web Dev with Ruby on Rails

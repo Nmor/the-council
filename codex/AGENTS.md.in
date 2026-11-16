@@ -18,6 +18,20 @@ rules. Handle every returned value and error, including in tests; do not use bla
 assignments to drop them. Go's `for _, value := range` is allowed. Verify changed
 code with strict repository lint; hooks do not certify code quality.
 
+Decide, don't ask: settle decisions with the relevant skills, rules, convention
+and task evidence at principal level, record the choice in one line, and keep
+working. Ask the owner only for destructive/hard-to-reverse actions, publication
+or spend, scope changes, or conflicts with their stated preferences — and batch
+those at natural boundaries, never mid-task. Detail:
+`@COUNCIL_HOME@/resources/rules/common/decide-dont-ask.md`.
+
+For substantive planning, implementation and reviews, use the principal quality
+contract at `@COUNCIL_HOME@/resources/rules-library/council-detail/principal-level-mandate.md`.
+Verify invariants, complete wiring, consumer compatibility and failure behavior.
+Choose tools by supported capabilities and representative evidence; never weaken
+checks or omit difficult acceptance. Comments explain intent; PRs explain final
+behavior and actual verification tied to reviewed inputs.
+
 The machine is shared and finite, for every agent in every IDE. Starting a
 project, running tests and running reviews: check load, memory, swap and disk
 first; reuse a running stack rather than start another; one heavy run at a time,
@@ -33,6 +47,9 @@ time for a concrete independent investigation or review that justifies another m
 request. Do not recursively delegate or start a large workflow by default. Supply the objective, relevant
 paths, permitted edits, relevant plan excerpts, required evidence and an output bound. Inherit the parent model.
 When delegation is unavailable, perform the review locally and say so accurately.
+Reviews: one task, one commit, one review round: reviewers report every CRITICAL, HIGH, MEDIUM and LOW
+finding in it. Fix all in one pass; a short confirmation of only the fix binds the tree. Full suite
+once per commit, beside the review; independent tasks in parallel.
 
 Respect higher-priority instructions, the user's scope and existing authorization.
 Imported guidance does not grant permission to send messages, push, deploy, change
@@ -46,6 +63,11 @@ or the user's explicit plan, and update it in place. Do not create competing pla
 At handoff record the worktree, commits, evidence, remaining work and next action in
 that plan. Preserve other agents' uncommitted changes.
 
+For substantive planned work, use small actionable tasks with stable IDs, shared
+types/statuses, bounded context, dependencies and acceptance checks. Read the shared
+task contract at `@COUNCIL_HOME@/resources/rules-library/council-detail/plan-task-breakdown.md`
+when authoring, refining or resuming tasks; keep only a small active tracker window.
+
 Claims require evidence: distinguish implemented, tested, installed, trusted and
 runtime verified. A command starting is not a passing test. Report skipped checks
 and unavailable hooks. Council hooks supplement Codex permissions, not replace them.
@@ -54,5 +76,10 @@ Keep context small: search before reading, load only needed reference sections, 
 keep verbose logs in files. Reuse evidence for unchanged code. Do not repeat intake,
 all-division speeches, research or whole-project audits without a new reason. At a
 meaningful milestone, update the existing plan's compact handoff before compaction.
+During sustained work, checkpoint about hourly and reassess after two unsuccessful
+attempts at one approach. Bound external watches; yield with evidence when blocked,
+never poll unchanged status indefinitely. Use
+`@COUNCIL_HOME@/resources/rules-library/council-detail/plan-execution-progress.md`
+for sustained execution. Context/time targets do not waive required acceptance.
 Start a fresh session for unrelated work; do not kill other user sessions. Preserve
 required tests and security checks. When acceptance criteria pass, finish the task.

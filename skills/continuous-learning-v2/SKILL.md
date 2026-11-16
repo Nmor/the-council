@@ -1,6 +1,6 @@
 ---
 name: continuous-learning-v2
-description: Instinct-based learning system that observes sessions via hooks, creates atomic instincts with confidence scoring, and evolves them into skills/commands/agents.
+description: "Instinct-based learning system that observes sessions via hooks, creates atomic instincts with confidence scoring, and evolves them into skills/commands/agents."
 version: 2.0.0
 disable-model-invocation: true
 ---
@@ -267,7 +267,7 @@ Confidence evolves over time:
 |-------|---------|----------|
 | 0.3 | Tentative | Suggested but not enforced |
 | 0.5 | Moderate | Applied when relevant |
-| 0.7 | Strong | Auto-approved for application |
+| 0.7 | Strong | Queued for user review (never auto-applied) |
 | 0.9 | Near-certain | Core behavior |
 
 **Confidence increases** when:
@@ -322,7 +322,8 @@ v2 is fully compatible with v1:
 ## Purpose
 
 Implementation arm of the continuous-learning-mandate: emit
-`learning-candidate` events on every Council-mediated task,
+`learning-candidate` events on concrete failures, corrections or repeated patterns (never every
+routine task — continuous-learning-mandate governs),
 score them with calibrated confidence, batch them for user
 review, and apply approved refinements to global / workspace
 rules / skills / agents. Closes the loop that makes the
@@ -381,7 +382,7 @@ ruleset sharper over time instead of stale.
 
 ## Verification Checklist
 
-- [ ] Every Council Phase 3 emits at least one learning-event
+- [ ] A Phase 3 that surfaced a failure, correction or repeated pattern emitted its learning-event
       (or explicit "none — no signal")
 - [ ] `learning-events.jsonl` schema-validated (required
       fields present)

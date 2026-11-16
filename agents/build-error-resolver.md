@@ -1,6 +1,6 @@
 ---
 name: build-error-resolver
-description: TypeScript / JavaScript build and type-error resolution specialist. Use PROACTIVELY when a TS/JS build fails or type errors occur. Fixes build/type errors only with minimal diffs, no architectural edits. Other stacks hand off to their specialist (`go-build-resolver`, `python-build-resolver`, `rust-build-resolver`, `java-build-resolver`, `dotnet-build-resolver`, `ruby-build-resolver`, `php-build-resolver`, `swift-build-resolver`).
+description: TypeScript / JavaScript build and type-error resolution specialist. Use when a TS/JS build fails or type errors occur. Fixes build/type errors only with minimal diffs, no architectural edits. Other stacks hand off to their specialist (`go-build-resolver`, `python-build-resolver`, `rust-build-resolver`, `java-build-resolver`, `dotnet-build-resolver`, `ruby-build-resolver`, `php-build-resolver`, `swift-build-resolver`).
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

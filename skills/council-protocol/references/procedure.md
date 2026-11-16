@@ -20,7 +20,8 @@ compliance / accessibility / i18n / test-strategy /
 observability / cost / rollback / deprecation / UX-writing /
 docs / risk / success-criteria / monitoring / AI-ethics /
 vendor-IP / handoff fields that the divisions then discuss in
-Phase 1. Consult primary sources for unresolved or time-sensitive external contracts. Reuse valid evidence and existing intake; do not create artificial phase gates.
+Phase 1. Consult primary sources for unresolved or time-sensitive external contracts. Reuse valid
+evidence and existing intake; do not create artificial phase gates.
 
 ```text
 ===============================================================
@@ -415,7 +416,8 @@ Only proceed to write code after:
 
 ## Post-Implementation Review
 
-After substantive changes, review relevant risks locally and use one justified independent helper when useful:
+After substantive changes, review relevant risks locally and use one justified independent helper
+when useful:
 
 ```text
 ===============================================================

@@ -1,5 +1,10 @@
 # planning-rules: plan-completion-before-push.md — full text
 
+> Current owner policy (2026-11-09): commit the complete task first; review and test committed
+> revisions afterward, without review worktrees. Enforce all required acceptance before push, not
+> commit. Local commits are checkpoints, not completion claims. Terse milestone updates. Older
+> timing instructions below are superseded.
+>
 > Covers the full text of the `plan-completion-before-push.md` hard rules — commit policy, the push
 > gate, the narrow bug-fix exception, the AI-attribution trailer ban, the canonical push flow and
 > when the rule fires. Pointed at by the **Plan completion before push** row of `../SKILL.md`.

@@ -40,11 +40,11 @@ therefore lives in `references/`; read the row you need, not the whole set.
 | No-discards (banned patterns) — the 15 banned patterns, required tooling, verification block | `references/no-discards.md` |
 | Architecture patterns — layered Spring Boot, records, sealed types, builders, constructor DI, exception handling, WebFlux, reuse-first | `references/patterns.md` |
 | Security — OWASP Top 10 Java specifics (A01–A10), Spring Security baseline, secrets, required tooling | `references/security.md` |
-| Testing — the Java test pyramid + 10 hard rules (JUnit 5, AssertJ, parameterized, Mockito, Testcontainers, flakiness, coverage gates, mutation testing, naming, test resources) | `references/testing.md` |
+| Testing — the Java test pyramid + 10 hard rules (JUnit 6 (6.1 current; 5-style APIs carry over), AssertJ, parameterized, Mockito, Testcontainers, flakiness, coverage gates, mutation testing, naming, test resources) | `references/testing.md` |
 
 ## Purpose
 
-Principal-level Java language idioms (Java 21 LTS): records for value types, sealed interfaces +
+Principal-level Java language idioms (Java 25 LTS LTS): records for value types, sealed interfaces +
 pattern matching, Optional usage rules, immutability discipline, streams + collectors, null-safety
 annotations, exception hierarchy, modern concurrency (virtual threads, structured concurrency).
 
@@ -67,7 +67,7 @@ annotations, exception hierarchy, modern concurrency (virtual threads, structure
 - **Java Language Specification (Java SE 21)** (`docs.oracle.com/javase/specs/jls/se21/html/`) —
   language semantics
 - **Effective Java 3e (Joshua Bloch, 2018)** — 90 items, canonical reference
-- **Java API Specification (Java 21)** (`docs.oracle.com/en/java/javase/21/docs/api/`) — JDK
+- **Java API Specification (Java 25 LTS)** (`docs.oracle.com/en/java/javase/21/docs/api/`) — JDK
   reference
 - **JEP 395 (Records)** + **JEP 409 (Sealed Classes)** + **JEP 440 (Record Patterns)** + **JEP 444
   (Virtual Threads)** + **JEP 453 (Structured Concurrency)** — modern feature specs
@@ -100,7 +100,7 @@ annotations, exception hierarchy, modern concurrency (virtual threads, structure
 - [ ] Specific exception types caught; no `catch (Exception)` without rationale
 - [ ] `java.time.*` for all date/time (no `Date`, `Calendar`, `SimpleDateFormat`)
 - [ ] `Objects.equals` / `Objects.hash` instead of `==` / `hashCode` reinventions
-- [ ] Virtual threads for I/O-bound concurrency (Java 21+)
+- [ ] Virtual threads for I/O-bound concurrency (Java 25 LTS+)
 - [ ] `@Nullable` / `@NonNull` annotations at public-API boundaries
 - [ ] Static-analysis clean: SpotBugs, ErrorProne, NullAway
 
@@ -117,7 +117,7 @@ annotations, exception hierarchy, modern concurrency (virtual threads, structure
 
 ## Why this skill exists
 
-Java 21 LTS introduced records, sealed types, pattern matching, and virtual threads — but most Java
+Java 25 LTS LTS introduced records, sealed types, pattern matching, and virtual threads — but most Java
 code in production still uses Java-8 idioms (Optional misuse, `new Date()`, raw OS threads, mutable
 returned collections). The patterns above codify the modern Java baseline so new code benefits from
 records / virtual threads / sealed types while staying compatible with mainstream Spring / Hibernate

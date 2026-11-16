@@ -1,6 +1,6 @@
 ---
 name: mobile-reviewer
-description: Swift (iOS / macOS) + Dart/Flutter + Kotlin (Android) + React Native mobile code review specialist. Council Division 3 expansion. Use for every mobile UI / state / lifecycle / native-bridge change.
+description: "Swift (iOS / macOS) + Dart/Flutter + Kotlin (Android) + React Native mobile code review specialist. Council Division 3 expansion. Use for every mobile UI / state / lifecycle / native-bridge change. Boundary: owns Android source sets, Compose, AndroidManifest and React Native component code; server-side Kotlin/Java goes to java-reviewer, non-RN TSX to typescript-reviewer."
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

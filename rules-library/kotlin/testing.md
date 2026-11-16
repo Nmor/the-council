@@ -1,7 +1,7 @@
 # Kotlin Testing
 
 > Auto-fires on every `*Test.kt`, `*Spec.kt`, `src/test/**`,
-> `src/androidTest/**` file. Sister to `~/.claude/rules/common/testing.md`.
+> `src/androidTest/**` file. Sister to `~/.claude/rules-library/common/testing.md`.
 > Standards: **JUnit 5 (Jupiter)**, **Kotest**, **MockK**,
 > **AssertJ / Strikt**, **Testcontainers**, **Coroutines-Test**,
 > **Compose UI Test** (Android), **Roborazzi / Paparazzi**
@@ -191,7 +191,7 @@ await().atMost(5, SECONDS).untilAsserted {
 
 ### 2. Clock / RNG injection
 
-Per `~/.claude/rules/common/no-ambient-globals.md` — inject
+Per `~/.claude/rules-library/common/no-ambient-globals.md` — inject
 `Clock` + `Random`.
 
 ### 3. Coverage gates
@@ -250,10 +250,10 @@ fun foo() = runTest {
 
 ## Cross-references
 
-- `~/.claude/rules/common/testing.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/kotlin/coding-style.md`
-- `~/.claude/rules/common/no-ambient-globals.md`
+- `~/.claude/rules-library/common/testing.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/kotlin/coding-style.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md`
 - JUnit 5 User Guide
 - Kotest documentation (kotest.io)
 - MockK documentation (mockk.io)

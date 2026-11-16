@@ -250,7 +250,7 @@ Stream<Order> watchOrders() async* {
 | Auth | firebase_auth, supabase_flutter, auth0 |
 | Bottom sheets / modals | Flutter built-in (ModalBottomSheet, Dialog) |
 
-Per `~/.claude/rules/common/reuse-first.md`.
+Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Performance
 
@@ -269,11 +269,11 @@ ListView.builder(
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/dart/coding-style.md`
-- `~/.claude/rules/dart/no-discards.md`
-- `~/.claude/rules/dart/security.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/dart/coding-style.md`
+- `~/.claude/rules-library/dart/no-discards.md`
+- `~/.claude/rules-library/dart/security.md`
 - Effective Dart (dart.dev/effective-dart)
 - Flutter Architecture (docs.flutter.dev/data-and-backend/state-mgmt/options)
 - Riverpod docs (riverpod.dev)

@@ -3,7 +3,7 @@
 > Auto-fires on every `*.swift`, `Package.swift`, `Package.resolved`,
 > `*.xcconfig`, `*.xcodeproj/**`, `*.xcworkspace/**`,
 > `Project.yml`, `*.swiftlint.yml`, `.swiftformat` file. Sister to
-> `~/.claude/rules/common/hooks.md`.
+> `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 10 KB** — `token-budget.mjs --check`.
 
@@ -175,7 +175,7 @@ brew install --cask xcodes       # Xcode version management
 
 ## `.swiftlint.yml` (already covered in `swift/no-discards.md`)
 
-See `~/.claude/rules/swift/no-discards.md` for the strict config:
+See `~/.claude/rules-library/swift/no-discards.md` for the strict config:
 
 - `force_unwrapping: error`
 - `force_try: error`
@@ -300,17 +300,17 @@ xcrun altool --upload-app -f ./build/MyApp/MyApp.ipa \
 ```
 
 API key + issuer come from the vault (per
-`~/.claude/rules/common/secrets-management.md`), NEVER from a
+`~/.claude/rules-library/common/secrets-management.md`), NEVER from a
 checked-in file.
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/swift/no-discards.md`
-- `~/.claude/rules/swift/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/swift/no-discards.md`
+- `~/.claude/rules-library/swift/testing.md`
 - SwiftLint docs (realm.github.io/SwiftLint)
 - SwiftFormat docs (github.com/nicklockwood/SwiftFormat)
 - Swift Package Manager docs (swift.org/package-manager)

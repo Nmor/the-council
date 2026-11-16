@@ -2,7 +2,7 @@
   "env": {
     "MAX_THINKING_TOKENS": "100000",
     "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1",
-    "CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY": "2"
+    "CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY": "4"
   },
   "permissions": {
     "allow": [],
@@ -48,152 +48,12 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Agent|Task",
+        "matcher": "Agent|Task|Bash|Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/model-ladder-gate.js\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/dev-server-gate.js\"",
-            "timeout": 20
-          },
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/commit-gate.js\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pre-push-gate.js\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pre-write-governance-sweep.js\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/research-gate.js\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/intake-gate.js\"",
-            "timeout": 20
-          },
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-gate.js\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof.js\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Grep|Glob",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/cbm-code-discovery-gate",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/deferral-gate.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/payload-gate.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/destructive-command-gate.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/one-plan-gate.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/one-plan-gate.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/go-discard-mutations.js\" --state-dir \"$HOME/.claude/runtime/go-mutations\"",
-            "timeout": 20
+            "command": "node \"$HOME/.claude/scripts/hooks/dispatch.js\" pre",
+            "timeout": 60
           }
         ]
       }
@@ -232,43 +92,18 @@
         ]
       },
       {
-        "matcher": "startup",
+        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "resume",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "clear",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder",
-            "timeout": 20
+            "command": "node \"$HOME/.claude/scripts/hooks/debate-frame.js\"",
+            "timeout": 10
           }
         ]
       },
       {
         "matcher": "compact",
         "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/cbm-session-reminder",
-            "timeout": 20
-          },
           {
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/post-compact-memory-reload.js\"",
@@ -279,157 +114,12 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Agent|Task|Bash|Edit|Write|MultiEdit|WebSearch|WebFetch|TodoWrite|Skill",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/pr-created-notice.js\"",
-            "timeout": 45
-          },
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-marker.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-format.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-typecheck.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-console-warn.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-no-discards.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof-marker.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/docs-sync-marker.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "WebSearch|WebFetch",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/research-marker.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/intake-marker.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/parity-gate.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/gate-marker.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-ux-writing.js\"",
-            "timeout": 45
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/payload-marker.js\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/go-discard-mutations.js\" --state-dir \"$HOME/.claude/runtime/go-mutations\"",
-            "timeout": 20
-          }
-        ]
-      },
-      {
-        "matcher": "Agent|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/scripts/hooks/model-exhaustion-marker.js\"",
-            "timeout": 5
+            "command": "node \"$HOME/.claude/scripts/hooks/dispatch.js\" post",
+            "timeout": 90
           }
         ]
       }
@@ -489,6 +179,11 @@
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/subagent-verification-gate.js\"",
             "timeout": 20
+          },
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/review-marker.js\"",
+            "timeout": 10
           }
         ]
       }
@@ -571,7 +266,6 @@
     ]
   },
   "enabledPlugins": {
-    "security-guidance@claude-plugins-official": true,
     "claude-security@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "ponytail@ponytail": true,

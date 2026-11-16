@@ -71,8 +71,7 @@ Per `install-allowlist.md`, global installs always ask. Per
 The `TodoWrite` tool is mandatory whenever:
 
 - A task has 3+ distinct steps
-- A multi-phase plan is in execution (per `plan-execution-
-  progress.md`)
+- A multi-phase plan is in execution (per `plan-execution-progress.md`)
 - The user explicitly asks for tracking
 
 What the TodoWrite list reveals:

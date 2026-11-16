@@ -1,6 +1,6 @@
 ---
 name: doc-updater
-description: Documentation and codemap specialist. Use PROACTIVELY for updating codemaps and documentation. Runs /update-codemaps and /update-docs, generates docs/CODEMAPS/*, updates READMEs and guides.
+description: Documentation and codemap specialist. Use for updating codemaps and documentation. Runs /update-codemaps and /update-docs, generates docs/CODEMAPS/*, updates READMEs and guides.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: haiku
 ---
@@ -37,7 +37,7 @@ state of the code.
 ## Analysis Commands
 
 ```bash
-npx tsx scripts/codemaps/generate.ts    # Generate codemaps
+# Codemaps: use /update-codemaps (no standalone generate script exists)
 npx madge --image graph.svg src/        # Dependency graph
 npx jsdoc2md src/**/*.ts                # Extract JSDoc
 ```
@@ -104,7 +104,13 @@ Links to other codemaps
    README, CLAUDE.md, landing copy, runbook). When updating one
    surface, audit the others; if any project has an
    `infra/verify-docs-sync.sh` (or equivalent gate), run it and
-   close any reported gaps in the same pass.
+   close any reported gaps in the same pass. Prose follows
+   `~/.claude/skills/writing-quality/SKILL.md` (plain verbs,
+   named facts, no AI-prose tells). Markdown you touch must
+   pass the style gate: in the Council corpus run
+   `~/.claude/skills/council-maintenance/tests/md-lint.sh`; in a
+   project, its markdownlint config (markdown-style skill has the
+   conventions — never reformat vendored content).
 
 ## Key Principles
 

@@ -13,7 +13,8 @@ the stack the diff touches — `go-reviewer`, `typescript-reviewer` (TS/JS/Vue/S
 `python-reviewer`, `ruby-reviewer`, `php-reviewer`, `java-reviewer` (Java/Kotlin),
 `rust-reviewer`, `dotnet-reviewer` (C#), `mobile-reviewer` (Swift/Dart/RN). Every stack has
 one; a review that skips it is a cross-cutting review reported as a complete one. `/go-review`
-and `/python-review` are deeper dedicated flows for those two; the rest run through here. Follow the [principal quality contract](../rules-library/council-detail/principal-level-mandate.md)
+and `/python-review` are deeper dedicated flows for those two; the rest run through here. Follow the
+[principal quality contract](../rules-library/council-detail/principal-level-mandate.md)
 for substantive changes; do not invent findings or expand a focused review without
 a concrete reason.
 

@@ -180,7 +180,7 @@ Metrics + alerts distinguish three states:
 | State | Metric | Alert |
 | --- | --- | --- |
 | **Healthy** | `feature_state{name, state="ok"} = 1` | Silent |
-| **Degraded** | `feature_state{name, state="degraded"} = 1` + degradation reason tag | Page if sustained > 5 min |
+| **Degraded** | `feature_state{name, state="degraded"} = 1` + degradation reason tag | Page if it burns an SLO sustained > 5 min; cause-only signals get tickets |
 | **Broken** | `feature_state{name, state="broken"} = 1` | Page immediately |
 
 The graphed timeline shows the transitions; post-incident review

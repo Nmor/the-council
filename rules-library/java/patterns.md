@@ -206,7 +206,7 @@ When NOT:
 | Vert.x | Reactive, event-loop |
 | Plain Java | Libraries, CLI tools, small services |
 
-## Reuse-first (per `~/.claude/rules/common/reuse-first.md`)
+## Reuse-first (per `~/.claude/rules-library/common/reuse-first.md`)
 
 - Maven Central / mvnrepository.com before writing your own
 - Apache Commons + Google Guava cover utilities
@@ -215,10 +215,10 @@ When NOT:
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md` — universal baseline
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/java/coding-style.md`
-- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns
+- `~/.claude/rules-library/common/patterns.md` — universal baseline
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/java/coding-style.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI patterns
 - Effective Java (Bloch)
 - Spring Boot Reference
 - Microservices Patterns (Richardson)

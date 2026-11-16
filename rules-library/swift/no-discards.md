@@ -1,7 +1,7 @@
 # Swift — No-Discards Extension
 
 > Auto-fires on every `*.swift`, `Package.swift`, `*.xcconfig` file.
-> Extends `~/.claude/rules/common/no-discards.md`. Tooling: SwiftLint
+> Extends `~/.claude/rules-library/common/no-discards.md`. Tooling: SwiftLint
 > (strict), SwiftFormat, swift-format (Apple), `xcrun swift build`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
@@ -272,7 +272,7 @@ Swift build (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
 - Apple Swift API Design Guidelines
 - swift.org coding style

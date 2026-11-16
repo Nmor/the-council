@@ -130,7 +130,7 @@ while IFS= read -r candidate; do
         "${REFERENCE_ROOTS[@]}" \
         2>/dev/null \
         | grep -v "^${rel}$" \
-        | head -n 1
+        | sed -n '1p'
     )"
     set -e
     if [ -z "${refs}" ]; then
@@ -150,7 +150,7 @@ while IFS= read -r candidate; do
     internal_refs="$(
       grep -rlF "${asset_stem}" "${skill_dir}" 2>/dev/null \
         | grep -v "^${rel}$" \
-        | head -n 1
+        | sed -n '1p'
     )"
     set -e
     if [ -n "${internal_refs}" ]; then
@@ -175,7 +175,7 @@ while IFS= read -r candidate; do
         "${REFERENCE_DIRS[@]}" \
         "${REFERENCE_ROOTS[@]}" \
         2>/dev/null
-    } | grep -v "^${rel}$" | head -n 1
+    } | grep -v "^${rel}$" | sed -n '1p'
   )"
   set -e
 

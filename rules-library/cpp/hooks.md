@@ -1,7 +1,7 @@
 # C / C++ Hooks
 
 > Auto-fires on every `*.c`, `*.cpp`, `*.h`, `*.hpp`, `CMakeLists.txt`,
-> `*.cmake`, `Makefile` file. Sister to `~/.claude/rules/common/hooks.md`.
+> `*.cmake`, `Makefile` file. Sister to `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -193,10 +193,10 @@ CheckOptions:
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/cpp/no-discards.md`
-- `~/.claude/rules/cpp/security.md`
-- `~/.claude/rules/cpp/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/cpp/no-discards.md`
+- `~/.claude/rules-library/cpp/security.md`
+- `~/.claude/rules-library/cpp/testing.md`
 - clang-tidy docs (clang.llvm.org/extra/clang-tidy/)
 - cppcheck manual (cppcheck.sourceforge.io)

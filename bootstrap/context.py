@@ -130,6 +130,56 @@ def target(home, name):
     return path
 
 
+def owned_node_call(command: str, home: Path, script: str, arguments: tuple[str, ...]) -> bool:
+    """Recognize known shell spellings without discarding expansion semantics."""
+    prefix = home.as_posix()
+    paths = [prefix + '/scripts/hooks/' + script]
+    paths.extend(argument.replace('@HOME@', prefix) for argument in arguments)
+    for executable in ('node', 'node.exe'):
+        argv = [executable, *paths]
+        canonical = core.subprocess.list2cmdline(argv) if sys.platform == 'win32' else shlex.join(argv)
+        if command.strip() == canonical:
+            return True
+        # Legacy generated commands quote paths, but no shell expansion may alter
+        # an absolute owner path. Unrecognized commands retain direct guards.
+        if sys.platform != 'win32' and not any(char in part for part in paths for char in '$`"\\'):
+            quoted = [f'"{part}"' if '/' in part else shlex.quote(part) for part in paths]
+            if command.strip() == ' '.join([executable, *quoted]):
+                return True
+    if sys.platform != 'win32' and home.resolve() == (Path.home() / '.claude').resolve():
+        for alias in ('$HOME/.claude', '${HOME}/.claude', '~/.claude'):
+            parts = [alias + '/scripts/hooks/' + script]
+            parts.extend(argument.replace('@HOME@', alias) for argument in arguments)
+            # HOME expands inside double quotes; tilde expands only unquoted.
+            quoted = [part if alias.startswith('~') else f'"{part}"'
+                      if part.startswith(alias) else shlex.quote(part) for part in parts]
+            for executable in ('node', 'node.exe'):
+                if command.strip() == ' '.join([executable, *quoted]):
+                    return True
+    return False
+
+
+def dispatched_guard_tools(groups, home, phase):
+    """Only an installed, known-compatible dispatcher can replace direct coverage."""
+    dispatcher = target(home, 'scripts/hooks/dispatch.js')
+    if not dispatcher.exists() or dispatcher.read_bytes() != (ROOT / 'scripts/hooks/dispatch.js').read_bytes():
+        return set()
+    covered = set()
+    for group in groups:
+        if not any(owned_node_call(hook.get('command', ''), home, 'dispatch.js', (phase,))
+                   for hook in group.get('hooks', [])):
+            continue
+        matcher = group.get('matcher', '')
+        if matcher in ('', '*'):
+            covered.update(('Bash', 'Edit', 'Write', 'MultiEdit'))
+        elif re.fullmatch(r'[A-Za-z0-9_|]+', matcher):
+            covered.update(tool for tool in ('Bash', 'Edit', 'Write', 'MultiEdit')
+                           if tool in matcher.split('|'))
+        # Any other syntax is treated as uncovered: Claude Code's matcher
+        # semantics are not Python's, so the direct guard remains the fallback.
+    return covered
+
+
 def claude_payload(home):
     paths = ['CLAUDE.md', 'settings.json', 'scripts/token-budget.mjs', 'scripts/hooks/lib/memory-lint.js']
     paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'rules/common').glob('*.md')]
@@ -140,7 +190,7 @@ def claude_payload(home):
     paths += [name for name in core.tracked_resources(ROOT)
               if name.startswith(('skills/', 'rules-library/', 'agents/', 'commands/'))]
     paths += [name for name in core.tracked_resources(ROOT)
-              if name.startswith('scripts/hooks/lib/') and name.endswith('.js')]
+              if name.startswith(('scripts/hooks/lib/', 'scripts/lib/')) and name.endswith('.js')]
     paths += ['docs/BRAG.md', 'docs/no-discards.md', 'scripts/hooks/go-discard-mutations.js']
     paths += list(LIFECYCLE_FILES)
     paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'skills').glob('*/SKILL.md')]
@@ -181,18 +231,38 @@ def claude_payload(home):
     source_hooks = json.loads((ROOT / 'settings.json').read_text(encoding='utf-8'))['hooks']
     lifecycle_hooks(settings, source_hooks, home)
     guard_name = 'go-discard-mutations.js'
+    coverage = {}
     for event in ('PreToolUse', 'PostToolUse'):
         groups = settings.setdefault('hooks', {}).get(event, [])
         retained = []
         for group in groups:
             hooks = [hook for hook in group.get('hooks', [])
-                     if guard_name not in hook.get('command', '')]
+                     if not any(owned_node_call(hook.get('command', ''), home, guard_name,
+                                                ('--state-dir', state))
+                                for state in ('@HOME@/runtime/go-mutations',
+                                              '@HOME@/runtime/go-mutations-direct'))]
             if hooks:
                 retained.append({**group, 'hooks': hooks})
-        retained.extend(group for group in source_hooks[event]
-                        if any(guard_name in hook.get('command', '')
-                               for hook in group.get('hooks', [])))
+        phase = 'pre' if event == 'PreToolUse' else 'post'
+        dispatched = dispatched_guard_tools(retained, home, phase)
+        coverage[event] = dispatched
         settings['hooks'][event] = retained
+    # Each direct post-hook needs the baseline captured by its matching pre-hook.
+    paired = coverage['PreToolUse'] & coverage['PostToolUse']
+    uncovered = [tool for tool in ('Bash', 'Edit', 'Write', 'MultiEdit') if tool not in paired]
+    for event in ('PreToolUse', 'PostToolUse'):
+        if uncovered:
+            # The full v2 install uses dispatch.js. A context-only migration of an
+            # older home still needs the guard, without copying or invoking a second
+            # complete dispatch chain alongside its existing personal/security hooks.
+            # Own state folder: an unrecognized dispatcher may still run the
+            # guard against runtime/go-mutations, and parallel hooks sharing
+            # one baseline file would race.
+            argv = ['node', (home / 'scripts/hooks' / guard_name).as_posix(),
+                    '--state-dir', (home / 'runtime/go-mutations-direct').as_posix()]
+            command = core.subprocess.list2cmdline(argv) if sys.platform == 'win32' else shlex.join(argv)
+            settings['hooks'][event].append({'matcher': '|'.join(uncovered),
+                                            'hooks': [{'type': 'command', 'command': command, 'timeout': 20}]})
     result['settings.json'] = core.json_bytes(settings)
     return result
 
@@ -267,7 +337,7 @@ def _apply(home, kind, dry_run=False, restore=False):
             path = target(home, name)
             protected = ((name.startswith('skills/') and not name.endswith('/SKILL.md')) or
                          name.startswith(('rules-library/', 'agents/', 'commands/', 'skills/brag/',
-                                          'scripts/hooks/lib/')) or name in LIFECYCLE_FILES or
+                                          'scripts/hooks/lib/', 'scripts/lib/')) or name in LIFECYCLE_FILES or
                          name in ('scripts/hooks/go-discard-mutations.js', 'skills/council/SKILL.md'))
             if (protected
                     and name not in old['files'] and

@@ -1,6 +1,6 @@
 ---
 name: java-build-resolver
-description: Java & Kotlin build and compile error resolution specialist. Use PROACTIVELY when Maven/Gradle builds fail or javac/kotlinc errors occur. Fixes compile, classpath/module, dependency, and annotation-processing errors with minimal diffs — no refactoring. Covers Java 21 LTS + Kotlin 2.x, Maven + Gradle.
+description: Java & Kotlin build and compile error resolution specialist. Use when Maven/Gradle builds fail or javac/kotlinc errors occur. Fixes compile, classpath/module, dependency, and annotation-processing errors with minimal diffs — no refactoring. Covers Java 21 LTS + Kotlin 2.x, Maven + Gradle.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

@@ -83,7 +83,7 @@ export function verificationProof(sid, prompt = '', cwd, env = {}, coverage = fa
 // Two recorded reviewer perspectives, the way a real session gets them: through the marker, by
 // dispatching reviewers. This fixture is only obtainable because terminalSuccess recognises an
 // agent's STATUS — while it read only the Bash shape, no review was ever recorded and every
-// commit-gate test that needed one had to be written as though the rule did not exist.
+// gate test that needed one had to be written as though the rule did not exist.
 export function reviewProof(sid, prompt = '', cwd, env = {}, types = ['go-reviewer', 'code-reviewer']) {
   for (const type of types) {
     const result = run('review-marker.js', {

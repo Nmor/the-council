@@ -32,7 +32,7 @@ mandatory; no monkey-patching outside dedicated `Refinements` or
 4. Controllers instantiate ≤ 1 object; views reference ≤ 2 instance
    variables
 
-Per `~/.claude/rules/common/extreme-lint-policy.md`, the
+Per `~/.claude/rules-library/common/extreme-lint-policy.md`, the
 project-wide caps are tighter (cognitive complexity ≤ 10).
 
 ## Frozen string literals (mandatory)
@@ -194,10 +194,10 @@ Style/StringLiterals:
 
 ## Cross-references
 
-- `~/.claude/rules/common/coding-style.md`
-- `~/.claude/rules/ruby/no-discards.md`
-- `~/.claude/rules/ruby/security.md`
-- `~/.claude/rules/ruby/testing.md`
-- `~/.claude/rules/ruby/patterns.md`
+- `~/.claude/rules-library/common/coding-style.md`
+- `~/.claude/rules-library/ruby/no-discards.md`
+- `~/.claude/rules-library/ruby/security.md`
+- `~/.claude/rules-library/ruby/testing.md`
+- `~/.claude/rules-library/ruby/patterns.md`
 - Ruby Style Guide (rubocop-hq/ruby-style-guide)
 - Sandi Metz: 99 Bottles of OOP / Practical OOD in Ruby

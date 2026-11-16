@@ -243,6 +243,7 @@ Both installers add the same rule. Claude Code loads it from
 `rules/common/resource-discipline.md`, and Codex from its `AGENTS.md` block. The
 reference is `rules-library/council-detail/resource-discipline.md`. For starting
 projects, running tests and running reviews, the rule says:
+
 - check load, memory, swap and disk before heavy work;
 - reuse running stacks;
 - run one heavy job at a time, with workers bounded and at lower priority;

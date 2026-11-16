@@ -308,7 +308,7 @@ maintenance mode.
 | Image loading | NukeUI, Kingfisher |
 | Crypto | CryptoKit (built-in) |
 
-Per `~/.claude/rules/common/reuse-first.md`.
+Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Anti-patterns
 
@@ -325,11 +325,11 @@ Per `~/.claude/rules/common/reuse-first.md`.
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/swift/coding-style.md`
-- `~/.claude/rules/swift/no-discards.md`
-- `~/.claude/rules/swift/security.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/swift/coding-style.md`
+- `~/.claude/rules-library/swift/no-discards.md`
+- `~/.claude/rules-library/swift/security.md`
 - Swift API Design Guidelines (swift.org/documentation/api-design-guidelines)
 - Apple Developer Documentation
 - Swift Evolution proposals

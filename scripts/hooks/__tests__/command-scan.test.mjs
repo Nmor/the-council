@@ -14,7 +14,7 @@ import { HOOKS } from './helpers.mjs';
 const { executablePart, atCommandPosition, VERIFICATION_GATE } =
   createRequire(import.meta.url)(join(HOOKS, 'lib', 'command-scan.js'));
 
-// An infra-only commit could never satisfy commit-gate.js: nothing that verifies a manifest,
+// An infra-only commit could never satisfy the retired commit-gate: nothing that verifies a manifest,
 // an alert rule or a workflow counted as a gate, so the only way past it was to run an
 // unrelated linter to write the marker, which misreports what was verified (2026-09-21).
 describe('VERIFICATION_GATE — infra validators are gates', () => {

@@ -1,7 +1,7 @@
 # Common Patterns
 
 > **First check: does it already exist?** Per
-> `~/.claude/rules/common/reuse-first.md`, every new component /
+> `~/.claude/rules-library/common/reuse-first.md`, every new component /
 > function / class / module starts with a sweep of the existing
 > codebase + vetted dependencies. Hand-rolling a parallel
 > implementation of an existing primitive is the most common

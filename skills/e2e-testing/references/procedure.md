@@ -553,7 +553,8 @@ Most e2e failure modes are predictable + repeating:
 5. `waitForTimeout(N)` magic numbers → passes locally + fails when CI is slower
 6. One huge test file → can't isolate a single failure
 
-The cost of doing it right (data-testid, reconnaissance-then-action, with_server.py, application-state assertions,
+The cost of doing it right (data-testid, reconnaissance-then-action, with_server.py, application-
+state assertions,
 per-journey files) is paid ONCE at suite-design time. The cost of doing it wrong is paid every CI
 run, every on-call rotation, every "flaky test" Slack message, and every regression that snuck past
 a yellow run nobody trusted.

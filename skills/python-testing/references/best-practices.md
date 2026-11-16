@@ -15,7 +15,8 @@
 - **Use fixtures**: Eliminate duplication with fixtures
 - **Mock external dependencies**: Don't depend on external services
 - **Test edge cases**: Empty inputs, None values, boundary conditions
-- **Apply canonical coverage defaults**: 90% touched / 80% project / 95% critical paths for supported line/branch metrics
+- **Apply canonical coverage defaults**: 90% touched / 80% project / 95% critical paths for
+  supported line/branch metrics
 - **Keep tests fast**: Use marks to separate slow tests
 
 ### DON'T

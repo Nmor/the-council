@@ -1,6 +1,6 @@
 ---
 name: swift-build-resolver
-description: Swift build and compile error resolution specialist. Use PROACTIVELY when `swift build` / xcodebuild fails or swiftc errors occur. Fixes type, optional, module, and package errors with minimal diffs — no refactoring. Covers SwiftPM + Xcode; build only (NOT code-signing / provisioning).
+description: Swift build and compile error resolution specialist. Use when `swift build` / xcodebuild fails or swiftc errors occur. Fixes type, optional, module, and package errors with minimal diffs — no refactoring. Covers SwiftPM + Xcode; build only (NOT code-signing / provisioning).
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

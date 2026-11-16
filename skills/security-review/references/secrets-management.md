@@ -63,7 +63,8 @@ JWT signing keys, DB passwords, OAuth client secrets):
 - **Production**: AWS Secrets Manager (preferred for AWS workloads),
   GCP Secret Manager, Vault, Doppler, or 1Password Secrets Automation.
   Service reads at startup via the cloud's IAM-bound credentials.
-- **Local dev**: `.env` file (gitignored), populated from the same
+- **Local dev**: runtime injection preferred (`op run`, `aws-vault exec`); a gitignored `.env` is
+  a labelled local-only exception, populated from the same
   secrets manager via `aws secretsmanager get-secret-value` (or
   equivalent) on first checkout. Never check the populated `.env`
   into git.

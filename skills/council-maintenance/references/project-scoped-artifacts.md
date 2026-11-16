@@ -211,6 +211,15 @@ User directive (verbatim): "plan and claude files should always
 be gitignored and not be referenced in and code file. This
 should be part of all relevant rules and files".
 
+### 12. Consume, record and clean transient evidence
+
+Treat audit/test output as scratch. Keep it while checks, review, unresolved failures
+or retention rules need it. Before removal, check live processes and open consumers;
+record revision, command, outcome and limitations in the canonical plan, then remove
+disposable logs, captures, coverage and generated files. Never prune by age alone.
+At handoff report removed outputs and remaining `.audit/` size. Ignore local
+`.audit/`; preserve CI output explicitly uploaded by its workflow.
+
 ## Tech-stack auto-detection (on scaffold creation)
 
 When the agent creates the workspace scaffold, it detects the

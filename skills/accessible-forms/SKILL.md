@@ -380,6 +380,9 @@ works natively.
 ## Cross-References
 
 - `wcag-accessibility` skill — broader WCAG patterns
+- `modern-web-guidance` plugin — current platform form features (autofill,
+  customizable selects, validation timing APIs); consult for implementation,
+  keep this skill's accessibility requirements as the acceptance bar
 - `~/.claude/rules-library/common/a11y.md` — always-on rule
 - `~/.claude/rules-library/common/i18n.md` — form field localisation (labels, errors, formats)
 - `~/.claude/rules-library/common/error-codes.md` — error codes drive error messages

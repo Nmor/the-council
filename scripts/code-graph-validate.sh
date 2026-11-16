@@ -168,7 +168,7 @@ else
     HEAD=$(head -20 "${f}")
     HAS_NAME=$(printf '%s\n' "${HEAD}" | grep -cE '^name:' || true)
     HAS_DESC=$(printf '%s\n' "${HEAD}" | grep -cE '^description:' || true)
-    HAS_MODEL=$(printf '%s\n' "${HEAD}" | grep -cE '^model: (opus|sonnet|haiku)' || true)
+    HAS_MODEL=$(printf '%s\n' "${HEAD}" | grep -cE '^model: (opus|sonnet|haiku|inherit)[[:space:]]*$' || true)
     HAS_TOOLS=$(printf '%s\n' "${HEAD}" | grep -cE '^tools:' || true)
 
     MISSING=()

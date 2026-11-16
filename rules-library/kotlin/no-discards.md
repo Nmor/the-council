@@ -1,7 +1,7 @@
 # Kotlin — No-Discards Extension
 
 > Auto-fires on every `*.kt`, `*.kts` file. Extends
-> `~/.claude/rules/common/no-discards.md`. Tooling: **detekt**
+> `~/.claude/rules-library/common/no-discards.md`. Tooling: **detekt**
 > with full config, **ktlint --strict**, **Kotlin compiler
 > -Werror -progressive**.
 >
@@ -108,7 +108,7 @@ object Counter {
 }
 ```
 
-Per `~/.claude/rules/common/no-ambient-globals.md`.
+Per `~/.claude/rules-library/common/no-ambient-globals.md`.
 
 ### 7. `lateinit` outside DI / lifecycle frameworks
 
@@ -294,10 +294,10 @@ Kotlin sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/error-handling-with-context.md`
-- `~/.claude/rules/kotlin/coding-style.md`
-- `~/.claude/rules/kotlin/patterns.md`
+- `~/.claude/rules-library/common/error-handling-with-context.md`
+- `~/.claude/rules-library/kotlin/coding-style.md`
+- `~/.claude/rules-library/kotlin/patterns.md`
 - detekt rules: detekt.dev/docs/rules/
 - Effective Kotlin (Marcin Moskała)

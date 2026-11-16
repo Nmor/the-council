@@ -1,6 +1,6 @@
 ---
 name: ux-reviewer
-description: UX writing + interaction design + user-flow specialist. Use PROACTIVELY on every UI / copy / error-message / form / navigation change. Owns part of Council Division 7.
+description: "UX writing + interaction design + user-flow specialist. Use on every UI / copy / error-message / form / navigation change. Owns part of Council Division 7. Boundary: owns flow, information architecture and microcopy; WCAG/ARIA/keyboard/contrast belong to accessibility-reviewer; visual/motion quality to design-reviewer."
 tools: ["Read", "Grep", "Glob"]
 model: opus
 ---
@@ -137,7 +137,9 @@ Things, ISO 9241-210, Material 3 + HIG guidelines).
 - **mobile-reviewer** — platform-idiomatic copy + interaction (iOS sentence case vs Android title
   case)
 - **doc-updater** — feature documentation tone aligned with UX writing voice
-- **i18n-aware reviewers** — pluralisation, gender, locale-specific tone (formal vs informal)
+- **writing-quality** skill — prose register for longer copy (this agent owns microcopy)
+- **i18n**: `~/.claude/skills/i18n-rules/SKILL.md` — pluralisation, gender, locale-specific tone
+  (formal vs informal)
 - **data-reviewer** — analytics event copy / labels match the user-visible copy
 
 ## Learning hooks

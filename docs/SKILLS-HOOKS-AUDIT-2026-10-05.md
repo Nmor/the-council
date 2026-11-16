@@ -156,7 +156,7 @@ exposure was demonstrated, so existing logs should be inspected without printing
 
 [gate-marker.js](../scripts/hooks/gate-marker.js), line 35, ignores results;
 [test-coverage-marker.js](../scripts/hooks/test-coverage-marker.js), line 45, accepts an
-empty measurement; [commit-gate.js](../scripts/hooks/commit-gate.js), line 157, checks
+empty measurement; the [archived commit gate](../scripts/hooks/commit-gate.js.bak.20260921-013713), line 157, checks
 marker existence. In a staged temporary repository, the commit gate changed from exit 2
 to exit 0 after simulated `go test ./... -cover` results explicitly reported exit 1 and
 no coverage. The resulting coverage marker contained `measured: ""`. A command whose

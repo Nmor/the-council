@@ -56,18 +56,21 @@ remain in the selected source under `rules-library/`, with compact summaries in
    rule; check `rule-authoring-global-vs-project.md` before authoring either.
 3. **Classifying** — global vs workspace per `rule-authoring-global-vs-project.md`
    rules 1-2. Confidence + session thresholds per
-   `continuous-learning-mandate.md` rule 2. Use existing user authorization; request new approval only when the proposed action exceeds that scope.
+   `continuous-learning-mandate.md` rule 2. Use existing user authorization; request new approval
+   only when the proposed action exceeds that scope.
 4. **Never mutate silently** — `continuous-learning-mandate.md` anti-pattern 1.
 
 ## Anti-Patterns
 
 - **Silent rule mutation** — changing a rule on one session's observation. Needs
-  sufficient evidence for the failure and authorization for the affected scope; statistical confidence is not inferred from a session count.
+  sufficient evidence for the failure and authorization for the affected scope; statistical
+  confidence is not inferred from a session count.
 - **Rule sprawl** — a new rule per observation. Cluster into an existing rule
   first; a new sibling needs a genuinely new principle
   (`rule-authoring-global-vs-project.md` learning hooks record an incident where
   a duplicate rule was created because nobody grepped first).
-- **Candidate hoarding** — candidates accumulating unreviewed. Review candidates when requested or at a meaningful maintenance milestone; do not add work to unrelated sessions.
+- **Candidate hoarding** — candidates accumulating unreviewed. Review candidates when requested or
+  at a meaningful maintenance milestone; do not add work to unrelated sessions.
 - **Project specifics into global** — a workspace name, path or incident inside a
   global rule. `rule-authoring-global-vs-project.md` rule 2.
 - **Refining the hook instead of the rule** — editing a signal so it stops firing,
@@ -85,7 +88,10 @@ remain in the selected source under `rules-library/`, with compact summaries in
 - The changed rule still carries its "Why this rule exists" naming a SPECIFIC
   failure mode. Green: not a vague "improves quality".
 - Cross-references updated both ways. Green: `tests/verify-link-integrity.sh`.
-- The rule's hooks below updated to match the change. Green: relevant maintenance guidance remains consistent; an unrelated section needs no edit.
+- Markdown style clean across the authored corpus. Green: `tests/md-lint.sh`
+  (vendored imports go in the config's `ignores`, not through the formatter).
+- The rule's hooks below updated to match the change. Green: relevant maintenance guidance remains
+  consistent; an unrelated section needs no edit.
 - No project name / path / session date entered a global artifact. Green: the
   contamination sweep in `principal-level-mandate.md`.
 

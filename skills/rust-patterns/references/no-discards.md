@@ -285,7 +285,7 @@ cargo = "warn"
 
 # Hard bans
 unwrap_used = "deny"
-expect_used = "deny"
+expect_used = "allow"  # expect with an invariant message is the sanctioned escape; unwrap stays denied
 panic = "deny"
 todo = "deny"
 unimplemented = "deny"
@@ -306,7 +306,9 @@ Per-crate test override (tests may unwrap):
 
 ```rust
 // In tests/ or #[cfg(test)] modules:
-#![cfg_attr(test, allow(clippy::unwrap_used, clippy::expect_used))]
+# in clippy.toml (never inline cfg_attr — extreme-lint forbids per-line/per-file suppressions):
+# allow-unwrap-in-tests = true
+# allow-expect-in-tests = true
 ```
 
 ## Verification block

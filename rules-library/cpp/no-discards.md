@@ -2,7 +2,7 @@
 
 > Auto-fires on every `*.c`, `*.cpp`, `*.cc`, `*.cxx`, `*.h`,
 > `*.hpp`, `*.hxx`, `*.inl` file. Extends
-> `~/.claude/rules/common/no-discards.md`. Sister to
+> `~/.claude/rules-library/common/no-discards.md`. Sister to
 > `extreme-lint-policy.md`. Tooling: `clang-tidy`, `clang-format`,
 > `cppcheck`, AddressSanitizer / UndefinedBehaviorSanitizer /
 > ThreadSanitizer.
@@ -202,9 +202,9 @@ C++ build (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/error-handling-with-context.md`
+- `~/.claude/rules-library/common/error-handling-with-context.md`
 - C++ Core Guidelines (Stroustrup + Sutter)
 - MISRA C++ (safety-critical)
 

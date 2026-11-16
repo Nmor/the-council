@@ -2,7 +2,7 @@
 
 > Auto-fires on every `*.dart`, `pubspec.yaml`, `pubspec.lock`,
 > `analysis_options.yaml`, `build.yaml` file. Sister to
-> `~/.claude/rules/common/hooks.md`.
+> `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -239,11 +239,11 @@ dart_code_metrics:
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/dart/no-discards.md`
-- `~/.claude/rules/dart/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/dart/no-discards.md`
+- `~/.claude/rules-library/dart/testing.md`
 - Effective Dart guide
 - Flutter Lints (pub.dev/packages/flutter_lints)
 - dart_code_metrics (pub.dev/packages/dart_code_metrics)

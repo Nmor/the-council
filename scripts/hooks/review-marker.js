@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 // Size budget: 6 KB. Check: token-budget.mjs --check.
-// review-marker.js
-//
 // PostToolUse on Agent/Task/Skill, and SubagentStop. Records that an INDEPENDENT review actually
 // ran, so a commit can require one (done-criteria.md).
 //
-// Why: every gate passed on a commit that granted a stored credential Super Admin. No gate reads code.
-//
 // Bound to the committed tree, else the worktree digest and turn; also publishes
-// .council/proofs/review.json for any agent's pre-commit hook (review-proof-protocol.md).
+// .council/proofs/review.json: session-scope review evidence consumed by the
+// commit-bound recorder flow (record-commit-check.js) and human inspection;
+// staged-tree markers never authorize a push (review-proof-protocol.md).
 'use strict';
 const { createHash, randomUUID } = require('node:crypto');
 const { readInput, agentReport } = require('./lib/lifecycle-context.js');

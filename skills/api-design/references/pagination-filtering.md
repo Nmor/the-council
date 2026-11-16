@@ -14,7 +14,7 @@
 GET /api/v1/users?page=2&per_page=20
 
 # Implementation
-SELECT * FROM users
+SELECT id /* name needed columns; no * in production */ FROM users
 ORDER BY created_at DESC
 LIMIT 20 OFFSET 20;
 ```
@@ -28,7 +28,7 @@ LIMIT 20 OFFSET 20;
 GET /api/v1/users?cursor=eyJpZCI6MTIzfQ&limit=20
 
 # Implementation
-SELECT * FROM users
+SELECT id /* name needed columns; no * in production */ FROM users
 WHERE id > :cursor_id
 ORDER BY id ASC
 LIMIT 21;  -- fetch one extra to determine has_next

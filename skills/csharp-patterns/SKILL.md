@@ -41,8 +41,8 @@ matches the task rather than the whole directory.
 - **ECMA-334** (ecma-international.org/publications-and-standards/standards/ecma-334) — C# Language
   Specification baseline
 - **ECMA-335** Common Language Infrastructure (CLI) — runtime semantics
-- **Microsoft .NET 8 Documentation** (learn.microsoft.com/dotnet) — Minimal APIs, IOptions, ILogger,
-  HttpClientFactory, EF Core 8 patterns
+- **Microsoft .NET 10 LTS Documentation** (learn.microsoft.com/dotnet) — Minimal APIs, IOptions, ILogger,
+  HttpClientFactory, EF Core 10 patterns
 - **OWASP ASVS 4.0.3 §5.1** — Input Validation (model binding + DataAnnotations)
 - **OWASP ASVS 4.0.3 §8.3** — Sensitive Data Protection (Data Protection API patterns)
 - **OWASP Top 10 A01:2021** Broken Access Control — `[Authorize]` + policy-based authorization

@@ -181,18 +181,13 @@ function newestMtime(root, files) {
 }
 
 /** Commits on HEAD that no remote-tracking ref has yet: exactly what a push publishes. */
-function unpushedCommits(root) {
-  return lines(git(root, ['rev-list', 'HEAD', '--not', '--remotes'])).map((sha) => ({
-    sha,
-    files: lines(git(root, ['diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sha])),
-    body: git(root, ['log', '-1', '--format=%B', sha]) || '',
-  }));
-}
+// unpushedCommits removed 2026-11-15 (no callers); outgoing-commit logic
+// lives in lib/committed-proof.js outgoing().
 
 /** An explicit, recorded decision that a code change needs no documentation. */
 const DOCS_DECLARATION = /(^|\n|\\n|["'\s])Docs:\s*\S/;
 
 module.exports = {
   repoRoot, targetDir, classify, commitFiles, changedSince, commitsSince, dirtyFiles, newestMtime,
-  unpushedCommits, DOCS_DECLARATION,
+  DOCS_DECLARATION,
 };

@@ -26,6 +26,8 @@ paths:
 
 ```typescript
 interface ApiResponse<T> {
+// NOTE: for API payloads use the api-design envelope (single source:
+// api-design/references/response-format.md), not this success-boolean shape
   success: boolean
   data?: T
   error?: string

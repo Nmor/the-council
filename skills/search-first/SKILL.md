@@ -1,11 +1,15 @@
 ---
 name: search-first
-description: Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code. Invokes the researcher agent.
+description: "Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code. Invokes the researcher agent."
 disable-model-invocation: true
 ---
 
 # /search-first — Research Before You Code
 
+> Sister skill: `provider-research` owns primary-doc reading for a CHOSEN external API; this
+> skill owns finding what exists before building. `firecrawl-developer-index` is the lookup tool
+> both can use.
+>
 > **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 Systematizes the "search for existing solutions before implementing" workflow.
@@ -53,7 +57,7 @@ Use this skill when:
 
 | Signal | Action |
 |--------|--------|
-| Exact match, well-maintained, MIT/Apache | **Adopt** — install and use directly |
+| Exact match, well-maintained, MIT/Apache | **Adopt** — only after the reuse ladder (stdlib → platform-native → already-installed dep → a few lines) cannot cover it; then install |
 | Partial match, good foundation | **Extend** — install + write thin wrapper |
 | Multiple weak matches | **Compose** — combine 2-3 small packages |
 | Nothing suitable found | **Build** — write custom, but informed by research |
@@ -71,7 +75,8 @@ Before writing a utility or adding functionality, mentally run through:
 
 ### Full Mode (agent)
 
-For non-trivial functionality, launch the researcher agent:
+For non-trivial functionality where the answer is not already known or locally greppable, a
+researcher agent MAY be used (one active helper; council-triggers governs):
 
 ```text
 Task(subagent_type="general-purpose", model="haiku", prompt="

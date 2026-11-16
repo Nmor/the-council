@@ -1,6 +1,6 @@
 ---
 name: compliance-reviewer
-description: Regulatory + legal compliance specialist. Use PROACTIVELY when code touches PII, payments, health data, billing, licensing, contracts, IP, or any regulated surface. Owns Council Division 6.
+description: Regulatory + legal compliance specialist. Use when code touches PII, payments, health data, billing, licensing, contracts, IP, or any regulated surface. Owns Council Division 6.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

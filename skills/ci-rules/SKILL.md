@@ -1,6 +1,6 @@
 ---
 name: ci-rules
-description: CI + hooks discipline — ci-test-memory-tuning (test-suite memory budget vs runner OS headroom; OOM vs worker-thrash diagnostic), github-actions-gotchas (named pitfalls: bash -e + pipefail, 21K char expression limit, SHA-pin actions, runner OOM, workerIdleMemoryLimit thrash, pull_request vs pull_request_target), hooks (lifecycle: SessionStart / PreToolUse / PostToolUse / PreCompact / Stop / SessionEnd). Select explicitly when this guidance applies.
+description: "CI + hooks discipline — ci-test-memory-tuning (test-suite memory budget vs runner OS headroom; OOM vs worker-thrash diagnostic), github-actions- gotchas (named pitfalls: bash -e + pipefail, 21K char expression limit, SHA-pin actions, runner OOM, workerIdleMemoryLimit thrash, pull_request vs pull_request_target), hooks (lifecycle: SessionStart / PreToolUse / PostToolUse / PreCompact / Stop / SessionEnd). Select explicitly when this guidance applies."
 paths:
   - ".github/workflows/**/*.yml"
   - ".github/workflows/**/*.yaml"
@@ -64,7 +64,7 @@ unchanged guidance for its topic.
 | Topic | Read |
 | --- | --- |
 | **CI test memory tuning** — OOM-preempt vs worker-thrash failure modes, runner RAM reference table, Jest / Vitest / pytest / Go tuning, diagnostic recipe, verification block | [`references/ci-test-memory-tuning.md`](references/ci-test-memory-tuning.md) |
-| **GitHub Actions gotchas** — the 13 named pitfalls: `bash -e` + pipefail, 21K expression limit, required-workflow file access, `set -u` + empty array, `echo \| jq` newline mangling, Node 20→24 deprecation, YAML 1.1 `on:`, `cancel-in-progress`, the three timeouts, runner OOM, `workerIdleMemoryLimit` thrash, SHA-pinning, `pull_request` vs `pull_request_target` | [`references/github-actions-gotchas.md`](references/github-actions-gotchas.md) |
+| **GitHub Actions gotchas** — the 13 named pitfalls: `bash -e` + pipefail, 21K expression limit, required-workflow file access, `set -u` + empty array, `echo \| jq` newline mangling, Node 22+ (20 EOL 2026-04)→24 deprecation, YAML 1.1 `on:`, `cancel-in-progress`, the three timeouts, runner OOM, `workerIdleMemoryLimit` thrash, SHA-pinning, `pull_request` vs `pull_request_target` | [`references/github-actions-gotchas.md`](references/github-actions-gotchas.md) |
 | **Hook lifecycle, mandatory hooks, permissions, TodoWrite** — SessionStart / UserPromptSubmit / PreToolUse / PostToolUse / PreCompact / Stop / SessionEnd, the mandatory global hooks, auto-accept policy, TodoWrite practices | [`references/hooks-lifecycle.md`](references/hooks-lifecycle.md) |
 | **Per-language PostToolUse gates** — Go, TS/JS, Python, Java/Kotlin, Ruby, Rust, C/C++, Swift, Dart, C#, Markdown, Infrastructure, SQL, Bash | [`references/hooks-per-language-gates.md`](references/hooks-per-language-gates.md) |
 

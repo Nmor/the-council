@@ -85,8 +85,7 @@ on every edited file.
 - **Prettier / Biome** — auto-format on save
 - **`tsc --noEmit`** — zero type errors
 - **`eslint <touched> --max-warnings 0`** — zero findings
-  (`sonarjs/recommended` + `@typescript-eslint/strict-type-
-  checked` + `eslint-plugin-security`)
+  (`sonarjs/recommended` + `@typescript-eslint/strict-type-checked` + `eslint-plugin-security`)
 - **Build check** (`pnpm build`) when shape-affecting changes
   touch a build-time consumer
 - **Test** (`vitest` / `jest`) — when test or consumer changed
@@ -200,8 +199,7 @@ The `TodoWrite` tool is mandatory whenever:
 
 - A task has 3+ distinct steps
 - A multi-phase plan is in execution (per `plan-execution-
-  progress.md`)
-- The user explicitly asks for tracking
+  progress.md`)- The user explicitly asks for tracking
 
 What the TodoWrite list reveals:
 

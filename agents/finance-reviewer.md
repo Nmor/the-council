@@ -1,6 +1,6 @@
 ---
 name: finance-reviewer
-description: Finance + FinOps specialist — pricing, billing, unit economics, cloud cost, capacity planning, ROI analysis, budget impact, financial reporting integrity. Use PROACTIVELY on pricing / billing / plan-tier changes, cost-sensitive cloud resources, instance sizing, autoscaling bounds, data transfer patterns, unit-economics models. Owns Council Division 10.
+description: "Finance + FinOps specialist — pricing, billing, unit economics, cloud cost, capacity planning, ROI analysis, budget impact, financial reporting integrity. Use on pricing / billing / plan-tier changes, cost-sensitive cloud resources, instance sizing, autoscaling bounds, data transfer patterns, unit-economics models. Owns Council Division 10. Boundary: owns pricing, plan tiers, unit economics and cloud cost; payment rails, refunds, chargebacks and payout mechanics belong to payments-reviewer."
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---
