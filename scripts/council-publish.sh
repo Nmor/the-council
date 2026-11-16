@@ -96,6 +96,6 @@ cp "$SRC/scripts/council-readme.md" "$DIST/README.md"
 cp "$SRC/scripts/council-settings-template.json" "$DIST/settings.hooks.json"
 mkdir -p "$DIST/hooks" && cp "$SRC/hooks/improve-prompt.py" "$DIST/hooks/"
 
-COUNT_S=$(ls "$DIST/skills" | wc -l | tr -d ' ')
-COUNT_A=$(ls "$DIST/agents" | wc -l | tr -d ' ')
+COUNT_S=$(find "$DIST/skills" -mindepth 1 -maxdepth 1 -type d -exec printf . \; | wc -c | tr -d ' ')
+COUNT_A=$(find "$DIST/agents" -mindepth 1 -maxdepth 1 -type f -exec printf . \; | wc -c | tr -d ' ')
 echo "dist built at $DIST: $COUNT_S skills, $COUNT_A agents"

@@ -9,6 +9,7 @@ injects one bounded activation block on real prompts and stays silent on
 everything else. A prompt hook must never block a prompt: every path exits 0.
 """
 import json
+import re as _re
 import sys
 
 # Slash commands, memorize notes and the explicit '*' opt-out pass untouched.
@@ -58,9 +59,6 @@ DOMAINS = (
       'lean process', 'six sigma'),
      'supply-chain-patterns, lean-manufacturing, six-sigma skills; seat council-wickman'),
 )
-
-
-import re as _re
 
 
 def _kw_hit(low: str, k: str) -> bool:

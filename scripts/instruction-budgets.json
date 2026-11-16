@@ -156,8 +156,8 @@
     "reason": "V2 resource; growth requires review."
   },
   "scripts/council-sync.sh": {
-    "bytes": 4096,
-    "reason": "V2 resource; growth requires review."
+    "bytes": 6144,
+    "reason": "Native installer delegation plus preserved legacy mirror support; not eager-loaded context."
   },
   "scripts/hooks/__tests__/debate-frame.test.mjs": {
     "bytes": 1024,
