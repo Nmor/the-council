@@ -15,6 +15,15 @@ SPEC.loader.exec_module(installer)
 
 
 class SyncTests(unittest.TestCase):
+    def install(self, home, profile='compact'):
+        result = subprocess.run(['python3', '-m', 'bootstrap.codex', 'install',
+                                 '--home', str(home / '.codex'), '--skill-profile', profile],
+                                cwd=ROOT, env={**os.environ,
+                                               'PATH': str(Path(sys.executable).parent) + os.pathsep + os.environ['PATH']},
+                                capture_output=True, text=True, timeout=60, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return json.loads(result.stdout)
+
     def run_sync(self, home):
         return subprocess.run(['bash', str(ROOT / 'scripts/council-sync.sh')],
                               env={**os.environ, 'HOME': str(home),
@@ -31,7 +40,7 @@ class SyncTests(unittest.TestCase):
                          'config.toml': b'model = "personal-model"\n'}
             for name, content in originals.items():
                 self.assertEqual((native / name).write_bytes(content), len(content))
-            installed = installer.install(native, ROOT)
+            installed = self.install(home)
             self.assertGreater(installed['files'], 0)
             manifest = native / installer.MANIFEST
             before = json.loads(manifest.read_text())
@@ -70,7 +79,7 @@ class SyncTests(unittest.TestCase):
             native.mkdir()
             original = b'Keep my original instructions\n'
             self.assertEqual((native / 'AGENTS.md').write_bytes(original), len(original))
-            installed = installer.install(native, ROOT, skill_profile='full')
+            installed = self.install(home, 'full')
             self.assertEqual(installed['skill_profile'], 'full')
             manifest = native / installer.MANIFEST
             before = json.loads(manifest.read_text())
