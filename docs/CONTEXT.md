@@ -170,3 +170,6 @@ or accounts. Prefer one active substantive session and queue unrelated work.
 - [Dynamic workflows](https://code.claude.com/docs/en/workflows)
 - [Claude environment variables](https://code.claude.com/docs/en/env-vars)
 - [Codex subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents)
+
+Hook ownership recognizes canonical shell commands only: quoted literal `~` or
+single-quoted `$HOME` aliases do not replace a working direct guard.

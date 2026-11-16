@@ -238,7 +238,7 @@ class QaInstructionTests(unittest.TestCase):
         self.assertTrue(package["private"])
         self.assertEqual(
             package["devDependencies"],
-            {"prettier": "3.6.2", "typescript": "5.9.3"},
+            {"prettier": "3.10.1", "typescript": "7.0.2"},
         )
         self.assertEqual(
             lock["packages"][""]["devDependencies"],

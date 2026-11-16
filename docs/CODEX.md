@@ -190,9 +190,60 @@ Tests cover preservation, collisions, repeat installation, rollback, uninstall,
 metadata, project mappings and native hook fixtures. CI runs the portable suite on
 Linux, macOS and Windows. Runtime discovery and trusted execution are separate checks.
 
+## Reconcile a legacy or locally extended installation
+
+Normal installation and uninstall refuse changed managed files. For an existing
+installation with a manifest, inspect the proposed retained paths first:
+
+```bash
+python3 bootstrap/codex.py install --reconcile --dry-run
+python3 bootstrap/codex.py install --reconcile
+python3 bootstrap/codex.py verify
+```
+
+Reconciliation saves prior bytes and permission modes in a private
+`council-reconcile-*` directory beside the Codex home before changing it. Its
+`restore.json` lists the original files, hashes and modes; a null record means
+the file did not previously exist. Keep this backup until the new installation
+has been verified. Installation failures restore the prior installation
+transactionally; the separate backup remains available for recovery.
+
+The installer retains local resource additions, modified guidance and an existing
+Council `AGENTS.md` block with its surrounding owner instructions. Retained files
+are listed in the result and manifest with `local: true`; later installs preserve
+them and still check their hashes. Uninstall restores retained owner content.
+Retained instructions do not automatically receive future template changes:
+review source changes against them explicitly. The catalog lists retained local
+guidance separately from shipped resources.
+
+Known legacy generated roles and the Council router can be adopted as Council
+assets; uninstall removes them, while the backup retains their prior bytes.
+Retained skills receive discovery wrappers in the full profile. Unknown role
+overrides, ambiguous instruction markers,
+missing managed files, changed native executables and symlink resources are
+refused. Only exact native hook groups are replaced; personal hooks stay intact.
+An unrecognized Council hook requires manual inspection, using the same Python
+executable as the previous installation when its path differs. Configuration and
+hook trust records are never edited. A dry run creates neither backups nor files.
+
+Native metadata supports plain and quoted scalar names/descriptions and the
+folded/literal description forms `>`, `>-`, `|`, `|-`. Ambiguous duplicate fields,
+empty blocks and nested block indentation are refused rather than guessed.
+
+The companion Claude context migration retains existing dispatcher registrations.
+An installed compatible dispatcher covers only the tools its matcher selects.
+For uncovered tools, the migration installs the direct Go mutation guard once
+per edit phase, preserving personal and security hooks. Home aliases count only
+when they resolve to the selected installation; custom homes use explicit paths.
+
 ## Official references
 
 - [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
 - [Skills and discovery](https://learn.chatgpt.com/docs/build-skills)
 - [Native subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 - [Hook events, response contracts and trust](https://learn.chatgpt.com/docs/hooks)
+
+The standalone installer has a 32 KiB source budget for transactional installation
+and explicit reconciliation. It is executable source, not eager session context;
+the aggregate eager-context limit is unchanged. New v2 resource budgets are listed
+in `scripts/instruction-budgets.json` and remain checked by the budget gate.

@@ -76,6 +76,101 @@ class ContextTests(unittest.TestCase):
         context.apply(self.home, 'claude', restore=True)
         self.assertEqual(snapshot(self.home), self.before)
 
+    def test_context_migration_does_not_double_register_a_dispatched_guard(self):
+        dispatcher = self.home / 'scripts/hooks/dispatch.js'
+        dispatcher.parent.mkdir(parents=True)
+        content = (ROOT / 'scripts/hooks/dispatch.js').read_bytes()
+        self.assertEqual(dispatcher.write_bytes(content), len(content))
+        for event, phase in [('PreToolUse', 'pre'), ('PostToolUse', 'post')]:
+            self.settings['hooks'][event] = [{'matcher': 'Bash|Edit|Write|MultiEdit', 'hooks': [
+                {'type': 'command', 'command': f'node "{self.home.as_posix()}/scripts/hooks/dispatch.js" {phase}'},
+                {'type': 'command', 'command': 'node /personal/go-discard-mutations.js --custom'},
+            ]}]
+        text = json.dumps(self.settings)
+        self.assertEqual((self.home / 'settings.json').write_text(text, encoding='utf-8'), len(text))
+        result = context.apply(self.home, 'claude')
+        self.assertGreater(result['files'], 0)
+        actual = json.loads((self.home / 'settings.json').read_bytes())
+        for event in ('PreToolUse', 'PostToolUse'):
+            commands = [hook['command'] for group in actual['hooks'][event] for hook in group['hooks']]
+            self.assertIn('node /personal/go-discard-mutations.js --custom', commands)
+            self.assertEqual(sum('dispatch.js' in command for command in commands), 1)
+            self.assertFalse(any('--state-dir' in command for command in commands))
+        installed = snapshot(self.home)
+        repeated = context.apply(self.home, 'claude')
+        self.assertGreater(repeated['files'], 0)
+        self.assertEqual(snapshot(self.home), installed)
+
+    def test_context_migration_covers_partial_or_missing_dispatcher(self):
+        dispatcher = self.home / 'scripts/hooks/dispatch.js'
+        dispatcher.parent.mkdir(parents=True)
+        source = (ROOT / 'scripts/hooks/dispatch.js').read_bytes()
+        for available in (False, True):
+            with self.subTest(available=available):
+                if available:
+                    self.assertEqual(dispatcher.write_bytes(source), len(source))
+                groups = [{'matcher': 'Bash', 'hooks': [{'type': 'command', 'command':
+                           f'node "{self.home.as_posix()}/scripts/hooks/dispatch.js" pre'}]}]
+                settings = {**self.settings, 'hooks': {'PreToolUse': groups}}
+                text = json.dumps(settings)
+                self.assertEqual((self.home / 'settings.json').write_text(text, encoding='utf-8'), len(text))
+                payload = context.claude_payload(self.home)
+                actual = json.loads(payload['settings.json'])
+                direct = [group for group in actual['hooks']['PreToolUse']
+                          if any('go-discard-mutations.js' in hook['command'] for hook in group['hooks'])]
+                self.assertEqual(len(direct), 1)
+                self.assertEqual(direct[0]['matcher'], 'Edit|Write|MultiEdit' if available else 'Bash|Edit|Write|MultiEdit')
+
+    def test_dispatcher_home_alias_does_not_claim_another_installation(self):
+        dispatcher = self.home / 'scripts/hooks/dispatch.js'
+        dispatcher.parent.mkdir(parents=True)
+        content = (ROOT / 'scripts/hooks/dispatch.js').read_bytes()
+        self.assertEqual(dispatcher.write_bytes(content), len(content))
+        for prefix in ('$HOME/.claude', '${HOME}/.claude', '~/.claude'):
+            with self.subTest(prefix=prefix):
+                groups = [{'matcher': 'Bash|Edit|Write|MultiEdit', 'hooks': [{'type': 'command',
+                          'command': f'node "{prefix}/scripts/hooks/dispatch.js" pre'}]}]
+                self.assertEqual(context.dispatched_guard_tools(groups, self.home, 'pre'), set())
+
+    @unittest.skipIf(context.sys.platform == "win32", "POSIX shell expansion semantics")
+    def test_owned_hook_aliases_preserve_shell_expansion_semantics(self):
+        default_home = Path.home() / '.claude'
+        for alias in ('$HOME/.claude', '${HOME}/.claude', '~/.claude'):
+            path = alias + '/scripts/hooks/dispatch.js'
+            working = f'node {path} pre' if alias.startswith('~') else f'node "{path}" pre'
+            with self.subTest(working=working):
+                self.assertTrue(context.owned_node_call(working, default_home, 'dispatch.js', ('pre',)))
+            for quoted in (f"'{path}'", f'"{path}"') if alias.startswith('~') else (f"'{path}'",):
+                with self.subTest(literal=quoted):
+                    self.assertFalse(context.owned_node_call(f'node {quoted} pre', default_home,
+                                                            'dispatch.js', ('pre',)))
+        unsafe_home = default_home / 'owner $(expansion)'
+        self.assertFalse(context.owned_node_call(f'node "{unsafe_home}/scripts/hooks/dispatch.js" pre',
+                                                unsafe_home, 'dispatch.js', ('pre',)))
+
+    def test_owned_hook_windows_canonical_command(self):
+        home = self.home / 'owner space'
+        argv = ['node', (home / 'scripts/hooks/dispatch.js').as_posix(), 'pre']
+        with patch.object(context.sys, 'platform', 'win32'):
+            command = context.core.subprocess.list2cmdline(argv)
+            self.assertTrue(context.owned_node_call(command, home, 'dispatch.js', ('pre',)))
+            self.assertFalse(context.owned_node_call('node "$HOME/.claude/scripts/hooks/dispatch.js" pre',
+                                                    home, 'dispatch.js', ('pre',)))
+
+    def test_guard_command_quotes_custom_home_without_shell_expansion(self):
+        custom = self.home / 'owner $(expansion)'
+        custom.mkdir()
+        text = json.dumps(self.settings)
+        self.assertEqual((custom / 'settings.json').write_text(text, encoding='utf-8'), len(text))
+        payload = context.claude_payload(custom)
+        settings = json.loads(payload['settings.json'])
+        direct = [hook['command'] for group in settings['hooks']['PreToolUse'] for hook in group['hooks']
+                  if 'go-discard-mutations.js' in hook['command']]
+        self.assertEqual(len(direct), 1)
+        self.assertEqual(context.shlex.split(direct[0]), ['node',
+                         (custom / 'scripts/hooks/go-discard-mutations.js').as_posix(),
+                         '--state-dir', (custom / 'runtime/go-mutations-direct').as_posix()])
+
     def test_claude_removes_council_window_and_edit_compaction_advice(self) -> None:
         """Remove owned reminders without deleting mixed personal or security hooks."""
         owned = 'node "$HOME/.claude/scripts/hooks/suggest-compact.js"'

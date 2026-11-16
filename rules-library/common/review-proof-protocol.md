@@ -19,13 +19,11 @@ Install the same launcher in the configured Git template's hooks directory for
 future repositories. Do not replace unrelated repository hooks.
 Installations exclude `.council/proofs/` using Git's resolved local exclude file;
 exclude it globally as well for repositories initialized from the template.
-Only the actual destination object supplied by Git, and the destination's default
-branch read live from the push URL, exclude existing history. That exemption holds
-only while the host protects the default branch (reviewed merges, no direct pushes). New destination
-refs otherwise require evidence for all
-reachable commits; cached remote-tracking refs never establish acceptance. Legacy grafts and
-replacement refs are disabled; shallow repositories must fetch full history
-before publication can be verified.
+Only Git's actual destination object and the default branch read live from the
+push URL exclude existing history. This requires a protected default branch
+(reviewed merges, no direct pushes). New refs otherwise need evidence for all
+reachable commits; cached tracking refs never establish acceptance. Grafts and
+replacement refs are disabled; fetch full history before publishing shallow repos.
 
 ## Evidence
 

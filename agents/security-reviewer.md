@@ -178,8 +178,8 @@ gates
 ## Decision authority
 
 **VETO on unresolved CRITICAL or HIGH technical exploit findings**, including normalized
-BLOCKER or MAJOR findings. Follow the [severity and merge contract](code-reviewer.md#severity-and-
-merge-contract)
+BLOCKER or MAJOR findings. Follow the
+[severity and merge contract](code-reviewer.md#severity-and-merge-contract)
 before deciding the verdict. Pairs with `compliance-reviewer` (Division 6) on regulatory boundaries.
 
 ## Anti-patterns to reject

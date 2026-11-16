@@ -1,111 +1,111 @@
 {
   "skills/cisa-audit/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/cisa-audit/references/sampling-and-findings.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/continuous-learning-v2/config.json": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/continuous-learning-v2/scripts/instinct-cli.py": {
     "bytes": 28672,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/continuous-learning-v2/scripts/test_parse_instinct.py": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/council-workflow/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/data-reconciliation/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/entrepreneur/references/economics.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/incident-investigation/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/pentester/references/rules-of-engagement.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/release-integration/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/requirements-acceptance/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/resilience-drills/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "skills/test-strategy/SKILL.md": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "scripts/hooks/go-discard-mutations.js": {
     "bytes": 16384,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "hooks/improve-prompt.py": {
     "bytes": 12288,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "codex/AGENTS.md.in": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "codex/SKILL.md.in": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "bootstrap/codex.py": {
-    "bytes": 28672,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "bytes": 32768,
+    "reason": "Standalone transactional installer adds explicit backed-up reconciliation; no eager context. Growth requires review."
   },
   "bootstrap/context.py": {
     "bytes": 24576,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "bootstrap/install.ps1": {
     "bytes": 16384,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "bootstrap/install.sh": {
     "bytes": 32768,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "bootstrap/uninstall.ps1": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "bootstrap/uninstall.sh": {
     "bytes": 8192,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "bootstrap/verify.ps1": {
     "bytes": 20480,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "bootstrap/verify.sh": {
     "bytes": 16384,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "settings.json": {
     "bytes": 20480,
-    "reason": "Explicit source/configuration budget; includes non-commentable resources. Growth requires review."
+    "reason": "Source/configuration; growth requires review."
   },
   "scripts/instruction-budgets.json": {
     "bytes": 8192,
@@ -130,5 +130,129 @@
   "plugins/known_marketplaces.json": {
     "bytes": 65536,
     "reason": "Runtime marketplace registry written by Claude Code; never loaded as context."
+  },
+  "rules-library/council-detail/settled-debates.md": {
+    "bytes": 3072,
+    "reason": "V2 resource; growth requires review."
+  },
+  "skills/pentester/SKILL.md": {
+    "bytes": 3072,
+    "reason": "V2 resource; growth requires review."
+  },
+  "skills/writing-quality/references/ai-writing-signs.md": {
+    "bytes": 4096,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/council-publish.sh": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/council-readme.md": {
+    "bytes": 3072,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/council-settings-template.json": {
+    "bytes": 6144,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/council-sync.sh": {
+    "bytes": 4096,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/__tests__/debate-frame.test.mjs": {
+    "bytes": 1024,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/__tests__/dispatch.test.mjs": {
+    "bytes": 3072,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/__tests__/improve-prompt.test.mjs": {
+    "bytes": 3072,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/__tests__/post-edit-security-nudge.test.mjs": {
+    "bytes": 3072,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/__tests__/resource-gate.test.mjs": {
+    "bytes": 2048,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/debate-frame.js": {
+    "bytes": 2048,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/dispatch.js": {
+    "bytes": 6144,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/lib/security-nudge-rules.json": {
+    "bytes": 16384,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/post-edit-security-nudge.js": {
+    "bytes": 3072,
+    "reason": "V2 resource; growth requires review."
+  },
+  "scripts/hooks/resource-gate.js": {
+    "bytes": 2048,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/config-reviewer.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-bezos.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-blakely.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-buffett.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-garyvee.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-graham.md": {
+    "bytes": 4096,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-hormozi.md": {
+    "bytes": 4096,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-leila.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-martell.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-musk.md": {
+    "bytes": 6144,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-naval.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-sanchez.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/council-wickman.md": {
+    "bytes": 5120,
+    "reason": "V2 resource; growth requires review."
+  },
+  "agents/design-reviewer.md": {
+    "bytes": 4096,
+    "reason": "V2 resource; growth requires review."
   }
 }
