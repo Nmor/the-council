@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
-# Council propagation (the council-multi-agent-propagation convention, scripted):
-#  1. ~/.claude (canonical) -> ~/.codex/council/resources mirror, with manifest
-#     sha256 re-hash and dead-entry pruning.
-#  2. Skill symlink parity across ~/.codex/skills, ~/.agents/skills, ~/.copilot/skills.
-# Idempotent; run after any Council mutation. Prints a one-line summary per step.
+# Synchronize resource mirrors and skill links without replacing owner entries.
 set -euo pipefail
 
 SRC="$HOME/.claude"
@@ -139,7 +135,7 @@ for harness in harnesses:
         try:
             link.symlink_to(skill, target_is_directory=True)
         except FileExistsError:
-            # Another sync may have created an entry after the existence check.
+            # Preserve a racing creation.
             continue
         except OSError as error:
             sys.exit(f'Cannot create native skill link {link}: {error}')
