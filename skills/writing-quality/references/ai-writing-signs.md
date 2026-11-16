@@ -1,9 +1,8 @@
 # Signs of AI writing — full catalog (reference)
 
-> Adapted 2026-11-15 from Wikipedia's essay "Wikipedia:Signs of AI writing"
-> (WikiProject AI Cleanup; CC-BY-SA 4.0; descriptive, not prescriptive).
-> Production rules live in ../SKILL.md. This reference keeps the fuller
-> detection catalog and its false-positive caveats for review work.
+> Adapted from [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
+> (WikiProject AI Cleanup; CC-BY-SA 4.0), 2026-11-15. Editorial guidance, not
+> authorship detection. Production rules: ../SKILL.md.
 
 ## Content-level signs
 
@@ -80,7 +79,3 @@
   "has been featured" (present perfect) is not a copula sign.
 - These patterns are *more common* in LLM output — never always-AI, never
   never-human. Address the underlying content defect, not the marker.
-
-Source: [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
-This community essay supplies editorial provenance, not proof that text was
-AI-generated or a reliable authorship detector.

@@ -176,6 +176,7 @@ must be grounded in its referenced public-source collection.
 | [Naval](agents/council-naval.md) | Leverage and incentives |
 | [Sanchez](agents/council-sanchez.md) | Business acquisition |
 | [Wickman](agents/council-wickman.md) | Operating cadence |
+
 Codex defaults to one discoverable router and a catalog; a full discovery profile
 is optional. Claude uses its concise working contract and Floor rules.
 
