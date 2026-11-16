@@ -6,12 +6,16 @@ per-request Council trigger on the Claude side (the owner had to NAME the
 Council to get it). These tests pin the slim replacement: one bounded
 activation on a real request, silence on everything else, and exit 0 always.
 """
+import importlib.util
 import json
 import subprocess
 import unittest
 from pathlib import Path
 
 HOOK = Path(__file__).resolve().parents[2] / 'hooks/improve-prompt.py'
+SPEC = importlib.util.spec_from_file_location('prompt_routing', HOOK)
+router = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(router)
 
 
 def run_hook(stdin: str) -> subprocess.CompletedProcess:
@@ -25,6 +29,22 @@ def run_prompt(prompt: str) -> subprocess.CompletedProcess:
 
 
 class PromptHookTests(unittest.TestCase):
+    def test_domain_inflections_route_without_substring_false_positives(self):
+        examples = {
+            'negotiation': ('negotiate', 'negotiating', 'negotiation', 'negotiated'),
+            'ops/manufacturing': ('manufacture', 'manufacturing', 'manufacturer'),
+            'finance/investing': ('fundraise', 'fundraising', 'fundraiser'),
+            'hiring/people': ('recruit', 'recruiting', 'recruitment', 'recruiter'),
+        }
+        for domain, words in examples.items():
+            for word in words:
+                with self.subTest(word=word):
+                    self.assertIn(domain + ':', router.domain_hint('Help me with ' + word))
+        for prompt in ('add a cache layer', 'the hook keeps firing twice',
+                       'database indexing is slow', 'do not misnegotiate tokens'):
+            with self.subTest(prompt=prompt):
+                self.assertEqual(router.domain_hint(prompt), '')
+
     def test_real_request_switches_council_default_mode_on(self):
         result = run_prompt('add retry handling to the payment webhook consumer')
         self.assertEqual(result.returncode, 0, result.stderr)

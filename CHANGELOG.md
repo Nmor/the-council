@@ -10,6 +10,8 @@ All notable changes to **The Council** are documented in this file.
   by compaction and tool hooks; context migration refuses conflicting personal copies.
 - The Git push template resolves the current home; reinstalling refreshes stale
   Council v2 launchers without replacing their original hook body or backup.
+- Domain routing recognizes normal negotiation, manufacturing, fundraising and
+  recruiting word forms while retaining word boundaries against unrelated code terms.
 
 ## 2026-11-15 — Council v2: debate, measurement, delegation
 
