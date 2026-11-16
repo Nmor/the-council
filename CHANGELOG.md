@@ -6,6 +6,8 @@ All notable changes to **The Council** are documented in this file.
 
 - Native sync uses the native installer, preserving ownership, generated roles,
   adapted references and uninstall backups; legacy pruning only touches mirror records.
+- Published and context-only Claude installs include the shared libraries required
+  by compaction and tool hooks, retaining personal copies during context migration.
 
 ## 2026-11-15 — Council v2: debate, measurement, delegation
 

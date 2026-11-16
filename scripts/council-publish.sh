@@ -54,7 +54,7 @@ for f in "$SRC"/agents/*.md; do
   cp "$f" "$DIST/agents/"
 done
 mkdir -p "$DIST/scripts" && cp -R "$SRC/scripts/hooks" "$DIST/scripts/hooks"
-[ -d "$SRC/scripts/lib" ] && cp -R "$SRC/scripts/lib" "$DIST/scripts/lib"
+cp -R "$SRC/scripts/lib" "$DIST/scripts/lib"
 cp "$SRC/scripts/council-record-proof.sh" "$SRC/scripts/code-graph-validate.sh" "$DIST/scripts/" || echo "warn: optional script missing" >&2
 cp "$SRC/.markdownlint-cli2.jsonc" "$DIST/"
 cp "$SRC/CLAUDE.md" "$DIST/CLAUDE.md.example"   # owner policy as a template, not imposed

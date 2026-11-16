@@ -190,7 +190,7 @@ def claude_payload(home):
     paths += [name for name in core.tracked_resources(ROOT)
               if name.startswith(('skills/', 'rules-library/', 'agents/', 'commands/'))]
     paths += [name for name in core.tracked_resources(ROOT)
-              if name.startswith('scripts/hooks/lib/') and name.endswith('.js')]
+              if name.startswith(('scripts/hooks/lib/', 'scripts/lib/')) and name.endswith('.js')]
     paths += ['docs/BRAG.md', 'docs/no-discards.md', 'scripts/hooks/go-discard-mutations.js']
     paths += list(LIFECYCLE_FILES)
     paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'skills').glob('*/SKILL.md')]
@@ -332,7 +332,7 @@ def _apply(home, kind, dry_run=False, restore=False):
             path = target(home, name)
             protected = ((name.startswith('skills/') and not name.endswith('/SKILL.md')) or
                          name.startswith(('rules-library/', 'agents/', 'commands/', 'skills/brag/',
-                                          'scripts/hooks/lib/')) or name in LIFECYCLE_FILES or
+                                          'scripts/hooks/lib/', 'scripts/lib/')) or name in LIFECYCLE_FILES or
                          name in ('scripts/hooks/go-discard-mutations.js', 'skills/council/SKILL.md'))
             if (protected
                     and name not in old['files'] and
