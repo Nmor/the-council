@@ -73,3 +73,9 @@ and its output where applicable, and the exact corrected value. Parse failures
 and secret leaks are CRITICAL; silent-coercion traps HIGH; style per the
 project's lint config. No findings = say so in one line with the validation
 commands that ran.
+
+## Source boundary
+
+Use the [YAML 1.2.2 specification](https://yaml.org/spec/1.2.2/) for scalar and
+syntax semantics; consumer schemas and runtime documentation determine valid
+configuration keys and behavior.

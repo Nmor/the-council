@@ -173,3 +173,6 @@ or accounts. Prefer one active substantive session and queue unrelated work.
 
 Hook ownership recognizes canonical shell commands only: quoted literal `~` or
 single-quoted `$HOME` aliases do not replace a working direct guard.
+
+The [untrusted-content rule](../rules/common/untrusted-content-hygiene.md)
+separates retrieved instructions and plugin text from owner authorization.

@@ -112,6 +112,28 @@ DOCUMENTATION = re.compile(
     re.IGNORECASE,
 )
 LINK = re.compile(r"\[[^\]]+\]\((?:<([^>]+)>|([^ )]+))\)")
+NAMED_SOURCES = {
+    "Bezos 2016 Letter to Shareholders": "https://www.aboutamazon.com/news/company-news/2016-letter-to-shareholders",
+    "Berkshire Shareholder Letters": "https://www.berkshirehathaway.com/letters/letters.html",
+    "Day Trading Attention": "https://garyvaynerchuk.com/attention/",
+    "Default Alive or Default Dead?": "https://paulgraham.com/aord.html",
+    "Acquisition.com Training": "https://www.acquisition.com/training",
+    "The Leila Hormozi Interview": "https://www.youtube.com/watch?v=bnuQ0HPcudQ",
+    "Buy Back Your Time": "https://www.buybackyourtime.com/",
+    "Starbase Tour with Elon Musk": "https://www.youtube.com/watch?v=t705r8ICkRw",
+    "Codie Sanchez Interview": "https://www.youtube.com/watch?v=IYu_PDPqKFc",
+    "EOS Model": "https://www.eosworldwide.com/eos-model",
+    "YAML 1.2.2 specification": "https://yaml.org/spec/1.2.2/",
+    "OpenAI prompt-engineering guide": "https://developers.openai.com/api/docs/guides/prompt-engineering",
+    "Wikipedia:Signs of AI writing": "https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing",
+}
+
+
+def has_named_source(text: str) -> bool:
+    """Recognize explicit, reviewed source-name/URL pairs across supported domains."""
+    return any(f"[{name}]({url})" in text for name, url in NAMED_SOURCES.items())
+
+
 UTILITIES = {
     "configure-ecc",
     "project-guidelines-example",
@@ -123,6 +145,7 @@ UTILITIES = {
     "nutrient-document-processing",
     "council",
     "council-workflow",
+    "council-debate",
 }
 
 
@@ -155,7 +178,11 @@ def check(root: Path) -> int:
             skipped += 1
             continue
         text = citation_text(path, root)
-        if not AUTHORITY.search(text) and not DOCUMENTATION.search(text):
+        if not (
+            AUTHORITY.search(text)
+            or DOCUMENTATION.search(text)
+            or has_named_source(text)
+        ):
             flagged.append(path.relative_to(root).as_posix())
     print(
         f"Named citation presence: {len(targets) - skipped - len(flagged)} passed; "

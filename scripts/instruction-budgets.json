@@ -254,5 +254,17 @@
   "agents/design-reviewer.md": {
     "bytes": 4096,
     "reason": "V2 resource; growth requires review."
+  },
+  "skills/owasp-asvs/references/asvs-5.0-requirements.md": {
+    "bytes": 98304,
+    "reason": "Pinned external reference data or bounded provenance regression checks; loaded on demand."
+  },
+  "skills/owasp-asvs/references/mapping-4.0.3-to-5.0.0.yml": {
+    "bytes": 17408,
+    "reason": "Pinned external reference data or bounded provenance regression checks; loaded on demand."
+  },
+  "tests/codex/test_citations.py": {
+    "bytes": 5120,
+    "reason": "Pinned external reference data or bounded provenance regression checks; loaded on demand."
   }
 }

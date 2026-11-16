@@ -70,3 +70,9 @@ A character passes when: silhouette reads at 32 px; it is on-model across the
 expression set; palette holds in light and dark; it serves a named product
 surface (not decoration for its own sake); and a stranger can describe its
 personality in the three adjectives you chose without being told.
+
+## Source boundary
+
+[WCAG 2.2](https://www.w3.org/TR/WCAG22/) informs text equivalents and motion
+accessibility. Silhouette sizes, expression counts and palette limits above are
+Council production heuristics, not requirements from that standard.

@@ -4,6 +4,10 @@ All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
 
+- Hosted verification recognizes inherited Founder Board models, discovers every
+  seat and supporting reference, and checks named business/editorial source links.
+  Official ASVS 5.0 requirements and the pinned ID mapping ship with the skill.
+
 - Native instruction templates retain the decision, principal quality, task
   breakdown, review and progress contracts across installations.
 

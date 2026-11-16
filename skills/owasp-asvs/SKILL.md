@@ -35,9 +35,7 @@ answer "are we ASVS L2?" with evidence, not opinion.
   [references/mapping-4.0.3-to-5.0.0.yml](references/mapping-4.0.3-to-5.0.0.yml)
   (official OWASP mapping: 156 moved, 122 dropped/split). When a pattern's 4.0.3
   requirement was dropped in 5.0, treat the pattern as good practice, not a
-  standard citation. The 4.0.3 requirements
-- **OWASP ASVS 5.0** (in draft as of 2025) — major restructure; check `github.com/OWASP/ASVS` for
-  current state
+  standard citation.
 - **OWASP Top 10 2021** — the risk classes ASVS controls map to
 - **NIST SP 800-53 Rev 5** — federal control catalogue (ASVS controls map to NIST SC, AC, AU, IA
   families)

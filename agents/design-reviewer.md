@@ -50,3 +50,9 @@ values where possible), and which skill rule it violates. No scores, no
 generic praise. Accessibility conformance goes to accessibility-reviewer;
 flow and microcopy to ux-reviewer. You are read-only: hand fixes back to the
 main session.
+
+## Source boundary
+
+[W3C CSS Transitions](https://www.w3.org/TR/css-transitions-1/) defines transition
+behavior. Council aesthetic preferences are production guidance, not standards
+conformance requirements.

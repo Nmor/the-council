@@ -80,3 +80,7 @@
   "has been featured" (present perfect) is not a copula sign.
 - These patterns are *more common* in LLM output — never always-AI, never
   never-human. Address the underlying content defect, not the marker.
+
+Source: [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
+This community essay supplies editorial provenance, not proof that text was
+AI-generated or a reliable authorship detector.

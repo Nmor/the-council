@@ -289,3 +289,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   docs, internal RFC archive) becomes load-bearing
 - Promotion of an inline citation pattern to a dedicated "Standards Cited" subsection when a
   regulatory / RFC anchor recurs across intakes
+
+## Supporting references
+
+Use [research strategies](references/research-strategies.md) to choose evidence
+and [question patterns](references/question-patterns.md) for missing constraints.
+
+The [OpenAI prompt-engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering)
+supports clear instructions and relevant context. Council intake and escalation
+steps remain local workflow choices.

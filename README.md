@@ -158,6 +158,24 @@ conventions; Codex uses native roles with the inherited parent model.
 The source includes **29 short Floor rules**, the on-demand Library, **139
 skills**, **58 specialist agents** (46 engineering + 12 Founder Board advisory
 seats) and **34 command workflows**. Load only relevant guidance.
+
+Founder Board seats inherit the parent model; each is a simulation whose advice
+must be grounded in its referenced public-source collection.
+
+| Seat | Lens |
+| --- | --- |
+| [Bezos](agents/council-bezos.md) | Customer value and long horizons |
+| [Blakely](agents/council-blakely.md) | Consumer products and bootstrapping |
+| [Buffett](agents/council-buffett.md) | Capital allocation |
+| [Garyvee](agents/council-garyvee.md) | Distribution and attention |
+| [Graham](agents/council-graham.md) | Early-stage products |
+| [Hormozi](agents/council-hormozi.md) | Offers and acquisition |
+| [Leila](agents/council-leila.md) | People and execution |
+| [Martell](agents/council-martell.md) | Founder time and delegation |
+| [Musk](agents/council-musk.md) | First principles |
+| [Naval](agents/council-naval.md) | Leverage and incentives |
+| [Sanchez](agents/council-sanchez.md) | Business acquisition |
+| [Wickman](agents/council-wickman.md) | Operating cadence |
 Codex defaults to one discoverable router and a catalog; a full discovery profile
 is optional. Claude uses its concise working contract and Floor rules.
 
