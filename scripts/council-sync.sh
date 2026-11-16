@@ -113,28 +113,45 @@ print(f'codex mirror: {copied} synced, {added} added, {pruned} dead manifest ent
 EOF
 fi
 
-linked=0
-homes=("$HOME/.agents/skills" "$HOME/.copilot/skills" "$HOME/.grok/skills")
-# Native Codex wrappers belong to its compact/full installer profile.
-if [ "$mode" = legacy ]; then homes+=("$HOME/.codex/skills"); fi
-for home in "${homes[@]}"; do
-  [ -d "$(dirname "$home")" ] || continue
-  mkdir -p "$home"
-  for s in "$SRC"/skills/*/; do
-    [ -d "$s" ] || continue
-    n="$(basename "$s")"
-    case "$n" in synced|.trash|learned|project-guidelines-example) continue;; esac
-    [ -e "$home/$n" ] || { ln -sfn "${s%/}" "$home/$n"; linked=$((linked+1)); }
-  done
-done
-echo "symlink parity: $linked new links"
+# Git Bash may emulate `ln -s` by copying. Native links must track later edits.
+"$PYTHON" - "$SRC" "$HOME" "$mode" <<'PYTHON'
+import sys
+from pathlib import Path
 
-broken=0
-for home in "$HOME/.codex/skills" "$HOME/.agents/skills" "$HOME/.copilot/skills" "$HOME/.grok/skills"; do
-  [ -d "$home" ] || continue
-  for l in "$home"/*; do
-    [ -L "$l" ] && [ ! -e "$l" ] && { echo "BROKEN: $l"; broken=$((broken+1)); }
-  done
-done
-echo "broken symlinks: $broken"
-[ "$broken" -eq 0 ]
+source, owner, mode = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
+harnesses = ['.agents', '.copilot', '.grok']
+if mode == 'legacy':
+    harnesses.append('.codex')
+linked = 0
+for harness in harnesses:
+    base = owner / harness
+    if not base.is_dir():
+        continue
+    destination = base / 'skills'
+    destination.mkdir(exist_ok=True)
+    for skill in sorted((source / 'skills').glob('*/')):
+        if skill.name in {'synced', '.trash', 'learned', 'project-guidelines-example'}:
+            continue
+        link = destination / skill.name
+        # Preserve owner entries, including dangling links diagnosed below.
+        if link.exists() or link.is_symlink():
+            continue
+        try:
+            link.symlink_to(skill, target_is_directory=True)
+        except FileExistsError:
+            # Another sync may have created an entry after the existence check.
+            continue
+        except OSError as error:
+            sys.exit(f'Cannot create native skill link {link}: {error}')
+        linked += 1
+print(f'symlink parity: {linked} new links')
+
+broken = 0
+for harness in ['.codex', '.agents', '.copilot', '.grok']:
+    for link in (owner / harness / 'skills').glob('*'):
+        if link.is_symlink() and not link.exists():
+            print(f'BROKEN: {link}')
+            broken += 1
+print(f'broken symlinks: {broken}')
+sys.exit(1 if broken else 0)
+PYTHON

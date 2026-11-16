@@ -55,13 +55,30 @@ class SyncTests(unittest.TestCase):
             self.assertGreater((skill / 'SKILL.md').write_text('Team skill'), 0)
             for harness in ('.agents', '.copilot'):
                 (home / harness).mkdir()
+            owned = home / '.agents/skills/personal-skill'
+            owned.mkdir(parents=True)
+            original = owned / 'SKILL.md'
+            self.assertGreater(original.write_text('Keep my instructions'), 0)
+            competing = home / '.claude/skills/personal-skill'
+            competing.mkdir()
+            self.assertGreater((competing / 'SKILL.md').write_text('Canonical instructions'), 0)
             result = self.run_sync(home)
             self.assertEqual(result.returncode, 0, result.stderr)
             after = json.loads(manifest.read_text())
             self.assertEqual(after, before)
             self.assertEqual(installer.verify(native)['integrity'], 'passed')
             for harness in ('.agents', '.copilot'):
-                self.assertEqual((home / harness / 'skills/team-skill').resolve(), skill.resolve())
+                link = home / harness / 'skills/team-skill'
+                self.assertTrue(link.is_symlink(), f'{link} must track later source edits')
+                self.assertEqual(link.resolve(), skill.resolve())
+            self.assertEqual(original.read_text(), 'Keep my instructions')
+            self.assertFalse(owned.is_symlink())
+            self.assertGreater((skill / 'SKILL.md').write_text('Updated team skill'), 0)
+            self.assertEqual((home / '.agents/skills/team-skill/SKILL.md').read_text(),
+                             'Updated team skill')
+            repeated = self.run_sync(home)
+            self.assertEqual(repeated.returncode, 0, repeated.stderr)
+            self.assertIn('symlink parity: 0 new links', repeated.stdout)
             self.assertFalse((native / 'skills/team-skill').exists())
             broken = home / '.agents/skills/broken'
             broken.symlink_to(home / 'does-not-exist')
