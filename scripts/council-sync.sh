@@ -11,25 +11,28 @@ CODEX="$HOME/.codex/council"
 
 # Native installs also own generated roles, hooks and rollback records. Only
 # their installer can update that graph without undoing path adaptations.
-if python3 - "$CODEX/manifest.json" <<'PY'
+mode=$(python3 - "$CODEX/manifest.json" <<'PY'
 import json
 import sys
 from pathlib import Path
 
 manifest = Path(sys.argv[1])
 value = json.loads(manifest.read_text()) if manifest.exists() else {}
-sys.exit(0 if 'skill_profile' in value else 1)
+if not isinstance(value, dict) or not isinstance(value.get('files', {}), dict):
+    sys.exit('Invalid Council manifest; preserve it before retrying sync')
+native = ('skill_profile' in value or 'source_revision' in value or
+          any(not key.startswith('council/resources/') for key in value.get('files', {})))
+print('native' if native else 'legacy')
 PY
-then
+)
+if [ "$mode" = native ]; then
   root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
   if [ ! -f "$root/bootstrap/codex.py" ]; then
     echo 'Native Council sync must run from the Council checkout; use its bootstrap.codex installer.' >&2
     exit 1
   fi
   (cd "$root" && python3 -m bootstrap.codex install --home "$HOME/.codex")
-  exit 0
-fi
-
+else
 python3 - "$SRC" "$CODEX" <<'EOF'
 import os, sys, shutil, hashlib, json
 SRC, CODEX = sys.argv[1], sys.argv[2]
@@ -107,12 +110,17 @@ for k in list(m['files']):
 json.dump(m, open('manifest.json', 'w'), indent=2)
 print(f'codex mirror: {copied} synced, {added} added, {pruned} dead manifest entries pruned, {ghosts} source-gone mirror files removed')
 EOF
+fi
 
 linked=0
-for home in "$HOME/.codex/skills" "$HOME/.agents/skills" "$HOME/.copilot/skills" "$HOME/.grok/skills"; do
+homes=("$HOME/.agents/skills" "$HOME/.copilot/skills" "$HOME/.grok/skills")
+# Native Codex wrappers belong to its compact/full installer profile.
+if [ "$mode" = legacy ]; then homes+=("$HOME/.codex/skills"); fi
+for home in "${homes[@]}"; do
   [ -d "$(dirname "$home")" ] || continue
   mkdir -p "$home"
   for s in "$SRC"/skills/*/; do
+    [ -d "$s" ] || continue
     n="$(basename "$s")"
     case "$n" in synced|.trash|learned|project-guidelines-example) continue;; esac
     [ -e "$home/$n" ] || { ln -sfn "${s%/}" "$home/$n"; linked=$((linked+1)); }

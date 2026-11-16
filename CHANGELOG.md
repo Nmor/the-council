@@ -6,6 +6,8 @@ All notable changes to **The Council** are documented in this file.
 
 - Native sync uses the native installer, preserving ownership, generated roles,
   adapted references and uninstall backups; legacy pruning only touches mirror records.
+  Older native manifests migrate through the same installer; other harnesses retain
+  skill propagation and broken-link diagnostics without expanding Codex's profile.
 - Published and context-only Claude installs include the shared libraries required
   by compaction and tool hooks; context migration refuses conflicting personal copies.
 - The Git push template resolves the current home; reinstalling refreshes stale

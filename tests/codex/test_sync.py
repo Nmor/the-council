@@ -15,6 +15,12 @@ SPEC.loader.exec_module(installer)
 
 
 class SyncTests(unittest.TestCase):
+    def run_sync(self, home):
+        return subprocess.run(['bash', str(ROOT / 'scripts/council-sync.sh')],
+                              env={**os.environ, 'HOME': str(home),
+                                   'PATH': str(Path(sys.executable).parent) + os.pathsep + os.environ['PATH']},
+                              capture_output=True, text=True, timeout=60, check=False)
+
     def test_native_sync_keeps_ownership_and_remains_reversible(self):
         with tempfile.TemporaryDirectory() as directory:
             home = Path(directory)
@@ -34,18 +40,65 @@ class SyncTests(unittest.TestCase):
             canonical = home / '.claude/rules/common'
             canonical.mkdir(parents=True)
             self.assertGreater((canonical / 'coding-style.md').write_text('unadapted source'), 0)
-            result = subprocess.run(['bash', str(ROOT / 'scripts/council-sync.sh')],
-                                    env={**os.environ, 'HOME': str(home),
-                                         'PATH': str(Path(sys.executable).parent) + os.pathsep + os.environ['PATH']},
-                                    capture_output=True, text=True, timeout=60, check=False)
+            skill = home / '.claude/skills/team-skill'
+            skill.mkdir(parents=True)
+            self.assertGreater((skill / 'SKILL.md').write_text('Team skill'), 0)
+            for harness in ('.agents', '.copilot'):
+                (home / harness).mkdir()
+            result = self.run_sync(home)
             self.assertEqual(result.returncode, 0, result.stderr)
             after = json.loads(manifest.read_text())
             self.assertEqual(after, before)
             self.assertEqual(installer.verify(native)['integrity'], 'passed')
+            for harness in ('.agents', '.copilot'):
+                self.assertEqual((home / harness / 'skills/team-skill').resolve(), skill)
+            self.assertFalse((native / 'skills/team-skill').exists())
+            broken = home / '.agents/skills/broken'
+            broken.symlink_to(home / 'does-not-exist')
+            rejected = self.run_sync(home)
+            self.assertEqual(rejected.returncode, 1, rejected.stderr)
+            self.assertIn('BROKEN: ' + str(broken), rejected.stdout)
             uninstalled = installer.uninstall(native)
             self.assertGreater(uninstalled['files'], 0)
             for name, content in originals.items():
                 self.assertEqual((native / name).read_bytes(), content)
+
+    def test_pre_profile_native_sync_migrates_via_installer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            native = home / '.codex'
+            native.mkdir()
+            original = b'Keep my original instructions\n'
+            self.assertEqual((native / 'AGENTS.md').write_bytes(original), len(original))
+            installed = installer.install(native, ROOT, skill_profile='full')
+            self.assertEqual(installed['skill_profile'], 'full')
+            manifest = native / installer.MANIFEST
+            before = json.loads(manifest.read_text())
+            del before['skill_profile']
+            text = json.dumps(before)
+            self.assertEqual(manifest.write_text(text), len(text))
+            result = self.run_sync(home)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            after = json.loads(manifest.read_text())
+            self.assertEqual(after['skill_profile'], 'compact')
+            for name in ('AGENTS.md', 'hooks.json'):
+                self.assertEqual(after['files'][name]['original'], before['files'][name]['original'])
+            self.assertEqual(installer.verify(native)['integrity'], 'passed')
+            uninstalled = installer.uninstall(native)
+            self.assertGreater(uninstalled['files'], 0)
+            self.assertEqual((native / 'AGENTS.md').read_bytes(), original)
+
+    def test_malformed_manifest_refuses_before_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            manifest = home / '.codex/council/manifest.json'
+            manifest.parent.mkdir(parents=True)
+            original = b'{"files": []}\n'
+            self.assertEqual(manifest.write_bytes(original), len(original))
+            result = self.run_sync(home)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('Invalid Council manifest', result.stderr)
+            self.assertEqual(manifest.read_bytes(), original)
 
 
 if __name__ == '__main__':
