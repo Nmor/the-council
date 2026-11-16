@@ -1,7 +1,7 @@
 # Bash / Shell — No-Discards Extension
 
 > Auto-fires on every `*.sh`, `*.bash`, `*.zsh` file. Extends
-> `~/.claude/rules/common/no-discards.md`. Tooling: **ShellCheck
+> `~/.claude/rules-library/common/no-discards.md`. Tooling: **ShellCheck
 > -S style**, **shfmt -d**, **bats** for tests.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
@@ -169,7 +169,7 @@ DB_PASSWORD="$(security find-generic-password \
     -a "$USER" -s "$DB_PASSWORD_KEYCHAIN_ITEM" -w)"
 ```
 
-Per `~/.claude/rules/common/secrets-management.md`.
+Per `~/.claude/rules-library/common/secrets-management.md`.
 
 ### 11. `cd -` / `popd` without `pushd`
 
@@ -279,10 +279,10 @@ Bash sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/bash/coding-style.md`
-- `~/.claude/rules/bash/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/bash/coding-style.md`
+- `~/.claude/rules-library/bash/security.md`
 - ShellCheck wiki (github.com/koalaman/shellcheck/wiki)
 - Bash Pitfalls (mywiki.wooledge.org/BashPitfalls)

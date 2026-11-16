@@ -169,7 +169,8 @@ Per `observability.md`:
   name="<dep>", from, to}` counter
 - **Metric**: `circuit_breaker_rejected_total{name="<dep>"}`
   counter (calls rejected while OPEN)
-- **Alert**: any breaker state = OPEN sustained 5 min → page
+- **Alert**: breaker OPEN sustained 5 min → page only when it burns an SLO (user-visible symptom);
+  otherwise ticket + dashboard
   on-call
 - **Alert**: rapid OPEN ↔ CLOSED flapping (4+ transitions in
   10 min) → ticket-on-call (signals an unhealthy dep + too-

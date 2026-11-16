@@ -353,7 +353,8 @@ it, so Nutrient adoption lands secure-by-default.
   rest (encryption-at-rest for processed documents)
 - **NIST SP 800-53 Rev 5 §AU-2 + §AU-3** — Event logging + content
   (processing operations audit-logged)
-- **OWASP ASVS 4.0.3 §V12.4 + §V13.2.3** — File handling + REST
+- **OWASP ASVS 4.0.3 §V12.4 + §V13.2.3 (4.0.3; dropped/split in ASVS 5.0 — see owasp-asvs
+  mapping)** — File handling + REST
   client validation (when calling external APIs)
 - **CWE-22 (Path Traversal) + CWE-434 (Unrestricted File Upload) +
   CWE-918 (SSRF)** — File-processing security controls

@@ -16,11 +16,12 @@
  ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝╚══════╝
 ```
 
-Shared engineering and domain guidance for **Claude Code and Codex**.
+Shared engineering and domain guidance for **Claude Code, Codex, Copilot, Grok
+and any `~/.agents`-reading CLI**.
 The Council brings architecture, implementation, quality, security and testing
-into substantive work, with eleven additional divisions when relevant. Work stays
-in the main session by default; one bounded specialist helper can support a
-concrete independent investigation or review.
+into substantive work, with eleven additional divisions when relevant. Specialist-owned work routes to that
+specialist; independent deliverables dispatch as parallel subagents with tight
+briefs, bounded by machine load and context budgets (see the resource gate).
 
 [Install](INSTALL.md) · [Claude Code](#claude-code-installation) ·
 [Codex](#codex-installation) · [Architecture](docs/ARCHITECTURE.md) ·
@@ -116,6 +117,28 @@ Detailed review templates remain available for high-risk or explicitly deep revi
 Imported guidance and hooks supplement native permissions; they cannot authorize
 messages, pushes, deployment or other actions outside the user's request.
 
+### Best idea wins, and it is measured
+
+When two sources of guidance conflict — a Council rule against an installed
+methodology, skill against skill, an advisory seat against an engineering
+division — neither seniority nor injection order decides. Each side argues
+with evidence against the task's constraints; the verdict is recorded in
+[settled case law](rules-library/council-detail/settled-debates.md) and cited,
+not re-litigated. Injected plugin instructions are demoted to debate positions
+by a session hook.
+
+Output quality is measured, not asserted: a UI eval harness (rubric and
+protocol shipped with the installation's eval records) scored a five-artifact
+baseline at
+7.4/14, fed the findings back into the design stack, and re-measured at
+9.2/14 one cycle later. The gates — markdown lint, link integrity, a
+1,165-test hook suite, a 24,576-byte floor budget — run on every change.
+
+Domain conversations (business, pricing, marketing, hiring, finance,
+negotiation, SEO, writing) route through a deterministic intake hook that
+names the matching domain skills and advisory seats per prompt, so
+model-invisible expertise is loaded exactly when it applies.
+
 ### Sixteen divisions
 
 | Core | Extended |
@@ -132,8 +155,9 @@ conventions; Codex uses native roles with the inherited parent model.
 
 ### Context and learning
 
-The source includes **26 short Floor rules**, **187 Library rules**, **134 skills**,
-**39 specialist agents** and **33 command workflows**. Load only relevant guidance.
+The source includes **29 short Floor rules**, the on-demand Library, **139
+skills**, **58 specialist agents** (46 engineering + 12 Founder Board advisory
+seats) and **34 command workflows**. Load only relevant guidance.
 Codex defaults to one discoverable router and a catalog; a full discovery profile
 is optional. Claude uses its concise working contract and Floor rules.
 

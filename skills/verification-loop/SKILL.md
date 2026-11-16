@@ -169,11 +169,13 @@ Record inapplicable gates as SKIPPED with a reason; required gates must complete
 - **Official-docs-first** (`~/.claude/rules/common/official-docs-first.md`)
   — every external integration touched in this change has a
   `docs/provider-research/<provider>.md` note that was read or
-  refreshed THIS turn. The Council Phase 0 ONLINE RESEARCH block
+  refreshed for the current revision/contract (reuse valid cited sources per official-docs-first).
+  The Council Phase 0 ONLINE RESEARCH block
   contains the canonical URLs.
 - **No-overclaim** (`~/.claude/rules/common/no-overclaim.md`) —
   "done", "complete", "100%", "shipped" are reserved for states
-  where every gate above has been verified THIS turn. Until then,
+  where every gate above has been verified against the current revision and inputs (verify-before-
+  claim binds evidence to the revision, not the turn). Until then,
   the language is "in progress" / "next: `<gate>`". When the user
   challenges a "done" claim, re-run the verification before
   responding — never re-affirm without a re-run.
@@ -250,7 +252,9 @@ Threshold via `COMPACT_THRESHOLD` env var (default: 50 tool calls).
 
 ## Purpose
 
-Post-write verification protocol: every file edit pairs with
+Required review/test gates run on COMMITTED revisions (owner policy 2026-11-09); the per-edit loop
+below is optional local feedback, not the gate. Post-write verification protocol: every file edit
+pairs with
 language-specific build / lint / type-check / test runs THIS
 turn, IDE-diagnostic capture, and a verification block in the
 response. Also owns strategic context-management at compaction
@@ -302,7 +306,7 @@ cleanly so the next session resumes without re-derivation.
 
 | Pattern | Why bad | Correct alternative |
 | --- | --- | --- |
-| "Looks clean, shipping it" | Aspiration, not verification | Run the per-language gate THIS turn; quote the result |
+| "Looks clean, shipping it" | Aspiration, not verification | Run the per-language gate against this revision; quote the result |
 | Reuse evidence after relevant inputs changed | Earlier pass cannot certify new behavior | Re-run affected gates when revision, inputs or acceptance boundary changes |
 | Scope tests without considering affected callers | May miss cross-file regressions | Include affected boundaries; broaden only for new failures or unresolved risk |
 | Skip IDE diagnostics ("it builds") | SonarLint / type-checker / a11y catch what the compiler doesn't | Read every diagnostic the IDE surfaced; fix or document |
@@ -314,7 +318,7 @@ cleanly so the next session resumes without re-derivation.
 
 ## Verification Checklist
 
-- [ ] Per-language gate run THIS turn (build, lint,
+- [ ] Per-language gate run against this revision (build, lint,
       type-check, test, coverage)
 - [ ] IDE diagnostics empty for touched files
 - [ ] Cross-file regressions checked (test suite, not just

@@ -37,7 +37,7 @@ interface MarketRepository {
 
 class SupabaseMarketRepository implements MarketRepository {
   async findAll(filters?: MarketFilters): Promise<Market[]> {
-    let query = supabase.from('markets').select('*')
+    let query = supabase.from('markets').select('id, email, name, created_at')  // never '*' in production (sql coding-style)
 
     if (filters?.status) {
       query = query.eq('status', filters.status)

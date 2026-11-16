@@ -1,7 +1,7 @@
 # Ruby — No-Discards Extension
 
 > Auto-fires on every `*.rb` file. Extends
-> `~/.claude/rules/common/no-discards.md`. Tooling: RuboCop with
+> `~/.claude/rules-library/common/no-discards.md`. Tooling: RuboCop with
 > strict cops + rubocop-performance + rubocop-rails + Brakeman.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
@@ -90,7 +90,7 @@ Brakeman + RuboCop `Security/Eval` ENFORCED.
 ### 5. `rubocop:disable` / `nodoc` suppressions
 
 NEVER. Fix the underlying issue, OR change the rubocop config
-project-wide (per `~/.claude/rules/common/extreme-lint-policy.md`).
+project-wide (per `~/.claude/rules-library/common/extreme-lint-policy.md`).
 
 ### 6. `Hash#[]=` race conditions
 
@@ -166,7 +166,7 @@ class Settings
 end
 ```
 
-Per `~/.claude/rules/common/no-ambient-globals.md`.
+Per `~/.claude/rules-library/common/no-ambient-globals.md`.
 
 ### 10. `monkey_patch` / `open class` of Ruby builtins
 
@@ -284,9 +284,9 @@ Ruby sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/error-handling-with-context.md`
-- `~/.claude/rules/ruby/coding-style.md`
-- `~/.claude/rules/ruby/security.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/error-handling-with-context.md`
+- `~/.claude/rules-library/ruby/coding-style.md`
+- `~/.claude/rules-library/ruby/security.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`

@@ -2,12 +2,17 @@
 
 > Size budget: 2 KB.
 
-Run the required checks for the changed scope, inspect exit status and results, and report what they establish. Tie evidence to the code revision, inputs/environment and skips. Reuse still-valid evidence; rerun affected checks after a change or failure. Do not equate successful command exit with complete end-to-end acceptance or use a hook marker as test certification.
+Commit the completed implementation first. Review and run required tests afterward
+against that exact committed revision. Never claim reviewed, tested or done merely
+because a local commit exists. Inspect terminal status, failures and skips; bind
+evidence to the commit, inputs and environment. A running command is not a pass.
 
-A green gate is not a read of the code. Substantive changes also need the pre-commit deep
-review of `done-criteria.md`, reported with its reviewers and verdicts. A review goes stale
-exactly as a test run does: an edit after it invalidates it.
+Fix failures in follow-up commits, then recheck affected behavior and confirm fixes.
+A regression test proves itself red-green: with the fix reverted it MUST fail,
+restored it passes — a test never seen failing proves nothing.
+Reuse valid evidence for unchanged artifacts. Do not create review worktrees.
+Hooks and agent-completion markers are not proof that tests or reviews passed.
 
-For relevant detailed procedures and examples, read
-[the reference](../../rules-library/council-detail/verify-before-claim.md).
-Do not preload it for unrelated work.
+Before any push, require independent review and required checks for every outgoing
+commit, no unresolved findings, plan completion and explicit publication authority.
+The same contract governs every coding agent and Council.

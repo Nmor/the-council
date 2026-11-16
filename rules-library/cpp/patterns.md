@@ -225,7 +225,7 @@ counter.fetch_add(1, std::memory_order_relaxed);
 | YAML / TOML | yaml-cpp, toml++ |
 | Date / time | std::chrono + date.h (Howard Hinnant) |
 
-Per `~/.claude/rules/common/reuse-first.md`.
+Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Modern C++ over C-isms
 
@@ -244,10 +244,10 @@ Per `~/.claude/rules/common/reuse-first.md`.
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/cpp/coding-style.md`
-- `~/.claude/rules/cpp/no-discards.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/cpp/coding-style.md`
+- `~/.claude/rules-library/cpp/no-discards.md`
 - C++ Core Guidelines
 - Effective Modern C++ (Meyers)
 - C++ Concurrency in Action (Williams)

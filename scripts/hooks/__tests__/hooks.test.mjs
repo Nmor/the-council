@@ -22,7 +22,7 @@ describe('gate-marker.js — a marker must mean a gate RAN', () => {
   };
 
   // Reading ABOUT tests is not running them. The regex matched the bare word anywhere, so
-  // `grep -rn test .` wrote the marker and silenced commit-gate.js's verification arm.
+  // `grep -rn test .` wrote the marker and silenced the retired commit gate's verification arm.
   for (const cmd of ['grep -rn test .', 'cat build.md', 'ls test/', "find . -name '*test*'",
                      'echo will run the test suite later']) {
     test(`does not fire on a command that merely mentions a gate: ${cmd}`, () => {
@@ -135,78 +135,6 @@ describe('test-coverage-gate.js — a nudge switch must not disable a wall', () 
   });
 });
 
-describe('commit-gate.js — a commit is a claim', () => {
-  const setup = (turn) => {
-    const sid = uniq('sid');
-    run('test-coverage-gate.js', { session_id: sid, prompt_id: turn, tool_name: 'Write',
-      tool_input: { file_path: '/x/a.go', content: 'package main' } });
-    verificationProof(sid, turn, undefined, {}, true);
-    // A commit also needs an independent review of the same source (done-criteria.md).
-    reviewProof(sid, turn);
-    return sid;
-  };
-  const gate = (sid, turn) =>
-    run('gate-marker.js', { session_id: sid, prompt_id: turn, tool_name: 'Bash',
-      tool_input: { command: 'go test ./...' }, tool_response: { exit_code: 0 } });
-  const commit = (sid, turn) =>
-    run('commit-gate.js', { session_id: sid, prompt_id: turn, tool_name: 'Bash',
-      tool_input: { command: 'git commit -m x' } });
-  const clean = (sid) => cleanup(`claude-council-coverage-${sid}`, `claude-council-lastedit-${sid}`,
-    `claude-council-gate-${sid}`, `claude-council-srcedits-${sid}`, `claude-council-review-${sid}`);
-
-  test('allows a commit when the gate ran in this turn', () => {
-    const sid = setup('t1'); gate(sid, 't1');
-    assert.equal(commit(sid, 't1').code, 0);
-    clean(sid);
-  });
-
-  // The marker gained a second line (the prompt_id). readStamp parsed the WHOLE file as a
-  // number, so it became NaN and read as "no gate ran" — blocking every commit.
-  test('reads the timestamp even though the marker carries a second line', () => {
-    const sid = setup('t1'); gate(sid, 't1');
-    const r = commit(sid, 't1');
-    assert.equal(r.code, 0, 'a same-turn gate must not read as absent');
-    assert.doesNotMatch(r.stderr, /no verification gate has run/);
-    clean(sid);
-  });
-
-  // verify-before-claim.md rule 3: "THIS turn, not earlier in the session."
-  test('blocks a commit whose only gate ran in an earlier turn', () => {
-    const sid = setup('t1'); gate(sid, 't1');
-    const r = commit(sid, 't2');
-    assert.equal(r.code, 2);
-    assert.match(r.stderr, /EARLIER TURN/);
-    clean(sid);
-  });
-
-  test('allows it again once the gate is re-run in the current turn', () => {
-    const sid = setup('t1'); gate(sid, 't1');
-    assert.equal(commit(sid, 't2').code, 2);
-    // A new turn needs both again: the verification gate and the independent review.
-    gate(sid, 't2');
-    reviewProof(sid, 't2');
-    assert.equal(commit(sid, 't2').code, 0);
-    clean(sid);
-  });
-
-  // An older harness may not supply prompt_id. Turn-scoping must degrade, never hard-block.
-  test('degrades safely when the payload carries no prompt_id', () => {
-    const sid = setup('t1'); gate(sid, 't1');
-    const r = run('commit-gate.js', { session_id: sid, tool_name: 'Bash',
-      tool_input: { command: 'git commit -m x' } });
-    assert.equal(r.code, 0);
-    clean(sid);
-  });
-
-  test('ignores commands that are not commits', () => {
-    const sid = setup('t1');
-    assert.equal(run('commit-gate.js', { session_id: sid, prompt_id: 't1', tool_name: 'Bash',
-      tool_input: { command: 'git status' } }).code, 0);
-    clean(sid);
-  });
-});
-
-
 describe('check-console-log.js — an unverified claim does not end the turn', () => {
   const transcript = (text) => {
     const p = join(tmpdir(), `${uniq('transcript')}.jsonl`);
@@ -289,7 +217,7 @@ describe('check-console-log.js — an unverified claim does not end the turn', (
 
 describe('every hook degrades safely on bad input', () => {
   // A hook that throws on malformed stdin breaks the tool call it was meant to guard.
-  const hooks = ['gate-marker.js', 'deferral-gate.js', 'commit-gate.js',
+  const hooks = ['gate-marker.js', 'deferral-gate.js',
                  'test-coverage-gate.js', 'check-console-log.js'];
   for (const h of hooks) {
     test(`${h} exits 0 on empty and malformed stdin`, () => {

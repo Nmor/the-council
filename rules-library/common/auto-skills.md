@@ -831,7 +831,7 @@ touched. They are the "first contact with a repo" gate.
 ## Per-language no-discards extensions
 
 Auto-load when the matching file extension is touched. They extend
-the umbrella `~/.claude/rules/common/no-discards.md` with language-
+the umbrella `~/.claude/rules-library/common/no-discards.md` with language-
 specific banned patterns + linter configs.
 
 - [`golang/no-discards.md`](../golang/no-discards.md) — Go: bind

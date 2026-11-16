@@ -34,7 +34,7 @@ Accept: application/vnd.myapp.v2+json
 1. Start with /api/v1/ — don't version until you need to
 2. Maintain at most 2 active versions (current + previous)
 3. Deprecation timeline:
-   - Announce deprecation (6 months notice for public APIs)
+   - Announce deprecation (notice per deprecation-lifecycle.md (the single source: 90-day minimum runway; 12 months for major versions of public APIs))
    - Add Sunset header: Sunset: Sat, 01 Jan 2026 00:00:00 GMT
    - Return 410 Gone after sunset date
 4. Non-breaking changes don't need a new version:

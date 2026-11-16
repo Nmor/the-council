@@ -38,8 +38,8 @@ disable-model-invocation: true
 
 > Auto-fires on every file. Sister to `a11y.md` (RTL + text
 > expansion overlap), `error-codes.md` (codes are i18n keys),
-> `gdpr-ccpa.md` (per-region compliance), `task-intake-due-
-> diligence.md` Q13. Standards: **Unicode CLDR** (Common Locale
+> `gdpr-ccpa.md` (per-region compliance), `task-intake-due-diligence.md` Q13. Standards:
+> **Unicode CLDR** (Common Locale
 > Data Repository), **ICU Message Format**, **BCP 47** (language
 > tags), **ECMA-402** (Intl API), **RFC 5646** (language tags),
 > **W3C Internationalization Working Group**.

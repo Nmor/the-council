@@ -7,6 +7,7 @@ up [`rules/common/resource-discipline.md`](../../rules/common/resource-disciplin
 agents clean up after themselves, and this catches what they miss.
 
 It never touches:
+
 - a compose project or container name in `allowlist.txt` (`*` patterns, `#` comments);
 - a container with a restart policy (`unless-stopped`, `always`, `on-failure`),
   running or stopped: it's a service, and someone may have stopped it on purpose;
@@ -15,6 +16,7 @@ It never touches:
   allowlisted project.
 
 Otherwise it:
+
 - stops a plain container that has run 6 hours;
 - removes an exited, created or dead one 24 hours after it stopped, with its
   anonymous volumes;

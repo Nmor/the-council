@@ -10,8 +10,8 @@
 // The delegation produced zero verified output. The rule's conclusion — "check the
 // delegate can run the gate BEFORE delegating" — was enforced by nothing.
 //
-// When a subagent that EDITED files is about to stop without having run a gate, it is
-// told once to run one before handing back. SILENT for a subagent that ran a gate and for
+// When a subagent that EDITED files stops without a gate, remind it to commit first
+// and record pending acceptance. Never request checks on uncommitted work. SILENT for
 // a read-only one (search/explore agents are the majority and have nothing to verify).
 //
 // Rebuilt 2026-09-21 against the hooks reference (read that day). The first version read
@@ -75,9 +75,10 @@ process.stdin.on('end', () => {
   const files = [...new Set(edited.map((c) => c.input.file_path || c.input.notebook_path || '').filter(Boolean))];
   const note =
     `[subagent-gate] You edited ${edited.length} file(s) without running a verification gate ` +
-    '(verify-before-claim r11). Run the build, lint and tests that cover them and report the ' +
-    'real output before handing back; if you cannot run them, say so plainly so the caller runs ' +
-    'them instead.\n' +
+    '(owner post-commit policy). Commit the complete scoped implementation first, then run ' +
+    'required build, lint and tests on that committed revision and report actual results. ' +
+    'If the caller must commit, hand back implementation-ready with review/test pending; ' +
+    'the caller commits before checking. Never claim acceptance from an uncommitted tree.\n' +
     files.slice(0, 10).map((f) => `  - ${f}`).join('\n');
   process.stdout.write(
     JSON.stringify({ hookSpecificOutput: { hookEventName: 'SubagentStop', additionalContext: note } }),

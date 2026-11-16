@@ -1,6 +1,11 @@
 ---
 name: code-reviewer
-description: Review code changes for correctness, security, complete functionality and maintainability. Use for independent change or PR reviews with evidence tied to the actual diff and affected consumers.
+description: >-
+  Review code changes for correctness, security, complete functionality and
+  maintainability. Use for independent change or PR reviews with evidence tied
+  to the actual diff and affected consumers. Boundary: the fallback reviewer
+  for languages without a specialist and for cross-language/consumer-seam
+  diffs; single-language diffs go to that language’s reviewer; config/markup-dominant diffs (YAML, JSON, TOML, XML, Markdown, INI) go to config-reviewer.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---
@@ -13,8 +18,11 @@ model: opus
 
 When invoked:
 
-1. **Gather context** — Use the [review baseline](../rules-library/common/git-workflow.md#review-baseline).
-   Inspect staged, unstaged and relevant untracked workspace changes or the requested
+1. **Gather context** — Use the [review baseline](../rules-library/common/git-workflow.md#review-
+   baseline).
+   Review the committed revision (owner policy 2026-11-09: required review runs on commits);
+   inspect staged/unstaged workspace changes only as pre-commit feedback when explicitly asked,
+   or the requested
    PR divergence/commit patches. Record the base/head and pending work separately;
    commit names or a clean worktree do not establish the review scope.
 2. **Understand scope** — Identify which files changed, what feature/fix they relate to, and how
@@ -298,7 +306,8 @@ codebase does.
 ## Decision authority
 
 Apply the severity and merge contract above: unresolved CRITICAL/HIGH findings and
-BLOCKER/MAJOR aliases block merge. Pairs with the language reviewer for the stack (`go-reviewer`, `typescript-reviewer`,
+BLOCKER/MAJOR aliases block merge. Pairs with the language reviewer for the stack (`go-reviewer`,
+`typescript-reviewer`,
 `python-reviewer`, `ruby-reviewer`, `php-reviewer`, `java-reviewer`, `rust-reviewer`,
 `dotnet-reviewer`, `mobile-reviewer`,
 `mobile-reviewer`) who own deeper language-specific findings.

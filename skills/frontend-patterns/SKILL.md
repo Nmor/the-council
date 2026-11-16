@@ -66,16 +66,38 @@ lives in `references/`; read the row you need, not the whole set.
 | **HTML / CSS security** — OWASP Top 10 alignment, strict CSP, SRI, security headers, CSS-specific attacks, form + upload hardening | [`references/html-css-security.md`](references/html-css-security.md) |
 | **HTML / CSS testing** — the testing pyramid, 10 hard rules, 5 anti-patterns, required tooling, CI workflow shape | [`references/html-css-testing.md`](references/html-css-testing.md) |
 
+## Applied-style verification (eval findings, 2026-11-15)
+
+Two defect classes that code reading passes and only computed-style checks
+catch — verify before claiming done:
+
+- **The CSS must reach the markup.** Block properties on inline elements do
+  nothing (`display` first); boolean attributes are true by presence
+  (`novalidate="false"` still disables validation); a weight token the loaded
+  font cannot render collapses hierarchy; per-row grids cannot align columns
+  across rows (share one grid or use subgrid). Check computed values on the
+  elements the rules target, not the stylesheet.
+- **Unbroken strings are the real worst case.** Long phrases wrap; compounds,
+  emails and URLs do not. `overflow-wrap: anywhere` on every user-content
+  container, verified headless at 320px with an unbroken 30-char string.
+
 ## Related Skills
 
 This skill provides **architectural + visual patterns** for
 frontend development.
 
+- **frontend-design** (Anthropic) — read FIRST when building or reshaping UI:
+  aesthetic direction, typography, anti-templated-defaults
 - **coding-quality-rules** — code quality: naming, structure,
   readability, immutability
 - **security-review** — XSS prevention in dynamic content + styling
 - **vue3-patterns**, **typescript-patterns** — framework-specific
   depth
+- **modern-web-guidance** (plugin, Google Chrome) — authoritative for
+  standard HTML/CSS/DOM platform features (dialogs/popovers, container
+  queries, view transitions, anchor positioning, passkeys, CWV, autofill,
+  sanitization). Consult it FIRST for plain-web implementation; this skill
+  keeps framework architecture and state management.
 - **a11y.md** (rule) — WCAG 2.2 AA floor + AAA on critical paths
 
 **Remember**: Modern frontend patterns enable maintainable,

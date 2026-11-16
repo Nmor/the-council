@@ -189,11 +189,11 @@ fun calculateTotal(order: Order): Money { ... }
 
 ## Cross-references
 
-- `~/.claude/rules/common/coding-style.md`
-- `~/.claude/rules/kotlin/no-discards.md`
-- `~/.claude/rules/kotlin/security.md`
-- `~/.claude/rules/kotlin/testing.md`
-- `~/.claude/rules/kotlin/patterns.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/coding-style.md`
+- `~/.claude/rules-library/kotlin/no-discards.md`
+- `~/.claude/rules-library/kotlin/security.md`
+- `~/.claude/rules-library/kotlin/testing.md`
+- `~/.claude/rules-library/kotlin/patterns.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
 - Kotlin Coding Conventions (kotlinlang.org/docs/coding-conventions.html)
 - Effective Kotlin (Marcin Moskała)

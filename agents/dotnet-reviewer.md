@@ -1,6 +1,6 @@
 ---
 name: dotnet-reviewer
-description: Expert C# / .NET code reviewer — nullable reference types, async deadlocks and cancellation, IDisposable, EF Core query shape and tracking, DI lifetimes, serialization safety. Use for all C#/.NET code changes. MUST BE USED for .NET projects.
+description: Expert C# / .NET code reviewer — nullable reference types, async deadlocks and cancellation, IDisposable, EF Core query shape and tracking, DI lifetimes, serialization safety. Use for all C#/.NET code changes. Default reviewer for .NET code when a review is warranted.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

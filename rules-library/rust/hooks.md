@@ -1,7 +1,7 @@
 # Rust Hooks
 
 > Auto-fires on every `*.rs`, `Cargo.toml`, `Cargo.lock` file.
-> Sister to `~/.claude/rules/common/hooks.md`.
+> Sister to `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -144,9 +144,9 @@ profile = "minimal"
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/common/license-allowlist-gate.md`
-- `~/.claude/rules/rust/no-discards.md`
-- `~/.claude/rules/rust/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/common/license-allowlist-gate.md`
+- `~/.claude/rules-library/rust/no-discards.md`
+- `~/.claude/rules-library/rust/testing.md`
 - cargo-deny docs (embarkstudios.github.io/cargo-deny)

@@ -1,7 +1,7 @@
 # Lua Security
 
 > Auto-fires on every `*.lua`, `*.rockspec`, `*.luacheckrc` file.
-> Sister to `~/.claude/rules/common/security.md`. Lua is most
+> Sister to `~/.claude/rules-library/common/security.md`. Lua is most
 > commonly embedded (Redis scripts, OpenResty / nginx, Neovim,
 > Roblox, game engines, WoW addons, embedded devices). Each
 > embedding context has its own threat model.
@@ -199,7 +199,7 @@ ngx.var.target = "/path?q=" .. escaped
   file the user can
 - Be paranoid about `vim.fn.system()` / `io.popen` with user input
 - Treat marketplace plugins like npm packages (per
-  `~/.claude/rules/common/install-allowlist.md`)
+  `~/.claude/rules-library/common/install-allowlist.md`)
 
 ### Game engines (Defold, LÖVE, Roblox)
 
@@ -217,7 +217,7 @@ ngx.var.target = "/path?q=" .. escaped
 - For OpenResty: `lua_shared_dict` is process-shared but visible
   to every worker — DO NOT store long-lived secrets there
 
-Per `~/.claude/rules/common/secrets-management.md`.
+Per `~/.claude/rules-library/common/secrets-management.md`.
 
 ## Required tooling
 
@@ -233,11 +233,11 @@ gixy nginx.conf                     # security analyser
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/common/install-allowlist.md`
-- `~/.claude/rules/lua/no-discards.md`
-- `~/.claude/rules/lua/coding-style.md`
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/install-allowlist.md`
+- `~/.claude/rules-library/lua/no-discards.md`
+- `~/.claude/rules-library/lua/coding-style.md`
 - Lua 5.4 reference manual — sandboxing chapter
 - OWASP Lua security guide
 - OpenResty Best Practices

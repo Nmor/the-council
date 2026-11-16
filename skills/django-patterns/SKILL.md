@@ -154,7 +154,7 @@ safety, rate limiting (django-ratelimit), security headers, secrets management.
 | `safe` / `mark_safe` template filter on user input | XSS | Never `mark_safe(user_data)`; rely on Django's auto-escape |
 | `csrf_exempt` on state-changing view | CSRF attack succeeds | Keep CSRF; for stateless API use DRF + token auth + `csrf_exempt` only on JSON endpoints validated by token |
 | `User.objects.get(email=...)` without normalisation | Case-sensitive duplicate accounts | Custom UserManager with `email.lower()` + unique constraint |
-| Storing password hashes without reviewing configuration | Django 5.2 defaults to PBKDF2; Argon2 is opt-in | Install `argon2-cffi`, configure Argon2 first with reviewed cost, retain old hashers for existing accounts |
+| Storing password hashes without reviewing configuration | Django 6.x (5.2 = LTS) defaults to PBKDF2; Argon2 is opt-in | Install `argon2-cffi`, configure Argon2 first with reviewed cost, retain old hashers for existing accounts |
 | Direct file save from `request.FILES` | Path traversal + malicious file | Validate `FileExtensionValidator`, sanitise filename, use S3 + signed URLs |
 | Sessions in DB without timeout | Session fixation | `SESSION_COOKIE_AGE` set; `SESSION_EXPIRE_AT_BROWSER_CLOSE = True` where applicable |
 
@@ -176,7 +176,8 @@ safety, rate limiting (django-ratelimit), security headers, secrets management.
 - [ ] CSRF middleware enabled (default); disabled only with documented rationale
 - [ ] All queries use ORM or parameterised raw queries
 - [ ] All templates rely on auto-escape; no `mark_safe(user_data)`
-- [ ] Effective password-hasher configuration/cost verified; existing hashes still authenticate and migrate
+- [ ] Effective password-hasher configuration/cost verified; existing hashes still authenticate
+  and migrate
 - [ ] Rate limiting via `django-ratelimit` on auth + sensitive endpoints
 - [ ] Security headers via `django.middleware.security.SecurityMiddleware` + CSP middleware
 - [ ] HSTS preload-eligible: `SECURE_HSTS_SECONDS >= 31536000`, `SECURE_HSTS_PRELOAD = True`
@@ -249,7 +250,7 @@ env-driven config. The defaults are good for hello-world but break under load (N
 settings.py with secrets, untested signals). The patterns above codify the production-ready posture
 so Django apps survive load testing without rewriting the data access layer.
 
-Django 5.2 ships with auto-escape, CSRF middleware and PBKDF2 hashing — but the deploy
+Django 6.x (5.2 = LTS) ships with auto-escape, CSRF middleware and PBKDF2 hashing — but the deploy
 step is where security regresses: `DEBUG = True` left on in staging-promoted-to-prod, `SECRET_KEY`
 checked into version control, `csrf_exempt` added "temporarily" and never removed, file-upload
 validators skipped. The verification checklist gates each of these mechanically so Django apps pass

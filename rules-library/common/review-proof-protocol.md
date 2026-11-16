@@ -1,103 +1,104 @@
-# The review proof protocol — every coding agent, every stack
+# Post-commit review and verification — every coding agent
 
-> **Size budget: 5 KB** — `token-budget.mjs --check`.
->
-> Sister to `done-criteria.md` (what must be true before a commit), `verify-before-claim.md`
-> (evidence), `review-dimensions.md` (what a review must cover) and
-> `targeted-test-runs.md` (how to check a mutation cheaply).
+> Size budget: 6 KB.
 
-## Why a protocol and not just a rule
+Council, Claude, Codex and other coding agents follow the same sequence:
+complete implementation → local commit → independent review and required checks
+→ corrective commits and confirmation → authorized push of accepted work.
+No review rounds in worktrees. Reviews inspect committed objects directly.
 
-The rule — no commit of substantive code without an independent review and a verification gate —
-is already written. What was missing is a way for that rule to be *checked* when more than one
-agent works a repository.
+Commit hooks do not require review or testing. The native Git pre-push hook checks
+the actual source and destination object IDs supplied by Git, including pushes of
+branches other than HEAD, tags, several refs and merges. No remote operation is
+needed to validate the hook offline. Install it with
+`node scripts/install-commit-workflow.js <repo> [<repo>...]`.
+It preserves an enabled shell pre-push hook at its original path after Council's
+check, including its stdin and `$0`. Disabled hooks stay disabled; unsupported
+non-shell hooks require explicit integration without replacing them.
+Install the same launcher in the configured Git template's hooks directory for
+future repositories. Do not replace unrelated repository hooks.
+Installations exclude `.council/proofs/` using Git's resolved local exclude file;
+exclude it globally as well for repositories initialized from the template.
+Only the actual destination object supplied by Git, and the destination's default
+branch read live from the push URL, exclude existing history. That exemption holds
+only while the host protects the default branch (reviewed merges, no direct pushes). New destination
+refs otherwise require evidence for all
+reachable commits; cached remote-tracking refs never establish acceptance. Legacy grafts and
+replacement refs are disabled; shallow repositories must fetch full history
+before publication can be verified.
 
-The Claude Code hooks under `~/.claude/scripts/hooks/` bind one tool. They fire on that tool's
-own calls and nothing else, so Codex, a second Claude session, another coding agent or a human
-running `git commit` never triggers them. A rule enforced only there is enforced for one
-participant in a repository several of them share — and the one it is enforced for is the only
-one who can be blocked by it, which is the wrong way round.
+## Evidence
 
-Git runs a `pre-commit` hook for all of them. So the check lives there, and the proof it reads is
-a file any agent can write.
+Keep evidence outside version control:
+`.council/proofs/commits/<full-commit-id>/review.json` and `gate.json`.
+Both name the exact commit, its tree and an `at` time in epoch milliseconds after
+the commit was created. A staged-tree or session marker cannot authorize a push.
+A commit never inherits approval from another commit with the same tree.
 
-## Install, once per repository
+Review proof:
 
-```sh
-git config core.hooksPath .council/githooks
-mkdir -p .council/githooks .council/proofs
-ln -sf "$HOME/.claude/scripts/council-pre-commit.sh" .council/githooks/pre-commit
-chmod +x .council/githooks/pre-commit
-printf '.council/proofs/\n' >> .git/info/exclude
+```json
+{"commit":"<full-id>","tree":"<tree-id>","at":0,"verdict":"approved","findings_remaining":0,"reviewers":["independent-language-reviewer","independent-security-reviewer"]}
 ```
 
-Proofs are local evidence about a local artifact; they are never committed.
+Verification proof:
 
-## The proof format
-
-Two files, written by whoever ran the thing:
-
-```
-.council/proofs/review.json   {"trees":["<hex>"],"reviewers":["agent:go-reviewer","agent:security-reviewer"],"at":<epoch_ms>}
-.council/proofs/gate.json     {"tree":"<hex>","at":<epoch_ms>}
+```json
+{"commit":"<full-id>","tree":"<tree-id>","at":0,"exit_code":0,"checks":[{"command":"<actual required check>","exit_code":0}],"coverage":93.2}
 ```
 
-A tree is the artifact the check ran against — `git write-tree`, which records the index's
-content and modifies nothing. Write the proof **after** it passes. The review proof carries
-`trees` (plural) so it can bind both to the index and to a tree the brief names.
+Examples use placeholders: replace time and identifiers with actual evidence.
+Substantive source requires two distinct independent reviewer perspectives and
+measured coverage; other commits still need an independent review and appropriate
+verification, such as documentation or configuration checks.
+Only record actual completed reviews and terminal successful required checks.
+Any unresolved finding, failed required check or missing evidence blocks publication.
+Legacy hook markers remain diagnostics and do not satisfy this protocol.
 
-In Claude Code `review-marker.js` writes it, firing on **SubagentStop** as well as PostToolUse: a
-reviewer is dispatched asynchronously, so its PostToolUse answer is `async_launched` and the
-completion never arrives there. Measured 2026-10-29, before it was wired: a real `go-reviewer`
-read a repository, reported a real defect and left no proof — unsatisfiable by a review that had
-happened, which is how a gate gets switched off rather than met. A reviewer that stops without a report records nothing: stopping is not reviewing.
+When findings require a corrective commit, the original's final review may add
+`"resolved_by":["<full-fix-commit-id>"]`. Approval is conditional: every pushed
+tip containing that original must also contain each named descendant correction.
+The correction needs its own review and checks. Missing or invalid fix objects
+fail closed; the defective original cannot be published alone, including a
+rewind that transfers no new commits. Conditional receipts are checked against
+all pushed tips independently of the transfer census.
 
-## Bind to the artifact, not to the working directory
+Each correction must rerun every original check. Match its argument digest when
+present, otherwise its exact command label. Never combine results across trees.
+Unrelated passing checks cannot replace failed requirements.
 
-This is the part that makes the protocol usable by several agents at once, and it was learned the
-hard way: a proof bound to "the working directory is unchanged" is invalidated every time another
-agent edits an unrelated file, so in a shared checkout it almost never survives long enough to
-reach a commit. A proof bound to a **tree** says something stronger and more stable — *this exact
-content was reviewed* — and nobody else's edits can touch it.
+A failed original gate may likewise add `resolved_by` while retaining its actual
+failed command results. This means accepted only with verified descendants;
+it never means the original tests passed. Each named correction must have its
+own terminal-successful exact gate, successful required checks covering the
+original failures, and measured coverage for source changes. Conditional gate
+chains are refused. These constraints also apply to rewinds and already-published
+corrections; review and documentation requirements remain separate.
 
-It also means the proof follows a private index. Where several agents share one checkout they
-also share one index, and staging there means another agent's `git commit` can take your work.
-Compose in your own index instead, and the same proof still applies because the tree is the same:
+Record actual terminal checks with
+`scripts/council-record-proof.sh gate --commit <id> -- <required-command>`;
+use `coverage` instead of `gate` for a command emitting measured Go or Node
+coverage. The recorder executes a raw snapshot of the committed blobs, removes
+that temporary source afterward, and binds its receipt to the commit and tree.
+Git replacement refs, export attributes and checkout filters cannot substitute
+the tested input. Gitlinks require an explicit verified submodule snapshot; the
+recorder refuses them rather than silently omitting their code. Parent-traversing
+symlinks also require explicit verification outside this recorder: filesystem
+case/normalization aliases defeat lexical containment. The raw snapshot
+also rejects platform-ambiguous backslash paths and symlinks that resolve outside
+the temporary source directory.
+This is not a review worktree. Command arguments are retained only as a digest,
+not credential-bearing text. Failed reruns invalidate prior successful receipts.
+Concurrent recordings of the same commit are refused; rerun after the active
+recording finishes (a crashed recorder's lock needs explicit local cleanup).
 
-```sh
-export GIT_INDEX_FILE=/tmp/mywork.index
-git read-tree HEAD
-git add path/to/my/files            # the shared index is untouched
-git write-tree                      # the tree to review, and to record in the proof
-git commit -m "..."                 # commits that index
-```
+Evidence is a local trust boundary: the recorder observes command completion, but
+cannot establish that an arbitrarily chosen command is the required test suite or
+that a reviewer identity is honest. The reviewer and owner verify that correspondence.
+Do not hand-write successful outcomes without the underlying receipts.
 
-## What the gate requires
-
-- **Only for code.** A commit touching no code file in any of the supported languages passes
-  untouched; docs, fixtures and config may land on their own.
-- **A review proof naming this exact tree**, with **two or more distinct reviewers**. Two, because
-  a reviewer looking for correctness and one looking for exposure do not read the same code.
-- **A verification proof naming this exact tree** — build, test, lint or type-check, whichever the
-  stack has.
-- Proofs older than a day are refused, as is a proof timestamped in the future.
-
-A proof naming a different tree is ignored rather than trusted. That is the whole point: it
-cannot certify an artifact it never saw.
-
-## What the gate cannot check, and you must
-
-It records that a review **ran** against this artifact. It cannot read a verdict — that is prose —
-so it cannot know whether findings were resolved. **Resolving every finding, and re-reviewing
-after a fix, remains yours.** Writing the proof while findings are open is not a loophole in the
-protocol; it is a false statement about your own work.
-
-## Bypass
-
-```sh
-COUNCIL_GATE=off git commit ...
-```
-
-For a gate that is genuinely unavailable — no test runner in the container, no second reviewer
-reachable. Say in the commit body which gate was unavailable and why. A bypass that is not
-explained in the artifact it bypassed is indistinguishable from skipping the rule.
+Set `COUNCIL_PUSH_AUTHORIZED=yes` or `CLAUDE_PUSH_AUTHORIZED=yes` for an explicitly
+authorized push only. This authorizes the operation; it cannot bypass evidence.
+No automatic expiry is imposed on immutable commit evidence. Changed commits
+(including amend/rebase) need their own evidence. Project plan completion, explicit
+push authorization and any stricter publication rules remain in force.

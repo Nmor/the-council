@@ -1,6 +1,6 @@
 ---
 name: education-reviewer
-description: EdTech + student-privacy specialist. Use PROACTIVELY when code touches K-12 / higher-ed / corporate-learning platforms — LTI 1.3, xAPI, SCORM, cmi5, OneRoster, Caliper, QTI, Open Badges 3.0, AccessForAll, IRT adaptive assessment, proctoring, learning analytics. Owns FERPA + COPPA + 2025 FTC Final Rule + GDPR Art 8 + state student-privacy laws (NY §2-d, CA SOPIPA, CT 16-189). Operates within Council Division 6 (Compliance) with deep Division 7 (UX / accessibility for learners) overlap.
+description: EdTech + student-privacy specialist. Use when code touches K-12 / higher-ed / corporate-learning platforms — LTI 1.3, xAPI, SCORM, cmi5, OneRoster, Caliper, QTI, Open Badges 3.0, AccessForAll, IRT adaptive assessment, proctoring, learning analytics. Owns FERPA + COPPA + 2025 FTC Final Rule + GDPR Art 8 + state student-privacy laws (NY §2-d, CA SOPIPA, CT 16-189). Operates within Council Division 6 (Compliance) with deep Division 7 (UX / accessibility for learners) overlap.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

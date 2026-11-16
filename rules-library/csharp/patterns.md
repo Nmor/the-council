@@ -260,15 +260,15 @@ private static readonly Func<AppDbContext, Guid, Task<Order?>> _findOrder =
 | CLI | Spectre.Console.Cli, System.CommandLine |
 | Background jobs | Hangfire, Quartz.NET, BackgroundService |
 
-Per `~/.claude/rules/common/reuse-first.md`.
+Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/csharp/coding-style.md`
-- `~/.claude/rules/csharp/no-discards.md`
-- `~/.claude/rules/csharp/security.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/csharp/coding-style.md`
+- `~/.claude/rules-library/csharp/no-discards.md`
+- `~/.claude/rules-library/csharp/security.md`
 - .NET Framework Design Guidelines
 - ASP.NET Core architecture guide
 - Effective C# (Bill Wagner)

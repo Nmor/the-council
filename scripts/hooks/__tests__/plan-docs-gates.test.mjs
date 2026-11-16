@@ -2,173 +2,148 @@
 // The plan-and-docs discipline, end to end: "plan update as tasks are completed and doc updates
 // before code changes are committed or pushed" (owner directive, 2026-09-21).
 //
-//   docs-sync-gate.js  (Stop)       — in docs-sync-gate.test.mjs
-//   commit-gate.js     (PreToolUse) — a commit carries an up-to-date plan and docs, or a `Docs:` line
-//   pre-push-gate.js   (PreToolUse) — no commit reaches a remote without docs or a `Docs:` line
-//
-// These replace the TodoWrite-era docs-sync tests. That version ran on PostToolUse, which cannot
-// block, keyed on a tool some harnesses do not offer, and saw only Edit/Write changes. Every
-// intent those tests pinned is carried forward below and says which one it carries.
+//   docs-sync-gate.js         (Stop)            — in docs-sync-gate.test.mjs
+//   committed-push-gate.js    (native pre-push) — no commit reaches a remote without docs
+//                                                 or a `Docs:` line, plus owner authorization
+//                                                 (commit-gate.js was retired by the 2026-11-09
+//                                                 commit-then-review policy; enforcement moved
+//                                                 to the native hook)
+//   pre-push-gate.js          (PreToolUse)      — tool-level push authorization
 //
 // Everything runs against real throwaway git repositories and a throwaway HOME, so the hooks
 // ask real git the questions they ask in use, and no test reads this machine's own plans.
-import { test, describe } from 'node:test';
-import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { run, uniq, cleanup, verificationProof, reviewProof } from './helpers.mjs';
-import { ISOLATED, git, setMtime, world, edit } from './plan-world.mjs';
+import { test, describe } from "node:test";
+import assert from "node:assert/strict";
+import { execFileSync, spawnSync } from "node:child_process";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { run } from "./helpers.mjs";
+import { ISOLATED, git, world, edit } from "./plan-world.mjs";
 
 // ──────────────────────────────────────────────────────────────────────────
-describe('commit-gate.js — a commit carries a current plan, and docs or a Docs: line', () => {
-  // Satisfy (a) and (b) so each test isolates the plan / docs checks.
-  const commit = (w, message, { stage = true } = {}) => {
-    if (stage) git(w.repo, 'add', '-A');
-    const sid = uniq('sid');
-    const pid = uniq('pid');
-    verificationProof(sid, pid, w.repo, w.env);
-    verificationProof(sid, pid, w.repo, w.env, true);
-    reviewProof(sid, pid, w.repo, w.env);
-    try {
-      return run('commit-gate.js', {
-        session_id: sid, prompt_id: pid, cwd: w.repo,
-        tool_name: 'Bash', tool_input: { command: `git commit -m "${message}"` },
-      }, w.env);
-    } finally {
-      cleanup(`claude-council-gate-${sid}`, `claude-council-coverage-${sid}`,
-        `claude-council-review-${sid}`);
-    }
+describe("committed-push-gate.js — no commit reaches a remote without docs or a Docs: line", () => {
+  /** A repo whose origin already has the base commit, so only new commits are unpushed. */
+  function pushable() {
+    const w = world();
+    const bare = join(w.base, "origin.git");
+    execFileSync("git", ["init", "-q", "--bare", bare], {
+      env: { ...process.env, ...ISOLATED },
+    });
+    git(w.repo, "remote", "add", "origin", bare);
+    git(w.repo, "push", "-q", "origin", "HEAD:main");
+    git(w.repo, "fetch", "-q", "origin");
+    return { w, bare };
+  }
+
+  // Drive the native gate exactly as git-template/hooks/pre-push does:
+  // ref-update lines on stdin, remote name and URL as argv.
+  const gateScript = fileURLToPath(
+    new URL("../committed-push-gate.js", import.meta.url),
+  );
+
+  // Commit-bound proofs the native gate demands (review + verification), written
+  // the way council-record-proof.sh records them, so docs is the only open question.
+  const plantProofs = (w) => {
+    const commit = git(w.repo, "rev-parse", "HEAD").trim();
+    const tree = git(w.repo, "rev-parse", "HEAD^{tree}").trim();
+    const dir = join(w.repo, ".council", "proofs", "commits", commit);
+    mkdirSync(dir, { recursive: true });
+    const base = { commit, tree, at: Date.now() };
+    writeFileSync(
+      join(dir, "review.json"),
+      JSON.stringify({
+        ...base,
+        verdict: "approved",
+        findings_remaining: 0,
+        reviewers: ["reviewer-a", "reviewer-b"],
+      }),
+    );
+    writeFileSync(
+      join(dir, "gate.json"),
+      JSON.stringify({
+        ...base,
+        exit_code: 0,
+        coverage: 95,
+        checks: [{ command: "go test ./...", exit_code: 0 }],
+      }),
+    );
+  };
+  const push = ({ w, bare }, env = { CLAUDE_PUSH_AUTHORIZED: "yes" }) => {
+    const local = git(w.repo, "rev-parse", "HEAD").trim();
+    const remote = git(w.repo, "rev-parse", "origin/main").trim();
+    const r = spawnSync("node", [gateScript, "origin", bare], {
+      cwd: w.repo,
+      input: `refs/heads/main ${local} refs/heads/main ${remote}\n`,
+      env: { ...process.env, ...ISOLATED, ...w.env, ...env },
+      encoding: "utf8",
+    });
+    return { code: r.status, stderr: r.stderr };
   };
 
-  test('refuses code committed while the plan is older than the code', () => {
-    const w = world();
-    edit(w, 'service.go');
-    edit(w, 'CHANGELOG.md', '# c\n');
-    const r = commit(w, 'feat: x');
-    assert.equal(r.code, 2);
-    assert.match(r.stderr, /plan was last updated BEFORE/);
+  test("refuses an authorised push carrying an undocumented code commit", () => {
+    const p = pushable();
+    edit(p.w, "service.go");
+    git(p.w.repo, "add", "-A");
+    git(p.w.repo, "commit", "-qm", "feat: undocumented");
+    plantProofs(p.w);
+    const r = push(p);
+    assert.equal(r.code, 1);
+    assert.match(r.stderr, /documentation|Docs: decision/);
   });
 
-  test('refuses code committed with no docs and no Docs: line', () => {
-    const w = world();
-    edit(w, 'service.go');
-    setMtime(w.plan, new Date(Date.now() + 1000));
-    const r = commit(w, 'feat: x');
-    assert.equal(r.code, 2);
-    assert.match(r.stderr, /no documentation/);
+  test("accepts a commit that carries its docs", () => {
+    const p = pushable();
+    edit(p.w, "service.go");
+    edit(p.w, "CHANGELOG.md", "# c\n");
+    git(p.w.repo, "add", "-A");
+    git(p.w.repo, "commit", "-qm", "feat: documented");
+    plantProofs(p.w);
+    assert.equal(push(p).code, 0);
   });
 
-  test('accepts code with a current plan and a staged doc', () => {
-    const w = world();
-    edit(w, 'service.go');
-    edit(w, 'CHANGELOG.md', '# c\n');
-    setMtime(w.plan, new Date(Date.now() + 1000));
-    assert.equal(commit(w, 'feat: x').code, 0);
+  test("accepts a commit whose message records a Docs: decision", () => {
+    const p = pushable();
+    edit(p.w, "service.go");
+    git(p.w.repo, "add", "-A");
+    git(
+      p.w.repo,
+      "commit",
+      "-qm",
+      "refactor: x",
+      "-m",
+      "Docs: none — internal refactor",
+    );
+    plantProofs(p.w);
+    assert.equal(push(p).code, 0);
   });
 
-  test('accepts code with a current plan and an explicit Docs: decision', () => {
-    const w = world();
-    edit(w, 'service.go');
-    setMtime(w.plan, new Date(Date.now() + 1000));
-    assert.equal(commit(w, 'refactor: x\n\nDocs: none — internal refactor, no behaviour change').code, 0);
+  test("does not re-judge commits the remote already has", () => {
+    const p = pushable(); // the base commit is on origin and has no docs question to answer
+    assert.equal(push(p).code, 0);
   });
 
-  test('a tests-only commit needs a current plan but no docs', () => {
-    const w = world();
-    edit(w, 'service_test.go');
-    setMtime(w.plan, new Date(Date.now() + 1000));
-    assert.equal(commit(w, 'test: x').code, 0);
-  });
-
-  test('a docs-only commit is not asked for anything', () => {
-    const w = world();
-    edit(w, 'README.md', '# changed\n');
-    assert.equal(commit(w, 'docs: x').code, 0);
-  });
-
-  test('sees a change made through Bash, which the session edit-stamp never did', () => {
-    // Before git was consulted, this commit had no "source changed" signal at all and passed
-    // with no verification gate ever having run.
-    const w = world();
-    edit(w, 'service.go');
-    git(w.repo, 'add', '-A');
-    const r = run('commit-gate.js', {
-      session_id: uniq('sid'), cwd: w.repo, tool_name: 'Bash',
-      tool_input: { command: 'git commit -m "feat: x"' },
-    }, w.env);
-    assert.equal(r.code, 2);
-    assert.match(r.stderr, /no verification gate/);
-  });
-
-  test('checks the repo named by git -C, not the session directory', () => {
-    const w = world();
-    edit(w, 'service.go');
-    git(w.repo, 'add', '-A');
-    const sid = uniq('sid');
-    const r = run('commit-gate.js', {
-      session_id: sid, cwd: tmpdir(), tool_name: 'Bash',
-      tool_input: { command: `git -C ${w.repo} commit -m "feat: x"` },
-    }, w.env);
-    assert.equal(r.code, 2, 'the staged code lives in the -C repo');
+  test("the native gate refuses a push with no owner authorization", () => {
+    const p = pushable();
+    const r = push(p, {});
+    assert.equal(r.code, 1);
+    assert.match(r.stderr, /authorization is required/);
   });
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-describe('pre-push-gate.js — no commit reaches a remote without docs or a Docs: line', () => {
-  /** A repo whose origin already has the base commit, so only new commits are unpushed. */
-  function pushable() {
+describe("pre-push-gate.js — tool-level push authorization", () => {
+  test("still requires authorisation at the tool boundary", () => {
     const w = world();
-    const bare = join(w.base, 'origin.git');
-    execFileSync('git', ['init', '-q', '--bare', bare], { env: { ...process.env, ...ISOLATED } });
-    git(w.repo, 'remote', 'add', 'origin', bare);
-    git(w.repo, 'push', '-q', 'origin', 'HEAD:main');
-    git(w.repo, 'fetch', '-q', 'origin');
-    return w;
-  }
-  const push = (w, env = {}) =>
-    run('pre-push-gate.js', {
-      cwd: w.repo, tool_name: 'Bash',
-      tool_input: { command: 'CLAUDE_PUSH_AUTHORIZED=yes git push origin HEAD:main' },
-    }, { ...w.env, ...env });
-
-  test('refuses an authorised push carrying an undocumented code commit, and names it', () => {
-    const w = pushable();
-    edit(w, 'service.go');
-    git(w.repo, 'add', '-A');
-    git(w.repo, 'commit', '-qm', 'feat: undocumented');
-    const r = push(w);
-    assert.equal(r.code, 2);
-    assert.match(r.stderr, /feat: undocumented/);
-  });
-
-  test('accepts a commit that carries its docs', () => {
-    const w = pushable();
-    edit(w, 'service.go');
-    edit(w, 'CHANGELOG.md', '# c\n');
-    git(w.repo, 'add', '-A');
-    git(w.repo, 'commit', '-qm', 'feat: documented');
-    assert.equal(push(w).code, 0);
-  });
-
-  test('accepts a commit whose message records a Docs: decision', () => {
-    const w = pushable();
-    edit(w, 'service.go');
-    git(w.repo, 'add', '-A');
-    git(w.repo, 'commit', '-qm', 'refactor: x', '-m', 'Docs: none — internal refactor');
-    assert.equal(push(w).code, 0);
-  });
-
-  test('does not re-judge commits the remote already has', () => {
-    const w = pushable(); // the base commit is on origin and has no docs question to answer
-    assert.equal(push(w).code, 0);
-  });
-
-  test('still requires authorisation once the docs are in order', () => {
-    const w = pushable();
-    const r = run('pre-push-gate.js', {
-      cwd: w.repo, tool_name: 'Bash', tool_input: { command: 'git push origin HEAD:main' },
-    }, w.env);
+    const r = run(
+      "pre-push-gate.js",
+      {
+        cwd: w.repo,
+        tool_name: "Bash",
+        tool_input: { command: "git push origin HEAD:main" },
+      },
+      w.env,
+    );
     assert.equal(r.code, 2);
     assert.match(r.stderr, /requires explicit authorisation/);
   });

@@ -222,7 +222,7 @@ local config = {
 return config
 ```
 
-Per `~/.claude/rules/common/no-ambient-globals.md` — pass the
+Per `~/.claude/rules-library/common/no-ambient-globals.md` — pass the
 config to constructors; don't `require` it deep in code.
 
 ## Reuse-first
@@ -241,7 +241,7 @@ config to constructors; don't `require` it deep in code.
 | Web framework (server) | OpenResty, Lapis, Sailor |
 | Web framework (Roblox-style) | host-provided |
 
-Per `~/.claude/rules/common/reuse-first.md`.
+Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ## Embedding-specific patterns
 
@@ -310,11 +310,11 @@ return cjson.encode({ existed = false })
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/reuse-first.md`
-- `~/.claude/rules/lua/coding-style.md`
-- `~/.claude/rules/lua/no-discards.md`
-- `~/.claude/rules/lua/security.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/lua/coding-style.md`
+- `~/.claude/rules-library/lua/no-discards.md`
+- `~/.claude/rules-library/lua/security.md`
 - Programming in Lua (Roberto Ierusalimschy)
 - OpenResty Best Practices
 - plenary.nvim (Neovim plugin scaffolding)

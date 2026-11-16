@@ -211,7 +211,7 @@ fn it_works() -> Result<(), Box<dyn std::error::Error>> {
 
 ### 4. Time / RNG / FS injected for determinism
 
-Per `~/.claude/rules/common/no-ambient-globals.md`.
+Per `~/.claude/rules-library/common/no-ambient-globals.md`.
 
 ### 5. CI same as local
 
@@ -224,9 +224,9 @@ cargo llvm-cov --workspace --fail-under-lines 80
 
 ## Cross-references
 
-- `~/.claude/rules/common/testing.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/rust/coding-style.md`
-- `~/.claude/rules/common/no-ambient-globals.md`
+- `~/.claude/rules-library/common/testing.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/rust/coding-style.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md`
 - The Rust Book — Testing chapter
 - proptest docs

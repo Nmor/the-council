@@ -72,7 +72,7 @@ gradual adoption. This rule overrides them to extreme settings:
 | Coverage minimum (touched files) | varies | 90% |
 | Coverage minimum (project) | varies | 80% |
 | Boolean expression operators (Sonar S1067) | 3 | 2 |
-| Single-character variables outside `i, j, k, _` | allowed | disallowed |
+| Single-character variables outside `i, j, k, _` | allowed | disallowed (except idiomatic Go receivers/params like `r`, `w`; varnamelen stays off for Go) |
 | Magic-number tolerance (Sonar S109) | builtin allowlist | 0, 1, -1, 2 only |
 
 When a project's existing code can't yet meet these thresholds,

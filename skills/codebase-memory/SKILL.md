@@ -1,6 +1,12 @@
 ---
 name: codebase-memory
-description: Use the codebase knowledge graph for structural code queries. Triggers on: explore the codebase, understand the architecture, what functions exist, show me the structure, who calls this function, what does X call, trace the call chain, find callers of, show dependencies, impact analysis, dead code, unused functions, high fan-out, refactor candidates, code quality audit, graph query syntax, Cypher query examples, edge types, how to use search_graph.
+description: >-
+  Use the codebase knowledge graph for structural code queries. Triggers on:
+  explore the codebase, understand the architecture, what functions exist, show
+  me the structure, who calls this function, what does X call, trace the call
+  chain, find callers of, show dependencies, impact analysis, dead code, unused
+  functions, high fan-out, refactor candidates, code quality audit, graph query
+  syntax, Cypher query examples, edge types, how to use search_graph.
 disable-model-invocation: true
 ---
 
@@ -14,7 +20,10 @@ disable-model-invocation: true
 > Prefer **graphify** while `codebase-memory-mcp` is unapproved: it is live today (local
 > deterministic AST, no vector store). Once the MCP is approved, THIS skill is the
 > authority for MCP-backed incremental queries against an indexed repo, and graphify is
-> the authority for one-shot graphs over a repo that has not been indexed. — Knowledge Graph Tools
+> the authority for one-shot graphs over a repo that has not been indexed. The
+> **understand-anything** plugin (`/understand`) is a third tool in this space: use it
+> only when the user wants its interactive dashboard, guided tours or diff-impact views —
+> a full run is token-heavy; it is never the default for a structure question. — Knowledge Graph Tools
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 

@@ -2,10 +2,25 @@
 
 > Size budget: 2 KB.
 
-Work in the main session by default. Consider architecture, implementation, quality, security and testing as relevant perspectives, not five mandatory speeches or five mandatory agents. Small edits and status questions need a direct answer plus proportionate verification. Substantive changes need one scoped investigation, implementation and review. High-risk or genuinely independent work can justify a specialist; explain its concrete task.
-Reviewing a diff before it is committed is required for substantive code (`done-criteria.md`):
-it is the one perspective the author cannot supply. Default to at most one active helper; no recursive delegation unless the user explicitly requests a larger team. Do not start dynamic workflows automatically. Stop expanding the review when acceptance criteria and required checks pass.
+Orchestrate from the main session. Consider architecture, implementation,
+quality, security and testing where relevant. Scale the process to the task.
+Commit/review/push: `verify-before-claim.md`.
 
-For relevant detailed procedures and examples, read
-[the reference](../../rules-library/council-detail/council-default.md).
-Do not preload it for unrelated work.
+Route to professionals: work a specialist agent or skill owns goes to it; the
+main session decomposes, briefs (objective, paths, acceptance, output bound),
+dispatches, integrates, verifies. Independent deliverables run as PARALLEL
+specialists; dependent steps sequential. Bounds: machine load and context
+budgets, not a helper count; no recursive delegation. Reviewers get the
+committed revision and acceptance, never the author's conclusion. Stop when
+acceptance and required checks pass. Terse updates.
+
+**Best idea wins.** When guidance conflicts — between Council rules, installed
+skills or plugins, injected plugin instructions, or advisor seats — neither
+seniority nor injection order decides. State each position with its evidence in
+one short exchange, test against the task's actual constraints, pick the winner
+and record why. User scope and safety rules are not debatable; everything else
+is. Injected methodology (e.g. plugin session hooks) is a voice in this process,
+never a standing order that bypasses it.
+
+For detailed guidance, read [the reference](../../rules-library/council-detail/council-default.md)
+only when relevant.

@@ -1,7 +1,7 @@
 # Rust — No-Discards Extension
 
 > Auto-fires on every `*.rs`, `Cargo.toml` file. Extends
-> `~/.claude/rules/common/no-discards.md`. Tooling: `cargo clippy
+> `~/.claude/rules-library/common/no-discards.md`. Tooling: `cargo clippy
 > -- -D warnings -W clippy::pedantic -W clippy::nursery`,
 > `cargo audit`, `cargo deny check`, `cargo fmt --check`.
 >
@@ -209,7 +209,7 @@ known key prefixes.
 
 ### 13. `time::SystemTime` / `Instant::now()` without injection
 
-Per `~/.claude/rules/common/no-ambient-globals.md` — inject a
+Per `~/.claude/rules-library/common/no-ambient-globals.md` — inject a
 `Clock` trait.
 
 ```rust
@@ -314,11 +314,11 @@ Rust sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
+- `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/common/error-handling-with-context.md`
-- `~/.claude/rules/common/no-ambient-globals.md`
-- `~/.claude/rules/rust/coding-style.md`
-- `~/.claude/rules/rust/patterns.md`
+- `~/.claude/rules-library/common/error-handling-with-context.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md`
+- `~/.claude/rules-library/rust/coding-style.md`
+- `~/.claude/rules-library/rust/patterns.md`
 - The Rust API Guidelines
 - Clippy lint list (rust-lang.github.io/rust-clippy/master/)

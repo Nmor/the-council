@@ -17,7 +17,7 @@ services:
       context: .
       target: dev                     # Use dev stage of multi-stage Dockerfile
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       - .:/app                        # Bind mount for hot reload
       - /app/node_modules             # Anonymous volume -- preserves container deps
@@ -35,7 +35,7 @@ services:
   db:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -52,7 +52,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redisdata:/data
 
@@ -115,7 +115,7 @@ services:
       - DEBUG=app:*
       - LOG_LEVEL=debug
     ports:
-      - "9229:9229"                   # Node.js debugger
+      - "127.0.0.1:9229:9229"                   # Node.js debugger
 
 # docker-compose.prod.yml (explicit for production)
 services:

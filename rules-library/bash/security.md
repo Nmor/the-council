@@ -1,7 +1,7 @@
 # Bash / Shell Security
 
 > Auto-fires on every `*.sh`, `*.bash`, `*.zsh` file. Sister to
-> `~/.claude/rules/common/security.md`. Standards: **OWASP Shell
+> `~/.claude/rules-library/common/security.md`. Standards: **OWASP Shell
 > Injection Cheat Sheet**, **POSIX shell command-injection
 > taxonomy**, **CWE-78 (OS Command Injection)**, **CWE-77 (Command
 > Injection)**, **CWE-88 (Argument Injection)**.
@@ -142,7 +142,7 @@ echo "$EXPECTED_SHA256  installer.sh" | sha256sum --check --quiet
 bash installer.sh
 ```
 
-Per `~/.claude/rules/common/install-allowlist.md`.
+Per `~/.claude/rules-library/common/install-allowlist.md`.
 
 ## SSH / remote execution
 
@@ -185,11 +185,11 @@ trufflehog filesystem --no-update script.sh
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/common/install-allowlist.md`
-- `~/.claude/rules/bash/no-discards.md`
-- `~/.claude/rules/bash/coding-style.md`
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/install-allowlist.md`
+- `~/.claude/rules-library/bash/no-discards.md`
+- `~/.claude/rules-library/bash/coding-style.md`
 - OWASP Shell Injection Cheat Sheet
 - Bash Pitfalls (mywiki.wooledge.org/BashPitfalls)
 - CWE-78 (cwe.mitre.org)

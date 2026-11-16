@@ -1,6 +1,6 @@
 ---
 name: php-reviewer
-description: Expert PHP code reviewer — type juggling, injection, deserialisation, Laravel and Symfony idiom, Eloquent and Doctrine query shape, upload and session handling. Use for all PHP code changes. MUST BE USED for PHP projects.
+description: Expert PHP code reviewer — type juggling, injection, deserialisation, Laravel and Symfony idiom, Eloquent and Doctrine query shape, upload and session handling. Use for all PHP code changes. Default reviewer for PHP code when a review is warranted.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---
@@ -56,7 +56,7 @@ no listener.
 - **`in_array` / `array_search` without the strict flag** — the same juggling, hidden
 - **`isset` vs `array_key_exists`**: `isset` is false for a key present with a null value
 - **`empty`** on `"0"`, `0`, `[]`: often not what the branch meant
-- **Loose nullable handling**: `?? ` vs `?:` — the second swallows a legitimate falsy value
+- **Loose nullable handling**: `??` vs `?:` — the second swallows a legitimate falsy value
 - **Untyped properties and parameters** where a type is known
 - **`mixed` in new code** without a narrowing docblock
 

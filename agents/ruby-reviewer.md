@@ -1,6 +1,6 @@
 ---
 name: ruby-reviewer
-description: Expert Ruby and Rails code reviewer — mass assignment, injection, N+1 and query shape, callback and transaction correctness, background-job idempotency, migration safety. Use for all Ruby code changes. MUST BE USED for Ruby and Rails projects.
+description: Expert Ruby and Rails code reviewer — mass assignment, injection, N+1 and query shape, callback and transaction correctness, background-job idempotency, migration safety. Use for all Ruby code changes. Default reviewer for Ruby and Rails code when a review is warranted.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

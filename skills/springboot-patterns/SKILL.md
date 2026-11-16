@@ -1,6 +1,6 @@
 ---
 name: springboot-patterns
-description: Spring Boot 3.x implementation discipline — layering (controller/service/repository), dependency injection, configuration properties, transaction boundaries, JPA usage, REST API design, error handling, AND the full Spring Security surface (authentication, authorization, method security, CSRF, CORS, headers, secret handling). Use when writing or reviewing any Spring Boot controller, service, repository, entity, configuration class, application.yml or build file.
+description: Spring Boot 4.x (Spring Framework 7) implementation discipline — layering (controller/service/repository), dependency injection, configuration properties, transaction boundaries, JPA usage, REST API design, error handling, AND the full Spring Security surface (authentication, authorization, method security, CSRF, CORS, headers, secret handling). Use when writing or reviewing any Spring Boot controller, service, repository, entity, configuration class, application.yml or build file.
 paths:
   - "**/*Controller.java"
   - "**/*Service.java"

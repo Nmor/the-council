@@ -4,9 +4,9 @@
 > `docker-compose*.yml`, `compose*.yml`, `.dockerignore`,
 > `containerfile`, `Containerfile`, and any path under `docker/`,
 > `containers/`, `oci/`, `images/`. Sister to
-> `~/.claude/rules/common/hooks.md`, `~/.claude/rules/dockerfile/
-> coding-style.md`, `~/.claude/rules/dockerfile/security.md`,
-> `~/.claude/rules/dockerfile/testing.md`. Standards: **Docker
+> `~/.claude/rules-library/common/hooks.md`, `~/.claude/rules/dockerfile/
+> coding-style.md`, `~/.claude/rules-library/dockerfile/security.md`,
+> `~/.claude/rules-library/dockerfile/testing.md`. Standards: **Docker
 > Build Cloud**, **BuildKit 1.20+**, **OCI Image Spec 1.1.1**,
 > **SLSA Framework v1.0**, **Sigstore Cosign**, **Hadolint
 > v2.13+**, **GitHub Actions docker/build-push-action v6**.
@@ -531,14 +531,14 @@ curl -L https://github.com/hadolint/hadolint/releases/latest/download/hadolint-L
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md` — universal hook framework
-- `~/.claude/rules/dockerfile/coding-style.md` — what the hooks enforce
-- `~/.claude/rules/dockerfile/security.md` — Cosign + Trivy + SBOM
-- `~/.claude/rules/dockerfile/testing.md` — structure-test + Goss
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — CVE gate
-- `~/.claude/rules/common/security-controls-org-wide.md` — 5-layer
-- `~/.claude/rules/common/github-actions-gotchas.md` — Actions caveats
-- `~/.claude/rules/common/deploy-failures-become-checks.md` — gate pattern
+- `~/.claude/rules-library/common/hooks.md` — universal hook framework
+- `~/.claude/rules-library/dockerfile/coding-style.md` — what the hooks enforce
+- `~/.claude/rules-library/dockerfile/security.md` — Cosign + Trivy + SBOM
+- `~/.claude/rules-library/dockerfile/testing.md` — structure-test + Goss
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — CVE gate
+- `~/.claude/rules-library/common/security-controls-org-wide.md` — 5-layer
+- `~/.claude/rules-library/common/github-actions-gotchas.md` — Actions caveats
+- `~/.claude/rules-library/common/deploy-failures-become-checks.md` — gate pattern
 
 ## Standards cited
 

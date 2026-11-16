@@ -1,7 +1,7 @@
 # Java Hooks
 
 > Auto-fires on every `*.java`, `pom.xml`, `build.gradle`,
-> `build.gradle.kts` file. Sister to `~/.claude/rules/common/hooks.md`.
+> `build.gradle.kts` file. Sister to `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -90,8 +90,8 @@ tasks.named("build") {
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/java/no-discards.md`
-- `~/.claude/rules/java/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/java/no-discards.md`
+- `~/.claude/rules-library/java/testing.md`

@@ -1,6 +1,6 @@
 ---
 name: rust-build-resolver
-description: Rust build and compile error resolution specialist. Use PROACTIVELY when `cargo build`/`cargo check` fails or clippy errors occur. Fixes borrow-checker, trait, lifetime, and module errors with minimal diffs — no refactoring. Covers cargo workspaces, features, and editions.
+description: Rust build and compile error resolution specialist. Use when `cargo build`/`cargo check` fails or clippy errors occur. Fixes borrow-checker, trait, lifetime, and module errors with minimal diffs — no refactoring. Covers cargo workspaces, features, and editions.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

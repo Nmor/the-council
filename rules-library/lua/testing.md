@@ -202,7 +202,7 @@ end)
 
 ### 3. No `Time.now` / `os.time` directly — inject
 
-Per `~/.claude/rules/common/no-ambient-globals.md`:
+Per `~/.claude/rules-library/common/no-ambient-globals.md`:
 
 ```lua
 function MyService.new(opts)
@@ -257,10 +257,10 @@ it("rejects negative prices", ...)
 
 ## Cross-references
 
-- `~/.claude/rules/common/testing.md`
-- `~/.claude/rules/common/no-ambient-globals.md`
-- `~/.claude/rules/lua/coding-style.md`
-- `~/.claude/rules/lua/no-discards.md`
+- `~/.claude/rules-library/common/testing.md`
+- `~/.claude/rules-library/common/no-ambient-globals.md`
+- `~/.claude/rules-library/lua/coding-style.md`
+- `~/.claude/rules-library/lua/no-discards.md`
 - busted docs (lunarmodules.github.io/busted/)
 - luacov docs (keplerproject.github.io/luacov/)
 - plenary.nvim docs (github.com/nvim-lua/plenary.nvim)

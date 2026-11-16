@@ -493,25 +493,25 @@ describe('payload-marker.js — looking at a payload is not grepping for one', (
 // Wiring: these markers have no internal tool check, so the matcher IS the check
 // ---------------------------------------------------------------------------
 
-describe('settings.json — a marker is only honest if its matcher is right', () => {
-  const settings = JSON.parse(readFileSync(new URL('../../../settings.json', import.meta.url), 'utf8'));
-  const matchersFor = (script) =>
-    (settings.hooks?.PostToolUse || [])
-      .filter((e) => (e.hooks || []).some((h) => String(h.command || '').includes(script)))
-      .map((e) => e.matcher);
-
-  // research-marker and intake-marker write unconditionally — they never look at tool_name.
+describe('dispatch manifest — a marker is only honest if its matcher is right', () => {
+  // Markers have no internal tool check, so the manifest matcher IS the check.
   // Widening either matcher would turn them into recorders of nothing in particular.
-  for (const [script, matcher] of [
-    ['research-marker.js', 'WebSearch|WebFetch'],
+  const src = readFileSync(new URL('../dispatch.js', import.meta.url), 'utf8');
+  const lineFor = (script) => src.split('\n').find((l) => l.includes(script));
+  for (const [script, ...tools] of [
+    ['research-marker.js', 'WebSearch', 'WebFetch'],
     ['intake-marker.js', 'TodoWrite'],
     ['test-coverage-marker.js', 'Bash'],
     ['payload-marker.js', 'Bash'],
-    ['docs-sync-marker.js', 'Edit|Write|MultiEdit'],
-    ['supersede-proof-marker.js', 'Edit|Write|MultiEdit'],
+    ['docs-sync-marker.js', 'Edit', 'Write', 'MultiEdit'],
+    ['supersede-proof-marker.js', 'Edit', 'Write', 'MultiEdit'],
   ]) {
-    test(`${script} runs only on ${matcher}`, () => {
-      assert.deepEqual(matchersFor(script), [matcher]);
+    test(`${script} runs only on ${tools.join('|')}`, () => {
+      const line = lineFor(script);
+      assert.ok(line, script);
+      for (const tool of tools) assert.ok(line.includes(tool), tool);
+      // and nothing broader: Bash-only markers must not match Edit, etc.
+      if (!tools.includes('Edit')) assert.ok(!/\bEdit\b/.test(line.replace(/MultiEdit/g, '')), 'no Edit');
     });
   }
 });

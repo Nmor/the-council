@@ -1,6 +1,6 @@
 ---
 name: health-reviewer
-description: Healthcare / clinical-data specialist. Use PROACTIVELY when code touches PHI / ePHI, HIPAA-regulated workflows, FHIR / HL7 v2 / CDA / CCDA / DICOM / X12 EDI, SMART on FHIR, mHealth (HealthKit / Health Connect), telehealth, clinical decision support, EHR integrations (Epic / Cerner / Athena / NextGen / Allscripts), 42 CFR Part 2 substance-use records, FDA-regulated SaMD, GxP / 21 CFR Part 11, or any flow within a covered entity / business associate boundary. Operates within Council Division 6 (Compliance) with deep Division 4 (Security) overlap.
+description: Healthcare / clinical-data specialist. Use when code touches PHI / ePHI, HIPAA-regulated workflows, FHIR / HL7 v2 / CDA / CCDA / DICOM / X12 EDI, SMART on FHIR, mHealth (HealthKit / Health Connect), telehealth, clinical decision support, EHR integrations (Epic / Cerner / Athena / NextGen / Allscripts), 42 CFR Part 2 substance-use records, FDA-regulated SaMD, GxP / 21 CFR Part 11, or any flow within a covered entity / business associate boundary. Operates within Council Division 6 (Compliance) with deep Division 4 (Security) overlap.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

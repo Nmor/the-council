@@ -1,6 +1,6 @@
 ---
 name: typescript-reviewer
-description: Expert TypeScript / JavaScript code reviewer — type safety, async correctness, React and Vue component behaviour, Node server-side risk, bundle and dependency hygiene. Use for all TS/JS/TSX/Vue code changes. MUST BE USED for TypeScript and JavaScript projects.
+description: Expert TypeScript / JavaScript code reviewer — type safety, async correctness, React and Vue component behaviour, Node server-side risk, bundle and dependency hygiene. Use for all TS/JS/TSX/Vue code changes. Default reviewer for TypeScript and JavaScript code when a review is warranted.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

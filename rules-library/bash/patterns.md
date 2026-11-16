@@ -217,10 +217,10 @@ eval "$(parse_env_file "$ENV_FILE")"
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/bash/coding-style.md`
-- `~/.claude/rules/bash/no-discards.md`
-- `~/.claude/rules/bash/security.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/bash/coding-style.md`
+- `~/.claude/rules-library/bash/no-discards.md`
+- `~/.claude/rules-library/bash/security.md`
 - Bash Hackers Wiki
 - BashFAQ (mywiki.wooledge.org/BashFAQ)
 - ShellCheck wiki

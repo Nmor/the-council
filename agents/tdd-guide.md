@@ -1,6 +1,12 @@
 ---
 name: tdd-guide
-description: Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Applies canonical 90% touched / 80% project / 95% critical-path defaults for supported metrics.
+description: >-
+  Test-Driven Development specialist enforcing write-tests-first methodology.
+  Use when writing new features, fixing bugs, or refactoring code. Applies
+  canonical 90% touched / 80% project / 95% critical-path defaults for
+  supported metrics. Boundary: engage when TDD is requested, a bug needs a
+  failing test first, or coverage policy is in question — not on every coding
+  task.
 tools: ["Read", "Write", "Edit", "Bash", "Grep"]
 model: opus
 ---
@@ -85,7 +91,7 @@ npm run test:coverage
 - Testing implementation details (internal state) instead of behavior
 - Tests depending on each other (shared state)
 - Asserting too little (passing tests that don't verify anything)
-- Not mocking external dependencies (Supabase, Redis, OpenAI, etc.)
+- Not mocking external dependencies in UNIT tests (Supabase, Redis, OpenAI, etc.)
 
 ## Quality Checklist
 
@@ -94,7 +100,8 @@ npm run test:coverage
 - [ ] Critical user flows have E2E tests
 - [ ] Edge cases covered (null, empty, invalid)
 - [ ] Error paths tested (not just happy path)
-- [ ] Mocks used for external dependencies
+- [ ] Unit tests mock external dependencies; integration tests hit the real shape
+  (Testcontainers/LocalStack), never mocks
 - [ ] Tests are independent (no shared state)
 - [ ] Assertions are specific and meaningful
 - [ ] Supported coverage meets canonical touched/project/critical-path thresholds

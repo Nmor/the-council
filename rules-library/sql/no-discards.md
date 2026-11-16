@@ -1,7 +1,7 @@
 # SQL — No-Discards Extension
 
 > Auto-fires on every `*.sql`, `migrations/**`, `db/**` file.
-> Extends `~/.claude/rules/common/no-discards.md`. Tooling:
+> Extends `~/.claude/rules-library/common/no-discards.md`. Tooling:
 > **sqlfluff** strict; **psql --echo-errors**; **pg_lint**;
 > **squawk** (Postgres migration safety).
 >
@@ -154,7 +154,7 @@ psql 'host=db user=admin password=hunter2 dbname=mydb'
 psql "$DATABASE_URL"
 ```
 
-Per `~/.claude/rules/common/secrets-management.md`.
+Per `~/.claude/rules-library/common/secrets-management.md`.
 
 ### 11. Destructive migrations without backup verification
 
@@ -162,7 +162,7 @@ Per `~/.claude/rules/common/secrets-management.md`.
 -- FORBIDDEN
 alter table users drop column email;
 
--- CORRECT — multi-step per ~/.claude/rules/common/schema-evolution.md
+-- CORRECT — multi-step per ~/.claude/rules-library/common/schema-evolution.md
 -- 1. Stop writing to email
 -- 2. Verify last-writer time > deploy time
 -- 3. Drop in a later migration
@@ -252,11 +252,11 @@ SQL sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md`
-- `~/.claude/rules/common/schema-evolution.md`
+- `~/.claude/rules-library/common/no-discards.md`
+- `~/.claude/rules-library/common/schema-evolution.md`
 - `~/.claude/rules/common/no-silent-failures.md`
-- `~/.claude/rules/sql/security.md`
-- `~/.claude/rules/sql/coding-style.md`
+- `~/.claude/rules-library/sql/security.md`
+- `~/.claude/rules-library/sql/coding-style.md`
 - sqlfluff docs (sqlfluff.com)
 - squawk docs (squawkhq.com)
 - Postgres EXPLAIN reference

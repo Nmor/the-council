@@ -152,10 +152,10 @@ public Money calculateTotal(Order order) { ... }
 
 ## Cross-references
 
-- `~/.claude/rules/common/coding-style.md` — universal baseline
-- `~/.claude/rules/java/no-discards.md` — banned patterns
-- `~/.claude/rules/java/security.md` — Spring Security + OWASP
-- `~/.claude/rules/java/testing.md` — JUnit 5 + Mockito + Testcontainers
-- `~/.claude/rules/common/extreme-lint-policy.md` — strict gates
+- `~/.claude/rules-library/common/coding-style.md` — universal baseline
+- `~/.claude/rules-library/java/no-discards.md` — banned patterns
+- `~/.claude/rules-library/java/security.md` — Spring Security + OWASP
+- `~/.claude/rules-library/java/testing.md` — JUnit 5 + Mockito + Testcontainers
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strict gates
 - Effective Java (Joshua Bloch, 3rd edition)
 - Google Java Style Guide

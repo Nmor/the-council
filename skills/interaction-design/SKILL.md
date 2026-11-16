@@ -1,6 +1,10 @@
 ---
 name: interaction-design
-description: Principal-level interaction design — affordances, signifiers, feedback, mappings, constraints, error prevention, recovery, gesture + input model design, microcopy, motion as functional language, and the discipline that turns flows into experiences users complete without thinking and don't have to recover from.
+description: >-
+  Principal-level interaction design — affordances, signifiers, feedback, mappings, constraints,
+  error prevention, recovery, gesture + input model design, microcopy, motion as functional
+  language, and the discipline that turns flows into experiences users complete without thinking
+  and don't have to recover from.
 disable-model-invocation: true
 ---
 
@@ -138,7 +142,8 @@ Q12 + Q19 (UX writing).
       actionable
 - [ ] Optimistic UI rolls back on failure (per
       `no-silent-failures.md`)
-- [ ] Loading states present for any action > 100 ms
+- [ ] Loading indicator for any action > 300 ms (under that, the flash reads as a glitch; 100 ms
+  is the press-feedback window, not a spinner threshold)
 - [ ] Empty states explain why + what next
 - [ ] Microcopy in user vocabulary; verbs on buttons
 - [ ] Copy passes the "never write like AI" scan (Pattern 16): no

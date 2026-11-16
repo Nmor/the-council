@@ -1,7 +1,7 @@
 # Bash / Shell Hooks
 
 > Auto-fires on every `*.sh`, `*.bash`, `*.zsh` file. Sister to
-> `~/.claude/rules/common/hooks.md`.
+> `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -154,11 +154,11 @@ grep -nE 'rm -rf /[^ ]*$|eval "\$|curl.*\| *sh' script.sh && exit 1
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/bash/no-discards.md`
-- `~/.claude/rules/bash/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/bash/no-discards.md`
+- `~/.claude/rules-library/bash/testing.md`
 - ShellCheck (shellcheck.net)
 - shfmt (github.com/mvdan/sh)
 - bats-core (bats-core.readthedocs.io)

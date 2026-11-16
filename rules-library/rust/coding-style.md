@@ -196,11 +196,11 @@ cargo doc --no-deps --all-features
 
 ## Cross-references
 
-- `~/.claude/rules/common/coding-style.md`
-- `~/.claude/rules/rust/no-discards.md`
-- `~/.claude/rules/rust/security.md`
-- `~/.claude/rules/rust/testing.md`
-- `~/.claude/rules/rust/patterns.md`
+- `~/.claude/rules-library/common/coding-style.md`
+- `~/.claude/rules-library/rust/no-discards.md`
+- `~/.claude/rules-library/rust/security.md`
+- `~/.claude/rules-library/rust/testing.md`
+- `~/.claude/rules-library/rust/patterns.md`
 - The Rust API Guidelines
 - The Rust Programming Language ("The Book")
 - Rustonomicon (unsafe Rust)

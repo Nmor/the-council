@@ -1,6 +1,6 @@
 ---
 name: ai-ethics-reviewer
-description: AI / ML ethics + responsible-AI specialist — bias, fairness, model selection, dataset provenance, automated-decision systems, AI safety, prompt injection defense, model cards. Use PROACTIVELY on any ML / AI / LLM / generative-AI work. Owns Council Division 15.
+description: AI / ML ethics + responsible-AI specialist — bias, fairness, model selection, dataset provenance, automated-decision systems, AI safety, prompt injection defense, model cards. Use on any ML / AI / LLM / generative-AI work. Owns Council Division 15.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

@@ -298,10 +298,10 @@ create table notification (
 
 ## Cross-references
 
-- `~/.claude/rules/common/patterns.md`
-- `~/.claude/rules/common/schema-evolution.md`
-- `~/.claude/rules/sql/coding-style.md`
-- `~/.claude/rules/sql/security.md`
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/schema-evolution.md`
+- `~/.claude/rules-library/sql/coding-style.md`
+- `~/.claude/rules-library/sql/security.md`
 - Designing Data-Intensive Applications (Kleppmann)
 - The Art of PostgreSQL (Tagliaferri)
 - High Performance MySQL (Schwartz et al.)

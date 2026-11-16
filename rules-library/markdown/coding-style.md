@@ -264,7 +264,7 @@ npx markdownlint-cli2 --config .markdownlint.jsonc "**/*.md"
 
 ### Pre-commit hook
 
-Per `~/.claude/rules/common/hooks.md`:
+Per `~/.claude/rules-library/common/hooks.md`:
 
 ```bash
 #!/usr/bin/env bash
@@ -390,14 +390,14 @@ similar) for callouts.
 
 ## Cross-references
 
-- `~/.claude/rules/common/extreme-lint-policy.md` — strict
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strict
   thresholds (MD013 line length, MD040 fenced code language,
   MD031/MD032/MD022 surround rules)
-- `~/.claude/rules/common/coding-style.md` — comment rules
+- `~/.claude/rules-library/common/coding-style.md` — comment rules
   apply across every language including markdown
-- `~/.claude/rules/common/docs-sync-with-code.md` — markdown
+- `~/.claude/rules-library/common/docs-sync-with-code.md` — markdown
   files are part of the docs surface that ships with code
-- `~/.claude/rules/common/documentation-requirements.md` —
+- `~/.claude/rules-library/common/documentation-requirements.md` —
   Diátaxis four-quadrant model; markdown is the format
 
 ## Standards cited

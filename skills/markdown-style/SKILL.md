@@ -43,6 +43,24 @@ another is a portability bug. A markdown file with 500-char
 lines is a review-hostile bug. A markdown file that renders
 visually but fails markdownlint is technical debt.
 
+### Running the lint (Council corpus)
+
+The gate is `~/.claude/skills/council-maintenance/tests/md-lint.sh`
+(green since 2026-11-15: 957 files, 0 errors — keep it that way).
+Config: `~/.claude/.markdownlint-cli2.jsonc`. Three conventions:
+
+- **Vendored content is ignored, never reformatted** (upstream skill
+  packs, council seats, `tests/**`, `backups/**`) — rewrapping it
+  breaks update diffs. New imports get an `ignores` entry.
+- **The config's globs APPEND to CLI args** — `markdownlint-cli2
+  one-file.md` still lints the whole corpus; `--fix` fixes it all.
+- **`rules-library/` carries a nested config** (MD041/MD028 off):
+  its files open with the owner-policy banner blockquote by design.
+
+When wrapping long lines, never let a tool break inside code spans
+or frontmatter (`break_on_hyphens` must be off): a hyphen-split
+`` `file-name.md` `` corrupts the reference it names.
+
 ### Mandatory markdownlint rules
 
 Every `*.md` file MUST pass these rules. They are the floor;

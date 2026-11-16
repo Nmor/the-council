@@ -89,7 +89,7 @@ DO UPDATE SET value = EXCLUDED.value;
 **Cursor Pagination:**
 
 ```sql
-SELECT * FROM products WHERE id > $last_id ORDER BY id LIMIT 20;
+SELECT id /* name needed columns; no * in production */ FROM products WHERE id > $last_id ORDER BY id LIMIT 20;
 -- O(1) vs OFFSET which is O(n)
 ```
 
@@ -101,7 +101,7 @@ WHERE id = (
   SELECT id FROM jobs WHERE status = 'pending'
   ORDER BY created_at LIMIT 1
   FOR UPDATE SKIP LOCKED
-) RETURNING *;
+) RETURNING id, created_at  -- name columns; no * in production;
 ```
 
 ### Anti-Pattern Detection
@@ -179,7 +179,7 @@ discipline, EXPLAIN ANALYZE reading, connection pooling, autovacuum tuning.
 
 ## Standards Cited
 
-- **PostgreSQL 17 Documentation** (`www.postgresql.org/docs/17/`) — canonical reference
+- **PostgreSQL 18 Documentation** (`www.postgresql.org/docs/17/`) — canonical reference
 - **SQL:2023 (ISO/IEC 9075)** — standard SQL semantics
 - **The Art of PostgreSQL (Dimitri Fontaine)** — community-canonical reference
 - **PostgreSQL Anti-Patterns (Markus Winand — Use The Index, Luke!)** — index strategy

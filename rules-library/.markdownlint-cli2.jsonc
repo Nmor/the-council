@@ -1,0 +1,13 @@
+// Nested config for the rules library (the pattern the root config prescribes for
+// per-path differences). Two deliberate conventions here:
+// MD041 off — detail/reference files open with the owner-policy banner blockquote
+//   (or migrated content) before any heading; the banner must be read first by design.
+// MD028 off — adjacent-but-distinct blockquotes (policy banner, then reference banner)
+//   are separated by a blank line on purpose; MD028 misreads them as one quote.
+{
+  "config": {
+    "extends": "../.markdownlint-cli2.jsonc",
+    "MD041": false,
+    "MD028": false
+  }
+}

@@ -1,7 +1,7 @@
 # Java Testing
 
 > Auto-fires on every `*Test.java`, `*Tests.java`, `*IT.java`, `*Spec.java`
-> file. Sister to `~/.claude/rules/common/testing.md`. Standards:
+> file. Sister to `~/.claude/rules-library/common/testing.md`. Standards:
 > **JUnit 5 (Jupiter)**, **AssertJ**, **Mockito 5**, **Testcontainers**,
 > **Spring Boot Test**, **JaCoCo**.
 >
@@ -212,7 +212,7 @@ business-logic packages.
 @Test void totalThrowsWhenLineItemIsInvalid() { ... }
 ```
 
-Per `~/.claude/rules/golang/no-discards.md` S100-equivalent —
+Per `~/.claude/rules-library/golang/no-discards.md` S100-equivalent —
 the test name IS documentation.
 
 ### 10. Test resources separate from production
@@ -223,13 +223,13 @@ profile.
 
 ## Cross-references
 
-- `~/.claude/rules/common/testing.md` — universal baseline
-- `~/.claude/rules/common/extreme-lint-policy.md` — coverage
+- `~/.claude/rules-library/common/testing.md` — universal baseline
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — coverage
   thresholds
-- `~/.claude/rules/java/coding-style.md` — naming
-- `~/.claude/rules/common/no-ambient-globals.md` — inject Clock /
+- `~/.claude/rules-library/java/coding-style.md` — naming
+- `~/.claude/rules-library/common/no-ambient-globals.md` — inject Clock /
   RNG
-- `~/.claude/rules/common/contract-testing.md` — Pact for Java
+- `~/.claude/rules-library/common/contract-testing.md` — Pact for Java
 - JUnit 5 User Guide
 - AssertJ documentation
 - Testcontainers documentation

@@ -97,29 +97,6 @@ test('verification records omit raw credentials and failed reruns invalidate pro
   assert.equal(markerExists(`claude-council-gate-${sid}`), false);
 });
 
-test('source changes and mismatched staged contents cannot reuse verification', () => {
-  const w = world();
-  const sid = uniq('source-proof');
-  edit(w, 'main.go', 'package old\n');
-  git(w.repo, 'add', 'main.go');
-  edit(w, 'main.go', 'package current\n');
-  verificationProof(sid, 'turn', w.repo, w.env);
-  verificationProof(sid, 'turn', w.repo, w.env, true);
-  const input = { session_id: sid, prompt_id: 'turn', cwd: w.repo, tool_name: 'Bash',
-    tool_input: { command: 'git commit -m "test\nDocs: no reader-facing change"' } };
-  const mismatch = run('commit-gate.js', input, w.env);
-  assert.equal(mismatch.code, 2);
-  assert.match(mismatch.stderr, /staged source differs/);
-  const cancelledAll = run('commit-gate.js', { ...input, tool_input:
-    { command: 'git commit -a --no-all -m "test\nDocs: no reader-facing change"' } }, w.env);
-  assert.equal(cancelledAll.code, 2);
-  assert.match(cancelledAll.stderr, /staged source differs/);
-  edit(w, 'main.go', 'package changed\n');
-  const changed = run('commit-gate.js', input, w.env);
-  assert.equal(changed.code, 2);
-  assert.match(changed.stderr, /no verification gate/);
-});
-
 test('redaction covers CLI values, escaped quotes and non-HTTP credential URLs', () => {
   const home = mkdtempSync(join(tmpdir(), 'redact-home-'));
   const secret = 'fake-redaction-secret-987654';

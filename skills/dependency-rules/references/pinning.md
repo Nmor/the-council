@@ -163,8 +163,7 @@ graph.
 
 EXCEPTION: When a transitive has a CVE AND its parent hasn't
 released a fix, use `pnpm.overrides` / `resolutions` / Cargo
-`[patch]` to force-upgrade the transitive (per `dependency-
-overrides-not-exceptions.md`).
+`[patch]` to force-upgrade the transitive (per `dependency-overrides-not-exceptions.md`).
 
 ### 7. Verify what's resolved
 

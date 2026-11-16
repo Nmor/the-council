@@ -32,38 +32,14 @@
 // hook used to keep a private copy with a shorter interpreter list, so a heredoc piped to
 // psql was judged differently here than in every other gate.
 const { commandInvocations, gitOperation } = require("./lib/command-scan.js");
-const path = require("node:path");
-const gs = require("./lib/git-state.js");
 const { advise } = require("./lib/advise.js");
 
 // Log-line prefix used by every stderr message this hook emits.
 // Lifted to a const so a future prefix change is one edit, not a sweep.
 const LOG_PREFIX = "[pre-push-gate] ";
 
-// docs-sync-with-code.md at the remote boundary: every commit about to be published that
-// changes source carries docs, or says in a `Docs:` line why none are needed. commit-gate.js
-// checks this per commit, but a commit made in a terminal, or with that gate switched off,
-// never passed through it — the push is the last point that sees every commit.
-// Checks the commits on HEAD that no remote has; pushing a branch other than the current one
-// is not inspected. Inline override for one push: CLAUDE_DOCS_SYNC=off git push ...
-function undocumentedCommits(call, cwd) {
-  if ((call.assignments.CLAUDE_DOCS_SYNC ?? process.env.CLAUDE_DOCS_SYNC) === "off")
-    return [];
-  const index = call.argv.indexOf("-C");
-  const target = index < 0 ? cwd : path.resolve(cwd, call.argv[index + 1] || ".");
-  const root = gs.repoRoot(target);
-  if (!root) return [];
-  return gs
-    .unpushedCommits(root)
-    .filter((c) => c.files.some((f) => gs.classify(f) === "code"))
-    .filter(
-      (c) =>
-        !c.files.some((f) => gs.classify(f) === "docs") &&
-        !gs.DOCS_DECLARATION.test(c.body),
-    )
-    .map((c) => `${c.sha.slice(0, 7)} ${c.body.split("\n")[0].slice(0, 70)}`);
-}
-
+// Exact outgoing-commit docs, review and test evidence are checked by the native
+// committed-push-gate.js, including pushes of refs other than HEAD.
 function pushArguments(args) {
   const options = [];
   const positional = [];
@@ -187,21 +163,6 @@ stdin.on("end", () => {
           `${LOG_PREFIX}Per ~/.claude/rules/common/plan-completion-before-push.md +\n` +
           `${LOG_PREFIX}global action-care rules, force-push to main/master/production/trunk\n` +
           `${LOG_PREFIX}requires running the command directly in your shell — never via the agent.\n`,
-      );
-      process.exit(2);
-    }
-
-    // Docs before the remote, checked before authorisation so the operator sees everything that
-    // stands between this push and the remote in one pass.
-    const undocumented = undocumentedCommits(call, cwd);
-    if (undocumented.length) {
-      process.stderr.write(
-        `${LOG_PREFIX}BLOCKED: ${undocumented.length} commit(s) change source with no docs and no\n` +
-          `${LOG_PREFIX}"Docs:" line saying why none are needed (docs-sync-with-code.md):\n` +
-          undocumented.map((c) => `${LOG_PREFIX}  ${c}\n`).join("") +
-          `${LOG_PREFIX}Add the docs the change affects, or amend each message with a line such as\n` +
-          `${LOG_PREFIX}"Docs: none — internal refactor, no behaviour change". For one push only:\n` +
-          `${LOG_PREFIX}  CLAUDE_DOCS_SYNC=off <your-push-command>  (and say why in the PR).\n`,
       );
       process.exit(2);
     }

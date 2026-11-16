@@ -13,7 +13,8 @@ paths:
 
 # Swift Testing
 
-> Covers Swift testing: the canonical touched/project/critical-path coverage defaults, the Swift Testing framework (`@Test` / `#expect`)
+> Covers Swift testing: the canonical touched/project/critical-path coverage defaults, the Swift
+> Testing framework (`@Test` / `#expect`)
 > and protocol-based mocking. Pointed at by the SKILL.md routing row **Swift testing**.
 >
 > Extends `common/testing.md` with Swift-specific testing conventions.

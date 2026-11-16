@@ -1,7 +1,7 @@
 # C / C++ Security
 
 > Auto-fires on every `*.c`, `*.cpp`, `*.cc`, `*.cxx`, `*.h`,
-> `*.hpp`, `*.hxx` file. Sister to `~/.claude/rules/common/security.md`.
+> `*.hpp`, `*.hxx` file. Sister to `~/.claude/rules-library/common/security.md`.
 > Standards: **CERT C / C++ Coding Standard**, **MISRA C 2023 /
 > MISRA C++ 2023**, **OWASP C / C++ Top 10**, **CWE Top 25 (2026)**,
 > **C++ Core Guidelines (Stroustrup + Sutter)**.
@@ -225,7 +225,7 @@ scan-build --status-bugs make
 - Use environment variables, or platform key stores (macOS
   Keychain, Windows DPAPI, Linux libsecret)
 - For embedded: PKCS#11 / HSM
-- Per `~/.claude/rules/common/secrets-management.md`
+- Per `~/.claude/rules-library/common/secrets-management.md`
 
 ## Dependencies (supply-chain)
 
@@ -252,11 +252,11 @@ osv-scanner --lockfile=conan.lock        # CVE scan
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/cpp/no-discards.md`
-- `~/.claude/rules/cpp/coding-style.md`
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/cpp/no-discards.md`
+- `~/.claude/rules-library/cpp/coding-style.md`
 - CERT C / C++ Coding Standard (wiki.sei.cmu.edu/confluence/display/c/)
 - MISRA C 2023 / MISRA C++ 2023
 - OWASP C / C++ Top 10

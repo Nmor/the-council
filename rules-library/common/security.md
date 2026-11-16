@@ -23,8 +23,7 @@
 > - `no-local-fs.md` — no local FS state on ephemeral platforms
 > - `no-discards.md` (hook-enforced) — blocks hardcoded secrets
 >   - weak crypto patterns on save
-> - `extreme-lint-policy.md` — `gosec`, `bandit`, `eslint-
->   plugin-security` mandatory
+> - `extreme-lint-policy.md` — `gosec`, `bandit`, `eslint-plugin-security` mandatory
 >
 > **Size budget: 17 KB** — `token-budget.mjs --check`.
 
@@ -55,9 +54,9 @@ Per `done-criteria.md`, every commit verifies (in order):
 | --- | --- | --- | --- |
 | 1 | No hardcoded secrets (API keys, passwords, tokens, JWT signing keys, private keys, cloud IAM long-term keys) | ASVS V2.10, CWE-798 | PostToolUse `no-discards` hook; gitleaks pre-commit; CI gitleaks job |
 | 2 | All user inputs validated (length, type, encoding, format, allowlist of acceptable chars) | ASVS V5.1, CWE-20 | Per-handler review; runtime schema validation (Zod / Pydantic / class-validator) |
-| 3 | SQL injection prevention (parameterised queries, ORM-mediated input, no string concat) | ASVS V5.3.4, CWE-89 | `no-discards.md` S2077; ORM enforcement |
-| 4 | XSS prevention (textContent over innerHTML, `Content-Security-Policy` + `nonce`-based scripts, sanitisation library for any user-rendered HTML) | ASVS V5.3.2, V14.4.3, CWE-79 | `no-discards.md` S6299 (Vue), S6481 (React); CSP header check |
-| 5 | CSRF protection (double-submit cookie OR `SameSite=Lax`+`Secure` + Origin/Referer check on state-changing requests) | ASVS V4.2.1, CWE-352 | Per-handler review |
+| 3 | SQL injection prevention (parameterised queries, ORM-mediated input, no string concat) | ASVS V1.2.4 (ASVS 5.0; was 4.0.3 V5.3.4), CWE-89 | `no-discards.md` S2077; ORM enforcement |
+| 4 | XSS prevention (textContent over innerHTML, `Content-Security-Policy` + `nonce`-based scripts, sanitisation library for any user-rendered HTML) | ASVS V5.3.2 (4.0.3; dropped/split in ASVS 5.0 — see owasp-asvs mapping), V14.4.3, CWE-79 | `no-discards.md` S6299 (Vue), S6481 (React); CSP header check |
+| 5 | CSRF protection (double-submit cookie OR `SameSite=Lax`+`Secure` + Origin/Referer check on state-changing requests) | ASVS V8.2.2 (ASVS 5.0; was 4.0.3 V4.2.1), CWE-352 | Per-handler review |
 | 6 | Authentication / authorization verified on every endpoint (no "forgotten" middleware) | ASVS V4.1, CWE-862 | `code-reviewer` agent |
 | 7 | Rate limiting on every public endpoint + every auth endpoint | ASVS V11.1, CWE-770 | Rate-limit middleware; `no-discards.md` S5876 |
 | 8 | Error messages don't leak sensitive data (stack traces, file paths, DB error strings stripped before client response) | ASVS V7.4, CWE-209 | `error-handling-with-context.md` rule 8 |

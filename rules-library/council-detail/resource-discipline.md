@@ -6,6 +6,7 @@
 
 Agents sharing one laptop ran it out of everything: load at 4–7× the core count,
 the disk 98% full, swap exhausted, fans on. Every cause was avoidable:
+
 - test stacks left running for days;
 - a new compose project name for each attempt, each with a fresh database volume;
 - containers started without `--rm`, leaving 330 GB of anonymous volumes;
@@ -111,6 +112,7 @@ stacks, and restart it after a large clean-up.
 
 Each IDE window runs its own language servers, so close the windows you aren't
 using. The editor templates (`templates/ide-configs/`; `INSTALL.md` → *Resources*):
+
 - share gopls across windows;
 - keep gopls, the file watcher, search and terraform-ls out of `.claude`, `.council`
   and `.codex`;

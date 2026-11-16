@@ -92,7 +92,8 @@ NOT runtime validation library catalogue (Zod / Valibot belong in `api-design` o
 
 ## Standards Cited
 
-- **TypeScript 5.6 Handbook** — `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
+- **TypeScript 7.x (native compiler; 5.x syntax unchanged) Handbook** — `strict`,
+  `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
 - **Effective TypeScript 2e (Vanderkam, 2024)** — Item 13 (apparent type), Item 38 (any escape
   hatches)
 - **typescript-eslint v8** — `strict-type-checked` preset

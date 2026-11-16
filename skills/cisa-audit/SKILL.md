@@ -46,7 +46,8 @@ evidence and untested controls explicitly. Distinguish proven deficiency from an
 gap. Attach the supporting artifact to every claimed condition; an attribute with no
 artifact moves to the evidence-request list as "not evidenced in the supplied material",
 not as a stated property of the control. Final scan: any "undefined", "absent" or
-"not performed" without a cited artifact becomes an evidence request. Recommend remediation and a retest; do not silently repair audit evidence or assert
+"not performed" without a cited artifact becomes an evidence request. Recommend remediation and a
+retest; do not silently repair audit evidence or assert
 closure without new evidence. Preserve the existing audit/implementation plan and user scope.
 
 ## Learning hooks

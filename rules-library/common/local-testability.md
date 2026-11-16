@@ -59,7 +59,7 @@ Before I write this feature, the following must be set up locally:
 Once these are in place, reply "ready" and I'll proceed.
 
 Without these, the code I write cannot be locally tested; per
-`~/.claude/rules/common/local-testability.md`, that's a blocker.
+`~/.claude/rules-library/common/local-testability.md`, that's a blocker.
 ```
 
 The agent does NOT proceed to write code until the user confirms

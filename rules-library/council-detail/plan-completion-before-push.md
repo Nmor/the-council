@@ -1,3 +1,8 @@
+> Current owner policy (2026-11-09): commit the complete task first; review and test committed
+> revisions afterward, without review worktrees. Enforce all required acceptance before push, not
+> commit. Local commits are checkpoints, not completion claims. Terse milestone updates. Older
+> timing instructions below are superseded.
+
 > Detailed reference. Apply the current adaptive workflow in `CLAUDE.md` and
 > `rules/common/` first. Historical demands for fixed speeches, repeated full audits,
 > automatic fan-out, fresh plans or mandatory model tiers are superseded. Retain the
@@ -44,7 +49,10 @@ NOT ready to be observed.
 13. No commit carries code newer than the plan: tick the task in the plan, then commit
     (`plan-execution-progress.md` rule 8).
 
-**Enforced at both boundaries, from git's own record.** `commit-gate.js` checks rules 12 and
+Enforcement is push-time (2026-11-09 policy): the native pre-push hook runs
+`committed-push-gate.js`, requiring commit-bound review, verification and docs
+evidence per outgoing commit. The former commit-time gate and its override are
+retired; plan currency (rule 13) is checked through recorded plan evidence.
 13 against what is staged; `pre-push-gate.js` checks rule 12 against every commit no remote
 has yet, which also catches commits made in a terminal or with the commit gate switched off.
 A change made through Bash is seen exactly like an Edit. One-off override:

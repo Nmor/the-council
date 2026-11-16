@@ -17,7 +17,7 @@
 //   - Its evidence came from an Edit/Write marker, blind to every change made through Bash.
 // Owner directive (2026-09-21): "plan update as tasks are completed and doc updates before
 // code changes are committed or pushed". Docs are enforced where they belong, at commit and
-// push (commit-gate.js, pre-push-gate.js); this hook owns the plan.
+// push (committed-push-gate.js, pre-push-gate.js); this hook owns the plan.
 //
 // Git mtimes identify session work only when the transcript supplies a start time.
 // Without that baseline, or outside Git, Edit/Write markers supply the evidence.

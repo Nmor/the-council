@@ -1,7 +1,7 @@
 # Lua Hooks
 
 > Auto-fires on every `*.lua`, `*.rockspec`, `*.luacheckrc` file.
-> Sister to `~/.claude/rules/common/hooks.md`.
+> Sister to `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -179,10 +179,10 @@ nvim --headless -c "checkhealth" -c "qa"
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/lua/no-discards.md`
-- `~/.claude/rules/lua/testing.md`
-- `~/.claude/rules/lua/security.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/lua/no-discards.md`
+- `~/.claude/rules-library/lua/testing.md`
+- `~/.claude/rules-library/lua/security.md`
 - luacheck (github.com/mpeterv/luacheck)
 - stylua (github.com/JohnnyMorganz/StyLua)
 - busted (lunarmodules.github.io/busted/)

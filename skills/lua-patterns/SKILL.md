@@ -53,5 +53,5 @@ the one concern it touches rather than the whole corpus.
 ## Cross-references
 
 Each reference file carries its own cross-reference list and its own standards citations. The
-always-on floor rules that pair with this skill are `~/.claude/rules/common/no-discards.md`,
+always-on floor rules that pair with this skill are `~/.claude/rules-library/common/no-discards.md`,
 `no-silent-failures.md`, `verify-before-claim.md` and `no-bloat.md`.

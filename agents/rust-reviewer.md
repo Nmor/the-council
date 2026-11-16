@@ -1,6 +1,6 @@
 ---
 name: rust-reviewer
-description: Expert Rust code reviewer — panic surfaces, error-type boundaries, unsafe invariants, async runtime misuse, lifetime and ownership cost. Use for all Rust code changes. MUST BE USED for Rust projects.
+description: Expert Rust code reviewer — panic surfaces, error-type boundaries, unsafe invariants, async runtime misuse, lifetime and ownership cost. Use for all Rust code changes. Default reviewer for Rust code when a review is warranted.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: opus
 ---

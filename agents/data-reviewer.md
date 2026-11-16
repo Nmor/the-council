@@ -1,6 +1,10 @@
 ---
 name: data-reviewer
-description: Data + analytics specialist. Use PROACTIVELY for schema migrations, event tracking, ETL/dbt pipelines, PII flows, schema registries. Owns Council Division 9.
+description: >-
+  Data + analytics specialist. Use for schema migrations, event tracking,
+  ETL/dbt pipelines, PII flows, schema registries. Owns Council Division 9.
+  Boundary: owns events, warehouse, dbt and lineage; OLTP schema migrations,
+  query shape, indexes and lock safety belong to database-reviewer.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

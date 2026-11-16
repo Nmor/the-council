@@ -30,7 +30,8 @@ def add(a, b):
 
 ### Coverage Requirements
 
-- **Defaults**: 90% touched / 80% project / 95% critical paths for supported line/branch metrics; repository/user requirements take precedence
+- **Defaults**: 90% touched / 80% project / 95% critical paths for supported line/branch metrics;
+  repository/user requirements take precedence
 - **Critical paths**: 100% coverage required
 - Use `pytest --cov` to measure coverage
 

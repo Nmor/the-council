@@ -13,8 +13,8 @@
 > `~/.claude/rules-library/common/no-discards.md` with TS/JS-specific
 > patterns. Sister to `extreme-lint-policy.md`,
 > `no-silent-failures.md`, `error-handling-with-context.md`.
-> Tooling: `tsc --strict`, `eslint` with `@typescript-eslint/strict-
-> type-checked` + `sonarjs/recommended`, `biome`, `prettier`.
+> Tooling: `tsc --strict`, `eslint` with `@typescript-eslint/strict-type-checked` +
+> `sonarjs/recommended`, `biome`, `prettier`.
 >
 > **Size budget: 15 KB** — `token-budget.mjs --check`.
 
@@ -208,7 +208,7 @@ allowlisted.
 ### 11. Unused parameters / variables
 
 ```typescript
-// FORBIDDEN — silencing with `_` prefix
+// FORBIDDEN for parameters you control — remove them instead; `_` prefix is ALLOWED only where a framework dictates the signature (Express error handlers, event callbacks), which is exactly what noUnusedParameters exempts
 function handler(_event: SubmitEvent) { ... }
 
 // CORRECT — name the parameter; use it OR delete it

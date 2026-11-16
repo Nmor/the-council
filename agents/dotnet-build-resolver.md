@@ -1,6 +1,6 @@
 ---
 name: dotnet-build-resolver
-description: .NET / C# build and compile error resolution specialist. Use PROACTIVELY when `dotnet build` fails or Roslyn analyzer / nullable-reference errors occur. Fixes CS-code compile, nullable, package, and project-reference errors with minimal diffs — no refactoring. Covers .NET SDK, NuGet, analyzers.
+description: .NET / C# build and compile error resolution specialist. Use when `dotnet build` fails or Roslyn analyzer / nullable-reference errors occur. Fixes CS-code compile, nullable, package, and project-reference errors with minimal diffs — no refactoring. Covers .NET SDK, NuGet, analyzers.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

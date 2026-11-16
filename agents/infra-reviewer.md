@@ -1,6 +1,11 @@
 ---
 name: infra-reviewer
-description: Infrastructure-as-code + container + CI/CD specialist. Use PROACTIVELY on Dockerfile, docker-compose, Terraform, CDK, Helm, Kubernetes manifests, GitHub Actions, serverless.yml changes. Council Division 2 expansion.
+description: >-
+  Infrastructure-as-code + container + CI/CD specialist. Use on Dockerfile,
+  docker-compose, Terraform, CDK, Helm, Kubernetes manifests, GitHub Actions,
+  serverless.yml changes. Council Division 2 expansion. Boundary: owns IaC, CI
+  workflows and container files; operational strategy (SLO/runbook/rollout)
+  belongs to ops-reviewer.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

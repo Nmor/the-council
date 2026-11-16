@@ -182,7 +182,7 @@ container behaviour changes, and the gate is one grep wide.
   binding-specific corollary.
 - `deploy-failures-become-checks.md` — same family: every observed
   posture gap becomes a mechanical gate.
-- `~/.claude/rules/common/auto-skills.md` — already maps Dockerfile
+- `~/.claude/rules-library/common/auto-skills.md` — already maps Dockerfile
   - compose files to this rule via the `**/*` path.
 
 ## Learning hooks

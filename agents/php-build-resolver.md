@@ -1,6 +1,6 @@
 ---
 name: php-build-resolver
-description: PHP composer, autoload, syntax, and static-analysis error resolution specialist. Use PROACTIVELY when `composer install` fails, autoload breaks, or php -l / PHPStan / Psalm errors occur. Fixes with minimal diffs — no refactoring. Covers Composer, PSR-4 autoload, PHPStan/Psalm.
+description: PHP composer, autoload, syntax, and static-analysis error resolution specialist. Use when `composer install` fails, autoload breaks, or php -l / PHPStan / Psalm errors occur. Fixes with minimal diffs — no refactoring. Covers Composer, PSR-4 autoload, PHPStan/Psalm.
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

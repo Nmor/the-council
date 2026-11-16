@@ -2,11 +2,11 @@
 
 > Auto-fires on every `*.ts`, `*.tsx`, `*.js`, `*.jsx`,
 > `*.mts`, `*.cts`, `*.mjs`, `*.cjs` file. Extends
-> `~/.claude/rules/common/no-discards.md` with TS/JS-specific
+> `~/.claude/rules-library/common/no-discards.md` with TS/JS-specific
 > patterns. Sister to `extreme-lint-policy.md`,
 > `no-silent-failures.md`, `error-handling-with-context.md`.
-> Tooling: `tsc --strict`, `eslint` with `@typescript-eslint/strict-
-> type-checked` + `sonarjs/recommended`, `biome`, `prettier`.
+> Tooling: `tsc --strict`, `eslint` with `@typescript-eslint/strict-type-checked` +
+> `sonarjs/recommended`, `biome`, `prettier`.
 >
 > **Size budget: 15 KB** — `token-budget.mjs --check`.
 
@@ -402,15 +402,15 @@ TS lint sweep (this turn):
 
 ## Cross-references
 
-- `~/.claude/rules/common/no-discards.md` — umbrella rule
+- `~/.claude/rules-library/common/no-discards.md` — umbrella rule
 - `~/.claude/rules/common/no-silent-failures.md` — silent failure
   shapes
-- `~/.claude/rules/common/error-handling-with-context.md` —
+- `~/.claude/rules-library/common/error-handling-with-context.md` —
   wrapping
-- `~/.claude/rules/common/extreme-lint-policy.md` — strict lint
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strict lint
   config
-- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns
-- `~/.claude/rules/common/sonarlint-checks.md` — full SonarJS
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI patterns
+- `~/.claude/rules-library/common/sonarlint-checks.md` — full SonarJS
   catalog
 
 ## Why this rule exists

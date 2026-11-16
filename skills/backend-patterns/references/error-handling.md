@@ -25,6 +25,8 @@ class ApiError extends Error {
 export function errorHandler(error: unknown, req: Request): Response {
   if (error instanceof ApiError) {
     return NextResponse.json({
+// NOTE: ad-hoc success-boolean envelopes are superseded — use the api-design envelope
+// (single source: api-design/references/response-format.md): error.code + error.message + details[]
       success: false,
       error: error.message
     }, { status: error.statusCode })

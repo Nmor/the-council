@@ -1,7 +1,7 @@
 # SQL Hooks
 
 > Auto-fires on every `*.sql`, `migrations/**`, `db/**` file.
-> Sister to `~/.claude/rules/common/hooks.md`.
+> Sister to `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -194,11 +194,11 @@ jobs:
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/schema-evolution.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/sql/no-discards.md`
-- `~/.claude/rules/sql/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/schema-evolution.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/sql/no-discards.md`
+- `~/.claude/rules-library/sql/testing.md`
 - sqlfluff docs (sqlfluff.com)
 - squawk docs (squawkhq.com)
 - Flyway docs (flywaydb.org)

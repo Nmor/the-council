@@ -67,7 +67,7 @@ POST   /api/v1/auth/refresh
 204 No Content            — DELETE, PUT (no response body)
 
 # Client Errors
-400 Bad Request           — Validation failure, malformed JSON
+400 (malformed request; semantic validation failures are 422 per api-design-standards) Bad Request           — Validation failure, malformed JSON
 401 Unauthorized          — Missing or invalid authentication
 403 Forbidden             — Authenticated but not authorized
 404 Not Found             — Resource doesn't exist

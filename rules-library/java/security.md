@@ -1,7 +1,7 @@
 # Java Security
 
 > Auto-fires on every `*.java`, `pom.xml`, `*.gradle` file. Sister
-> to `~/.claude/rules/common/security.md`. Standards: **OWASP
+> to `~/.claude/rules-library/common/security.md`. Standards: **OWASP
 > Java Top 10**, **OWASP ASVS 4.0**, **CERT Oracle Coding
 > Standard**, **Spring Security 6**, **JEP 411** (deprecated
 > SecurityManager).
@@ -94,7 +94,7 @@ List<User> findByEmail(@Param("email") String email);
 - Threat-model EVERY input boundary
 - Default-deny in Spring Security config (not default-permit)
 - Idempotency keys on payment endpoints (per
-  `~/.claude/rules/common/idempotency.md`)
+  `~/.claude/rules-library/common/idempotency.md`)
 
 ### A05 — Security Misconfiguration
 
@@ -121,7 +121,7 @@ server:
 
 - Run `mvn dependency:tree -DincludeTestScope=true | mvn versions:display-dependency-updates`
 - OSV-Scanner against Maven coords; per
-  `~/.claude/rules/common/dependency-vulnerabilities.md`
+  `~/.claude/rules-library/common/dependency-vulnerabilities.md`
 - `mvn dependency-check:aggregate` (OWASP Dependency Check
   plugin)
 
@@ -142,7 +142,7 @@ public class LoginAttemptService {
 }
 ```
 
-Per `~/.claude/rules/common/rate-limiting.md`.
+Per `~/.claude/rules-library/common/rate-limiting.md`.
 
 ### A08 — Software + Data Integrity
 
@@ -160,7 +160,7 @@ log.info("login attempt: user={} password={}", user, password);
 log.info("login attempt: user={}", user);
 
 // Log security events (auth success/fail, privilege change)
-// Audit log per ~/.claude/rules/common/audit-logging.md
+// Audit log per ~/.claude/rules-library/common/audit-logging.md
 ```
 
 ### A10 — SSRF
@@ -214,7 +214,7 @@ public class SecurityConfig {
 - NEVER in `application.yml` for prod values
 - Spring Cloud Config + Vault, or AWS Secrets Manager via SDK,
   or environment vars
-- Per `~/.claude/rules/common/secrets-management.md`
+- Per `~/.claude/rules-library/common/secrets-management.md`
 
 ## Required tooling
 
@@ -228,10 +228,10 @@ mvn checkstyle:check                # style + many security rules
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md` — universal baseline
-- `~/.claude/rules/java/no-discards.md` — banned patterns
-- `~/.claude/rules/java/coding-style.md` — naming + structure
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — CVE
+- `~/.claude/rules-library/common/security.md` — universal baseline
+- `~/.claude/rules-library/java/no-discards.md` — banned patterns
+- `~/.claude/rules-library/java/coding-style.md` — naming + structure
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — CVE
   gate
 - OWASP Java Cheat Sheet Series
 - Spring Security 6 Reference

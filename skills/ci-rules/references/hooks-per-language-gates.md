@@ -29,8 +29,7 @@ on every edited file.
 - **Prettier / Biome** — auto-format on save
 - **`tsc --noEmit`** — zero type errors
 - **`eslint <touched> --max-warnings 0`** — zero findings
-  (`sonarjs/recommended` + `@typescript-eslint/strict-type-
-  checked` + `eslint-plugin-security`)
+  (`sonarjs/recommended` + `@typescript-eslint/strict-type-checked` + `eslint-plugin-security`)
 - **Build check** (`pnpm build`) when shape-affecting changes
   touch a build-time consumer
 - **Test** (`vitest` / `jest`) — when test or consumer changed

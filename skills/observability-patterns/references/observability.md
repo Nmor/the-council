@@ -103,8 +103,8 @@ Per Google SRE book — every long-running service exports:
 | --- | --- | --- |
 | **Latency** | p50 / p95 / p99 request duration | Sustained p99 > SLO threshold |
 | **Traffic** | Requests per second / events per second | Drop > 50% from baseline (probable outage) |
-| **Errors** | Rate of failed requests (HTTP 5xx, exception count) | Error rate > 1% sustained 5 min |
-| **Saturation** | How "full" is the service (CPU, memory, connection pool, queue depth) | Utilisation > 80% sustained 10 min |
+| **Errors** | Rate of failed requests (HTTP 5xx, exception count) | Error-rate threshold set per SLO burn rate (§8), not a global % default |
+| **Saturation** | How "full" is the service (CPU, memory, connection pool, queue depth) | Utilisation > 80% sustained 10 min — ticket/dashboard, never a page (§8: page on SLO burn rate only) |
 
 For Lambda / serverless, add:
 

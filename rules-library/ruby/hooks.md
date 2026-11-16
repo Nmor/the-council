@@ -1,7 +1,7 @@
 # Ruby Hooks
 
 > Auto-fires on every `*.rb`, `Gemfile`, `Rakefile` file. Sister to
-> `~/.claude/rules/common/hooks.md`.
+> `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -75,7 +75,7 @@ Rails.application.config.filter_parameters += [
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/ruby/no-discards.md`
-- `~/.claude/rules/ruby/security.md`
-- `~/.claude/rules/ruby/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/ruby/no-discards.md`
+- `~/.claude/rules-library/ruby/security.md`
+- `~/.claude/rules-library/ruby/testing.md`

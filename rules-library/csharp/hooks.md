@@ -2,7 +2,7 @@
 
 > Auto-fires on every `*.cs`, `*.csx`, `*.csproj`, `*.sln`,
 > `*.props`, `*.targets`, `global.json`, `Directory.Build.props`
-> file. Sister to `~/.claude/rules/common/hooks.md`.
+> file. Sister to `~/.claude/rules-library/common/hooks.md`.
 >
 > **Size budget: 8 KB** — `token-budget.mjs --check`.
 
@@ -199,11 +199,11 @@ Castle.Core              # prefer DispatchProxy when possible
 
 ## Cross-references
 
-- `~/.claude/rules/common/hooks.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/csharp/no-discards.md`
-- `~/.claude/rules/csharp/security.md`
-- `~/.claude/rules/csharp/testing.md`
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/csharp/no-discards.md`
+- `~/.claude/rules-library/csharp/security.md`
+- `~/.claude/rules-library/csharp/testing.md`
 - .NET Code Style (Microsoft Learn)
 - Roslynator (github.com/dotnet/roslynator)
 - SonarAnalyzer.CSharp

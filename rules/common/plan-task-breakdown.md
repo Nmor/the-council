@@ -14,6 +14,4 @@ before marking done. Preserve integration work. A routine fix needs no new plan,
 fixed task count, mandatory hierarchy, ADR or exhaustive questionnaire. Do not
 expand tasks only to give every division a role.
 
-For relevant detailed procedures and examples, read
-[the reference](../../rules-library/council-detail/plan-task-breakdown.md).
-Do not preload it for unrelated work.
+[Reference](../../rules-library/council-detail/plan-task-breakdown.md).

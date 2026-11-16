@@ -10,15 +10,13 @@ and before handoff/compaction; replace stale current state instead of appending
 another history. Resume from the handoff and active task, then read needed inputs.
 
 Use stable IDs and the shared [task contract](../../rules-library/council-detail/plan-task-breakdown.md)
-in trackers and agent results. Mark done only after checks finish successfully;
-distinguish implemented, tested, installed and deployed. Avoid duplicating the same
+in trackers and agent results. Done status and claim levels: `done-criteria.md`. Avoid duplicating
+the same
 narrative in plans, memory and summaries. Surface material progress, not every tool call.
 
 During sustained work, checkpoint about hourly and at milestones. Reassess after
 two unsuccessful attempts at one approach; a retry needs changed evidence or a
 new hypothesis. Bound external watches and yield with a handoff when blocked;
-do not keep issuing model turns for unchanged status. Preserve required checks.
+do not keep issuing model turns for unchanged status.
 
-For relevant detailed procedures and examples, read
-[the reference](../../rules-library/council-detail/plan-execution-progress.md).
-Do not preload it for unrelated work.
+[Reference](../../rules-library/council-detail/plan-execution-progress.md).

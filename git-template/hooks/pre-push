@@ -1,0 +1,10 @@
+#!/bin/sh
+# Council post-commit publication gate v2
+council_push_input=$(cat && printf .) || exit 1
+council_push_input=${council_push_input%.}
+printf '%s' "$council_push_input" | node '/Users/leyanu/.claude/scripts/hooks/committed-push-gate.js' "$@" || exit 1
+printf '%s' "$council_push_input" | {
+  unset council_push_input
+  :
+
+}

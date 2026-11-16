@@ -33,7 +33,7 @@ customer scale, not in dev.
 
 Cold-start latency comes from two places:
 
-1. **Container provisioning** — AWS-controlled; ~100-300 ms for Node 20 / 256 MB
+1. **Container provisioning** — AWS-controlled; ~100-300 ms for Node 22+ (20 EOL 2026-04) / 256 MB
 2. **Module import** — your code; can balloon to 1-3 s with heavy SDK imports
 
 Fixes that work:

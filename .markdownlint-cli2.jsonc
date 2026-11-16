@@ -73,7 +73,7 @@
   // no globs, or run from a directory whose config does not set them.
   "globs": ["**/*.md"],
   "ignores": [
-    "**/node_modules/**",
+    "node_modules/**",
     // Vendored third-party code: a dependency's LICENSE.md is not ours to reformat, and
     // reformatting one would be a licence modification.
     "**/site-packages/**",
@@ -85,7 +85,26 @@
     "skills/.trash/**",
     // graphify is installed and updated by the graphify tool; its skill is vendored.
     "skills/graphify/**",
+    // Vendored skill packs imported 2026-11-14/15 (upstream-authored; rewrapping them
+    // breaks update diffs and is not ours to do): Anthropic design five, Emil Kowalski
+    // set, taste-skill, firecrawl core+build, hypit, Cloudflare security-audit,
+    // superpowers extracts, and the Roast Room council seats + their agents.
+    "skills/taste-skill/**", "skills/frontend-design/**", "skills/canvas-design/**",
+    "skills/brand-guidelines/**", "skills/theme-factory/**", "skills/algorithmic-art/**",
+    "skills/animate/**", "skills/animate-expo/**", "skills/animation-performance/**",
+    "skills/animation-vocabulary/**", "skills/apple-design/**", "skills/break-ui/**",
+    "skills/choreograph/**", "skills/emil-design-eng/**", "skills/gestures/**",
+    "skills/find-animation-opportunities/**", "skills/improve-animations/**",
+    "skills/mobile-native/**", "skills/remove-animations/**", "skills/prototype/**",
+    "skills/pick-ui-library/**", "skills/review-animations/**", "skills/learn-taste/**",
+    "skills/firecrawl*/**", "skills/hypit/**", "skills/security-audit/**",
+    "skills/brainstorming/**", "skills/writing-skills/**", "skills/brag/**",
+    "agents/council-*.md",
+    // Test harness vendor tree (pinned tools for the hook suite).
+    "tests/**",
     "cache/**",
+    "backups/**",
+    "evals/*/artifacts/**",
     "projects/**",
     "plugins/**",
     "sessions/**",

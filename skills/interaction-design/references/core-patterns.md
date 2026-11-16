@@ -225,7 +225,8 @@ Timing reference:
 
 - **Instant**: 100 ms
 - **Quick**: 200-300 ms (most transitions)
-- **Deliberate**: 400-500 ms (page changes)
+- **Deliberate**: 400-500 ms (rare/cross-document navigation only; in-app route changes used 100+
+  times/day get none per remove-animations)
 - **Slow**: 500 ms+ (reserved for ceremonial moments —
   onboarding success, transactional finality)
 

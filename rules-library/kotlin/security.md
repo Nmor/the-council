@@ -1,7 +1,7 @@
 # Kotlin Security
 
 > Auto-fires on every `*.kt`, `*.kts`, `build.gradle.kts` file.
-> Sister to `~/.claude/rules/common/security.md`. Standards:
+> Sister to `~/.claude/rules-library/common/security.md`. Standards:
 > **OWASP Kotlin / Android**, **OWASP ASVS 4.0**, **OWASP Mobile
 > Top 10** (when Android), **Spring Security 6** (when Spring),
 > **Android Lint security checks**.
@@ -164,7 +164,7 @@ API_KEY=...
   SharedPreferences via `androidx.security:security-crypto`
 - iOS / KMP: Keychain
 
-Per `~/.claude/rules/common/secrets-management.md`.
+Per `~/.claude/rules-library/common/secrets-management.md`.
 
 ## Required tooling
 
@@ -181,11 +181,11 @@ gradle :app:dependencyCheckAnalyze
 
 ## Cross-references
 
-- `~/.claude/rules/common/security.md`
-- `~/.claude/rules/common/secrets-management.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/kotlin/no-discards.md`
-- `~/.claude/rules/kotlin/coding-style.md`
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/kotlin/no-discards.md`
+- `~/.claude/rules-library/kotlin/coding-style.md`
 - OWASP Mobile Top 10 (owasp.org/www-project-mobile-top-10/)
 - Spring Security Reference (when Spring)
 - Android Security Best Practices (developer.android.com/topic/security)

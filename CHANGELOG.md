@@ -2,6 +2,33 @@
 
 All notable changes to **The Council** are documented in this file.
 
+## 2026-11-15 — Council v2: debate, measurement, delegation
+
+- Best-idea-wins conflict resolution with recorded case law
+  (`rules-library/council-detail/settled-debates.md`) and a session hook that
+  demotes injected plugin instructions to debate positions.
+- Measured quality loop: UI eval baseline 7.4/14 -> 9.2/14 in one
+  find-fix-remeasure cycle; all 24 scored defects repaired with computed
+  evidence.
+- Delegation policy: route-to-professionals with parallel specialists, bounded
+  by a live resource gate (load/swap advisory at spawn) and explicit
+  cheaper-model selection for mechanical fan-out.
+- Hook consolidation: one dispatcher per tool event (was up to 9 spawns per
+  edit); 25 inline security rules merged from the security-guidance plugin
+  into `post-edit-security-nudge.js`; 1,165-test hook suite now runnable via
+  `tests/test-tools/run.sh`.
+- Domain-aware intake: deterministic routing to model-invisible domain skills
+  and 12 Founder Board advisory seats; new `writing-quality` (anti-AI-prose),
+  `character-design`, `app-market-intel` skills; `design-reviewer` and
+  `config-reviewer` agents.
+- 61 cross-source guidance contradictions resolved; ASVS citations mapped to
+  5.0 with the official OWASP mapping bundled; runtime versions
+  registry-verified (.NET 10 LTS, Spring Boot 4, Rails 8.1, Go 1.27, Node 26,
+  PostgreSQL 18, TypeScript 7, JUnit 6, USCDI v7).
+- Markdown corpus lint-clean (4,189 -> 0) with vendored-content ignores and a
+  `md-lint.sh` gate; link-integrity gate added; all internal paths
+  `~`-relative.
+
 The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
@@ -11,6 +38,7 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 New standing rule `rules/common/resource-discipline.md`, with its reference in
 `rules-library/council-detail/resource-discipline.md` and a matching paragraph in
 Codex's `AGENTS.md`. For every agent in every IDE, when starting projects, running tests and running reviews:
+
 - check load, memory, swap and disk first;
 - reuse running stacks;
 - run one heavy job at a time, with workers bounded and at lower priority;
@@ -23,6 +51,7 @@ It follows a measured incident: 86 running containers, 330 GB of orphaned anonym
 Go build cache from 61 worktrees. `CLAUDE.md` drops three paragraphs that repeated
 `council-default.md`, `model-tier-selection.md` and `plan-execution-progress.md`,
 so the eager Floor fits (24,401 / 24,576 B). Also synced from the installed copy:
+
 - the reviewers for TypeScript, PHP, Ruby, Rust and .NET;
 - `review-dimensions.md`, `review-proof-protocol.md` and `targeted-test-runs.md`;
 - `pre-commit-deep-review.md`;
@@ -30,6 +59,7 @@ so the eager Floor fits (24,401 / 24,576 B). Also synced from the installed copy
 - 5 weeks of edits to the existing agents, skills and scripts.
 
 The IDE templates (VS Code, Cursor, Windsurf):
+
 - share one gopls daemon across windows;
 - build and test Go with `-trimpath`;
 - keep gopls, search, the file watcher and terraform-ls out of `.claude`, `.council` and `.codex`;
@@ -38,6 +68,7 @@ The IDE templates (VS Code, Cursor, Windsurf):
 
 `INSTALL.md` gains *Resources*, and the JetBrains guide covers excluding agent folders.
 `templates/container-reaper/` is an optional daily clean-up:
+
 - dry run by default;
 - never touches a service, a paused container, a named or mounted volume, or an allowlisted project;
 - one failure doesn't end a run;

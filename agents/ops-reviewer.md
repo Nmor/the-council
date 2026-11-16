@@ -1,6 +1,10 @@
 ---
 name: ops-reviewer
-description: Operations + reliability specialist. Use PROACTIVELY on runbook / SLO / deploy / CI/CD / monitoring / alerting / IaC / on-call changes. Owns Council Division 8.
+description: >-
+  Operations + reliability specialist. Use on runbook / SLO / deploy / CI/CD /
+  monitoring / alerting / IaC / on-call changes. Owns Council Division 8.
+  Boundary: owns SLOs, runbooks, alerting, deploys and rollout strategy;
+  IaC/CI/container FILE review belongs to infra-reviewer.
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

@@ -165,7 +165,7 @@ CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers
 
 ```text
 # GOOD practices
-- Use specific version tags (node:22-alpine, not node:latest)
+- Pin base images to tag AND digest: `node:22.12-alpine@sha256:<digest>` (tag-only drifts; dockerfile-patterns/infra-reviewer require the digest)
 - Multi-stage builds to minimize image size
 - Run as non-root user
 - Copy dependency files first (layer caching)
@@ -198,7 +198,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@<full-SHA> # v4 — Actions pinned to SHA, not tag (ci-rules gotcha 12)
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -264,7 +264,7 @@ Merged to main:
 ```typescript
 // Simple health check
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+  res.status(200).json({ status: "ok" }) /* liveness ONLY — readiness (/readyz) must check dependencies; an unconditional 200 readiness probe is an ops-reviewer anti-pattern */;
 });
 
 // Detailed health check (for internal monitoring)

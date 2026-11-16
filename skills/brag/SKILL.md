@@ -15,7 +15,8 @@ Work in the main session with the user's model; do not launch a Council review t
 ## Choose the route
 
 - Default: read [the lean workflow](references/slim.md). It works with the available
-  rendering tools and does not require Hyperframes or a specific model.
+  rendering tools and does not require Hyperframes or a specific model. The
+  `hypit` skill is one available rendering route.
 - `--full` or `--voice`: read the lean creative guidance, then
   [the Hyperframes route](references/hyperframes.md). Voice is explicitly opt-in.
 - Keep tone, format, duration, `--no-music`, `--no-sfx` and title direction from the

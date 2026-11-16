@@ -24,7 +24,8 @@ and next action. Adapt length, hook, formatting and CTA to each requested channe
 do not repeat identical copy everywhere. Keep destination and promise consistent.
 A campaign can include a landing page, email sequence, social variants, paid ad copy
 or video script, but produce only assets that serve the brief.
-For requested launch video use [BRAG](../brag/SKILL.md), carrying over the same claims.
+For requested launch video use the `brag` skill (vendored; adapted from upstream), carrying over the
+same claims.
 
 Keep a claim ledger linking each factual statement, price, statistic, testimonial or
 performance claim to evidence. Use clearly labeled placeholders when evidence is
