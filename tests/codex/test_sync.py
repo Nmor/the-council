@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -34,14 +35,15 @@ class SyncTests(unittest.TestCase):
             canonical.mkdir(parents=True)
             self.assertGreater((canonical / 'coding-style.md').write_text('unadapted source'), 0)
             result = subprocess.run(['bash', str(ROOT / 'scripts/council-sync.sh')],
-                                    env={**os.environ, 'HOME': str(home)},
+                                    env={**os.environ, 'HOME': str(home),
+                                         'PATH': str(Path(sys.executable).parent) + os.pathsep + os.environ['PATH']},
                                     capture_output=True, text=True, timeout=60, check=False)
             self.assertEqual(result.returncode, 0, result.stderr)
             after = json.loads(manifest.read_text())
             self.assertEqual(after, before)
             self.assertEqual(installer.verify(native)['integrity'], 'passed')
             uninstalled = installer.uninstall(native)
-            self.assertGreater(uninstalled['restored'], 0)
+            self.assertGreater(uninstalled['files'], 0)
             for name, content in originals.items():
                 self.assertEqual((native / name).read_bytes(), content)
 
