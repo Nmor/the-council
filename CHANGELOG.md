@@ -2,6 +2,11 @@
 
 All notable changes to **The Council** are documented in this file.
 
+## 2026-11-16 — Installation review fixes
+
+- Native sync uses the native installer, preserving ownership, generated roles,
+  adapted references and uninstall backups; legacy pruning only touches mirror records.
+
 ## 2026-11-15 — Council v2: debate, measurement, delegation
 
 - Best-idea-wins conflict resolution with recorded case law

@@ -9,6 +9,27 @@ set -euo pipefail
 SRC="$HOME/.claude"
 CODEX="$HOME/.codex/council"
 
+# Native installs also own generated roles, hooks and rollback records. Only
+# their installer can update that graph without undoing path adaptations.
+if python3 - "$CODEX/manifest.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+manifest = Path(sys.argv[1])
+value = json.loads(manifest.read_text()) if manifest.exists() else {}
+sys.exit(0 if 'skill_profile' in value else 1)
+PY
+then
+  root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  if [ ! -f "$root/bootstrap/codex.py" ]; then
+    echo 'Native Council sync must run from the Council checkout; use its bootstrap.codex installer.' >&2
+    exit 1
+  fi
+  (cd "$root" && python3 -m bootstrap.codex install --home "$HOME/.codex")
+  exit 0
+fi
+
 python3 - "$SRC" "$CODEX" <<'EOF'
 import os, sys, shutil, hashlib, json
 SRC, CODEX = sys.argv[1], sys.argv[2]
@@ -75,9 +96,6 @@ for sub in ['rules', 'rules-library', 'skills', 'agents', 'commands']:
         if not os.listdir(dp):
             os.rmdir(dp)
 for k in list(m['files']):
-    # Only mirrored resource entries are ours to prune (review P1 2026-11-16):
-    # native-install keys (AGENTS.md, hooks.json, agent TOMLs) are relative to
-    # the Codex home and carry 'original' backups that uninstall depends on.
     if not k.startswith('council/resources/'):
         continue
     if isinstance(m['files'][k], dict) and m['files'][k].get('local'):

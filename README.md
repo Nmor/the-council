@@ -220,6 +220,12 @@ The canonical repository is **[Nmor/the-council](https://github.com/Nmor/the-cou
 The product name is **The Council**. Use **The Council for Claude Code** or
 **The Council for Codex** when referring to a particular runtime integration.
 
+Council commits and pushes use the **Nmor** account and
+`Nmor <nmor.moses@gmail.com>` identity. Native Codex installations must be synced
+from this checkout: `bash scripts/council-sync.sh` delegates to the native installer
+and preserves its rollback records, path adaptations and compact skill profile.
+It does not copy raw `~/.claude` files over a native installation.
+
 For an existing clone, update its remote without moving the working directory:
 
 ```bash
