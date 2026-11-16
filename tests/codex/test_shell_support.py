@@ -26,7 +26,7 @@ class ShellSupportTests(unittest.TestCase):
                     bash.touch()
                     with patch.object(shell_support.sys, "platform", "win32"), \
                          patch.object(shell_support.shutil, "which", return_value=str(git)):
-                        self.assertEqual(Path(shell_support.bash_path()), bash)
+                        self.assertEqual(Path(shell_support.bash_path()).resolve(), bash.resolve())
 
     def test_windows_refuses_unavailable_git_shell(self) -> None:
         with patch.object(shell_support.sys, "platform", "win32"), \
