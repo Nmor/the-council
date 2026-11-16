@@ -1,8 +1,9 @@
 # The Council v2 — What's New
 
 PR [#19](https://github.com/Nmor/the-council/pull/19) merged to `main` on
-2026-11-16 (merge commit `7d4cab1`, 29 commits). Gates at merge: Python suite
-152/152, Node hook suite 1166/1166, markdownlint 0 errors across the corpus.
+2026-11-16 (merge commit `7d4cab1`, 29 commits). Gates measured at the merged
+tree: Python suite 169 tests passing (1 environment skip), Node hook suite
+1170/1170, markdownlint 0 errors across the corpus.
 
 ## Decision-making and debate
 
@@ -71,7 +72,7 @@ PR [#19](https://github.com/Nmor/the-council/pull/19) merged to `main` on
   expanding Codex's profile.
 - **Dual-parser frontmatter guarantee**: every agent and skill description
   parses identically under PyYAML and Codex's lightweight importer (verified
-  across all 197 files).
+  across all 197 files: 58 agents, 139 skills).
 - Partial tool dispatchers get **paired direct pre/post mutation guards with
   isolated state**, so the post-hook can always inspect its captured baseline.
 - Published and context-only installs now ship the **shared hook runtime
@@ -86,7 +87,8 @@ PR [#19](https://github.com/Nmor/the-council/pull/19) merged to `main` on
 - The push template resolves the **current `$HOME`** (portable installs);
   reinstalling refreshes stale v2 launchers without replacing the original
   hook body or its backup.
-- **Publish script** with a foreign-directory guard and a complete installer;
+- **Publish script** with a foreign-directory guard (refuses a target without
+  `.council-dist` unless `--force` is passed) and a complete installer;
   native instruction templates retain the decision, quality, task-breakdown,
   review, and progress contracts across installs.
 - Runtime version guidance is **registry-verified**: .NET 10 LTS, Spring
@@ -95,8 +97,10 @@ PR [#19](https://github.com/Nmor/the-council/pull/19) merged to `main` on
 
 ## Corpus hygiene
 
-- Markdown corpus **lint-clean (4,189 errors → 0)** with `md-lint.sh` and
-  link-integrity gates; all internal paths `~`-relative; hosted verification
+- Markdown corpus **lint-clean (4,189 errors → 0)** with a markdownlint gate
+  (`.markdownlint-cli2.jsonc` at the repo root) and a link-integrity gate
+  (`tests/verify-link-integrity.sh`); all internal paths `~`-relative; hosted
+  verification
   now checks every Founder Board seat, supporting reference, and named source
   link.
 
@@ -127,6 +131,6 @@ verdicts, review agents — is in this repo.
   excluded from the published bundle; the Council's intake routes business
   questions to the right seat automatically.
 - **Conflict resolution between packs** is settled by the UI precedence ladder
-  in `ui-ux-quality-bar.md`: project tokens → the brief → Emil skills
+  in `rules/common/ui-ux-quality-bar.md`: project tokens → the brief → Emil skills
   (motion/app UI) → taste-skill (marketing direction) → ui-ux-pro-max (lookup
   only).
