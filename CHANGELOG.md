@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
