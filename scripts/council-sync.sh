@@ -8,10 +8,11 @@ set -euo pipefail
 
 SRC="$HOME/.claude"
 CODEX="$HOME/.codex/council"
+PYTHON="${COUNCIL_PYTHON:-python3}"
 
 # Native installs also own generated roles, hooks and rollback records. Only
 # their installer can update that graph without undoing path adaptations.
-mode=$(python3 - "$CODEX/manifest.json" <<'PY'
+mode=$("$PYTHON" - "$CODEX/manifest.json" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -31,9 +32,9 @@ if [ "$mode" = native ]; then
     echo 'Native Council sync must run from the Council checkout; use its bootstrap.codex installer.' >&2
     exit 1
   fi
-  (cd "$root" && python3 -m bootstrap.codex install --home "$HOME/.codex")
+  (cd "$root" && "$PYTHON" -m bootstrap.codex install --home "$HOME/.codex")
 else
-python3 - "$SRC" "$CODEX" <<'EOF'
+"$PYTHON" - "$SRC" "$CODEX" <<'EOF'
 import os, sys, shutil, hashlib, json
 SRC, CODEX = sys.argv[1], sys.argv[2]
 os.chdir(CODEX)

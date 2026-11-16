@@ -8,6 +8,8 @@ import sys
 import tempfile
 import unittest
 
+from shell_support import bash_path, shell_environment
+
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('sync_installer', ROOT / 'bootstrap/codex.py')
 installer = importlib.util.module_from_spec(SPEC)
@@ -16,7 +18,7 @@ SPEC.loader.exec_module(installer)
 
 class SyncTests(unittest.TestCase):
     def install(self, home, profile='compact'):
-        result = subprocess.run(['python3', '-m', 'bootstrap.codex', 'install',
+        result = subprocess.run([sys.executable, '-m', 'bootstrap.codex', 'install',
                                  '--home', str(home / '.codex'), '--skill-profile', profile],
                                 cwd=ROOT, env={**os.environ,
                                                'PATH': str(Path(sys.executable).parent) + os.pathsep + os.environ['PATH']},
@@ -25,9 +27,8 @@ class SyncTests(unittest.TestCase):
         return json.loads(result.stdout)
 
     def run_sync(self, home):
-        return subprocess.run(['bash', str(ROOT / 'scripts/council-sync.sh')],
-                              env={**os.environ, 'HOME': str(home),
-                                   'PATH': str(Path(sys.executable).parent) + os.pathsep + os.environ['PATH']},
+        return subprocess.run([bash_path(), (ROOT / 'scripts/council-sync.sh').as_posix()],
+                              env=shell_environment(home),
                               capture_output=True, text=True, timeout=60, check=False)
 
     def test_native_sync_keeps_ownership_and_remains_reversible(self):

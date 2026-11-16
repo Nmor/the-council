@@ -222,7 +222,7 @@ class ReconcileTests(unittest.TestCase):
         self.save_manifest(manifest)
         installer.install(self.home, ROOT, reconcile=True, skill_profile='full')
         wrapper = self.home / 'skills/council-retired-local/SKILL.md'
-        self.assertIn(str(resource), wrapper.read_text(encoding='utf-8'))
+        self.assertIn(resource.as_posix(), wrapper.read_text(encoding='utf-8'))
         installer.install(self.home, ROOT)
         self.assertTrue(wrapper.exists())
         installer.install(self.home, ROOT, skill_profile='compact')

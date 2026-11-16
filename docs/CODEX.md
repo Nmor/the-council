@@ -247,3 +247,10 @@ The standalone installer has a 32 KiB source budget for transactional installati
 and explicit reconciliation. It is executable source, not eager session context;
 the aggregate eager-context limit is unchanged. New v2 resource budgets are listed
 in `scripts/instruction-budgets.json` and remain checked by the budget gate.
+
+### Git Bash interpreter
+
+On Windows, run shell propagation with Git for Windows Bash, not WSL Bash.
+Set `COUNCIL_PYTHON` to the native Python 3.11+ executable when `python3` is
+unavailable. Native home lookup also uses `USERPROFILE`; isolate it together with
+`HOME` when testing against a temporary installation.

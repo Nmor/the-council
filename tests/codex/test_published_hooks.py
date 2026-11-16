@@ -1,11 +1,12 @@
 """Fresh installs must carry the shared libraries used by registered hooks."""
 import importlib.util
 import json
-import os
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+
+from shell_support import bash_path, shell_environment
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('published_context', ROOT / 'bootstrap/context.py')
@@ -14,7 +15,7 @@ SPEC.loader.exec_module(context)
 
 
 def run(command, home):
-    return subprocess.run(command, env={**os.environ, 'HOME': str(home)},
+    return subprocess.run(command, env=shell_environment(home),
                           input='{}', capture_output=True, text=True, timeout=60, check=False)
 
 
@@ -34,11 +35,11 @@ class PublishedHooksTests(unittest.TestCase):
             source.mkdir()
             (source / '.claude').symlink_to(ROOT, target_is_directory=True)
             dist = base / 'distribution'
-            published = run(['bash', str(ROOT / 'scripts/council-publish.sh'), str(dist)], source)
-            self.assertEqual(published.returncode, 0, published.stderr)
+            published = run([bash_path(), (ROOT / 'scripts/council-publish.sh').as_posix(), dist.as_posix()], source)
+            self.assertEqual(published.returncode, 0, published.stdout + published.stderr)
             consumer = base / 'consumer'
             consumer.mkdir()
-            installed = run(['bash', str(dist / 'install.sh')], consumer)
+            installed = run([bash_path(), (dist / 'install.sh').as_posix()], consumer)
             self.assertEqual(installed.returncode, 0, installed.stderr)
             for library in ('utils.js', 'package-manager.js', 'session-aliases.js'):
                 self.assertEqual((consumer / '.claude/scripts/lib' / library).read_bytes(),
@@ -48,7 +49,7 @@ class PublishedHooksTests(unittest.TestCase):
             # library resolution cannot be masked by the source checkout.
             settings = json.loads((consumer / '.claude/settings.json').read_text())
             command = settings['hooks']['PreToolUse'][0]['hooks'][0]['command']
-            result = run(['sh', '-c', command], consumer)
+            result = run([bash_path(), '-c', command], consumer)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertNotIn('Cannot find module', result.stderr)
 

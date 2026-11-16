@@ -4,6 +4,9 @@ import hashlib
 import importlib.util
 import json
 import os
+import shlex
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -19,6 +22,11 @@ spec.loader.exec_module(context)
 
 def snapshot(root):
     return {p.relative_to(root).as_posix(): p.read_bytes() for p in root.rglob('*') if p.is_file()}
+
+
+def dispatcher_command(home: Path, phase: str) -> str:
+    argv = ['node', (home / 'scripts/hooks/dispatch.js').as_posix(), phase]
+    return subprocess.list2cmdline(argv) if sys.platform == 'win32' else shlex.join(argv)
 
 
 class ContextTests(unittest.TestCase):
@@ -83,7 +91,7 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(dispatcher.write_bytes(content), len(content))
         for event, phase in [('PreToolUse', 'pre'), ('PostToolUse', 'post')]:
             self.settings['hooks'][event] = [{'matcher': 'Bash|Edit|Write|MultiEdit', 'hooks': [
-                {'type': 'command', 'command': f'node "{self.home.as_posix()}/scripts/hooks/dispatch.js" {phase}'},
+                {'type': 'command', 'command': dispatcher_command(self.home, phase)},
                 {'type': 'command', 'command': 'node /personal/go-discard-mutations.js --custom'},
             ]}]
         text = json.dumps(self.settings)
@@ -134,7 +142,7 @@ class ContextTests(unittest.TestCase):
                                                ('PostToolUse', 'post', after)]:
                     groups[event] = [] if not matcher else [
                         {'matcher': matcher, 'hooks': [{'type': 'command', 'command':
-                         f'node "{self.home.as_posix()}/scripts/hooks/dispatch.js" {phase}'}]}]
+                         dispatcher_command(self.home, phase)}]}]
                 text = json.dumps({**self.settings, 'hooks': groups})
                 self.assertEqual((self.home / 'settings.json').write_text(text, encoding='utf-8'), len(text))
                 actual = json.loads(context.claude_payload(self.home)['settings.json'])
