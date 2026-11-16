@@ -60,18 +60,16 @@ class PublishedHooksTests(unittest.TestCase):
             library.parent.mkdir(parents=True)
             original = b'// personal utility extension\n'
             self.assertEqual(library.write_bytes(original), len(original))
-            result = context.apply(target, 'claude')
-            self.assertGreater(result['files'], 0)
-            # Existing differing utilities are personal: inspect a clean
-            # consumer separately instead of pretending this extension runs.
-            self.assertEqual(library.read_bytes(), original)
-            restored = context.apply(target, 'claude', restore=True)
-            self.assertGreater(restored['files'], 0)
+            with self.assertRaisesRegex(ValueError, 'Unmanaged Council resource collision'):
+                context.apply(target, 'claude')
             self.assertEqual(library.read_bytes(), original)
             library.unlink()
             installed = context.apply(target, 'claude')
             self.assertGreater(installed['files'], 0)
             self.check_compaction(home)
+            restored = context.apply(target, 'claude', restore=True)
+            self.assertGreater(restored['files'], 0)
+            self.assertFalse(library.exists())
 
 
 if __name__ == '__main__':
