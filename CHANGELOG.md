@@ -4,6 +4,9 @@ All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
 
+- Native instruction templates retain the decision, principal quality, task
+  breakdown, review and progress contracts across installations.
+
 - Reconciliation keeps owner instructions added outside an existing managed
   Council block, including when uninstalling and reinstalling.
 

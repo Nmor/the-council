@@ -28,6 +28,19 @@ class MetadataTests(unittest.TestCase):
             '---\nname: "example"\ndescription: >-\n  first\n\n\n  second\n---\nBody\n')
         self.assertEqual((name, description, body), ('example', 'first\n\nsecond', 'Body\n'))
 
+    def test_native_template_retains_operating_contracts(self):
+        template = (ROOT / 'codex/AGENTS.md.in').read_text(encoding='utf-8')
+        routes = ['rules/common/decide-dont-ask.md',
+                  'rules-library/council-detail/principal-level-mandate.md',
+                  'rules-library/council-detail/plan-task-breakdown.md',
+                  'rules-library/council-detail/plan-execution-progress.md']
+        for route in routes:
+            with self.subTest(route=route):
+                self.assertIn('@COUNCIL_HOME@/resources/' + route, template)
+                self.assertTrue((ROOT / route).is_file())
+        self.assertIn('one task, one commit, one review round', template)
+        self.assertIn('Do not repeat approval already granted.', template)
+
     def test_malformed_or_ambiguous_metadata_refused(self):
         for front in ['name: a\nname: b', 'description: >-', 'name: >-\n  bad',
                       'description: [not, a, scalar]', 'description: >-\n  a\n    b',
