@@ -11,12 +11,31 @@ const MARKER = `${LEGACY_MARKER} v2`;
 
 function quote(value) { return "'" + value.replaceAll("'", "'\\''") + "'"; }
 
+function refreshLauncher(file, current, entry) {
+  const lines = current.split('\n');
+  const launchers = lines.flatMap((line, index) =>
+    /^printf '%s' "\$council_push_input" \| node .+ "\$@" \|\| exit 1$/.test(line) ? [index] : []);
+  if (launchers.length !== 1)
+    throw new Error(`unrecognized Council v2 hook; preserve and integrate explicitly: ${file}`);
+  lines[launchers[0]] = `printf '%s' "$council_push_input" | node ${quote(entry)} "$@" || exit 1`;
+  const contents = lines.join('\n');
+  if (contents !== current) {
+    const temporary = `${file}.council-${crypto.randomUUID()}.tmp`;
+    try {
+      fs.writeFileSync(temporary, contents, { mode: 0o755, flag: 'wx' });
+      fs.renameSync(temporary, file);
+    } finally { fs.rmSync(temporary, { force: true }); }
+  }
+  fs.chmodSync(file, 0o755);
+  return file;
+}
+
 function installAt(hooks, entry) {
   fs.mkdirSync(hooks, { recursive: true });
   const file = path.join(hooks, 'pre-push');
   const previous = `${file}.before-council`;
   const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
-  if (current.split('\n')[1] === MARKER) { fs.chmodSync(file, 0o755); return file; }
+  if (current.split('\n')[1] === MARKER) return refreshLauncher(file, current, entry);
   const legacy = current.split('\n')[1] === LEGACY_MARKER;
   const original = legacy ? previous : file;
   const bytes = fs.existsSync(original) ? fs.readFileSync(original) : Buffer.alloc(0);
