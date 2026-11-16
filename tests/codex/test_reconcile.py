@@ -64,6 +64,25 @@ class ReconcileTests(unittest.TestCase):
     def save_manifest(self, value):
         (self.home / installer.MANIFEST).write_bytes(installer.json_bytes(value))
 
+    def test_reconcile_preserves_owner_edits_to_managed_agents(self):
+        path = self.home / 'AGENTS.md'
+        original = self.manifest()['files']['AGENTS.md']['original']
+        unchanged = installer.install(self.home, ROOT, reconcile=True)
+        self.assertGreater(unchanged['files'], 0)
+        self.assertEqual(self.manifest()['files']['AGENTS.md']['original'], original)
+        content = path.read_bytes() + b'\nOwner added policy after Council.\n'
+        self.assertEqual(path.write_bytes(content), len(content))
+        installed = installer.install(self.home, ROOT, reconcile=True)
+        self.assertGreater(installed['files'], 0)
+        self.assertIn(b'Owner added policy after Council.', path.read_bytes())
+        self.assertIn(b'Owner policy before Council', path.read_bytes())
+        self.assertNotIn('local', self.manifest()['files']['AGENTS.md'])
+        installer.uninstall(self.home)
+        self.assertEqual(path.read_bytes(), b'Owner policy before Council\n\nOwner added policy after Council.\n')
+        reinstalled = installer.install(self.home, ROOT)
+        self.assertGreater(reinstalled['files'], 0)
+        self.assertEqual(path.read_bytes().count(installer.BEGIN.encode()), 1)
+
     def legacy(self):
         value = self.manifest()
         for name in list(value['files']):

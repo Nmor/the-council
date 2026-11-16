@@ -4,6 +4,9 @@ All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
 
+- Reconciliation keeps owner instructions added outside an existing managed
+  Council block, including when uninstalling and reinstalling.
+
 - Partial tool dispatchers receive paired direct pre/post mutation guards with
   isolated shared state, so the post-hook can always inspect its captured baseline.
 

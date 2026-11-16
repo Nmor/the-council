@@ -242,6 +242,7 @@ def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
         raise ValueError('--reconcile requires an existing Council manifest')
     manifest = copy.deepcopy(manifest)
     records = manifest['files']
+    agents_changed = False
     for name, entry in list(records.items()):
         content = read_optional(safe_target(home, name))
         if content is None:
@@ -255,8 +256,10 @@ def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
                 records[name] = local_record(content)
         elif name in ('council/catalog.md', 'AGENTS.md', 'hooks.json', 'council/projects.json'):
             # Derived catalog is regenerated; shared files are handled below.
-            if name == 'AGENTS.md' and digest(content) != entry['sha256'] and BEGIN.encode() not in content:
-                raise ValueError('Council AGENTS block missing; restore it before reconciliation')
+            if name == 'AGENTS.md' and digest(content) != entry['sha256']:
+                if BEGIN.encode() not in content:
+                    raise ValueError('Council AGENTS block missing; restore it before reconciliation')
+                agents_changed = True
             entry['sha256'] = digest(content)
         elif digest(content) != entry['sha256']:
             raise ValueError(f'Changed native asset cannot be reconciled: {name}')
@@ -282,7 +285,7 @@ def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
         if begin > end:
             raise ValueError('Reversed Council AGENTS markers')
         entry = records.get('AGENTS.md')
-        if entry is None or entry.get('local'):
+        if entry is None or entry.get('local') or agents_changed:
             # Adopt as MANAGED: the owner text outside the block becomes the
             # restore original, so the block keeps updating and uninstall
             # removes it. A local record here froze the block, made uninstall
