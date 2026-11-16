@@ -4,6 +4,9 @@ All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
 
+- Concurrent audit writers wait up to two seconds for the private-file lock,
+  using a monotonic deadline, before reporting an unavailable record.
+
 - Hosted verification recognizes inherited Founder Board models, discovers every
   seat and supporting reference, and checks named business/editorial source links.
   Official ASVS 5.0 requirements and the pinned ID mapping ship with the skill.

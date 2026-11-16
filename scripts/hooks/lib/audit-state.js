@@ -8,16 +8,18 @@ const { redact } = require('./redaction.js');
 
 const MAX_BYTES = 1024 * 1024;
 const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+const LOCK_WAIT_MS = 2000;
 const PAUSE = new Int32Array(new SharedArrayBuffer(4));
 
 function acquire(lock) {
-  const until = Date.now() + 500;
+  // Several isolated hooks may serialize their private-file rewrites at once.
+  const until = performance.now() + LOCK_WAIT_MS;
   for (;;) {
     try {
       fs.mkdirSync(lock, { mode: 0o700 });
       return;
     } catch (error) {
-      if (error.code !== 'EEXIST' || Date.now() >= until) throw error;
+      if (error.code !== 'EEXIST' || performance.now() >= until) throw error;
       Atomics.wait(PAUSE, 0, 0, 10);
     }
   }
