@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transactional, additive Council installer for Codex (Python 3.11+, Node.js 18+, Git checkout)."""
+"""Native Codex installer."""
 from __future__ import annotations
 
 import argparse
@@ -114,7 +114,7 @@ def tracked_resources(source: Path) -> list[str]:
 
 
 def metadata(text: str) -> tuple[str, str, str]:
-    """Read the scalar name/description fields used by source, without a YAML dependency."""
+    """Parse source name/description scalars without YAML."""
     match = re.match(r'^---\r?\n(.*?)\r?\n---\r?\n(.*)', text, re.S)
     if not match:
         return '', '', text
@@ -169,7 +169,7 @@ def render(text: str, home: Path) -> str:
 
 
 def adapt_reference(text: str, home: Path) -> str:
-    # Rewrite available guidance, not Claude runtime paths or example plan locations.
+    # Adapt guidance paths; preserve runtime/example paths.
     def replace(match):
         name = match.group(1)
         if name.startswith('rules/') and not (SOURCE / name).exists():
@@ -183,7 +183,7 @@ def adapt_reference(text: str, home: Path) -> str:
 
 
 def entrypoint(name: str, description: str, reference: Path, home: Path) -> bytes:
-    # Original long discovery descriptions remain in the linked source.
+    # Full descriptions remain in linked sources.
     description = re.sub(r'\s+', ' ', description).strip() or name.replace('-', ' ')
     if len(description) > 220:
         description = description[:217].rsplit(' ', 1)[0] + '...'
@@ -232,12 +232,12 @@ def original_bytes(manifest: dict, home: Path, name: str) -> bytes | None:
 
 
 def local_record(content: bytes) -> dict:
-    """Retained files remain hash-checked and survive uninstall as owner content."""
+    """Keep owner files hash-checked and restorable."""
     return {'sha256': digest(content), 'original': base64.b64encode(content).decode(), 'local': True}
 
 
 def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
-    """Adopt legacy guidance explicitly; never adopt changed native executables."""
+    """Adopt guidance; reject changed executables."""
     if not manifest['files']:
         raise ValueError('--reconcile requires an existing Council manifest')
     manifest = copy.deepcopy(manifest)
@@ -255,7 +255,7 @@ def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
             elif digest(content) != entry['sha256'] or not upstream.is_file():
                 records[name] = local_record(content)
         elif name in ('council/catalog.md', 'AGENTS.md', 'hooks.json', 'council/projects.json'):
-            # Derived catalog is regenerated; shared files are handled below.
+            # Shared files are reconciled below.
             if name == 'AGENTS.md' and digest(content) != entry['sha256']:
                 if BEGIN.encode() not in content:
                     raise ValueError('Council AGENTS block missing; restore it before reconciliation')
@@ -286,10 +286,8 @@ def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
             raise ValueError('Reversed Council AGENTS markers')
         entry = records.get('AGENTS.md')
         if entry is None or entry.get('local') or agents_changed:
-            # Adopt as MANAGED: the owner text outside the block becomes the
-            # restore original, so the block keeps updating and uninstall
-            # removes it. A local record here froze the block, made uninstall
-            # keep it, and bricked the next install on the orphaned marker.
+            # Restore outside instructions on uninstall; keep the block managed
+            # so upgrades and reinstall remain possible.
             head = agents[:begin].strip(b'\n')
             tail = agents[end + len(END.encode()):].strip(b'\n')
             pieces = [piece for piece in (head, tail) if piece]
@@ -328,7 +326,7 @@ def reconcile_manifest(home: Path, manifest: dict, source: Path) -> dict:
 
 
 def adopt_native(home: Path, source: Path, name: str, content: bytes, expected: bytes) -> dict:
-    """Only known generated roles and the named router can cross a legacy collision."""
+    """Adopt only known generated roles and router."""
     if name == 'council/projects.json':
         return {'sha256': digest(content), 'original': base64.b64encode(content).decode()}
     if name.startswith('agents/'):
@@ -353,13 +351,12 @@ def adopt_native(home: Path, source: Path, name: str, content: bytes, expected: 
             raise ValueError('Unrecognized legacy Council router')
     elif content != expected:
         raise ValueError(f'Unmanaged file collision: {name}')
-    # These are recognized Council-generated assets, not owner extensions. Restoring
-    # them after deleting their archived procedures would leave dangling entrypoints.
+    # Generated entrypoints cannot survive removal of their archived sources.
     return {'sha256': digest(content), 'original': None}
 
 
 def reconciliation_backup(home: Path, changes: dict[str, bytes | None]) -> Path:
-    """Save exact prior bytes and modes outside the home before changing any file."""
+    """Back up exact bytes and modes outside home."""
     backup = Path(tempfile.mkdtemp(prefix='council-reconcile-', dir=home.parent))
     records = {}
     for name in sorted(set(changes) | {'config.toml'}):
@@ -482,7 +479,7 @@ def atomic_write(path: Path, content: bytes, mode: int = 0o644) -> None:
 
 
 def transact(home: Path, changes: dict[str, bytes | None]) -> None:
-    """Rollback handled failures; every replacement is atomic. No crash-recovery claim."""
+    """Use atomic replacements; roll back handled failures."""
     snapshots = {}
     created_dirs = []
     try:
