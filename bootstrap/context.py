@@ -231,6 +231,7 @@ def claude_payload(home):
     source_hooks = json.loads((ROOT / 'settings.json').read_text(encoding='utf-8'))['hooks']
     lifecycle_hooks(settings, source_hooks, home)
     guard_name = 'go-discard-mutations.js'
+    coverage = {}
     for event in ('PreToolUse', 'PostToolUse'):
         groups = settings.setdefault('hooks', {}).get(event, [])
         retained = []
@@ -244,7 +245,12 @@ def claude_payload(home):
                 retained.append({**group, 'hooks': hooks})
         phase = 'pre' if event == 'PreToolUse' else 'post'
         dispatched = dispatched_guard_tools(retained, home, phase)
-        uncovered = [tool for tool in ('Bash', 'Edit', 'Write', 'MultiEdit') if tool not in dispatched]
+        coverage[event] = dispatched
+        settings['hooks'][event] = retained
+    # Each direct post-hook needs the baseline captured by its matching pre-hook.
+    paired = coverage['PreToolUse'] & coverage['PostToolUse']
+    uncovered = [tool for tool in ('Bash', 'Edit', 'Write', 'MultiEdit') if tool not in paired]
+    for event in ('PreToolUse', 'PostToolUse'):
         if uncovered:
             # The full v2 install uses dispatch.js. A context-only migration of an
             # older home still needs the guard, without copying or invoking a second
@@ -255,9 +261,8 @@ def claude_payload(home):
             argv = ['node', (home / 'scripts/hooks' / guard_name).as_posix(),
                     '--state-dir', (home / 'runtime/go-mutations-direct').as_posix()]
             command = core.subprocess.list2cmdline(argv) if sys.platform == 'win32' else shlex.join(argv)
-            retained.append({'matcher': '|'.join(uncovered),
-                             'hooks': [{'type': 'command', 'command': command, 'timeout': 20}]})
-        settings['hooks'][event] = retained
+            settings['hooks'][event].append({'matcher': '|'.join(uncovered),
+                                            'hooks': [{'type': 'command', 'command': command, 'timeout': 20}]})
     result['settings.json'] = core.json_bytes(settings)
     return result
 

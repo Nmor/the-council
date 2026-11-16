@@ -4,6 +4,9 @@ All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
 
+- Partial tool dispatchers receive paired direct pre/post mutation guards with
+  isolated shared state, so the post-hook can always inspect its captured baseline.
+
 - Native sync uses the native installer, preserving ownership, generated roles,
   adapted references and uninstall backups; legacy pruning only touches mirror records.
   Older native manifests migrate through the same installer; other harnesses retain

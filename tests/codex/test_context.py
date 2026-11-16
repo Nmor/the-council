@@ -119,7 +119,35 @@ class ContextTests(unittest.TestCase):
                 direct = [group for group in actual['hooks']['PreToolUse']
                           if any('go-discard-mutations.js' in hook['command'] for hook in group['hooks'])]
                 self.assertEqual(len(direct), 1)
-                self.assertEqual(direct[0]['matcher'], 'Edit|Write|MultiEdit' if available else 'Bash|Edit|Write|MultiEdit')
+                self.assertEqual(direct[0]['matcher'], 'Bash|Edit|Write|MultiEdit')
+
+    def test_partial_dispatcher_uses_paired_direct_state(self):
+        dispatcher = self.home / 'scripts/hooks/dispatch.js'
+        dispatcher.parent.mkdir(parents=True)
+        source = (ROOT / 'scripts/hooks/dispatch.js').read_bytes()
+        self.assertEqual(dispatcher.write_bytes(source), len(source))
+        cases = [('Bash', ''), ('', 'Bash'), ('Bash', 'Edit'), ('Bash', 'Bash')]
+        for before, after in cases:
+            with self.subTest(before=before, after=after):
+                groups = {}
+                for event, phase, matcher in [('PreToolUse', 'pre', before),
+                                               ('PostToolUse', 'post', after)]:
+                    groups[event] = [] if not matcher else [
+                        {'matcher': matcher, 'hooks': [{'type': 'command', 'command':
+                         f'node "{self.home.as_posix()}/scripts/hooks/dispatch.js" {phase}'}]}]
+                text = json.dumps({**self.settings, 'hooks': groups})
+                self.assertEqual((self.home / 'settings.json').write_text(text, encoding='utf-8'), len(text))
+                actual = json.loads(context.claude_payload(self.home)['settings.json'])
+                expected = 'Edit|Write|MultiEdit' if before == after == 'Bash' else 'Bash|Edit|Write|MultiEdit'
+                commands = []
+                for event in ('PreToolUse', 'PostToolUse'):
+                    direct = [group for group in actual['hooks'][event]
+                              if any('go-discard-mutations.js' in hook['command'] for hook in group['hooks'])]
+                    self.assertEqual(len(direct), 1)
+                    self.assertEqual(direct[0]['matcher'], expected)
+                    commands.append(direct[0]['hooks'][0]['command'])
+                self.assertEqual(commands[0], commands[1])
+                self.assertIn('/runtime/go-mutations-direct', commands[0])
 
     def test_dispatcher_home_alias_does_not_claim_another_installation(self):
         dispatcher = self.home / 'scripts/hooks/dispatch.js'
