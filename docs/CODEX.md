@@ -255,7 +255,6 @@ Set `COUNCIL_PYTHON` to the native Python 3.11+ executable when `python3` is
 unavailable. Native home lookup also uses `USERPROFILE`; isolate it together with
 `HOME` when testing against a temporary installation.
 
-
 Skill parity uses native Python directory symlinks, including under Git Bash. Windows
 requires Developer Mode or permission to create symlinks; a denied link fails sync.
 Existing owner entries are preserved, and dangling links are reported.

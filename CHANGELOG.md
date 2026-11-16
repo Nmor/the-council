@@ -4,7 +4,8 @@ All notable changes to **The Council** are documented in this file.
 
 ## 2026-11-16 — Installation review fixes
 
-- Skill sync creates native directory links on Windows as well as Unix, preserves owner entries, and refuses failed link creation instead of accepting copied skills.
+- Skill sync creates native directory links on Windows as well as Unix, preserves
+  owner entries, and refuses failed link creation instead of accepting copied skills.
 - Windows shell fixtures use Git Bash, isolate the native home, and select the
   running Python explicitly; dispatcher fixtures use platform-specific quoting.
 
