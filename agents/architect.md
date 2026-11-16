@@ -1,11 +1,6 @@
 ---
 name: architect
-description: >-
-  Software architecture specialist for system design, trade-offs and technical decision- making
-  BEFORE a plan exists — new-feature design, large refactoring strategy, scalability, ADRs.
-  Produces the chosen design with its invariants and alternatives considered; hand that design
-  to planner for task breakdown. Not for breaking settled work into tasks (planner) or
-  market/vendor strategy (strategy-reviewer).
+description: "Software architecture specialist for system design, trade-offs and technical decision- making BEFORE a plan exists — new-feature design, large refactoring strategy, scalability, ADRs. Produces the chosen design with its invariants and alternatives considered; hand that design to planner for task breakdown. Not for breaking settled work into tasks (planner) or market/vendor strategy (strategy-reviewer)."
 tools: ["Read", "Grep", "Glob"]
 model: opus
 ---

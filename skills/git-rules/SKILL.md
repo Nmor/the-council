@@ -1,11 +1,6 @@
 ---
 name: git-rules
-description: >-
-  Git + repo discipline — git-workflow (per-org identity, conventional
-  commits, PR workflow), repo-setup-checklist (20-point first-touch security
-  audit), docs-sync-with-code (every PR ships docs + code together),
-  documentation-requirements (Diátaxis four-quadrant: tutorials / how-tos /
-  reference / explanation). Select explicitly when this guidance applies.
+description: "Git + repo discipline — git-workflow (per-org identity, conventional commits, PR workflow), repo-setup-checklist (20-point first-touch security audit), docs-sync-with-code (every PR ships docs + code together), documentation-requirements (Diátaxis four-quadrant: tutorials / how-tos / reference / explanation). Select explicitly when this guidance applies."
 paths:
   - "**/.gitignore"
   - "**/.gitattributes"

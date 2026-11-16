@@ -1,11 +1,6 @@
 ---
 name: council-debate
-description: >-
-  Stage a structured debate between conflicting guidance sources — Council rules vs plugin
-  methodologies (superpowers, impeccable), skill vs skill, advisor seat vs engineering division,
-  or competing technical approaches — and produce an evidence-judged verdict. Use when the best-
-  idea-wins rule detects a material conflict, when the user asks to "debate" options, or when
-  two sources prescribe incompatible actions for the task at hand.
+description: "Stage a structured debate between conflicting guidance sources — Council rules vs plugin methodologies (superpowers, impeccable), skill vs skill, advisor seat vs engineering division, or competing technical approaches — and produce an evidence-judged verdict. Use when the best-idea-wins rule detects a material conflict, when the user asks to debate options, or when two sources prescribe incompatible actions for the task at hand."
 ---
 
 # Council debate

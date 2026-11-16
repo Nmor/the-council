@@ -14,6 +14,10 @@ import os, sys, shutil, hashlib, json
 SRC, CODEX = sys.argv[1], sys.argv[2]
 os.chdir(CODEX)
 m = json.load(open('manifest.json'))
+# Owner-retained files (local: true, written by codex.py --reconcile) are never
+# overwritten from canonical, never ghost-deleted, never pruned.
+localset = {k[len('council/'):] for k, v in m['files'].items()
+            if isinstance(v, dict) and v.get('local')}
 copied = pruned = 0
 for sub in ['rules', 'rules-library', 'skills', 'agents', 'commands']:
     base = f'resources/{sub}'
@@ -22,6 +26,8 @@ for sub in ['rules', 'rules-library', 'skills', 'agents', 'commands']:
     for dp, _, fs in os.walk(base):
         for f in fs:
             rp = os.path.join(dp, f)
+            if rp in localset:
+                continue
             sp = os.path.join(SRC, os.path.relpath(rp, 'resources'))
             if os.path.exists(sp):
                 if open(sp, 'rb').read() != open(rp, 'rb').read():
@@ -60,6 +66,8 @@ for sub in ['rules', 'rules-library', 'skills', 'agents', 'commands']:
     for dp, _, fs in os.walk(base, topdown=False):
         for f in fs:
             rp = os.path.join(dp, f)
+            if rp in localset:
+                continue
             sp = os.path.join(SRC, os.path.relpath(rp, 'resources'))
             if not os.path.exists(sp):
                 os.remove(rp)
@@ -67,6 +75,13 @@ for sub in ['rules', 'rules-library', 'skills', 'agents', 'commands']:
         if not os.listdir(dp):
             os.rmdir(dp)
 for k in list(m['files']):
+    # Only mirrored resource entries are ours to prune (review P1 2026-11-16):
+    # native-install keys (AGENTS.md, hooks.json, agent TOMLs) are relative to
+    # the Codex home and carry 'original' backups that uninstall depends on.
+    if not k.startswith('council/resources/'):
+        continue
+    if isinstance(m['files'][k], dict) and m['files'][k].get('local'):
+        continue
     p = k[len('council/'):]
     if not os.path.exists(p):
         del m['files'][k]

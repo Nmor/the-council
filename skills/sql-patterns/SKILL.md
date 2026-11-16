@@ -1,15 +1,6 @@
 ---
 name: sql-patterns
-description: >-
-  SQL discipline — lowercase keywords (modern convention; consistent project-wide), explicit
-  column names (no SELECT * in production), UTC timestamps (TIMESTAMPTZ in Postgres), singular
-  vs plural table names consistent, explicit JOIN (no implicit comma-joins), CTEs over deeply
-  nested subqueries, named indexes, NULL-aware semantics (NULL = NULL is UNKNOWN; use IS NULL),
-  parameterised queries always (no string interpolation), DELETE/UPDATE always with WHERE,
-  migrations idempotent; production is forward-only (rollback = new forward migration, per
-  database-migrations) — `down` files exist for the dev up→down→up check (expand-contract
-  pattern), sqlfluff strict + squawk Postgres migration safety. Select explicitly when this
-  guidance applies.
+description: "SQL discipline — lowercase keywords (modern convention; consistent project-wide), explicit column names (no SELECT * in production), UTC timestamps (TIMESTAMPTZ in Postgres), singular vs plural table names consistent, explicit JOIN (no implicit comma-joins), CTEs over deeply nested subqueries, named indexes, NULL-aware semantics (NULL = NULL is UNKNOWN; use IS NULL), parameterised queries always (no string interpolation), DELETE/UPDATE always with WHERE, migrations idempotent; production is forward-only (rollback = new forward migration, per database-migrations) — `down` files exist for the dev up→down→up check (expand-contract pattern), sqlfluff strict + squawk Postgres migration safety. Select explicitly when this guidance applies."
 paths:
   - "**/*.sql"
   - "**/migrations/**/*.sql"

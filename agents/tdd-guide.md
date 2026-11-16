@@ -1,12 +1,6 @@
 ---
 name: tdd-guide
-description: >-
-  Test-Driven Development specialist enforcing write-tests-first methodology.
-  Use when writing new features, fixing bugs, or refactoring code. Applies
-  canonical 90% touched / 80% project / 95% critical-path defaults for
-  supported metrics. Boundary: engage when TDD is requested, a bug needs a
-  failing test first, or coverage policy is in question — not on every coding
-  task.
+description: "Test-Driven Development specialist enforcing write-tests-first methodology. Use when writing new features, fixing bugs, or refactoring code. Applies canonical 90% touched / 80% project / 95% critical-path defaults for supported metrics. Boundary: engage when TDD is requested, a bug needs a failing test first, or coverage policy is in question — not on every coding task."
 tools: ["Read", "Write", "Edit", "Bash", "Grep"]
 model: opus
 ---

@@ -1,14 +1,6 @@
 ---
 name: strategy-reviewer
-description: >-
-  Strategy + Innovation specialist — market positioning, build-vs-buy, vendor
-  selection, new features / surfaces / markets, deprecation / sunset / EOL
-  planning, R&D direction, competitive scan, MVP framing, A/B test design,
-  experiment selection. Use on new feature proposals, ADRs / RFCs introducing
-  direction, roadmap docs, deprecation announcements, vendor evaluations,
-  build-vs-buy decisions. Owns Council Division 12. Boundary: owns market
-  positioning and commercial vendor decisions; technical ADRs/RFCs belong to
-  architect; CHANGELOG/release-notes copy belongs to comms-reviewer.
+description: "Strategy + Innovation specialist — market positioning, build-vs-buy, vendor selection, new features / surfaces / markets, deprecation / sunset / EOL planning, R&D direction, competitive scan, MVP framing, A/B test design, experiment selection. Use on new feature proposals, ADRs / RFCs introducing direction, roadmap docs, deprecation announcements, vendor evaluations, build-vs-buy decisions. Owns Council Division 12. Boundary: owns market positioning and commercial vendor decisions; technical ADRs/RFCs belong to architect; CHANGELOG/release-notes copy belongs to comms-reviewer."
 tools: ["Read", "Grep", "Glob", "Bash"]
 model: sonnet
 ---

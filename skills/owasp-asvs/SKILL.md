@@ -1,11 +1,6 @@
 ---
 name: owasp-asvs
-description: >-
-  OWASP Application Security Verification Standard 5.0.0 (GA 30 May 2025) — the
-  canonical control catalogue for application security: 345 requirements across 17
-  chapters with per-level (L1/L2/L3) applicability. Official 5.0 text bundled in
-  references/asvs-5.0-requirements.md; legacy 4.0.3 implementation patterns retained
-  with an official ID mapping. Select explicitly when this guidance applies.
+description: "OWASP Application Security Verification Standard 5.0.0 (GA 30 May 2025) — the canonical control catalogue for application security: 345 requirements across 17 chapters with per-level (L1/L2/L3) applicability. Official 5.0 text bundled in references/asvs-5.0-requirements.md; legacy 4.0.3 implementation patterns retained with an official ID mapping. Select explicitly when this guidance applies."
 disable-model-invocation: true
 ---
 

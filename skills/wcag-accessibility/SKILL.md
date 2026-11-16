@@ -1,10 +1,6 @@
 ---
 name: wcag-accessibility
-description: >-
-  WCAG 2.2 AA + AAA accessibility patterns for every user-facing surface — semantic HTML, ARIA
-  1.2, keyboard navigation, screen reader support, color contrast, motion preferences, and the 9
-  new SCs introduced in WCAG 2.2. Also lazy-loads a11y.md content migrated from rules/common/ on
-  2026-06-02.
+description: "WCAG 2.2 AA + AAA accessibility patterns for every user-facing surface — semantic HTML, ARIA 1.2, keyboard navigation, screen reader support, color contrast, motion preferences, and the 9 new SCs introduced in WCAG 2.2. Also lazy-loads a11y.md content migrated from rules/common/ on 2026-06-02."
 paths:
   - "**/*.vue"
   - "**/*.svelte"

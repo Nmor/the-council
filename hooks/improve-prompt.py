@@ -26,7 +26,7 @@ ACK_LIMIT = 12
 # on unrelated prompts. Keep sets tight: a false hit injects one wasted line.
 DOMAINS = (
     ('business/venture', ('startup', 'business idea', 'venture', 'founder', 'mvp',
-      'product-market', 'market fit', 'monetiz', 'revenue model', 'business model'),
+      'product-market', 'market fit', 'monetiz*', 'revenue model', 'business model'),
      'entrepreneur, lean-startup, app-market-intel skills; Founder Board seats (council-graham, council-bezos)'),
     ('pricing/offer', ('pricing', 'price point', 'offer', 'upsell', 'conversion rate',
       'churn', 'ltv', 'cac', 'subscription tier'),
@@ -34,13 +34,13 @@ DOMAINS = (
     ('marketing', ('marketing', 'go-to-market', 'gtm', 'campaign', 'audience',
       'content strategy', 'seo strategy', 'brand voice', 'launch plan'),
      'marketing-strategy, content-campaigns, seo, brand-creative-direction skills; seat council-garyvee'),
-    ('hiring/people', ('hiring', 'recruit', 'interview process', 'onboarding plan',
+    ('hiring/people', ('hiring', 'recruit*', 'interview process', 'onboarding plan',
       'performance review', 'org design', 'team structure', 'firing someone', 'fire an employee'),
      'hiring-process, performance-management, org-design skills; seats council-leila, council-martell'),
     ('finance/investing', ('valuation', 'investment', 'portfolio', 'cash flow',
-      'runway', 'fundrais', 'cap table', 'unit economics', 'financial model'),
+      'runway', 'fundrais*', 'cap table', 'unit economics', 'financial model'),
      'financial-analyst, investment-research, valuation-models, fp-and-a skills; seat council-buffett'),
-    ('negotiation', ('negotiat', 'counteroffer', 'term sheet', 'contract terms', 'batna'),
+    ('negotiation', ('negotiat*', 'counteroffer', 'term sheet', 'contract terms', 'batna'),
      'negotiation-patterns skill'),
     ('seo/search', ('seo', 'search ranking', 'search traffic', 'organic traffic', 'serp',
       'sitemap', 'search console', 'core web vitals'),
@@ -49,7 +49,7 @@ DOMAINS = (
       'documentation page', 'readme', 'release notes', 'email to', 'write a post', 'essay',
       'technical writing', 'copywriting'),
      'writing-quality skill (anti-AI-prose), communication-patterns; comms-reviewer agent for public artifacts'),
-    ('ops/manufacturing', ('supply chain', 'manufactur', 'inventory', 'logistics',
+    ('ops/manufacturing', ('supply chain', 'manufactur*', 'inventory', 'logistics',
       'lean process', 'six sigma'),
      'supply-chain-patterns, lean-manufacturing, six-sigma skills; seat council-wickman'),
 )
@@ -64,6 +64,8 @@ def _kw_hit(low: str, k: str) -> bool:
     # may match as substrings since spaces already bound them.
     if ' ' in k:
         return k in low
+    if k.endswith('*'):  # stem: left boundary only ("negotiat*" matches negotiate/negotiation)
+        return _re.search(r'\b' + _re.escape(k[:-1]), low) is not None
     return _re.search(r'\b' + _re.escape(k) + r'\b', low) is not None
 
 

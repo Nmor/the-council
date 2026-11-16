@@ -1,12 +1,6 @@
 ---
 name: writing-quality
-description: >-
-  Anti-AI-prose discipline for technical and non-technical writing — docs,
-  READMEs, release notes, blog posts, announcements, emails, essays, commit
-  messages. The prose counterpart to frontend-design: kill significance
-  inflation, copula avoidance, weasel attribution, formula endings and AI
-  vocabulary; write with named facts, plain verbs and earned claims. Use when
-  writing or reviewing any prose a human will read.
+description: "Anti-AI-prose discipline for technical and non-technical writing — docs, READMEs, release notes, blog posts, announcements, emails, essays, commit messages. The prose counterpart to frontend-design: kill significance inflation, copula avoidance, weasel attribution, formula endings and AI vocabulary; write with named facts, plain verbs and earned claims. Use when writing or reviewing any prose a human will read."
 ---
 
 # Writing quality

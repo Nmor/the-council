@@ -1,14 +1,6 @@
 ---
 name: config-reviewer
-description: >-
-  Markup and configuration reviewer — Markdown, YAML, JSON, TOML, XML, INI and
-  dotenv-template changes. Use when a diff is mostly config/markup: CI workflows,
-  Compose/K8s/Helm values, package manifests, lint configs, docs. Checks syntax
-  validity, schema conformance, format traps (YAML coercion, JSON duplicate keys,
-  XML entity expansion), secret leakage and doc style. Boundary: Dockerfiles go
-  to infra-reviewer; SQL to database-reviewer; prose quality of public docs to
-  comms-reviewer; a config change whose EFFECT is operational (deploy, alerting)
-  pairs with ops-reviewer.
+description: "Markup and configuration reviewer — Markdown, YAML, JSON, TOML, XML, INI and dotenv-template changes. Use when a diff is mostly config/markup: CI workflows, Compose/K8s/Helm values, package manifests, lint configs, docs. Checks syntax validity, schema conformance, format traps (YAML coercion, JSON duplicate keys, XML entity expansion), secret leakage and doc style. Boundary: Dockerfiles go to infra-reviewer; SQL to database-reviewer; prose quality of public docs to comms-reviewer; a config change whose EFFECT is operational (deploy, alerting) pairs with ops-reviewer."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

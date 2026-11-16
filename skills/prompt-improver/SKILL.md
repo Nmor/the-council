@@ -1,11 +1,6 @@
 ---
 name: prompt-improver
-description: >-
-  Transforms vague or under-specified prompts into actionable, research-grounded requests
-  through systematic codebase + workspace + open-source + online research. Wires the user's
-  directive flow into the Council Protocol Phase 0 and the global task-intake-due-diligence.md
-  questionnaire. Invoked by the UserPromptSubmit hook when a prompt lacks specificity OR when a
-  clear-but-significant prompt needs the full intake before execution.
+description: "Transforms vague or under-specified prompts into actionable, research-grounded requests through systematic codebase + workspace + open-source + online research. Wires the user's directive flow into the Council Protocol Phase 0 and the global task-intake-due-diligence.md questionnaire. Invoked by the UserPromptSubmit hook when a prompt lacks specificity OR when a clear-but-significant prompt needs the full intake before execution."
 disable-model-invocation: true
 ---
 

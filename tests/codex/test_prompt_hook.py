@@ -60,6 +60,27 @@ class PromptHookTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0)
                 self.assertEqual(result.stdout, '')
 
+    def test_domain_stems_match_inflected_forms(self):
+        # 'negotiat*'-style stems anchor at a word start only; the old \b-wrapped
+        # literals could never match "negotiate" or "manufacturing".
+        for prompt, bench in (
+            ('help me negotiate a salary increase', 'negotiation'),
+            ('improve our manufacturing process', 'ops/manufacturing'),
+            ('we are fundraising next quarter', 'finance/investing'),
+        ):
+            with self.subTest(prompt=prompt):
+                result = run_prompt(prompt)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                context = json.loads(result.stdout)['hookSpecificOutput']['additionalContext']
+                self.assertIn(bench, context)
+
+    def test_stem_matching_keeps_word_start_boundary(self):
+        # "recruit*" must not fire inside another word; cache-style substrings stay safe.
+        result = run_prompt('clear the morecruitment cache in the build step please now')
+        self.assertTrue(result.stdout)
+        context = json.loads(result.stdout)['hookSpecificOutput']['additionalContext']
+        self.assertNotIn('hiring/people', context)
+
     def test_installed_settings_register_exactly_this_hook(self):
         settings = json.loads((HOOK.parents[1] / 'settings.json').read_text(encoding="utf-8"))
         groups = settings['hooks']['UserPromptSubmit']

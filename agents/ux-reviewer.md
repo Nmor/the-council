@@ -1,11 +1,6 @@
 ---
 name: ux-reviewer
-description: >-
-  UX writing + interaction design + user-flow specialist. Use on every UI /
-  copy / error-message / form / navigation change. Owns part of Council
-  Division 7. Boundary: owns flow, information architecture and microcopy;
-  WCAG/ARIA/keyboard/contrast belong to accessibility-reviewer; visual/motion
-  quality to design-reviewer.
+description: "UX writing + interaction design + user-flow specialist. Use on every UI / copy / error-message / form / navigation change. Owns part of Council Division 7. Boundary: owns flow, information architecture and microcopy; WCAG/ARIA/keyboard/contrast belong to accessibility-reviewer; visual/motion quality to design-reviewer."
 tools: ["Read", "Grep", "Glob"]
 model: opus
 ---

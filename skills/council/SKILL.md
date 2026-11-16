@@ -1,9 +1,6 @@
 ---
 name: council
-description: >-
-  Route substantive engineering work to the relevant Council rules, skills and justified
-  specialist reviews — substantive code gets two independent perspectives run sequentially (one
-  active helper at a time, per done-criteria).
+description: "Route substantive engineering work to the relevant Council rules, skills and justified specialist reviews — substantive code gets two independent perspectives run sequentially (one active helper at a time, per done-criteria)."
 ---
 
 # Council
