@@ -104,7 +104,7 @@ jobs:
 
       - name: Run markdownlint-cli2 on every *.md
         # DavidAnson/markdownlint-cli2-action@v20.0.0
-        uses: DavidAnson/markdownlint-cli2-action@6bf21b07787794f89a243495939cd651942aeabe
+        uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34
         with:
           globs: |
             **/*.md
@@ -234,7 +234,7 @@ jobs:
         run: node scripts/token-budget.mjs --root . --check
       - name: Set up fixture runtime
         # actions/setup-node@v6.3.0
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 22
           package-manager-cache: false
